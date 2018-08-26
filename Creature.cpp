@@ -21,16 +21,19 @@ Creature* Creature::ptr_current_main_charater;
 
 Creature* Creature::SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position)
 {
+	Creature* result = NULL;
+
     if (desired_type == CreatureType::hero)
     {
         printf("Requested hero creature.\n");
+		//result = new CreatureHero();
     }
     else
     {
         printf("Requested some other creature.\n");
     }
-	//Dummy return #TODO
-	return Creature::ptr_current_main_charater;
+	
+	return result;
 }
 
 

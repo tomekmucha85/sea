@@ -11,11 +11,17 @@ class SpriteClawy : public Sprite
     //###################
     //Variables
     //###################
-    SDL_Rect texture_clip_clawy = {0,0,45,45};
+    static SDL_Rect initial_texture_clip_clawy;
 
     public:
+	//###################
+	//Variables
+	//###################
 
-    SpriteClawy(SDL_Renderer* ptr_my_renderer, TextureBank* ptr_my_texture_bank, SDL_Rect* my_position = NULL);
+	//###################
+	//Functions
+	//###################
+    SpriteClawy(SDL_Rect* my_position = NULL);
     void WalkAnimation();
 };
 

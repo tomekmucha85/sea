@@ -26,6 +26,7 @@
 //###################
 int test = 0;
 
+
 int main(int argc, char* args[])
 {
     //Main loop flag
@@ -36,52 +37,25 @@ int main(int argc, char* args[])
 
     Game::InitializeGame();
 
-    //Load textures
-    printf("Address of screen before loading textures: %p\n", Game::ptr_screen);
-    TextureBank texture_bank(Game::ptr_screen->renderer);
-    TextureBank* ptr_texture_bank = &texture_bank;
-    /* Address of texture bank should go to a static class variable.
-       Sprite creator will check if the value is set.
-    */
-
-    //Create sprites - TODO needs a method
-    /*Takes: position
-             kind of sprite
-      Returns:
-              sprite object
-      A dictionary connects sprite kind to texture bank? Or maybe sprite sub class known the right bank by itself?
-
-    */
-
-    SpriteBackground blue_background(Game::ptr_screen->renderer, ptr_texture_bank);
+    Sprite* ptr_blue_background = Sprite::CreateSprite(background);
 
     SDL_Rect hero_position = {320,240,0,0};
     SDL_Rect* ptr_hero_position = &hero_position;
-    Sprite* ptr_spr_clawy = Sprite::CreateSprite(clawy, ptr_texture_bank, ptr_hero_position);
-    //Sprite our_hero = *(ptr_spr_clawy);
-
-
-    //SDL_Rect hero_position = {320,240,0,0};
-    //SDL_Rect* ptr_hero_position = &hero_position;
-    //SpriteClawy our_hero(Game::ptr_screen->renderer, ptr_texture_bank, ptr_hero_position);
-    //SpriteClawy* ptr_spr_clawy = &our_hero;
+    Sprite* ptr_spr_clawy = Sprite::CreateSprite(clawy, ptr_hero_position);
 
     SDL_Rect box_position = {100,100,0,0};
     SDL_Rect* ptr_box_position = &box_position;
-    SpriteBlackBox black_box(Game::ptr_screen->renderer, ptr_texture_bank, ptr_box_position);
-    SpriteBlackBox* ptr_spr_black_box = &black_box;
+    Sprite* ptr_spr_black_box = Sprite::CreateSprite(box, ptr_box_position);
 
     SDL_Rect box_position_2 = {300,150,0,0};
-    SDL_Rect* ptr_box_position_2 = &box_position_2;
-    SpriteBlackBox black_box_2(Game::ptr_screen->renderer, ptr_texture_bank, ptr_box_position_2);
-    SpriteBlackBox* ptr_spr_black_box_2 = &black_box_2;
+	SDL_Rect* ptr_box_position_2 = &box_position_2;
+	Sprite* ptr_spr_black_box_2 = Sprite::CreateSprite(box, ptr_box_position_2);
 
     SDL_Rect box_position_3 = {500,150,0,0};
-    SDL_Rect* ptr_box_position_3 = &box_position_3;
-    SpriteBlackBox black_box_3(Game::ptr_screen->renderer, ptr_texture_bank, ptr_box_position_3);
-    SpriteBlackBox* ptr_spr_black_box_3 = &black_box_3;
+	SDL_Rect* ptr_box_position_3 = &box_position_3;
+	Sprite* ptr_spr_black_box_3 = Sprite::CreateSprite(box, ptr_box_position_3);
 
-    //TODO - connect creatures creation with sprites
+    //#TODO - connect creatures creation with sprites
 
     Creature cre_hero(ptr_spr_clawy);
     cre_hero.MakeMeMainCharacter();
@@ -123,6 +97,7 @@ int main(int argc, char* args[])
         }
 
         //Test moving creatures
+		
         test++;
         if (test <= 300)
         {
@@ -136,16 +111,16 @@ int main(int argc, char* args[])
         {
             test = 0;
         }
-
+		
         //Clear screen
         SDL_RenderClear(Game::ptr_screen->renderer);
 
 
         //Render texture to screen
-        blue_background.Render();
-        black_box.Render();
-        black_box_2.Render();
-        black_box_3.Render();
+		ptr_blue_background->Render();
+        ptr_spr_black_box->Render();
+        ptr_spr_black_box_2->Render();
+        ptr_spr_black_box_3->Render();
         ptr_spr_clawy->Render();
 
         //Update screen

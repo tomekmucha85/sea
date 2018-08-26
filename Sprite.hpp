@@ -16,7 +16,6 @@ class Sprite
         //###################
         //Variables
         //###################
-        SDL_Renderer* renderer;
         int animation_frame = 0;
 
         //What part of the texture is used
@@ -43,9 +42,7 @@ class Sprite
         //###################
         //Functions
         //###################
-        Sprite(SDL_Renderer* ref_my_renderer, SDL_Texture* ref_my_texture, SDL_Rect* ref_my_texture_clip);
-        Sprite(SDL_Renderer* ref_my_renderer, TextureBank* ref_my_texture_bank);
-        Sprite();
+        Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* ptr_my_position = NULL);
         void Move(int velocity_x, int velocity_y);
         void Render();
         std::vector <SDL_Rect> CalculateAnimationClips( SDL_Rect area, int clip_w, int clip_h);
@@ -68,7 +65,7 @@ class Sprite
         void SetPositionH(int new_h);
 
         //Method for spawning sprites
-        static Sprite* CreateSprite(SpriteType desired_type, TextureBank* ptr_texture_bank, SDL_Rect* ptr_position);
+        static Sprite* CreateSprite(SpriteType desired_type, SDL_Rect* ptr_position = NULL);
 
 };
 #endif // SPRITE_HPP

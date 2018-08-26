@@ -11,11 +11,11 @@ class SpriteBlackBox : public Sprite
     //###################
     //Variables
     //###################
-    SDL_Rect texture_clip_black_box = {0,0,40,40};
+	static SDL_Rect initial_texture_clip_black_box;
 
     public:
 
-    SpriteBlackBox(SDL_Renderer* ptr_my_renderer, TextureBank* ptr_my_texture_bank, SDL_Rect* my_position = NULL);
+    SpriteBlackBox(SDL_Rect* my_position = NULL);
 
 };
 

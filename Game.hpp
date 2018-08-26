@@ -13,6 +13,7 @@ class Game
         //VARIABLES
         //###################
 
+		static int debug_counter;
         static Screen* ptr_screen;
         static TextureBank* ptr_texture_bank;
 
@@ -22,6 +23,7 @@ class Game
         static void InitializeGame();
         static void DestroyGame();
         static void CreateScreen();
+		static void LoadTextures();
 
 };
 

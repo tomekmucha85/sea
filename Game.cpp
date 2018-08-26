@@ -5,7 +5,8 @@
 //***********************************
 
 Screen* Game::ptr_screen;
-//int Game::ptr_texture_bank;
+TextureBank* Game::ptr_texture_bank;
+int Game::debug_counter;
 
 //***********************************
 //METHODS
@@ -14,24 +15,25 @@ Screen* Game::ptr_screen;
 void Game::InitializeGame()
 {
     printf("Going to initialize game.\n");
+	Game::debug_counter = 10;
     CreateScreen();
-    //LoadTextures();
+    LoadTextures();
 }
 
 void Game::DestroyGame()
 {
-    printf("Going to destroy game.\n");
+	printf("Going to destroy game.\n");
+	delete ptr_texture_bank;
+	delete ptr_screen;
 }
 
 void Game::CreateScreen()
 {
-    static Screen my_screen;
-    Game::ptr_screen = &my_screen;
+    Game::ptr_screen = new Screen();
     printf("Screen address is: %p\n", Game::ptr_screen);
 }
 
-//void Game::LoadTextures()
-//{
-//    TextureBank texture_bank(Game::ptr_screen->renderer);
-//    TextureBank* ptr_texture_bank = &texture_bank;
-//}
+void Game::LoadTextures()
+{
+    Game::ptr_texture_bank = new TextureBank(Game::ptr_screen->renderer);
+}
