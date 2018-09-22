@@ -43,9 +43,9 @@ int main(int argc, char* args[])
     SDL_Rect* ptr_hero_position = &hero_position;
     Sprite* ptr_spr_clawy = Sprite::CreateSprite(clawy, ptr_hero_position);
 
-    SDL_Rect box_position = {100,100,0,0};
-    SDL_Rect* ptr_box_position = &box_position;
-    Sprite* ptr_spr_black_box = Sprite::CreateSprite(box, ptr_box_position);
+    //SDL_Rect box_position = {100,100,0,0};
+    //SDL_Rect* ptr_box_position = &box_position;
+    //Sprite* ptr_spr_black_box = Sprite::CreateSprite(box, ptr_box_position);
 
     SDL_Rect box_position_2 = {300,150,0,0};
 	SDL_Rect* ptr_box_position_2 = &box_position_2;
@@ -60,7 +60,10 @@ int main(int argc, char* args[])
     Creature cre_hero(ptr_spr_clawy);
     cre_hero.MakeMeMainCharacter();
 
-    Creature cre_box(ptr_spr_black_box);
+    //Creature cre_box(ptr_spr_black_box);
+	SDL_Rect box_position = { 100,100,0,0 };
+	//SpriteType my_sprite_type, SDL_Rect my_position, int hitbox_margin = 10
+	Creature cre_box(box,box_position);
     Creature cre_box2(ptr_spr_black_box_2);
     Creature cre_box3(ptr_spr_black_box_3);
 
@@ -118,7 +121,11 @@ int main(int argc, char* args[])
 
         //Render texture to screen
 		ptr_blue_background->Render();
-        ptr_spr_black_box->Render();
+        //ptr_spr_black_box->Render();
+		//#TODO zrobiæ generator Creature, zadbac o destruktor i konstruktor kopiujacy
+		//#TODO napisaæ klasê Level
+		//#TODO sprawic, ¿eby wszystkie sprite'y obecne w grze renderowa³y siê za pomoc¹ jednej funkcji
+		cre_box.ptr_creature_sprite->Render();
         ptr_spr_black_box_2->Render();
         ptr_spr_black_box_3->Render();
         ptr_spr_clawy->Render();

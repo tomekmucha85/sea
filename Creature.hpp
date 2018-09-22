@@ -60,9 +60,12 @@ class Creature
         //Functions
         //###################
         Creature(Sprite *ptr_my_sprite, int hitbox_margin = 10);
+		Creature(SpriteType my_sprite_type, SDL_Rect my_position, int hitbox_margin = 10);
+		~Creature();
         static Creature* SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position);
         static int TellObstaclesCount();
         //static Creature* GenerateBox(SDL_Renderer* ref_renderer, int x, int y);
+		void SetMySprite(Sprite* ptr_my_sprite);
         void AddToObstacles(SDL_Rect my_hitbox);
         void Turn(int turn_angle_degree);
         void TurnRight();

@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <Creature.hpp>
-#include <Sprite.hpp>
 #include <Game.hpp>
+#include <Sprite.hpp>
 #include <stdexcept>
 
 //***********************************
@@ -55,7 +55,7 @@ Creature::Creature(Sprite *ptr_my_sprite, int hitbox_margin)
     //Write entry in static vector class_instances
     AddToClassInstancesVector();
     //Give Creature its Sprite
-    ptr_creature_sprite = ptr_my_sprite;
+    SetMySprite(ptr_my_sprite);
     //Set the initial value to move upwards by (velocity * pixels)
     next_step.y = velocity * -1;
     //#TODO//Change this, so position will be determined by creature
@@ -66,6 +66,34 @@ Creature::Creature(Sprite *ptr_my_sprite, int hitbox_margin)
         printf("Will initialise obstacle\n");
         AddToObstacles(hitbox);
     }
+}
+
+Creature::Creature(SpriteType my_sprite_type, SDL_Rect my_position, int hitbox_margin)
+{
+	//Write entry in static vector class_instances
+	AddToClassInstancesVector();
+	//Pointer to position rect
+	SDL_Rect* ptr_my_position = &my_position;
+	//Take care of sprite assignment
+	Creature::SetMySprite(Sprite::CreateSprite(my_sprite_type, ptr_my_position));
+	//Set the initial value to move upwards by (velocity * pixels)
+	next_step.y = velocity * -1;
+	//Initialize hitbox
+	Creature::InitializeHitbox(my_position, hitbox_margin);
+	if (is_obstacle == true)
+	{
+		printf("Will initialise obstacle\n");
+		AddToObstacles(hitbox);
+	}
+}
+
+//************
+//DESTRUCTOR
+//************
+
+Creature::~Creature()
+{
+	delete ptr_creature_sprite;
 }
 
 //****************************
@@ -112,6 +140,21 @@ Creature* Creature::WhoIsMainCharacter()
 {
     return Creature::ptr_current_main_charater;
 }
+
+//**************
+//SETTING PARAMS
+//**************
+
+void Creature::SetMySprite(Sprite* ptr_my_sprite)
+{
+	if (ptr_creature_sprite != NULL)
+	{
+		delete ptr_creature_sprite;
+		printf("SetMySprite deleted current sprite object.");
+	}
+	ptr_creature_sprite = ptr_my_sprite;
+}
+
 //**********
 //COLLISIONS
 //**********

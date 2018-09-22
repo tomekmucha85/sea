@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClInclude Include="Creature.hpp" />
     <ClInclude Include="CreatureClawy.hpp" />
+    <ClInclude Include="CreatureFlyingBox.hpp" />
     <ClInclude Include="CreatureHero.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="OurHero.hpp" />
@@ -141,10 +142,10 @@
   <ItemGroup>
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="CreatureClawy.cpp" />
+    <ClCompile Include="CreatureFlyingBox.cpp" />
     <ClCompile Include="CreatureHero.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="hello.cpp" />
-    <ClCompile Include="OurHero.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBackground.cpp" />
