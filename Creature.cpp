@@ -5,6 +5,7 @@
 #include <Creature.hpp>
 #include <Game.hpp>
 #include <Sprite.hpp>
+#include <CreatureFlyingBox.hpp>
 #include <stdexcept>
 
 //***********************************
@@ -23,11 +24,16 @@ Creature* Creature::SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_posit
 {
 	Creature* result = NULL;
 
-    if (desired_type == CreatureType::hero)
+    if (desired_type == CreatureType::cre_hero)
     {
         printf("Requested hero creature.\n");
 		//result = new CreatureHero();
     }
+	else if (desired_type == CreatureType::cre_flying_box)
+	{
+		printf("Requested flying box creature. \n");
+		result = new CreatureFlyingBox(ptr_position);
+	}
     else
     {
         printf("Requested some other creature.\n");
@@ -68,18 +74,19 @@ Creature::Creature(Sprite *ptr_my_sprite, int hitbox_margin)
     }
 }
 
-Creature::Creature(SpriteType my_sprite_type, SDL_Rect my_position, int hitbox_margin)
+Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin)
 {
 	//Write entry in static vector class_instances
 	AddToClassInstancesVector();
-	//Pointer to position rect
-	SDL_Rect* ptr_my_position = &my_position;
 	//Take care of sprite assignment
+	printf("Will assign sprite to newly spawned creature: %d\n", my_sprite_type);
 	Creature::SetMySprite(Sprite::CreateSprite(my_sprite_type, ptr_my_position));
 	//Set the initial value to move upwards by (velocity * pixels)
 	next_step.y = velocity * -1;
 	//Initialize hitbox
-	Creature::InitializeHitbox(my_position, hitbox_margin);
+	//#TODO//Change this, so position will be determined by creature
+	SDL_Rect sprite_position = Creature::ptr_creature_sprite->TellSpritePosition();
+	Creature::InitializeHitbox(sprite_position, hitbox_margin);
 	if (is_obstacle == true)
 	{
 		printf("Will initialise obstacle\n");

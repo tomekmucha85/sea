@@ -189,6 +189,7 @@ void Sprite::WalkAnimation()
 Sprite* Sprite::CreateSprite(SpriteType desired_type, SDL_Rect* ptr_position)
 {
 	Sprite* result = NULL;
+	printf("Going to create a sprite. Requested type: %d\n", desired_type);
     if (desired_type == clawy)
     {
         printf("Requested clawy object.\n");

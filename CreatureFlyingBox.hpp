@@ -6,9 +6,8 @@
 class CreatureFlyingBox : public Creature
 {
 private:
-	Sprite * ptr_my_sprite = NULL;
-
+	static const SpriteType my_initial_type = box;
 public:
-	CreatureFlyingBox(Sprite *ptr_my_sprite, int hitbox_margin = 10);
+	CreatureFlyingBox(SDL_Rect* ptr_my_position, int hitbox_margin = 10);
 };
 #endif // CREATURE_FBOX_HPP

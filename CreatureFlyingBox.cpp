@@ -1,7 +1,6 @@
 #include <CreatureFlyingBox.hpp>
-CreatureFlyingBox::CreatureFlyingBox(Sprite *ptr_my_sprite, int hitbox_margin) :
-	Creature(ptr_my_sprite, hitbox_margin)
+CreatureFlyingBox::CreatureFlyingBox(SDL_Rect* ptr_my_position, int hitbox_margin) :
+	Creature(CreatureFlyingBox::my_initial_type, ptr_my_position, hitbox_margin)
 {
 	printf("Spawned CreatureFlyingBox.\n");
 }
-//

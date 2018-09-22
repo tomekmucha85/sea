@@ -2,7 +2,7 @@
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
 
-enum class CreatureType    {hero, box};
+enum CreatureType    {cre_hero, cre_flying_box};
 
 class Creature
 {
@@ -60,7 +60,7 @@ class Creature
         //Functions
         //###################
         Creature(Sprite *ptr_my_sprite, int hitbox_margin = 10);
-		Creature(SpriteType my_sprite_type, SDL_Rect my_position, int hitbox_margin = 10);
+		Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin = 10);
 		~Creature();
         static Creature* SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position);
         static int TellObstaclesCount();
