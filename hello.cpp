@@ -1,21 +1,4 @@
-#include <SDL.h>
-#include <SDL_image.h>
-#include <stdio.h>
-#include <iostream>
-#include <math.h>
-#include <string>
-#include <Game.hpp>
-#include <Screen.hpp>
-#include <Texture.hpp>
-#include <TextureBank.hpp>
-#include <Sprite.hpp>
-#include <SpriteClawy.hpp>
-#include <SpriteBackground.hpp>
-#include <SpriteBlackBox.hpp>
-#include <Creature.hpp>
-#include <CreatureFlyingBox.hpp>
-
-
+#include <CommonHeader.hpp>
 
 //###################
 //Function prototypes
@@ -40,14 +23,14 @@ int main(int argc, char* args[])
 
     Sprite* ptr_blue_background = Sprite::CreateSprite(background);
 
+	SDL_Rect smoke_position = { 500,200,0,0 };
+	SDL_Rect* ptr_smoke_position = &smoke_position;
+	Creature* cre_black_smoke_1 = Creature::SpawnCreature(cre_black_smoke, ptr_smoke_position);
+
     SDL_Rect hero_position = {320,240,0,0};
     SDL_Rect* ptr_hero_position = &hero_position;
-    Sprite* ptr_spr_clawy = Sprite::CreateSprite(clawy, ptr_hero_position);
-
-    //#TODO - connect creatures creation with sprites
-
-    Creature cre_hero(ptr_spr_clawy);
-    cre_hero.MakeMeMainCharacter();
+	Creature* cre_heros = Creature::SpawnCreature(cre_clawy, ptr_hero_position);
+	cre_heros->MakeMeMainCharacter();
 
 	SDL_Rect box_position = { 100,100,0,0 };
 	SDL_Rect* ptr_box_position = &box_position;
@@ -85,15 +68,15 @@ int main(int argc, char* args[])
             {
                 switch( event_handler.key.keysym.sym )
                 {
-                    case SDLK_UP: cre_hero.MoveForward(); break;
-                    case SDLK_DOWN: cre_hero.MoveBackward(); break;
-                    case SDLK_LEFT: cre_hero.StrafeLeft(); break;
-                    case SDLK_RIGHT: cre_hero.StrafeRight(); break;
+                    case SDLK_UP: cre_heros->MoveForward(); break;
+                    case SDLK_DOWN: cre_heros->MoveBackward(); break;
+                    case SDLK_LEFT: cre_heros->StrafeLeft(); break;
+                    case SDLK_RIGHT: cre_heros->StrafeRight(); break;
 
-                    case SDLK_w: cre_hero.MoveForward(); break;
-                    case SDLK_s: cre_hero.MoveBackward(); break;
-                    case SDLK_a: cre_hero.TurnLeft(); break;
-                    case SDLK_d: cre_hero.TurnRight(); break;
+                    case SDLK_w: cre_heros->MoveForward(); break;
+                    case SDLK_s: cre_heros->MoveBackward(); break;
+                    case SDLK_a: cre_heros->TurnLeft(); break;
+                    case SDLK_d: cre_heros->TurnRight(); break;
                 }
             }
         }
@@ -114,21 +97,19 @@ int main(int argc, char* args[])
             test = 0;
         }
 		
+		//Test background animation
+		//#TODO napisaæ wspóln¹ funkcjê dla animacji
+		//#TODO napisaæ wspólne nag³ówki dla d³ugich list include
+		cre_black_smoke_1->ptr_creature_sprite->SmokeAnimation();
+
         //Clear screen
         SDL_RenderClear(Game::ptr_screen->renderer);
-
 
         //Render texture to screen
 		ptr_blue_background->Render();
 		//#TODO zrobiæ generator Creature, zadbac o destruktor i konstruktor kopiujacy
 		//#TODO napisaæ klasê Level
-		//#TODO sprawic, ¿eby wszystkie sprite'y obecne w grze renderowa³y siê za pomoc¹ jednej funkcji
-		cre_box->ptr_creature_sprite->Render();
-		cre_box2->ptr_creature_sprite->Render();
-		cre_box3->ptr_creature_sprite->Render();
-		cre_box4->ptr_creature_sprite->Render();
-        ptr_spr_clawy->Render();
-
+		Level::RenderAllPresentCreatures();
         //Update screen
         SDL_RenderPresent(Game::ptr_screen->renderer);
     }

@@ -2,7 +2,7 @@
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
 
-enum CreatureType    {cre_hero, cre_flying_box};
+enum CreatureType    {cre_clawy, cre_flying_box, cre_black_smoke};
 
 class Creature
 {
@@ -34,6 +34,9 @@ class Creature
         SDL_Rect hitbox = {0,0,0,0};
         //Which member of obstacles static vector holds my coordinates?
         int obstacle_index = NULL;
+		//In what layer should the creature exist (important while rendering whole scene)
+		//Who is on the top, who is below?
+		int render_layer = 0;
 
         //###################
         //Functions
@@ -59,13 +62,14 @@ class Creature
         //###################
         //Functions
         //###################
+		//#TODO - czy pierwszy konstruktor (ponizej) jest w ogóle potrzebny?
         Creature(Sprite *ptr_my_sprite, int hitbox_margin = 10);
-		Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin = 10);
+		Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin = 10, int my_render_layer = 0);
 		~Creature();
         static Creature* SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position);
         static int TellObstaclesCount();
-        //static Creature* GenerateBox(SDL_Renderer* ref_renderer, int x, int y);
 		void SetMySprite(Sprite* ptr_my_sprite);
+		void SetMyRenderLayer(int layer_number);
         void AddToObstacles(SDL_Rect my_hitbox);
         void Turn(int turn_angle_degree);
         void TurnRight();

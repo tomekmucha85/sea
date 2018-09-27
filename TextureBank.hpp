@@ -18,6 +18,8 @@ class TextureBank
         Texture* clawy = NULL;
         std::string path_image_black_box = "images/black_box.png";
         Texture* black_box = NULL;
+		std::string path_image_black_smoke = "images/black_smoke.png";
+		Texture* black_smoke = NULL;
 
     public:
         //###################
@@ -26,6 +28,7 @@ class TextureBank
         SDL_Texture* ptr_tex_background = NULL;
         SDL_Texture* ptr_tex_clawy = NULL;
         SDL_Texture* ptr_tex_black_box = NULL;
+		SDL_Texture* ptr_tex_black_smoke = NULL;
         //###################
         //Functions
         //###################

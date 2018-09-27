@@ -1,12 +1,4 @@
-#include <SDL.h>
-#include <SDL_image.h>
-#include <stdio.h>
-#include <math.h>
-#include <Creature.hpp>
-#include <Game.hpp>
-#include <Sprite.hpp>
-#include <CreatureFlyingBox.hpp>
-#include <stdexcept>
+#include <CommonHeader.hpp>
 
 //***********************************
 //DEFINITIONS OF STATIC CLASS MEMBERS
@@ -24,15 +16,20 @@ Creature* Creature::SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_posit
 {
 	Creature* result = NULL;
 
-    if (desired_type == CreatureType::cre_hero)
+    if (desired_type == CreatureType::cre_clawy)
     {
         printf("Requested hero creature.\n");
-		//result = new CreatureHero();
+		result = new CreatureClawy(ptr_position);
     }
 	else if (desired_type == CreatureType::cre_flying_box)
 	{
 		printf("Requested flying box creature. \n");
 		result = new CreatureFlyingBox(ptr_position);
+	}
+	else if (desired_type == CreatureType::cre_black_smoke)
+	{
+		printf("Requested black smoke creature.\n");
+		result = new CreatureBlackSmoke(ptr_position);
 	}
     else
     {
@@ -74,10 +71,8 @@ Creature::Creature(Sprite *ptr_my_sprite, int hitbox_margin)
     }
 }
 
-Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin)
+Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin, int my_render_layer)
 {
-	//Write entry in static vector class_instances
-	AddToClassInstancesVector();
 	//Take care of sprite assignment
 	printf("Will assign sprite to newly spawned creature: %d\n", my_sprite_type);
 	Creature::SetMySprite(Sprite::CreateSprite(my_sprite_type, ptr_my_position));
@@ -92,6 +87,10 @@ Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hit
 		printf("Will initialise obstacle\n");
 		AddToObstacles(hitbox);
 	}
+	//Set in which layer should this Creature be rendered
+	Creature::SetMyRenderLayer(my_render_layer);
+	//Write entry in static vector class_instances
+	AddToClassInstancesVector();
 }
 
 //************
@@ -109,7 +108,41 @@ Creature::~Creature()
 
 void Creature::AddToClassInstancesVector()
 {
-    Creature::class_instances.push_back(this);
+	int instances_count = Creature::TellInstancesCount();
+	int my_render_layer = this->render_layer;
+	//Loop to insert Creature pointer in a proper place (order is kept by render_layer attribute)
+	if (instances_count > 0)
+	{
+		for (int i = 0; i <= instances_count; i++)
+		{
+			int current_item_render_layer = Creature::class_instances[i]->render_layer;
+			//If render layer of added item is higher than render layer of currently examined item
+			//AND we haven't reached last item in vector.
+			if (my_render_layer > current_item_render_layer && i < instances_count - 1)
+			{
+				;
+			}
+			//If render layer of added item is higher than render layer of currently examined item
+			//AND we have reached last item in vector.
+			else if (my_render_layer > current_item_render_layer && i == instances_count - 1)
+			{
+				Creature::class_instances.push_back(this);
+				break;
+			}
+			//If render layer of added item is equal or lower than render layer of currently examined item
+			else
+			{
+				Creature::class_instances.insert(Creature::class_instances.begin()+i,this);
+				break;
+			}
+		}
+	}
+	//If vector is empty, push the first item right away
+	else
+	{
+        Creature::class_instances.push_back(this);
+	}
+
 }
 
 int Creature::TellInstancesCount()
@@ -160,6 +193,11 @@ void Creature::SetMySprite(Sprite* ptr_my_sprite)
 		printf("SetMySprite deleted current sprite object.");
 	}
 	ptr_creature_sprite = ptr_my_sprite;
+}
+
+void Creature::SetMyRenderLayer(int layer_number)
+{
+	Creature::render_layer = layer_number;
 }
 
 //**********

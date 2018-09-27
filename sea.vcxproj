@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -125,31 +125,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CommonHeader.hpp" />
     <ClInclude Include="Creature.hpp" />
+    <ClInclude Include="CreatureBlackSmoke.hpp" />
     <ClInclude Include="CreatureClawy.hpp" />
     <ClInclude Include="CreatureFlyingBox.hpp" />
-    <ClInclude Include="CreatureHero.hpp" />
     <ClInclude Include="Game.hpp" />
+    <ClInclude Include="Level.hpp" />
     <ClInclude Include="OurHero.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="Sprite.hpp" />
     <ClInclude Include="SpriteBackground.hpp" />
     <ClInclude Include="SpriteBlackBox.hpp" />
+    <ClInclude Include="SpriteBlackSmoke.hpp" />
     <ClInclude Include="SpriteClawy.hpp" />
     <ClInclude Include="texture.hpp" />
     <ClInclude Include="TextureBank.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Creature.cpp" />
+    <ClCompile Include="CreatureBlackSmoke.cpp" />
     <ClCompile Include="CreatureClawy.cpp" />
     <ClCompile Include="CreatureFlyingBox.cpp" />
-    <ClCompile Include="CreatureHero.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="hello.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBackground.cpp" />
     <ClCompile Include="SpriteBlackBox.cpp" />
+    <ClCompile Include="SpriteBlackSmoke.cpp" />
     <ClCompile Include="SpriteClawy.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="TextureBank.cpp" />

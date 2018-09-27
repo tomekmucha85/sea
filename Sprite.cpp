@@ -5,6 +5,7 @@
 #include <SpriteClawy.hpp>
 #include <SpriteBlackBox.hpp>
 #include <SpriteBackground.hpp>
+#include <SpriteBlackSmoke.hpp>
 #include <Game.hpp>
 #include <stdexcept>
 #include <vector>
@@ -182,6 +183,11 @@ void Sprite::WalkAnimation()
     printf("Walk animation called for Sprite\n");
 }
 
+void Sprite::SmokeAnimation()
+{
+	printf("Smoke animation called for Sprite\n");
+}
+
 //#####################
 //Method for spawning sprites
 //#####################
@@ -206,6 +212,12 @@ Sprite* Sprite::CreateSprite(SpriteType desired_type, SDL_Rect* ptr_position)
 	{
 		printf("Reqested blue background object.\n");
 		result = new SpriteBackground(ptr_position);
+		return result;
+	}
+	else if (desired_type == black_smoke)
+	{
+		printf("Reqested black smoke object.\n");
+		result = new SpriteBlackSmoke(ptr_position);
 		return result;
 	}
     else

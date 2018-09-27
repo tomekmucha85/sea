@@ -1,0 +1,24 @@
+#include <SDL.h>
+#include <SDL_image.h>
+#include <stdio.h>
+#include <iostream>
+#include <math.h>
+#include <stdexcept>
+#include <string>
+#include <Game.hpp>
+#include <Level.hpp>
+#include <Screen.hpp>
+#include <Texture.hpp>
+#include <TextureBank.hpp>
+#include <Sprite.hpp>
+#include <SpriteClawy.hpp>
+#include <SpriteBackground.hpp>
+#include <SpriteBlackBox.hpp>
+#include <Creature.hpp>
+#include <CreatureFlyingBox.hpp>
+#include <CreatureClawy.hpp>
+#include <CreatureBlackSmoke.hpp>
+
+#ifndef COMMON_HEADER_HPP
+#define COMMON_HEADER_HPP
+#endif //COMMON_HEADER_HPP

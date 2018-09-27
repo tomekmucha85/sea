@@ -7,7 +7,7 @@
 //Data types
 //###################
 
-enum SpriteType   {clawy, background, box};
+enum SpriteType   {clawy, background, box, black_smoke};
 
 class Sprite
 {
@@ -51,6 +51,7 @@ class Sprite
 
         //Animations (dummy virtual methods)
         virtual void WalkAnimation();
+		virtual void SmokeAnimation();
 
         //Utilities
         SDL_Rect CheckTextureDimensions(SDL_Texture* ptr_my_texture);
