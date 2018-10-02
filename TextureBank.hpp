@@ -1,10 +1,10 @@
-#ifndef TEXBANK_HPP
-#define TEXBANK_HPP
 #include <stdio.h>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
 #include <texture.hpp>
+#ifndef TEXBANK_HPP
+#define TEXBANK_HPP
 
 class TextureBank
 {

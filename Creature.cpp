@@ -1,4 +1,12 @@
-#include <CommonHeader.hpp>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <stdio.h>
+#include <math.h>
+#include <Creature.hpp>
+#include <Game.hpp>
+#include <Sprite.hpp>
+#include <CommonHeaderCreatures.hpp>
+#include <stdexcept>
 
 //***********************************
 //DEFINITIONS OF STATIC CLASS MEMBERS
@@ -120,19 +128,21 @@ void Creature::AddToClassInstancesVector()
 			//AND we haven't reached last item in vector.
 			if (my_render_layer > current_item_render_layer && i < instances_count - 1)
 			{
-				;
+				printf("%d: did not push into instances vector, cause render layer is higher than current.\n", i);
 			}
 			//If render layer of added item is higher than render layer of currently examined item
 			//AND we have reached last item in vector.
 			else if (my_render_layer > current_item_render_layer && i == instances_count - 1)
 			{
 				Creature::class_instances.push_back(this);
+				printf("%d: pushed into instances vector as last item, cause reached last item in vector: %d.\n", i, instances_count  -1);
 				break;
 			}
 			//If render layer of added item is equal or lower than render layer of currently examined item
 			else
 			{
 				Creature::class_instances.insert(Creature::class_instances.begin()+i,this);
+				printf("%d: pushed into instances vector as %d , cause render layer is higher than current.\n",i,i);
 				break;
 			}
 		}
@@ -141,6 +151,7 @@ void Creature::AddToClassInstancesVector()
 	else
 	{
         Creature::class_instances.push_back(this);
+		printf("Pushed first item into class instances\n");
 	}
 
 }
@@ -236,6 +247,10 @@ void Creature::AddToObstacles(SDL_Rect my_hitbox)
     //It's crude but effective
     //Anyway, NEVER remove anything from obstacles vector.
     obstacle_index = current_count;
+	for (SDL_Rect rect: Creature::obstacles)
+	{
+		printf("Rectangle present in obstacles: %d %d %d %d\n", rect.x, rect.y, rect.w, rect.h);
+	}
 }
 
 //********
@@ -306,7 +321,7 @@ void Creature::Move(int x, int y)
         //printf("Checking main character collision.\n");
         if (DoICollide())
         {
-            //printf("Collision of main character detected\n");
+            printf("Collision of main character detected\n");
             for (Creature* ptr_creature : Creature::class_instances)
             {
                 if (ptr_creature != this) /* Prevents moving the main character. */

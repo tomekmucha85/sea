@@ -2,10 +2,7 @@
 #include <stdio.h>
 #include <SDL_image.h>
 #include <Sprite.hpp>
-#include <SpriteClawy.hpp>
-#include <SpriteBlackBox.hpp>
-#include <SpriteBackground.hpp>
-#include <SpriteBlackSmoke.hpp>
+#include <CommonHeaderSprites.hpp>
 #include <Game.hpp>
 #include <stdexcept>
 #include <vector>

@@ -125,14 +125,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CommonHeader.hpp" />
+    <ClInclude Include="CommonHeaderCreatures.hpp" />
     <ClInclude Include="Creature.hpp" />
     <ClInclude Include="CreatureBlackSmoke.hpp" />
     <ClInclude Include="CreatureClawy.hpp" />
     <ClInclude Include="CreatureFlyingBox.hpp" />
     <ClInclude Include="Game.hpp" />
+    <ClInclude Include="CommonHeaderSprites.hpp" />
     <ClInclude Include="Level.hpp" />
-    <ClInclude Include="OurHero.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="Sprite.hpp" />
     <ClInclude Include="SpriteBackground.hpp" />

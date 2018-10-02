@@ -24,9 +24,6 @@
     <ClInclude Include="Game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OurHero.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Screen.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -60,7 +57,10 @@
     <ClInclude Include="CreatureBlackSmoke.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommonHeader.hpp">
+    <ClInclude Include="CommonHeaderCreatures.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonHeaderSprites.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
