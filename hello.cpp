@@ -35,42 +35,38 @@ int main(int argc, char* args[])
 
     Game::InitializeGame();
 
+	Level* my_level = new Level();
+	for (int i = 0; i < 10; i++)
+	{
+		my_level->GenerateRandomObjectOnMap();
+	}
+	my_level->DrawMap();
     Sprite* ptr_blue_background = Sprite::CreateSprite(background);
 
-	//Dlaczego kreatury trzeba powo³ywaæ do ¿ycia po hero, ¿eby dzia³a³y kolizje?
+	/*SDL_Rect smoke_position = { 500,200,0,0 };
+	SDL_Rect* ptr_smoke_position = &smoke_position;
+	Creature* cre_black_smoke_1 = Creature::SpawnCreature(cre_black_smoke, ptr_smoke_position);
+	cre_black_smoke_1->MakeMeNotObstacle();
+	*/
+
+	std::vector<std::vector<CreatureType>> hero_and_env = { {cre_none, cre_none, cre_none},
+	{cre_none, cre_clawy, cre_none}, {cre_none, cre_none, cre_none} };
+	SDL_Rect env_position = {15,8,0,0};
+	SDL_Rect* ptr_env_position = &env_position;
+	my_level->InsertStructureOntoMap(hero_and_env, 3, 3, ptr_env_position);
 
     SDL_Rect hero_position = {320,240,0,0};
     SDL_Rect* ptr_hero_position = &hero_position;
 	Creature* cre_heros = Creature::SpawnCreature(cre_clawy, ptr_hero_position);
 	cre_heros->MakeMeMainCharacter();
 
-	SDL_Rect smoke_position = { 500,200,0,0 };
-	SDL_Rect* ptr_smoke_position = &smoke_position;
-	Creature* cre_black_smoke_1 = Creature::SpawnCreature(cre_black_smoke, ptr_smoke_position);
+	my_level->PrintMap();
 
-	SDL_Rect box99_position = { 100,300,0,0 };
-	SDL_Rect* ptr_box99_position = &box99_position;
-	Creature* cre_box99 = Creature::SpawnCreature(cre_flying_box, ptr_box99_position);
-
-	SDL_Rect box_position = { 100,100,0,0 };
-	SDL_Rect* ptr_box_position = &box_position;
-	Creature* cre_box = Creature::SpawnCreature(cre_flying_box, ptr_box_position);
-
-	SDL_Rect box_position_2 = { 300,150,0,0 };
-	SDL_Rect* ptr_box_position_2 = &box_position_2;
-	Creature* cre_box2 = Creature::SpawnCreature(cre_flying_box, ptr_box_position_2);
-
-	SDL_Rect box_position_3 = { 500,150,0,0 };
-	SDL_Rect* ptr_box_position_3 = &box_position_3;
-	Creature* cre_box3 = Creature::SpawnCreature(cre_flying_box, ptr_box_position_3);
-
+	/*
 	SDL_Rect box_4_position = { 25,25,0,0 };
 	SDL_Rect* ptr_box_4_position = &box_4_position;
 	Creature* cre_box4 = Creature::SpawnCreature(cre_flying_box,ptr_box_4_position);
-
-
-    std::cout << "Obstacles present: ";
-    std::cout << Creature::TellObstaclesCount() << std::endl;
+	*/
     std::cout << "Creatures present: ";
     std::cout << Creature::TellInstancesCount() << std::endl;
 
@@ -93,11 +89,6 @@ int main(int argc, char* args[])
                     case SDLK_LEFT: cre_heros->StrafeLeft(); break;
                     case SDLK_RIGHT: cre_heros->StrafeRight(); break;
                     case SDLK_w: cre_heros->MoveForward();
-					//printf("=========Obstacles list:============\n");
-					//for (SDL_Rect rect : Creature::obstacles)
-					//{
-					//	printf("Rectangle present in obstacles: %d %d %d %d\n", rect.x, rect.y, rect.w, rect.h);
-					//}
 					break;
                     case SDLK_s: cre_heros->MoveBackward();
 					break;
@@ -109,6 +100,7 @@ int main(int argc, char* args[])
 
         //Test moving creatures
 		
+		/*
         test++;
         if (test <= 300)
         {
@@ -122,10 +114,10 @@ int main(int argc, char* args[])
         {
             test = 0;
         }
-		
+		*/
 		//Test background animation
 		//#TODO napisaæ wspóln¹ funkcjê dla animacji
-		cre_black_smoke_1->ptr_creature_sprite->SmokeAnimation();
+		//cre_black_smoke_1->ptr_creature_sprite->SmokeAnimation();
 
         //Clear screen
         SDL_RenderClear(Game::ptr_screen->renderer);

@@ -6,11 +6,12 @@ class Screen
 {
     private:
         //Screen dimension constants
-        const int SCREEN_WIDTH = 640;
-        const int SCREEN_HEIGHT = 480;
+        static const int SCREEN_WIDTH = 640;
+        static const int SCREEN_HEIGHT = 480;
         //"Camera" - used for following character
         static int x_correction;
         static int y_correction;
+		//int costam = 999;
 
     public:
         //The window itself
@@ -26,6 +27,8 @@ class Screen
         bool Init();
         static void SetXCorrection(int x);
         static void SetYCorrection(int y);
+		static int TellScreenWidth();
+		static int TellScreenHeight();
 };
 
 #endif //SCREEN_HPP

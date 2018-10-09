@@ -13,7 +13,7 @@
 //***********************************
 
 std::vector <Creature*> Creature::class_instances;
-std::vector <SDL_Rect> Creature::obstacles;
+std::vector <CreatureType> Creature::walls = { cre_flying_box };
 Creature* Creature::ptr_current_main_charater;
 
 //**************
@@ -72,11 +72,6 @@ Creature::Creature(Sprite *ptr_my_sprite, int hitbox_margin)
     //#TODO//Change this, so position will be determined by creature
     SDL_Rect sprite_position = ptr_creature_sprite->TellSpritePosition();
     Creature::InitializeHitbox(sprite_position,hitbox_margin);
-    if (is_obstacle == true)
-    {
-        printf("Will initialise obstacle\n");
-        AddToObstacles(hitbox);
-    }
 }
 
 Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin, int my_render_layer)
@@ -90,11 +85,6 @@ Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hit
 	//#TODO//Change this, so position will be determined by creature
 	SDL_Rect sprite_position = Creature::ptr_creature_sprite->TellSpritePosition();
 	Creature::InitializeHitbox(sprite_position, hitbox_margin);
-	if (is_obstacle == true)
-	{
-		printf("Will initialise obstacle\n");
-		AddToObstacles(hitbox);
-	}
 	//Set in which layer should this Creature be rendered
 	Creature::SetMyRenderLayer(my_render_layer);
 	//Write entry in static vector class_instances
@@ -153,7 +143,10 @@ void Creature::AddToClassInstancesVector()
         Creature::class_instances.push_back(this);
 		printf("Pushed first item into class instances\n");
 	}
-
+	for (Creature* cre_in : Creature::class_instances)
+	{
+		printf("Creature present in class instances: %p\n", cre_in);
+	}
 }
 
 int Creature::TellInstancesCount()
@@ -215,6 +208,16 @@ void Creature::SetMyRenderLayer(int layer_number)
 //COLLISIONS
 //**********
 
+void Creature::MakeMeObstacle()
+{
+	is_obstacle = true;
+}
+
+void Creature::MakeMeNotObstacle()
+{
+	is_obstacle = false;
+}
+
 void Creature::InitializeHitbox(SDL_Rect sprite_position, int margin_percent)
 {
     //Protection against margin covering whole hitbox
@@ -231,26 +234,6 @@ void Creature::InitializeHitbox(SDL_Rect sprite_position, int margin_percent)
     hitbox.y = sprite_position.y + y_margin;
     hitbox.h = sprite_position.h - y_margin;
     printf("Hitbox is: x: %d, y: %d, w: %d, h: %d\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
-}
-
-int Creature::TellObstaclesCount()
-{
-    int obstacles_count = Creature::obstacles.size();
-    return obstacles_count;
-}
-
-void Creature::AddToObstacles(SDL_Rect my_hitbox)
-{
-    int current_count = Creature::TellObstaclesCount();
-    Creature::obstacles.push_back(hitbox);
-    //The trick is that index of the pushed element == number of elements before the push
-    //It's crude but effective
-    //Anyway, NEVER remove anything from obstacles vector.
-    obstacle_index = current_count;
-	for (SDL_Rect rect: Creature::obstacles)
-	{
-		printf("Rectangle present in obstacles: %d %d %d %d\n", rect.x, rect.y, rect.w, rect.h);
-	}
 }
 
 //********
@@ -399,7 +382,6 @@ void Creature::MoveComponents(int x, int y)
 {
     MoveSprite(x, y);
     MoveHitbox(x, y);
-    MoveObstacle(x, y);
 }
 
 void Creature::MoveSprite(int x, int y)
@@ -413,18 +395,6 @@ void Creature::MoveHitbox(int x, int y)
     hitbox.x += x;
     hitbox.y += y;
     //printf("New hitbox coordinates: x: %d y: %d\n", hitbox.x, hitbox.y);
-}
-
-void Creature::MoveObstacle(int x, int y)
-{
-    if (obstacle_index != NULL)
-    {
-        obstacles[obstacle_index].x += x;
-        obstacles[obstacle_index].y += y;
-        //printf("New obstacle coordinates: x: %d y: %d\n",
-        //       obstacles[obstacle_index].x,
-        //       obstacles[obstacle_index].y);
-    }
 }
 
 void Creature::MoveForward()
@@ -469,36 +439,27 @@ bool Creature::DoICollide()
 {
     bool result = false;
     //printf("DoICollide called for %p.\n", this);
-    int current_count = TellObstaclesCount();
-    for (int i = 0; i < current_count ; i++)
-    {
-        int my_x  = hitbox.x;
-        int my_y  = hitbox.y;
-        int my_w  = hitbox.w;
-        int my_h  = hitbox.h;
-        int obs_x = obstacles[i].x;
-        int obs_y = obstacles[i].y;
-        int obs_w = obstacles[i].w;
-        int obs_h = obstacles[i].h;
-
-        //printf("DoICollide obstacle index: %d out of %d.\n", i, current_count);
-
-        if (i == obstacle_index)
-        {
-        //We don't want to check collision with ourselves!
-            //printf("Obstacle index (%d) reached. Skipping check.\n", i);
-            continue;
-        }
-        /*printf("Checking collision of (me, %p) x: %d y: %d w: %d h: %d against (some other object): x: %d, y: %d, w: %d, h: %d\n",
-               this, my_x,my_y,my_w,my_h,obs_x,obs_y,obs_w,obs_h);*/
-
-        if (DoICollideXPlane(my_x,my_w,obs_x,obs_w) && DoICollideYPlane(my_y,my_h,obs_y,obs_h))
-        {
-            //printf("Collision caught by DoICollide!\n");
-            result = true;
-        }
-    }
-    return result;
+	int my_x = hitbox.x;
+	int my_y = hitbox.y;
+	int my_w = hitbox.w;
+	int my_h = hitbox.h;
+	for (Creature* ptr_creature : Creature::class_instances)
+	{
+		if (ptr_creature != this /* Prevents checking collision with itself. */ && ptr_creature->is_obstacle == true)
+		{
+			int obs_x = ptr_creature->hitbox.x;
+			int obs_y = ptr_creature->hitbox.y;
+			int obs_w = ptr_creature->hitbox.w;
+			int obs_h = ptr_creature->hitbox.h;
+		
+			if (DoICollideXPlane(my_x,my_w,obs_x,obs_w) && DoICollideYPlane(my_y,my_h,obs_y,obs_h))
+			{
+			    //printf("Collision caught by DoICollide!\n");
+			    result = true;
+			}
+		}
+	}
+	return result;
 }
 
 bool Creature::DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w)
