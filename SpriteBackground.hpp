@@ -11,11 +11,11 @@ class SpriteBackground : public Sprite
     //###################
     //Variables
     //###################
-    SDL_Rect texture_clip_background = {0,0,0,0};
+	static SDL_Rect initial_texture_clip_background;
 
     public:
 
-    SpriteBackground(SDL_Renderer* ptr_my_renderer, TextureBank* ptr_my_texture_bank, SDL_Rect* my_position = NULL);
+    SpriteBackground(SDL_Rect* my_position = NULL);
 
 };
 

@@ -2,7 +2,8 @@
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
 
-enum class CreatureType    {hero, box};
+//cre_none means empty space/no creature present
+enum CreatureType    {cre_none, cre_clawy, cre_flying_box, cre_black_smoke};
 
 class Creature
 {
@@ -32,8 +33,9 @@ class Creature
         Coordinates next_step;
         //Hitbox used for calculating collisions.
         SDL_Rect hitbox = {0,0,0,0};
-        //Which member of obstacles static vector holds my coordinates?
-        int obstacle_index = NULL;
+		//In what layer should the creature exist (important while rendering whole scene)
+		//Who is on the top, who is below?
+		int render_layer = 0;
 
         //###################
         //Functions
@@ -50,20 +52,30 @@ class Creature
         //###################
         int velocity = 5;
         Sprite *ptr_creature_sprite = NULL;
-        //Vector holding coordinates of all obstacle creatures
-        static std::vector<SDL_Rect> obstacles;
         //Vector holding pointers to all instances of a class
         static std::vector <Creature*> class_instances;
         //Holds address of Creature acting as current main character
         static Creature* ptr_current_main_charater;
+
+		//###################
+		//Arrays&vectors
+		//###################
+
+		//Vectors grouping creatures by type. Used when random one from some category is needed.
+		static std::vector <CreatureType> walls;
+
         //###################
         //Functions
         //###################
+		//#TODO - czy pierwszy konstruktor (ponizej) jest w ogóle potrzebny?
         Creature(Sprite *ptr_my_sprite, int hitbox_margin = 10);
+		Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin = 10, int my_render_layer = 0);
+		~Creature();
         static Creature* SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position);
-        static int TellObstaclesCount();
-        //static Creature* GenerateBox(SDL_Renderer* ref_renderer, int x, int y);
-        void AddToObstacles(SDL_Rect my_hitbox);
+		void SetMySprite(Sprite* ptr_my_sprite);
+		void SetMyRenderLayer(int layer_number);
+		void MakeMeObstacle();
+		void MakeMeNotObstacle();
         void Turn(int turn_angle_degree);
         void TurnRight();
         void TurnLeft();
@@ -72,7 +84,6 @@ class Creature
         void MoveComponents(int x, int y);
         void MoveSprite(int x, int y);
         void MoveHitbox(int x, int y);
-        void MoveObstacle(int x, int y);
         void MoveForward();
         void MoveBackward();
         void Strafe(int sidestep_angle);

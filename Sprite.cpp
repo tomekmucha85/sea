@@ -2,42 +2,42 @@
 #include <stdio.h>
 #include <SDL_image.h>
 #include <Sprite.hpp>
-#include <SpriteClawy.hpp>
-#include <SpriteBlackBox.hpp>
+#include <CommonHeaderSprites.hpp>
 #include <Game.hpp>
 #include <stdexcept>
 #include <vector>
 
-Sprite::Sprite()
+Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* ptr_my_position)
 {
+	//#TODO - validate arguments?
     printf("Default constructor called for Sprite.\n");
-}
-
-Sprite::Sprite(SDL_Renderer* ref_my_renderer, TextureBank* ref_my_texture_bank)
-{
-    renderer = ref_my_renderer;
-}
-
-Sprite::Sprite(SDL_Renderer* ref_my_renderer, SDL_Texture* ref_my_texture, SDL_Rect* ref_my_texture_clip)
-{
-    renderer = ref_my_renderer;
-    texture = ref_my_texture;
-    if (ref_my_texture_clip)
-    {
-        texture_clip = *ref_my_texture_clip;
-        position.w = texture_clip.w;
-        position.h = texture_clip.h;
-    }
-    else
-    {
-        int w, h;
-        SDL_QueryTexture(ref_my_texture, NULL, NULL, &w, &h);
-        position.w = w;
-        position.h = h;
-    }
-
-    position.x = 0;
-    position.y = 0;
+	SetTexture(ptr_my_texture);
+	printf("Texture set.");
+	if (my_texture_clip.w == 0 && my_texture_clip.h == 0)
+	{
+		//If there are no width and height params set for texture clip, whole texture is shown.
+		//#TODO pass texture clip by pointer.
+		SDL_Rect dimensions = Sprite::CheckTextureDimensions(ptr_my_texture);
+		my_texture_clip.w = dimensions.w;
+		my_texture_clip.h = dimensions.h;
+	}
+	SetTextureClip(my_texture_clip);
+	printf("Texture clip set.");
+	SDL_Rect current_texture_clip = TellTextureClip();
+	if (ptr_my_position == NULL)
+	{
+		SetPositionX(0);
+		SetPositionY(0);
+		SetPositionW(current_texture_clip.w);
+		SetPositionH(current_texture_clip.h);
+	}
+	else
+	{
+		SetPositionX(ptr_my_position->x);
+		SetPositionY(ptr_my_position->y);
+		SetPositionW(current_texture_clip.w);
+		SetPositionH(current_texture_clip.h);
+	}
 }
 
 SDL_Rect Sprite::CheckTextureDimensions(SDL_Texture* ptr_my_texture)
@@ -97,12 +97,12 @@ void Sprite::Render()
     if (texture_clip.w != 0 && texture_clip.h != 0)
     //If texture clip dimensions were set, apply them.
     {
-        SDL_RenderCopyEx(renderer, texture, &texture_clip, &position, angle, center, flip);
+		SDL_RenderCopyEx(Game::ptr_screen->renderer, texture, &texture_clip, &position, angle, center, flip);
     }
     else
     //If texture clip dimensions were not set, show whole texture.
     {
-        SDL_RenderCopyEx(renderer, texture, NULL, &position, angle, center, flip);
+        SDL_RenderCopyEx(Game::ptr_screen->renderer, texture, NULL, &position, angle, center, flip);
     }
 }
 
@@ -180,27 +180,47 @@ void Sprite::WalkAnimation()
     printf("Walk animation called for Sprite\n");
 }
 
+void Sprite::SmokeAnimation()
+{
+	printf("Smoke animation called for Sprite\n");
+}
+
 //#####################
 //Method for spawning sprites
 //#####################
 
-Sprite* Sprite::CreateSprite(SpriteType desired_type, TextureBank* ptr_texture_bank, SDL_Rect* ptr_position)
+Sprite* Sprite::CreateSprite(SpriteType desired_type, SDL_Rect* ptr_position)
 {
+	Sprite* result = NULL;
+	printf("Going to create a sprite. Requested type: %d\n", desired_type);
     if (desired_type == clawy)
     {
         printf("Requested clawy object.\n");
-        SpriteClawy* ptr_my_clawy = new SpriteClawy(Game::ptr_screen->renderer,ptr_texture_bank,ptr_position);
-        return ptr_my_clawy;
+        result = new SpriteClawy(ptr_position);
+        return result;
     }
     else if (desired_type == box)
     {
         printf("Requested box object.\n");
-        SpriteBlackBox* ptr_my_box = new SpriteBlackBox(Game::ptr_screen->renderer,ptr_texture_bank,ptr_position);
-        return ptr_my_box;
+        result = new SpriteBlackBox(ptr_position);
+        return result;
     }
+	else if (desired_type == background)
+	{
+		printf("Reqested blue background object.\n");
+		result = new SpriteBackground(ptr_position);
+		return result;
+	}
+	else if (desired_type == black_smoke)
+	{
+		printf("Reqested black smoke object.\n");
+		result = new SpriteBlackSmoke(ptr_position);
+		return result;
+	}
     else
     {
         printf("Requested some other object.\n");
+		return result;
     }
 }
 

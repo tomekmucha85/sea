@@ -5,16 +5,14 @@
 #include <math.h>
 #include <string>
 #include <Game.hpp>
+#include <Level.hpp>
 #include <Screen.hpp>
 #include <Texture.hpp>
 #include <TextureBank.hpp>
 #include <Sprite.hpp>
-#include <SpriteClawy.hpp>
-#include <SpriteBackground.hpp>
-#include <SpriteBlackBox.hpp>
 #include <Creature.hpp>
-
-
+#include <CommonHeaderCreatures.hpp>
+#include <CommonHeaderSprites.hpp>
 
 //###################
 //Function prototypes
@@ -26,6 +24,7 @@
 //###################
 int test = 0;
 
+
 int main(int argc, char* args[])
 {
     //Main loop flag
@@ -36,62 +35,38 @@ int main(int argc, char* args[])
 
     Game::InitializeGame();
 
-    //Load textures
-    printf("Address of screen before loading textures: %p\n", Game::ptr_screen);
-    TextureBank texture_bank(Game::ptr_screen->renderer);
-    TextureBank* ptr_texture_bank = &texture_bank;
-    /* Address of texture bank should go to a static class variable.
-       Sprite creator will check if the value is set.
-    */
+	Level* my_level = new Level();
+	for (int i = 0; i < 10; i++)
+	{
+		my_level->GenerateRandomObjectOnMap();
+	}
+	my_level->DrawMap();
+    Sprite* ptr_blue_background = Sprite::CreateSprite(background);
 
-    //Create sprites - TODO needs a method
-    /*Takes: position
-             kind of sprite
-      Returns:
-              sprite object
-      A dictionary connects sprite kind to texture bank? Or maybe sprite sub class known the right bank by itself?
+	/*SDL_Rect smoke_position = { 500,200,0,0 };
+	SDL_Rect* ptr_smoke_position = &smoke_position;
+	Creature* cre_black_smoke_1 = Creature::SpawnCreature(cre_black_smoke, ptr_smoke_position);
+	cre_black_smoke_1->MakeMeNotObstacle();
+	*/
 
-    */
-
-    SpriteBackground blue_background(Game::ptr_screen->renderer, ptr_texture_bank);
+	std::vector<std::vector<CreatureType>> hero_and_env = { {cre_none, cre_none, cre_none},
+	{cre_none, cre_clawy, cre_none}, {cre_none, cre_none, cre_none} };
+	SDL_Rect env_position = {15,8,0,0};
+	SDL_Rect* ptr_env_position = &env_position;
+	my_level->InsertStructureOntoMap(hero_and_env, 3, 3, ptr_env_position);
 
     SDL_Rect hero_position = {320,240,0,0};
     SDL_Rect* ptr_hero_position = &hero_position;
-    Sprite* ptr_spr_clawy = Sprite::CreateSprite(clawy, ptr_texture_bank, ptr_hero_position);
-    //Sprite our_hero = *(ptr_spr_clawy);
+	Creature* cre_heros = Creature::SpawnCreature(cre_clawy, ptr_hero_position);
+	cre_heros->MakeMeMainCharacter();
 
+	my_level->PrintMap();
 
-    //SDL_Rect hero_position = {320,240,0,0};
-    //SDL_Rect* ptr_hero_position = &hero_position;
-    //SpriteClawy our_hero(Game::ptr_screen->renderer, ptr_texture_bank, ptr_hero_position);
-    //SpriteClawy* ptr_spr_clawy = &our_hero;
-
-    SDL_Rect box_position = {100,100,0,0};
-    SDL_Rect* ptr_box_position = &box_position;
-    SpriteBlackBox black_box(Game::ptr_screen->renderer, ptr_texture_bank, ptr_box_position);
-    SpriteBlackBox* ptr_spr_black_box = &black_box;
-
-    SDL_Rect box_position_2 = {300,150,0,0};
-    SDL_Rect* ptr_box_position_2 = &box_position_2;
-    SpriteBlackBox black_box_2(Game::ptr_screen->renderer, ptr_texture_bank, ptr_box_position_2);
-    SpriteBlackBox* ptr_spr_black_box_2 = &black_box_2;
-
-    SDL_Rect box_position_3 = {500,150,0,0};
-    SDL_Rect* ptr_box_position_3 = &box_position_3;
-    SpriteBlackBox black_box_3(Game::ptr_screen->renderer, ptr_texture_bank, ptr_box_position_3);
-    SpriteBlackBox* ptr_spr_black_box_3 = &black_box_3;
-
-    //TODO - connect creatures creation with sprites
-
-    Creature cre_hero(ptr_spr_clawy);
-    cre_hero.MakeMeMainCharacter();
-
-    Creature cre_box(ptr_spr_black_box);
-    Creature cre_box2(ptr_spr_black_box_2);
-    Creature cre_box3(ptr_spr_black_box_3);
-
-    std::cout << "Obstacles present: ";
-    std::cout << Creature::TellObstaclesCount() << std::endl;
+	/*
+	SDL_Rect box_4_position = { 25,25,0,0 };
+	SDL_Rect* ptr_box_4_position = &box_4_position;
+	Creature* cre_box4 = Creature::SpawnCreature(cre_flying_box,ptr_box_4_position);
+	*/
     std::cout << "Creatures present: ";
     std::cout << Creature::TellInstancesCount() << std::endl;
 
@@ -109,45 +84,49 @@ int main(int argc, char* args[])
             {
                 switch( event_handler.key.keysym.sym )
                 {
-                    case SDLK_UP: cre_hero.MoveForward(); break;
-                    case SDLK_DOWN: cre_hero.MoveBackward(); break;
-                    case SDLK_LEFT: cre_hero.StrafeLeft(); break;
-                    case SDLK_RIGHT: cre_hero.StrafeRight(); break;
-
-                    case SDLK_w: cre_hero.MoveForward(); break;
-                    case SDLK_s: cre_hero.MoveBackward(); break;
-                    case SDLK_a: cre_hero.TurnLeft(); break;
-                    case SDLK_d: cre_hero.TurnRight(); break;
+                    case SDLK_UP: cre_heros->MoveForward(); break;
+                    case SDLK_DOWN: cre_heros->MoveBackward(); break;
+                    case SDLK_LEFT: cre_heros->StrafeLeft(); break;
+                    case SDLK_RIGHT: cre_heros->StrafeRight(); break;
+                    case SDLK_w: cre_heros->MoveForward();
+					break;
+                    case SDLK_s: cre_heros->MoveBackward();
+					break;
+                    case SDLK_a: cre_heros->TurnLeft(); break;
+                    case SDLK_d: cre_heros->TurnRight(); break;
                 }
             }
         }
 
         //Test moving creatures
+		
+		/*
         test++;
         if (test <= 300)
         {
-            cre_box3.Move(3,0);
+            cre_box3->Move(3,0);
         }
         else if (test <= 600)
         {
-            cre_box3.Move(-3,0);
+            cre_box3->Move(-3,0);
         }
         else
         {
             test = 0;
         }
+		*/
+		//Test background animation
+		//#TODO napisaæ wspóln¹ funkcjê dla animacji
+		//cre_black_smoke_1->ptr_creature_sprite->SmokeAnimation();
 
         //Clear screen
         SDL_RenderClear(Game::ptr_screen->renderer);
 
-
         //Render texture to screen
-        blue_background.Render();
-        black_box.Render();
-        black_box_2.Render();
-        black_box_3.Render();
-        ptr_spr_clawy->Render();
-
+		ptr_blue_background->Render();
+		//#TODO zrobiæ generator Creature, zadbac o destruktor i konstruktor kopiujacy
+		//#TODO napisaæ klasê Level
+		Level::RenderAllPresentCreatures();
         //Update screen
         SDL_RenderPresent(Game::ptr_screen->renderer);
     }

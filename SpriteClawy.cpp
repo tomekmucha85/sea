@@ -1,30 +1,25 @@
 #include <SpriteClawy.hpp>
+#include <Game.hpp>
 
-SpriteClawy::SpriteClawy(SDL_Renderer* ptr_my_renderer, TextureBank* ptr_my_texture_bank, SDL_Rect* my_position)
-                              : Sprite(ptr_my_renderer, ptr_my_texture_bank)
+//***********************************
+//DEFINITIONS OF STATIC CLASS MEMBERS
+//***********************************
+
+SDL_Rect SpriteClawy::initial_texture_clip_clawy = {0,0,45,45};
+
+//***********************************
+//CONSTRUCTORS
+//***********************************
+
+SpriteClawy::SpriteClawy(SDL_Rect* ptr_my_position)
+	: Sprite(Game::ptr_texture_bank->ptr_tex_clawy, SpriteClawy::initial_texture_clip_clawy, ptr_my_position)
 {
     printf("Constructor called for SpriteClawy\n");
-    SDL_Texture* ptr_texture = ptr_my_texture_bank->ptr_tex_clawy;
-    SetTexture(ptr_texture);
-    printf("Texture set for SpriteClawy\n");
-    SetTextureClip(texture_clip_clawy);
-    printf("Texture clip set for SpriteClawy\n");
-    SDL_Rect current_texture_clip = TellTextureClip();
-    if (my_position == NULL)
-    {
-        SetPositionX(0);
-        SetPositionY(0);
-        SetPositionW(current_texture_clip.w);
-        SetPositionH(current_texture_clip.h);
-    }
-    else
-    {
-        SetPositionX(my_position->x);
-        SetPositionY(my_position->y);
-        SetPositionW(current_texture_clip.w);
-        SetPositionH(current_texture_clip.h);
-    }
 }
+
+//***********************************
+//OVERLOADED VIRTUAL METHODS
+//***********************************
 
 void SpriteClawy::WalkAnimation()
 {

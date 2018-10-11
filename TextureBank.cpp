@@ -9,6 +9,8 @@ TextureBank::TextureBank(SDL_Renderer* renderer)
     ptr_tex_clawy = clawy->texture;
     Texture* black_box = new Texture(path_image_black_box,renderer);
     ptr_tex_black_box = black_box->texture;
+	Texture* black_smoke = new Texture(path_image_black_smoke, renderer);
+	ptr_tex_black_smoke = black_smoke->texture;
     printf("Finished loading textures\n");
 }
 
