@@ -10,12 +10,13 @@ class Level
 		int map_block_height = 40;
 		int level_width = NULL;
 		int level_height = NULL;
-		float margin = 0.5;
 		CreatureType** map = NULL;
 
     public:
 		Level();
 		~Level();
+		void DetermineMapDimensions(float margin=0.5);
+		void TestArray();
 		void DrawMap();
 		void PrintMap();
 		static void RenderAllPresentCreatures();
@@ -23,7 +24,7 @@ class Level
 		CreatureType PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures);
 		SDL_Rect FindFreeTile();
 		void InsertCreatureOntoMap(CreatureType my_type, SDL_Rect* ptr_my_position);
-		void InsertStructureOntoMap(std::vector<std::vector<CreatureType>>, int my_struct_width, int my_struct_height, SDL_Rect* ptr_my_left_top_position);
+		void InsertStructureOntoMap(std::vector<std::vector<CreatureType>>, SDL_Rect* ptr_my_left_top_position);
 		void GenerateRandomObjectOnMap();
 		void SetLevelWidth(int width);
 		void SetLevelHeight(int height);

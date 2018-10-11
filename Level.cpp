@@ -25,6 +25,47 @@ Level::~Level()
 }
 
 //************
+//TEST
+//************
+
+
+void Level::TestArray()
+{
+	Level::DetermineMapDimensions();
+
+	//Declare
+	int** grid = new int*[Level::level_height];
+	for (int i = 0; i < Level::level_height; i++)
+	{
+		grid[i] = new int[Level::level_width];
+	}
+	//Populate
+	int value = 0;
+
+	for (int i = 0; i < Level::level_height; i++)
+	{
+		for (int j = 0; j < Level::level_width; j++)
+		{
+			grid[i][j] = value;
+			value++;
+		}
+	}
+	//Print
+	printf("\n\n========Will print test array========\n\n");
+	for (int i = 0; i < Level::level_height; i++)
+	{
+		printf("\n");
+		for (int j = 0; j < Level::level_width; j++)
+		{
+			printf("[%d]",grid[i][j]);
+		}
+	}
+	printf("\n\n========Printed test array========\n\n");
+
+
+}
+
+//************
 //POPULATING MAP
 //************
 
@@ -44,11 +85,11 @@ void Level::PrintMap()
 			if (map[i][j] != cre_none)
 			{
 				CreatureType my_creature = map[i][j];
-				printf("[ %d ]", my_creature);
+				printf("[%d]", my_creature);
 			}
 			else
 			{
-				printf("[   ]");
+				printf("[ ]");
 			}
 		}
 	}
@@ -65,6 +106,7 @@ void Level::InsertCreatureOntoMap(CreatureType my_type, SDL_Rect* ptr_my_positio
 	int y_tile = ptr_my_position->y;
 	if (Level::CheckIfTileIsFree(y_tile, x_tile))
 	{
+		printf("Inserting a creature %d onto map. X: %d Y:%d.\n", my_type, x_tile, y_tile);
 		map[y_tile][x_tile] = my_type;
 	}
 	else
@@ -73,16 +115,19 @@ void Level::InsertCreatureOntoMap(CreatureType my_type, SDL_Rect* ptr_my_positio
 	}
 }
 
-void Level::InsertStructureOntoMap(std::vector<std::vector<CreatureType>> my_structure, int my_struct_width, int my_struct_height, SDL_Rect* ptr_my_left_top_position)
+void Level::InsertStructureOntoMap(std::vector<std::vector<CreatureType>> my_structure, SDL_Rect* ptr_my_left_top_position)
 {
 //#TODO brakuje walidacji, czy taki obszar jest zaindeksowany na mapie
-	int current_map_tile_x = ptr_my_left_top_position->x;
-	int current_map_tile_y = ptr_my_left_top_position->y;
-	for (int i = 0; i < my_struct_height; i++)
+	int start_map_tile_x = ptr_my_left_top_position->x;
+	int start_map_tile_y = ptr_my_left_top_position->y;
+	int current_map_tile_y = start_map_tile_y;
+	for (int i = 0; i < my_structure.size(); i++)
 	{
-		for (int j = 0; j < my_struct_width; j++)
+		int current_map_tile_x = start_map_tile_x;
+		for (int j = 0; j < my_structure[i].size(); j++)
 		{
 	        //#TODO nie sprawdza, czy miejsce by³o wolne!
+			printf("Inserting creature %d onto map. X: %d, Y; %d.\n", my_structure[i][j], current_map_tile_x, current_map_tile_y);
 			map[current_map_tile_y][current_map_tile_x] = my_structure[i][j];
 			current_map_tile_x++;
 		}
@@ -103,8 +148,8 @@ void Level::DrawMap()
 			if (map[i][j] != cre_none)
 			{
 				CreatureType my_creature = map[i][j];
-				int position_x = i * map_block_width;
-				int position_y = j * map_block_height;
+				int position_x = j * map_block_width;
+				int position_y = i * map_block_height;
 				printf("Drawing a map. Coords: x: %d, y: %d, creature type: %d\n", position_x, position_y, my_creature);
 				SDL_Rect my_position = {position_x, position_y, 0, 0};
 				SDL_Rect* ptr_my_position = &my_position;
@@ -179,7 +224,7 @@ void Level::SetLevelHeight(int height)
 }
 
 
-void Level::CreateLevelGrid()
+void Level::DetermineMapDimensions(float margin)
 {
 	int screen_cols_count = Screen::TellScreenWidth() / map_block_width;
 	int screen_rows_count = Screen::TellScreenHeight() / map_block_height;
@@ -192,12 +237,16 @@ void Level::CreateLevelGrid()
 	printf("rows_count: %d cols_count: %d \n", rows_count, cols_count);
 	Level::SetLevelHeight(rows_count);
 	Level::SetLevelWidth(cols_count);
+}
 
+void Level::CreateLevelGrid()
+{
+	Level::DetermineMapDimensions();
 	//Creating a 2D dynamically sized array
-	CreatureType** level_grid = new CreatureType*[rows_count];
-	for (int i = 0; i < rows_count; i++)
+	CreatureType** level_grid = new CreatureType*[Level::level_height];
+	for (int i = 0; i < Level::level_height; i++)
 	{
-		level_grid[i] = new CreatureType[cols_count];
+		level_grid[i] = new CreatureType[Level::level_width];
 	}
 
 	map = level_grid;

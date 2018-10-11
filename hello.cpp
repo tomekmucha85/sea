@@ -40,7 +40,8 @@ int main(int argc, char* args[])
 	{
 		my_level->GenerateRandomObjectOnMap();
 	}
-	my_level->DrawMap();
+	my_level->PrintMap();
+
     Sprite* ptr_blue_background = Sprite::CreateSprite(background);
 
 	/*SDL_Rect smoke_position = { 500,200,0,0 };
@@ -50,17 +51,21 @@ int main(int argc, char* args[])
 	*/
 
 	std::vector<std::vector<CreatureType>> hero_and_env = { {cre_none, cre_none, cre_none},
-	{cre_none, cre_clawy, cre_none}, {cre_none, cre_none, cre_none} };
-	SDL_Rect env_position = {15,8,0,0};
+	                                                        {cre_none, cre_clawy, cre_none}, 
+	                                                        {cre_none, cre_none, cre_none} };
+	SDL_Rect env_position = {0,0,0,0};
 	SDL_Rect* ptr_env_position = &env_position;
-	my_level->InsertStructureOntoMap(hero_and_env, 3, 3, ptr_env_position);
+	my_level->InsertStructureOntoMap(hero_and_env, ptr_env_position);
+	my_level->PrintMap();
+
+	my_level->DrawMap();
 
     SDL_Rect hero_position = {320,240,0,0};
     SDL_Rect* ptr_hero_position = &hero_position;
 	Creature* cre_heros = Creature::SpawnCreature(cre_clawy, ptr_hero_position);
 	cre_heros->MakeMeMainCharacter();
-
-	my_level->PrintMap();
+    //my_level->PrintMap();
+	//my_level->TestArray();
 
 	/*
 	SDL_Rect box_4_position = { 25,25,0,0 };
