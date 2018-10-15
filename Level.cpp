@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <ctime>
 #include <Level.hpp>
 #include <Creature.hpp>
 #include <Screen.hpp>
@@ -148,8 +149,8 @@ void Level::DrawMap()
 			if (map[i][j] != cre_none)
 			{
 				CreatureType my_creature = map[i][j];
-				int position_x = j * map_block_width;
-				int position_y = i * map_block_height;
+				int position_x = (j - TellMapOffsetX()) * map_block_width;
+				int position_y = (i - TellMapOffsetY()) * map_block_height;
 				printf("Drawing a map. Coords: x: %d, y: %d, creature type: %d\n", position_x, position_y, my_creature);
 				SDL_Rect my_position = {position_x, position_y, 0, 0};
 				SDL_Rect* ptr_my_position = &my_position;
@@ -167,6 +168,7 @@ void Level::DrawMap()
 CreatureType Level::PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures)
 {
 	int vector_size = my_creatures.size();
+	srand(time(NULL));
 	CreatureType chosen_creature = my_creatures[rand() % vector_size];
 	printf("Picked random creature: %d.\n", chosen_creature);
 	return chosen_creature;
@@ -178,6 +180,7 @@ SDL_Rect Level::FindFreeTile()
 	bool check = false;
 	int x_tile = NULL;
 	int y_tile = NULL;
+	srand(time(NULL));
 	while (check != true)
 	{
 		x_tile = rand() % (level_width - 1);
@@ -223,16 +226,35 @@ void Level::SetLevelHeight(int height)
 	level_height = height;
 }
 
+void Level::SetMapOffsetX(int columns_count, float margin)
+{
+	map_offset_x = int(columns_count*margin);
+}
+
+void Level::SetMapOffsetY(int rows_count, float margin)
+{
+	map_offset_y = int(rows_count*margin);
+}
+
+int Level::TellMapOffsetX()
+{
+	return map_offset_x;
+}
+int Level::TellMapOffsetY()
+{
+	return map_offset_y;
+}
 
 void Level::DetermineMapDimensions(float margin)
 {
 	int screen_cols_count = Screen::TellScreenWidth() / map_block_width;
 	int screen_rows_count = Screen::TellScreenHeight() / map_block_height;
-	float fl_rows_count_with_margin = screen_rows_count + (screen_rows_count * margin);
-	float fl_cols_count_with_margin = screen_cols_count + (screen_cols_count * margin);
-	int rows_count = int(fl_rows_count_with_margin);
-	int cols_count = int(fl_cols_count_with_margin);
-
+	SetMapOffsetX(screen_cols_count, margin);
+	SetMapOffsetY(screen_rows_count, margin);
+	//float fl_rows_count_with_margin = screen_rows_count + (screen_rows_count * margin);
+	//float fl_cols_count_with_margin = screen_cols_count + (screen_cols_count * margin);
+	int rows_count = screen_rows_count + 2 * (TellMapOffsetY());
+	int cols_count = screen_cols_count + 2 * (TellMapOffsetX());
 	printf("screen_rows_count: %d screen_cols_count: %d \n", screen_rows_count, screen_cols_count);
 	printf("rows_count: %d cols_count: %d \n", rows_count, cols_count);
 	Level::SetLevelHeight(rows_count);

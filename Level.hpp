@@ -10,6 +10,8 @@ class Level
 		int map_block_height = 40;
 		int level_width = NULL;
 		int level_height = NULL;
+		int map_offset_x = NULL;
+		int map_offset_y = NULL;
 		CreatureType** map = NULL;
 
     public:
@@ -30,6 +32,10 @@ class Level
 		void SetLevelHeight(int height);
 		void CleanLevelGrid();
 		bool CheckIfTileIsFree(int row, int column);
+		void SetMapOffsetX(int columns_count, float margin);
+		void SetMapOffsetY(int rows_count, float margin);
+		int TellMapOffsetX();
+		int TellMapOffsetY();
 };
 
 #endif //LEVEL_HPP
