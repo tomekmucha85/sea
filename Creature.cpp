@@ -286,61 +286,46 @@ void Creature::TurnLeft()
     (*ptr_creature_sprite).angle -= turn_quant_degree;
 }
 
+void Creature::RemoveNeighbors()
+{
+	my_neighbors.clear();
+}
 
-//void Creature::Move(int x, int y)
-//{
-//	if (AmIMainCharacter())
-//	{
-//		//class_instances_tmp = class_instances;
-//		//Now we're C++11 as fuck!
-//		for (Creature* ptr_creature : Creature::class_instances)
-//		{
-//			Creature creature_backup = *(ptr_creature);
-//			ptr_creature->my_backup = &creature_backup;
-//			if (ptr_creature != this) /* Prevents moving the main character. */
-//			{
-//				ptr_creature->MoveComponents(-x, -y);
-//				if (DoICollide())
-//				{
-//					for (Creature* ptr_creature : Creature::class_instances)
-//					{
-//						if (ptr_creature->my_backup)
-//						{
-//
-//						}
-//					}
-//				}
-//			}
-//		}
-//		//printf("Checking main character collision.\n");
-//		if (DoICollide())
-//		{
-//			//printf("Collision of main character detected\n");
-//			for (Creature* ptr_creature : Creature::class_instances)
-//			{
-//				if (ptr_creature != this) /* Prevents moving the main character. */
-//				{
-//					//#TODO - consider snapshot approach so less calculations will be needed.
-//					ptr_creature->MovePixelByPixel(x, y, false); /* Reverting changes made in last step.*/
-//				}
-//			}
-//		}
-//		/*else
-//		{
-//			printf("Collision of main character not detected.\n");
-//		}*/
-//	}
-//	else
-//	{
-//		MovePixelByPixel(x, y, true);
-//	}
-//}
+void Creature::FindNeighBors()
+/*This function limits number of objects against which collision checks will be performed.
+Only objects with hitboxes within neighbor_radius will be checked.*/
+{
+	int my_middle_x = this->hitbox.x + (this->hitbox.w / 2);
+	int my_middle_y = this->hitbox.y + (this->hitbox.h / 2);
+	//int counter = 0;
+	for (Creature* ptr_creature : Creature::class_instances)
+	{
+		int creature_middle_x = ptr_creature->hitbox.x + (ptr_creature->hitbox.w / 2);
+		int creature_middle_y = ptr_creature->hitbox.y + (ptr_creature->hitbox.h / 2);
+		int distance_x = std::abs(creature_middle_x - my_middle_x);
+		int distance_y = std::abs(creature_middle_y - my_middle_y);
+		int distance = sqrt((distance_x * distance_x) + (distance_y*distance_y));
+		//printf("Distance is: x: %d y: %d, overall: %d, neighbor radius is: %d\n", distance_x, distance_y, distance, neighbor_radius);
+		if (distance <= neighbor_radius)
+		{
+			my_neighbors.push_back(ptr_creature);
+			//counter++;
+		}
+	}
+	//printf("Found %d neighbors for %p.\n", counter, this);
+	//if (this->AmIMainCharacter() == true)
+	//{
+	//	printf("These are neighbors for main character.\n");
+	//}
+}
 
 void Creature::Move(int x, int y)
 {
 //Moves this object - in case it's a non-player object.
 //Moves all the other creatures in case we're dealing with player object. This way screen scroll is achieved.
     //printf("========[Move called by %p.]=============\n", this);
+	this->RemoveNeighbors();
+	this->FindNeighBors();
     if (AmIMainCharacter())
     {
         //Now we're C++11 as fuck!
@@ -493,7 +478,8 @@ bool Creature::DoICollide()
 	int my_y = hitbox.y;
 	int my_w = hitbox.w;
 	int my_h = hitbox.h;
-	for (Creature* ptr_creature : Creature::class_instances)
+	//for (Creature* ptr_creature : Creature::class_instances)
+	for (Creature* ptr_creature : this->my_neighbors)
 	{
 		if (ptr_creature != this /* Prevents checking collision with itself. */ && ptr_creature->is_obstacle == true)
 		{
