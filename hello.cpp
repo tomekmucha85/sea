@@ -49,11 +49,11 @@ int main(int argc, char* args[])
 	Creature* cre_black_smoke_1 = Creature::SpawnCreature(cre_black_smoke, ptr_smoke_position);
 	cre_black_smoke_1->MakeMeNotObstacle();
 	*/
-
+	my_level->PrepareMazeGrid();
 	std::vector<std::vector<CreatureType>> hero_and_env = { {cre_none, cre_none, cre_none},
-	                                                        {cre_none, cre_clawy, cre_none}, 
+	                                                        {cre_none, cre_none, cre_none}, 
 	                                                        {cre_none, cre_none, cre_none} };
-	SDL_Rect env_position = {0,0,0,0};
+	SDL_Rect env_position = {14,12,0,0};
 	SDL_Rect* ptr_env_position = &env_position;
 	my_level->InsertStructureOntoMap(hero_and_env, ptr_env_position);
 	my_level->PrintMap();

@@ -31,6 +31,8 @@ class Creature
         int current_angle_degree = 0;
         //Coordinates of next step.
         Coordinates next_step;
+		//Coordinates used when creature has to back up.
+		Coordinates last_position;
         //Hitbox used for calculating collisions.
         SDL_Rect hitbox = {0,0,0,0};
 		//In what layer should the creature exist (important while rendering whole scene)
@@ -56,6 +58,8 @@ class Creature
         static std::vector <Creature*> class_instances;
         //Holds address of Creature acting as current main character
         static Creature* ptr_current_main_charater;
+		//Backup of object in case changes need to be reverted
+		Creature* my_backup = NULL;
 
 		//###################
 		//Arrays&vectors
@@ -80,6 +84,7 @@ class Creature
         void TurnRight();
         void TurnLeft();
         void Move(int x, int y);
+		//void MovePixelPerfect(int x, int y);
         void MovePixelByPixel(int x, int y, bool check_collisions = true);
         void MoveComponents(int x, int y);
         void MoveSprite(int x, int y);

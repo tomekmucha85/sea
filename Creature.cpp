@@ -143,10 +143,10 @@ void Creature::AddToClassInstancesVector()
         Creature::class_instances.push_back(this);
 		printf("Pushed first item into class instances\n");
 	}
-	for (Creature* cre_in : Creature::class_instances)
-	{
-		printf("Creature present in class instances: %p\n", cre_in);
-	}
+	//for (Creature* cre_in : Creature::class_instances)
+	//{
+	//	printf("Creature present in class instances: %p\n", cre_in);
+	//}
 }
 
 int Creature::TellInstancesCount()
@@ -286,6 +286,56 @@ void Creature::TurnLeft()
     (*ptr_creature_sprite).angle -= turn_quant_degree;
 }
 
+
+//void Creature::Move(int x, int y)
+//{
+//	if (AmIMainCharacter())
+//	{
+//		//class_instances_tmp = class_instances;
+//		//Now we're C++11 as fuck!
+//		for (Creature* ptr_creature : Creature::class_instances)
+//		{
+//			Creature creature_backup = *(ptr_creature);
+//			ptr_creature->my_backup = &creature_backup;
+//			if (ptr_creature != this) /* Prevents moving the main character. */
+//			{
+//				ptr_creature->MoveComponents(-x, -y);
+//				if (DoICollide())
+//				{
+//					for (Creature* ptr_creature : Creature::class_instances)
+//					{
+//						if (ptr_creature->my_backup)
+//						{
+//
+//						}
+//					}
+//				}
+//			}
+//		}
+//		//printf("Checking main character collision.\n");
+//		if (DoICollide())
+//		{
+//			//printf("Collision of main character detected\n");
+//			for (Creature* ptr_creature : Creature::class_instances)
+//			{
+//				if (ptr_creature != this) /* Prevents moving the main character. */
+//				{
+//					//#TODO - consider snapshot approach so less calculations will be needed.
+//					ptr_creature->MovePixelByPixel(x, y, false); /* Reverting changes made in last step.*/
+//				}
+//			}
+//		}
+//		/*else
+//		{
+//			printf("Collision of main character not detected.\n");
+//		}*/
+//	}
+//	else
+//	{
+//		MovePixelByPixel(x, y, true);
+//	}
+//}
+
 void Creature::Move(int x, int y)
 {
 //Moves this object - in case it's a non-player object.
@@ -304,7 +354,7 @@ void Creature::Move(int x, int y)
         //printf("Checking main character collision.\n");
         if (DoICollide())
         {
-            printf("Collision of main character detected\n");
+            //printf("Collision of main character detected\n");
             for (Creature* ptr_creature : Creature::class_instances)
             {
                 if (ptr_creature != this) /* Prevents moving the main character. */
@@ -464,82 +514,40 @@ bool Creature::DoICollide()
 
 bool Creature::DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w)
 {
-    if ((my_x >= obs_x && my_x<= obs_x + obs_w) ||
-        /* FOLLOWING SCENARIO:
-                [MY  OBJECT]
-        [THE OTHER OBJECT]
-        */
-        (my_x + my_w >= obs_x && my_x + my_w <= obs_x + obs_w) ||
-        /* FOLLOWING SCENARIO:
-        [MY  OBJECT]
-           [THE OTHER OBJECT]
-        */
-        (my_x >= obs_x && my_x + my_w  <= obs_x + obs_w) ||
-        /* FOLLOWING SCENARIO:
-           [MY  OBJECT]
-        [THE OTHER OBJECT]
-        */
-        (my_x <= obs_x && my_x + my_w >= obs_x + obs_w))
-        /* FOLLOWING SCENARIO:
-           [   MY      OBJECT      ]
-               [THE OTHER OBJECT]
-        */
-    {
-        //printf("Hit in X plane.\n");
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-
+	if (my_x >= obs_x && my_x <= obs_x + obs_w)
+	{
+		return true;
+	}
+	else if (my_x + my_w >= obs_x && my_x + my_w <= obs_x + obs_w)
+	{
+		return true;
+	}
+	else if (my_x <= obs_x && my_x + my_w >= obs_x + obs_w)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool Creature::DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h)
 {
-    if ((my_y >= obs_y && my_y<= obs_y + obs_h) ||
-        /* FOLLOWING SCENARIO:
-
-                         [                ]
-           [          ]  [THE OTHER OBJECT]
-           [MY  OBJECT]  [                ]
-           [          ]
-        */
-        (my_y + my_h >= obs_y && my_y + my_h <= obs_y + obs_h) ||
-        /* FOLLOWING SCENARIO:
-
-           [          ]
-           [MY  OBJECT]  [                ]
-           [          ]  [THE OTHER OBJECT]
-                         [                ]
-        */
-        (my_y >= obs_y && my_y + my_h <= obs_y + obs_h) ||
-        /* FOLLOWING SCENARIO:
-
-                         [                ]
-           [          ]  [                ]
-           [MY  OBJECT]  [                ]
-           [          ]  [THE OTHER OBJECT]
-                         [                ]
-                         [                ]
-        */
-        (my_y <= obs_y && my_y + my_h >= obs_y + obs_h))
-        /* FOLLOWING SCENARIO:
-
-           [          ]
-           [          ]  [                ]
-           [MY  OBJECT]  [THE OTHER OBJECT]
-           [          ]  [                ]
-           [          ]
-
-        */
-    {
-        //printf("Hit in Y plane.\n");
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-
+	if (my_y >= obs_y && my_y <= obs_y + obs_h)
+	{
+		return true;
+	}
+	else if (my_y + my_h >= obs_y && my_y + my_h <= obs_y + obs_h)
+	{
+		return true;
+	}
+	else if (my_y <= obs_y && my_y + my_h >= obs_y + obs_h)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

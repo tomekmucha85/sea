@@ -128,7 +128,7 @@ void Level::InsertStructureOntoMap(std::vector<std::vector<CreatureType>> my_str
 		for (int j = 0; j < my_structure[i].size(); j++)
 		{
 	        //#TODO nie sprawdza, czy miejsce by³o wolne!
-			printf("Inserting creature %d onto map. X: %d, Y; %d.\n", my_structure[i][j], current_map_tile_x, current_map_tile_y);
+			//printf("Inserting creature %d onto map. X: %d, Y; %d.\n", my_structure[i][j], current_map_tile_x, current_map_tile_y);
 			map[current_map_tile_y][current_map_tile_x] = my_structure[i][j];
 			current_map_tile_x++;
 		}
@@ -291,6 +291,38 @@ void Level::CleanLevelGrid()
 	printf("Level with given dimensions: %d by %d was cleared!\n", level_width, level_height);
 }
 
+
+void Level::SetMazeBlockHeight(int height)
+{
+	maze_block_height = height;
+}
+
+void Level::SetMazeBlockWidth(int width)
+{
+	maze_block_width = width;
+}
+
+void Level::PrepareMazeGrid()
+{
+	if (map == NULL)
+	{
+		throw std::invalid_argument("Trying to prepare maze grid on a map which was not initialized yet!");
+	}
+	for (int i = 0; i < level_height; i++)
+	{
+		for (int j = 0; j < level_width; j++)
+		{
+			if (j%(maze_block_width-1) == 0)
+			{
+				map[i][j] = cre_flying_box;
+			}
+			if (i%(maze_block_height-1) == 0)
+			{
+				map[i][j] = cre_flying_box;
+			}
+		}
+	}
+}
 /*
 //EXAMPLE
 int main() {
