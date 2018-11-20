@@ -10,9 +10,9 @@
 Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* ptr_my_position)
 {
 	//#TODO - validate arguments?
-    printf("Default constructor called for Sprite.\n");
+    //printf("Default constructor called for Sprite.\n");
 	SetTexture(ptr_my_texture);
-	printf("Texture set.");
+	//printf("Texture set.");
 	if (my_texture_clip.w == 0 && my_texture_clip.h == 0)
 	{
 		//If there are no width and height params set for texture clip, whole texture is shown.
@@ -22,7 +22,7 @@ Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* 
 		my_texture_clip.h = dimensions.h;
 	}
 	SetTextureClip(my_texture_clip);
-	printf("Texture clip set.");
+	//printf("Texture clip set.");
 	SDL_Rect current_texture_clip = TellTextureClip();
 	if (ptr_my_position == NULL)
 	{
@@ -43,7 +43,7 @@ Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* 
 SDL_Rect Sprite::CheckTextureDimensions(SDL_Texture* ptr_my_texture)
 {
     int w,h;
-    printf("Texture address is %p", ptr_my_texture);
+    //printf("Texture address is %p", ptr_my_texture);
     SDL_QueryTexture(ptr_my_texture, NULL, NULL, &w, &h);
     SDL_Rect result = {0,0,w,h};
     return result;
@@ -192,35 +192,34 @@ void Sprite::SmokeAnimation()
 Sprite* Sprite::CreateSprite(SpriteType desired_type, SDL_Rect* ptr_position)
 {
 	Sprite* result = NULL;
-	printf("Going to create a sprite. Requested type: %d\n", desired_type);
+	//printf("Going to create a sprite. Requested type: %d\n", desired_type);
     if (desired_type == clawy)
     {
-        printf("Requested clawy object.\n");
+        //printf("Requested clawy object.\n");
         result = new SpriteClawy(ptr_position);
         return result;
     }
     else if (desired_type == box)
     {
-        printf("Requested box object.\n");
+        //printf("Requested box object.\n");
         result = new SpriteBlackBox(ptr_position);
         return result;
     }
 	else if (desired_type == background)
 	{
-		printf("Reqested blue background object.\n");
+		//printf("Reqested blue background object.\n");
 		result = new SpriteBackground(ptr_position);
 		return result;
 	}
 	else if (desired_type == black_smoke)
 	{
-		printf("Reqested black smoke object.\n");
+		//printf("Reqested black smoke object.\n");
 		result = new SpriteBlackSmoke(ptr_position);
 		return result;
 	}
     else
     {
-        printf("Requested some other object.\n");
+        //printf("Requested some other object.\n");
 		return result;
     }
 }
-

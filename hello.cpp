@@ -6,6 +6,7 @@
 #include <string>
 #include <Game.hpp>
 #include <Level.hpp>
+#include <Maze.hpp>
 #include <Screen.hpp>
 #include <Texture.hpp>
 #include <TextureBank.hpp>
@@ -36,34 +37,46 @@ int main(int argc, char* args[])
     Game::InitializeGame();
 
 	Level* my_level = new Level();
-	for (int i = 0; i < 10; i++)
+	/*for (int i = 0; i < 10; i++)
 	{
 		my_level->GenerateRandomObjectOnMap();
-	}
+	}*/
 	my_level->PrintMap();
 
     Sprite* ptr_blue_background = Sprite::CreateSprite(background);
-
 	/*SDL_Rect smoke_position = { 500,200,0,0 };
 	SDL_Rect* ptr_smoke_position = &smoke_position;
 	Creature* cre_black_smoke_1 = Creature::SpawnCreature(cre_black_smoke, ptr_smoke_position);
 	cre_black_smoke_1->MakeMeNotObstacle();
 	*/
-	my_level->PrepareMazeGrid();
-	std::vector<std::vector<CreatureType>> hero_and_env = { {cre_none, cre_none, cre_none},
+	//Dimensions expressed in map blocks
+
+	/*
+	SDL_Rect maze_area = { 0, 0, 40, 40 };
+	SDL_Rect* ptr_maze_area = &maze_area;
+	SDL_Rect maze_area_2 = { 20, 20, 40, 40 };
+	SDL_Rect* ptr_maze_area_2 = &maze_area_2;
+	Maze* my_maze_a = new Maze(my_level, ptr_maze_area);
+	Maze* my_maze_b = new Maze(my_level, ptr_maze_area_2);
+	*/
+
+
+	/*std::vector<std::vector<CreatureType>> hero_and_env = { {cre_none, cre_none, cre_none},
 	                                                        {cre_none, cre_none, cre_none}, 
 	                                                        {cre_none, cre_none, cre_none} };
 	SDL_Rect env_position = {14,12,0,0};
 	SDL_Rect* ptr_env_position = &env_position;
-	my_level->InsertStructureOntoMap(hero_and_env, ptr_env_position);
-	my_level->PrintMap();
+	my_level->InsertStructureOntoMap(hero_and_env, ptr_env_position);*/
+	SDL_Rect hero_position = { 13,12,0,0 };
+	SDL_Rect* ptr_hero_position = &hero_position;
+	my_level->InsertCreatureOntoMap(cre_clawy, ptr_hero_position);
+	Creature* ptr_hero = my_level->TellPointerToCreatureInSlot(13,12);
+	ptr_hero->MakeMeMainCharacter();
 
-	my_level->DrawMap();
-
-    SDL_Rect hero_position = {320,240,0,0};
+    /*SDL_Rect hero_position = {320,240,0,0};
     SDL_Rect* ptr_hero_position = &hero_position;
 	Creature* cre_heros = Creature::SpawnCreature(cre_clawy, ptr_hero_position);
-	cre_heros->MakeMeMainCharacter();
+	cre_heros->MakeMeMainCharacter();*/
     //my_level->PrintMap();
 	//my_level->TestArray();
 
@@ -89,16 +102,20 @@ int main(int argc, char* args[])
             {
                 switch( event_handler.key.keysym.sym )
                 {
-                    case SDLK_UP: cre_heros->MoveForward(); break;
-                    case SDLK_DOWN: cre_heros->MoveBackward(); break;
-                    case SDLK_LEFT: cre_heros->StrafeLeft(); break;
-                    case SDLK_RIGHT: cre_heros->StrafeRight(); break;
-                    case SDLK_w: cre_heros->MoveForward();
+                    case SDLK_UP: ptr_hero->MoveForward(); break;
+                    case SDLK_DOWN: ptr_hero->MoveBackward(); break;
+                    case SDLK_LEFT: ptr_hero->StrafeLeft(); break;
+                    case SDLK_RIGHT: ptr_hero->StrafeRight(); break;
+                    case SDLK_w: ptr_hero->MoveForward();
 					break;
-                    case SDLK_s: cre_heros->MoveBackward();
+                    case SDLK_s: ptr_hero->MoveBackward();
 					break;
-                    case SDLK_a: cre_heros->TurnLeft(); break;
-                    case SDLK_d: cre_heros->TurnRight(); break;
+                    case SDLK_a: ptr_hero->TurnLeft(); break;
+                    case SDLK_d: ptr_hero->TurnRight(); break;
+					//case SDLK_1: my_maze_a->ClearMaze(); break;
+					//case SDLK_2: my_maze_a->GenerateMaze(); break;
+					//case SDLK_3: my_maze_b->ClearMaze(); break;
+					//case SDLK_4: my_maze_b->GenerateMaze(); break;
                 }
             }
         }

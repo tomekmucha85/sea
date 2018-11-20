@@ -141,6 +141,7 @@
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="CommonHeaderSprites.hpp" />
     <ClInclude Include="Level.hpp" />
+    <ClInclude Include="LevelComponent.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="Sprite.hpp" />
     <ClInclude Include="SpriteBackground.hpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="hello.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelComponent.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBackground.cpp" />

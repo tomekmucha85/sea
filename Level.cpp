@@ -11,7 +11,7 @@
 Level::Level()
 {
 	Level::CreateLevelGrid();
-	Level::CleanLevelGrid();
+	//Level::CleanLevelGrid();
 }
 
 //************
@@ -22,71 +22,85 @@ Level::Level()
 Level::~Level()
 {
 	//#TODO Dopracowaæ!
-	delete map;
 }
 
-//************
-//TEST
-//************
+//*****************
+//ADDING COMPONENTS
+//*****************
+
+//Every component holds its own creatures
+//Level traces components
 
 
-void Level::TestArray()
+/*void Level::CreateMaze(SDL_Rect* ptr_maze_area, int maze_index)
 {
-	Level::DetermineMapDimensions();
-
-	//Declare
-	int** grid = new int*[Level::level_height];
-	for (int i = 0; i < Level::level_height; i++)
-	{
-		grid[i] = new int[Level::level_width];
-	}
-	//Populate
-	int value = 0;
-
-	for (int i = 0; i < Level::level_height; i++)
-	{
-		for (int j = 0; j < Level::level_width; j++)
-		{
-			grid[i][j] = value;
-			value++;
-		}
-	}
-	//Print
-	printf("\n\n========Will print test array========\n\n");
-	for (int i = 0; i < Level::level_height; i++)
-	{
-		printf("\n");
-		for (int j = 0; j < Level::level_width; j++)
-		{
-			printf("[%d]",grid[i][j]);
-		}
-	}
-	printf("\n\n========Printed test array========\n\n");
-
-
-}
+	std::map<std::string, std::vector<LevelComponent*>>* ptr_components_array = &level_components;
+	LevelComponent* ptr_my_maze = new Maze( ptr_components_array, ptr_maze_area, maze_index);
+	level_components["maze"][maze_index] = ptr_my_maze;
+}*/
 
 //************
 //POPULATING MAP
 //************
 
+void Level::CreateLevelGrid()
+{
+	Level::DetermineMapDimensions();
+	MapEntity blank_entity = {cre_none, NULL};
+	std::vector<std::vector<MapEntity>> level_grid(initial_level_height,std::vector<MapEntity>(initial_level_width, blank_entity));
+	map = level_grid;
+}
+
+void Level::InsertMapRowAtEnd()
+{
+	MapEntity blank_entity = { cre_none, NULL };
+	map.push_back(std::vector<MapEntity>(TellLevelWidth(), blank_entity));
+	printf("Row inserted at map end.\n");
+}
+
+void Level::InsertMapRowAtBeginning()
+{
+	MapEntity blank_entity = { cre_none, NULL };
+	map.insert(map.begin(), std::vector<MapEntity>(TellLevelWidth(), blank_entity));
+	printf("Row inserted at map beginning.\n");
+}
+
+void Level::InsertMapColumnAtEnd()
+{
+	MapEntity blank_entity = { cre_none, NULL };
+	for (int row = 0; row < TellLevelHeight(); row++)
+	{
+		map[row].push_back(blank_entity);
+	}
+	printf("Column inserted at map end.\n");
+}
+
+void Level::InsertMapColumnAtBeginning()
+{
+	MapEntity blank_entity = { cre_none, NULL };
+	for (int row = 0; row < TellLevelHeight(); row++)
+	{
+		map[row].insert(map[row].begin(), blank_entity);
+	}
+	printf("Column inserted at map beginning.\n");
+}
 
 void Level::PrintMap()
 {
-	if (map == NULL)
-	{
-		throw std::invalid_argument("Trying to print a map which was not initialized yet!\n");
-	}
+	//if (map == NULL)
+	//{
+	//	throw std::invalid_argument("Trying to print a map which was not initialized yet!\n");
+	//}
 	printf("\n\n========Will print map========\n\n");
-	for (int i = 0; i < level_height; i++)
+	for (int i = 0; i < TellLevelHeight(); i++)
 	{
 		printf("\n");
-		for (int j = 0; j < level_width; j++)
+		for (int j = 0; j < TellLevelWidth(); j++)
 		{
-			if (map[i][j] != cre_none)
+			if (map[i][j].type != cre_none)
 			{
-				CreatureType my_creature = map[i][j];
-				printf("[%d]", my_creature);
+				MapEntity my_creature = map[i][j];
+				printf("[%d]", my_creature.type);
 			}
 			else
 			{
@@ -97,22 +111,53 @@ void Level::PrintMap()
 	printf("\n\n========Printed map========\n\n");
 }
 
-void Level::InsertCreatureOntoMap(CreatureType my_type, SDL_Rect* ptr_my_position)
+Creature* Level::InsertCreatureOntoMap(CreatureType my_type, SDL_Rect* ptr_my_position, bool force)
 {
-	if (map == NULL)
-	{
-		throw std::invalid_argument("Trying to insert a creature onto map which was not initialized yet!");
-	};
+	//if (map == NULL)
+	//{
+	//	throw std::invalid_argument("Trying to insert a creature onto map which was not initialized yet!");
+	//};
 	int x_tile = ptr_my_position->x;
 	int y_tile = ptr_my_position->y;
-	if (Level::CheckIfTileIsFree(y_tile, x_tile))
+	if (Level::CheckIfTileIsFree(y_tile, x_tile) || force == true)
 	{
 		printf("Inserting a creature %d onto map. X: %d Y:%d.\n", my_type, x_tile, y_tile);
-		map[y_tile][x_tile] = my_type;
+		map[y_tile][x_tile].type = my_type;
+		return VivifyCreature(x_tile, y_tile, my_type);
 	}
 	else
 	{
 		printf("Could not place creature %d in tile y: %d x: %d. Tile is not free!\n", my_type, y_tile, x_tile);
+		return nullptr;
+	}
+}
+
+Creature* Level::VivifyCreature(int map_column, int map_row, CreatureType my_type)
+{
+	//#TODO - zrezygnowaæ z offsetu?
+	//Method for spawning creature in desired map tile.
+	int position_x = (map_column - TellMapOffsetX()) * map_block_width;
+	int position_y = (map_row - TellMapOffsetY()) * map_block_height;
+	printf("Vivifying creature map. Coords: x: %d, y: %d, creature type: %d\n", position_x, position_y, my_type);
+	SDL_Rect my_position = { position_x, position_y, 0, 0 };
+	SDL_Rect* ptr_my_position = &my_position;
+	map[map_row][map_column].ptr_creature = Creature::SpawnCreature(my_type, ptr_my_position);
+	return map[map_row][map_column].ptr_creature;
+}
+
+bool Level::RemoveCreatureFromMap(int map_column, int map_row)
+{
+    // #TODO Dopracowaæ walidacjê i zwracan¹ wartoœæ!
+	printf("Trying to remove %d %d.\n", map_column, map_row);
+	if (map[map_row][map_column].ptr_creature != NULL)
+	{
+		map[map_row][map_column].ptr_creature->~Creature();
+		map[map_row][map_column].type = cre_none;
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
@@ -129,41 +174,19 @@ void Level::InsertStructureOntoMap(std::vector<std::vector<CreatureType>> my_str
 		{
 	        //#TODO nie sprawdza, czy miejsce by³o wolne!
 			//printf("Inserting creature %d onto map. X: %d, Y; %d.\n", my_structure[i][j], current_map_tile_x, current_map_tile_y);
-			map[current_map_tile_y][current_map_tile_x] = my_structure[i][j];
+			map[current_map_tile_y][current_map_tile_x].type = my_structure[i][j];
 			current_map_tile_x++;
 		}
 		current_map_tile_y++;
 	}
 }
 
-void Level::DrawMap()
+Creature* Level::TellPointerToCreatureInSlot(int x, int y)
 {
-	if (map == NULL)
-	{
-		throw std::invalid_argument("Trying to draw a map which was not initialized yet!");
-	}
-	for (int i = 0; i < level_height; i++)
-	{
-		for (int j = 0; j < level_width; j++)
-		{
-			if (map[i][j] != cre_none)
-			{
-				CreatureType my_creature = map[i][j];
-				int position_x = (j - TellMapOffsetX()) * map_block_width;
-				int position_y = (i - TellMapOffsetY()) * map_block_height;
-				printf("Drawing a map. Coords: x: %d, y: %d, creature type: %d\n", position_x, position_y, my_creature);
-				SDL_Rect my_position = {position_x, position_y, 0, 0};
-				SDL_Rect* ptr_my_position = &my_position;
-				Creature::SpawnCreature(my_creature, ptr_my_position);
-			}
-			else
-			{
-				//Nothing to draw
-				;
-			}
-		}
-	}
+	Creature* result = map[y][x].ptr_creature;
+	return result;
 }
+
 
 CreatureType Level::PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures)
 {
@@ -183,8 +206,8 @@ SDL_Rect Level::FindFreeTile()
 	srand(time(NULL));
 	while (check != true)
 	{
-		x_tile = rand() % (level_width - 1);
-		y_tile = rand() % (level_height - 1);
+		x_tile = rand() % (TellLevelWidth() - 1);
+		y_tile = rand() % (TellLevelHeight() - 1);
 		printf("Chosen tile: x - %d y - %d\n", x_tile, y_tile);
 		check = Level::CheckIfTileIsFree(y_tile, x_tile);
 		printf("Check result: %d\n", check);
@@ -199,13 +222,18 @@ void Level::GenerateRandomObjectOnMap()
 	SDL_Rect free_tile = Level::FindFreeTile();
 	//#TODO Now selecting only from walls
 	CreatureType my_creature = Level::PickRandomObjectFromGiven(Creature::walls);
-	map[free_tile.y][free_tile.x] = my_creature;
+	map[free_tile.y][free_tile.x].type = my_creature;
 	printf("Random object of type %d was created on a map. Tile: x: %d, x: %d\n", my_creature, free_tile.x, free_tile.y);
 }
 
 bool Level::CheckIfTileIsFree(int row, int column)
 {
-	if (map[row][column] == cre_none)
+	//printf("Checking for row: %d, column: %d.\n", row, column);
+	if (row >= TellLevelHeight() || column >= TellLevelWidth())
+	{
+		throw std::invalid_argument("Given coordinates do not exist on the map!\n");
+	}
+	if (map[row][column].type == cre_none)
 	{
 		return true;
 	}
@@ -215,15 +243,24 @@ bool Level::CheckIfTileIsFree(int row, int column)
 	}
 }
 
-
-void Level::SetLevelWidth(int width)
+int Level::TellLevelWidth()
 {
-	level_width = width;
+	return map[0].size();
 }
 
-void Level::SetLevelHeight(int height)
+int Level::TellLevelHeight()
 {
-	level_height = height;
+	return map.size();
+}
+
+void Level::SetInitialLevelWidth(int width)
+{
+	initial_level_width = width;
+}
+
+void Level::SetInitialLevelHeight(int height)
+{
+	initial_level_height = height;
 }
 
 void Level::SetMapOffsetX(int columns_count, float margin)
@@ -245,84 +282,39 @@ int Level::TellMapOffsetY()
 	return map_offset_y;
 }
 
+
+
 void Level::DetermineMapDimensions(float margin)
 {
 	int screen_cols_count = Screen::TellScreenWidth() / map_block_width;
 	int screen_rows_count = Screen::TellScreenHeight() / map_block_height;
 	SetMapOffsetX(screen_cols_count, margin);
 	SetMapOffsetY(screen_rows_count, margin);
-	//float fl_rows_count_with_margin = screen_rows_count + (screen_rows_count * margin);
-	//float fl_cols_count_with_margin = screen_cols_count + (screen_cols_count * margin);
 	int rows_count = screen_rows_count + 2 * (TellMapOffsetY());
 	int cols_count = screen_cols_count + 2 * (TellMapOffsetX());
 	printf("screen_rows_count: %d screen_cols_count: %d \n", screen_rows_count, screen_cols_count);
 	printf("rows_count: %d cols_count: %d \n", rows_count, cols_count);
-	Level::SetLevelHeight(rows_count);
-	Level::SetLevelWidth(cols_count);
+	Level::SetInitialLevelHeight(rows_count);
+	Level::SetInitialLevelWidth(cols_count);
 }
-
-void Level::CreateLevelGrid()
-{
-	Level::DetermineMapDimensions();
-	//Creating a 2D dynamically sized array
-	CreatureType** level_grid = new CreatureType*[Level::level_height];
-	for (int i = 0; i < Level::level_height; i++)
-	{
-		level_grid[i] = new CreatureType[Level::level_width];
-	}
-
-	map = level_grid;
-}
-
 
 void Level::CleanLevelGrid()
 {
-	if (map == NULL)
+	//if (map == NULL)
+	//{
+	//	throw std::invalid_argument("Trying to clean map which was not initialized yet!");
+	//}
+	for (int row = 0; row < TellLevelHeight(); row++)
 	{
-		throw std::invalid_argument("Trying to clean map which was not initialized yet!");
-	}
-	for (int i = 0; i < level_height; i++)
-	{
-		for (int j = 0; j < level_width; j++)
+		for (int column = 0; column < TellLevelWidth(); column++)
 		{
-			map[i][j] = cre_none;
+			map[row][column].type = cre_none;
+			map[row][column].ptr_creature = NULL;
 		}
 	}
-	printf("Level with given dimensions: %d by %d was cleared!\n", level_width, level_height);
+	printf("Level with given dimensions: %d by %d was cleared!\n", TellLevelWidth(), TellLevelHeight());
 }
 
-
-void Level::SetMazeBlockHeight(int height)
-{
-	maze_block_height = height;
-}
-
-void Level::SetMazeBlockWidth(int width)
-{
-	maze_block_width = width;
-}
-
-void Level::PrepareMazeGrid()
-{
-	if (map == NULL)
-	{
-		throw std::invalid_argument("Trying to prepare maze grid on a map which was not initialized yet!");
-	}
-	for (int i = 0; i < level_height; i++)
-	{
-		for (int j = 0; j < level_width; j++)
-		{
-			if (j%(maze_block_width-1) == 0)
-			{
-				map[i][j] = cre_flying_box;
-			}
-			if (i%(maze_block_height-1) == 0)
-			{
-				map[i][j] = cre_flying_box;
-			}
-		}
-	}
-}
 /*
 //EXAMPLE
 int main() {

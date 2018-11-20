@@ -2,11 +2,13 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
+#include <stdexcept>
+#include <algorithm>
 #include <Creature.hpp>
 #include <Game.hpp>
 #include <Sprite.hpp>
 #include <CommonHeaderCreatures.hpp>
-#include <stdexcept>
 
 //***********************************
 //DEFINITIONS OF STATIC CLASS MEMBERS
@@ -77,7 +79,7 @@ Creature::Creature(Sprite *ptr_my_sprite, int hitbox_margin)
 Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin, int my_render_layer)
 {
 	//Take care of sprite assignment
-	printf("Will assign sprite to newly spawned creature: %d\n", my_sprite_type);
+	//printf("Will assign sprite to newly spawned creature: %d\n", my_sprite_type);
 	Creature::SetMySprite(Sprite::CreateSprite(my_sprite_type, ptr_my_position));
 	//Set the initial value to move upwards by (velocity * pixels)
 	next_step.y = velocity * -1;
@@ -97,12 +99,19 @@ Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hit
 
 Creature::~Creature()
 {
+	printf("Destructor called for Creature %p.\n", this);
+	RemoveFromClassInstancesVector();
 	delete ptr_creature_sprite;
 }
 
 //****************************
 //MANAGING ALL CLASS INSTANCES
 //****************************
+
+void Creature::RemoveFromClassInstancesVector()
+{
+	class_instances.erase(std::remove(class_instances.begin(), class_instances.end(), this), class_instances.end());
+}
 
 void Creature::AddToClassInstancesVector()
 {
@@ -118,21 +127,21 @@ void Creature::AddToClassInstancesVector()
 			//AND we haven't reached last item in vector.
 			if (my_render_layer > current_item_render_layer && i < instances_count - 1)
 			{
-				printf("%d: did not push into instances vector, cause render layer is higher than current.\n", i);
+				//printf("%d: did not push into instances vector, cause render layer is higher than current.\n", i);
 			}
 			//If render layer of added item is higher than render layer of currently examined item
 			//AND we have reached last item in vector.
 			else if (my_render_layer > current_item_render_layer && i == instances_count - 1)
 			{
 				Creature::class_instances.push_back(this);
-				printf("%d: pushed into instances vector as last item, cause reached last item in vector: %d.\n", i, instances_count  -1);
+				//printf("%d: pushed into instances vector as last item, cause reached last item in vector: %d.\n", i, instances_count  -1);
 				break;
 			}
 			//If render layer of added item is equal or lower than render layer of currently examined item
 			else
 			{
 				Creature::class_instances.insert(Creature::class_instances.begin()+i,this);
-				printf("%d: pushed into instances vector as %d , cause render layer is higher than current.\n",i,i);
+				//printf("%d: pushed into instances vector as %d , cause render layer is higher than current.\n",i,i);
 				break;
 			}
 		}
@@ -141,7 +150,7 @@ void Creature::AddToClassInstancesVector()
 	else
 	{
         Creature::class_instances.push_back(this);
-		printf("Pushed first item into class instances\n");
+		//printf("Pushed first item into class instances\n");
 	}
 	//for (Creature* cre_in : Creature::class_instances)
 	//{
@@ -233,7 +242,7 @@ void Creature::InitializeHitbox(SDL_Rect sprite_position, int margin_percent)
     hitbox.w = sprite_position.w - x_margin;
     hitbox.y = sprite_position.y + y_margin;
     hitbox.h = sprite_position.h - y_margin;
-    printf("Hitbox is: x: %d, y: %d, w: %d, h: %d\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+    //printf("Hitbox is: x: %d, y: %d, w: %d, h: %d\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 }
 
 //********
@@ -291,6 +300,35 @@ void Creature::RemoveNeighbors()
 	my_neighbors.clear();
 }
 
+void Creature::FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set)
+/*This function limits number of objects against which collision checks will be performed.
+Only objects with hitboxes within neighbor_radius will be checked.*/
+{
+	int my_middle_x = this->hitbox.x + (this->hitbox.w / 2);
+	int my_middle_y = this->hitbox.y + (this->hitbox.h / 2);
+	//int counter = 0;
+	for (Creature* ptr_creature : *ptr_my_creatures_set)
+	{
+		int creature_middle_x = ptr_creature->hitbox.x + (ptr_creature->hitbox.w / 2);
+		int creature_middle_y = ptr_creature->hitbox.y + (ptr_creature->hitbox.h / 2);
+		int distance_x = std::abs(creature_middle_x - my_middle_x);
+		int distance_y = std::abs(creature_middle_y - my_middle_y);
+		int distance = sqrt((distance_x * distance_x) + (distance_y*distance_y));
+		//printf("Distance is: x: %d y: %d, overall: %d, neighbor radius is: %d\n", distance_x, distance_y, distance, neighbor_radius);
+		if (distance <= neighbor_radius)
+		{
+			my_neighbors.push_back(ptr_creature);
+			//counter++;
+		}
+	}
+	//printf("Found %d neighbors for %p.\n", counter, this);
+	//if (this->AmIMainCharacter() == true)
+	//{
+	//	printf("These are neighbors for main character.\n");
+	//}
+}
+
+
 void Creature::FindNeighBors()
 /*This function limits number of objects against which collision checks will be performed.
 Only objects with hitboxes within neighbor_radius will be checked.*/
@@ -337,7 +375,7 @@ void Creature::Move(int x, int y)
             }
         }
         //printf("Checking main character collision.\n");
-        if (DoICollide())
+        if (DoICollideWithNeighbors())
         {
             //printf("Collision of main character detected\n");
             for (Creature* ptr_creature : Creature::class_instances)
@@ -384,7 +422,7 @@ void Creature::MovePixelByPixel(int x, int y, bool check_collisions)
             x++;
         }
         MoveComponents(step_quant_x,0);
-        if (DoICollide() && check_collisions)
+        if (DoICollideWithNeighbors() && check_collisions)
         {
             //printf("Move points zeroed. (x movement).\n");
             x = 0;
@@ -403,7 +441,7 @@ void Creature::MovePixelByPixel(int x, int y, bool check_collisions)
             y++;
         }
         MoveComponents(0,step_quant_y);
-        if (DoICollide() && check_collisions)
+        if (DoICollideWithNeighbors() && check_collisions)
         {
             //printf("Move points zeroed. (y movement).\n");
             y = 0;
@@ -470,10 +508,48 @@ void Creature::StrafeRight()
 //COLLISIONS
 //**********
 
-bool Creature::DoICollide()
+bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature)
+{
+	bool result = false;
+	//printf("DoICollideWithNeighbors called for %p.\n", this);
+	int my_x = hitbox.x;
+	int my_y = hitbox.y;
+	int my_w = hitbox.w;
+	int my_h = hitbox.h;
+	if (ptr_my_creature != this /* Prevents checking collision with itself. */ && ptr_my_creature->is_obstacle == true)
+	{
+		int obs_x = ptr_my_creature->hitbox.x;
+		int obs_y = ptr_my_creature->hitbox.y;
+		int obs_w = ptr_my_creature->hitbox.w;
+		int obs_h = ptr_my_creature->hitbox.h;
+
+		if (DoICollideXPlane(my_x, my_w, obs_x, obs_w) && DoICollideYPlane(my_y, my_h, obs_y, obs_h))
+		{
+			//printf("Collision caught by DoICollideWithThisCreature!\n");
+			result = true;
+		}
+	}
+	return result;
+}
+
+std::vector<Creature*> Creature::WhichNeighborsDoICollideWith()
+{
+	std::vector<Creature*> result = {};
+	for (Creature* ptr_neighbor : my_neighbors)
+	{
+		if (DoICollideWithThisCreature(ptr_neighbor))
+		{
+			result.push_back(ptr_neighbor);
+		}
+	}
+	return result;
+}
+
+// #TODO - funkcja do rozbicia na iteracjê po s¹siadach i sprawdzanie kolizji
+bool Creature::DoICollideWithNeighbors()
 {
     bool result = false;
-    //printf("DoICollide called for %p.\n", this);
+    //printf("DoICollideWithNeighbors called for %p.\n", this);
 	int my_x = hitbox.x;
 	int my_y = hitbox.y;
 	int my_w = hitbox.w;
@@ -490,7 +566,7 @@ bool Creature::DoICollide()
 		
 			if (DoICollideXPlane(my_x,my_w,obs_x,obs_w) && DoICollideYPlane(my_y,my_h,obs_y,obs_h))
 			{
-			    //printf("Collision caught by DoICollide!\n");
+			    //printf("Collision caught by DoICollideWithNeighbors!\n");
 			    result = true;
 			}
 		}

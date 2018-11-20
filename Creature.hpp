@@ -85,7 +85,8 @@ class Creature
         void TurnLeft();
         void Move(int x, int y);
 		//void MovePixelPerfect(int x, int y);
-		void FindNeighBors();
+		void FindNeighBors(); //# TODO - do usuniêcia po skasowaniu tablicy instancji Creatures!
+		void FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set);
 		void RemoveNeighbors();
         void MovePixelByPixel(int x, int y, bool check_collisions = true);
         void MoveComponents(int x, int y);
@@ -96,7 +97,9 @@ class Creature
         void Strafe(int sidestep_angle);
         void StrafeLeft();
         void StrafeRight();
-        bool DoICollide();
+		bool DoICollideWithThisCreature(Creature* ptr_my_creature);
+        bool DoICollideWithNeighbors();
+		std::vector<Creature*> WhichNeighborsDoICollideWith();
         bool DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w);
         bool DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h);
         static void SetMainCharacterToNull();
@@ -104,6 +107,7 @@ class Creature
         bool AmIMainCharacter();
         Creature* WhoIsMainCharacter();
         void AddToClassInstancesVector();
+		void RemoveFromClassInstancesVector();
         static int TellInstancesCount();
         void PrintStupidThings(Creature* ptr_to_creature);
 };

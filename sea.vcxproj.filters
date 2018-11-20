@@ -63,6 +63,9 @@
     <ClInclude Include="CommonHeaderSprites.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelComponent.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Creature.cpp">
@@ -108,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CreatureBlackSmoke.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
