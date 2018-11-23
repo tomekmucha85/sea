@@ -1,7 +1,8 @@
-#include <SDL.h>
-#include <SDL_image.h>
 #ifndef SCREEN_HPP
 #define SCREEN_HPP
+#include <SDL.h>
+#include <SDL_image.h>
+
 class Screen
 {
     private:

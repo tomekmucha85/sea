@@ -6,22 +6,19 @@
 #include <stdexcept>
 #include <algorithm>
 #include <Creature.hpp>
-#include <Game.hpp>
-#include <Sprite.hpp>
-#include <CommonHeaderCreatures.hpp>
 
 //***********************************
 //DEFINITIONS OF STATIC CLASS MEMBERS
 //***********************************
 
-std::vector <Creature*> Creature::class_instances;
+std::vector <Creature*> Creature::current_environment;
 std::vector <CreatureType> Creature::walls = { cre_flying_box };
 Creature* Creature::ptr_current_main_charater;
 
 //**************
 //STATIC METHODS
 //**************
-
+/*
 Creature* Creature::SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position)
 {
 	Creature* result = NULL;
@@ -48,7 +45,7 @@ Creature* Creature::SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_posit
 	
 	return result;
 }
-
+*/
 
 //************
 //DEBUG
@@ -66,7 +63,7 @@ void Creature::PrintStupidThings(Creature* ptr_to_creature)
 Creature::Creature(Sprite *ptr_my_sprite, int hitbox_margin)
 {
     //Write entry in static vector class_instances
-    AddToClassInstancesVector();
+    //AddToClassInstancesVector();
     //Give Creature its Sprite
     SetMySprite(ptr_my_sprite);
     //Set the initial value to move upwards by (velocity * pixels)
@@ -90,7 +87,7 @@ Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hit
 	//Set in which layer should this Creature be rendered
 	Creature::SetMyRenderLayer(my_render_layer);
 	//Write entry in static vector class_instances
-	AddToClassInstancesVector();
+	//AddToClassInstancesVector();
 }
 
 //************
@@ -100,7 +97,7 @@ Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hit
 Creature::~Creature()
 {
 	printf("Destructor called for Creature %p.\n", this);
-	RemoveFromClassInstancesVector();
+	//RemoveFromClassInstancesVector();
 	delete ptr_creature_sprite;
 }
 
@@ -108,7 +105,7 @@ Creature::~Creature()
 //MANAGING ALL CLASS INSTANCES
 //****************************
 
-void Creature::RemoveFromClassInstancesVector()
+/*void Creature::RemoveFromClassInstancesVector()
 {
 	class_instances.erase(std::remove(class_instances.begin(), class_instances.end(), this), class_instances.end());
 }
@@ -162,6 +159,14 @@ int Creature::TellInstancesCount()
 {
     return Creature::class_instances.size();
 }
+*/
+
+//**********************
+//SETTING ENVIRONMENT
+//**********************
+
+
+
 
 //**********************
 //SETTING MAIN CHARACTER
@@ -213,6 +218,16 @@ void Creature::SetMyRenderLayer(int layer_number)
 	Creature::render_layer = layer_number;
 }
 
+/*void Creature::SetOwner(LevelComponent* my_ptr_owner)
+{
+	ptr_owner = my_ptr_owner;
+}
+
+LevelComponent* Creature::WhoIsMyOwner()
+{
+	return ptr_owner;
+}
+*/
 //**********
 //COLLISIONS
 //**********
@@ -329,9 +344,9 @@ Only objects with hitboxes within neighbor_radius will be checked.*/
 }
 
 
-void Creature::FindNeighBors()
-/*This function limits number of objects against which collision checks will be performed.
-Only objects with hitboxes within neighbor_radius will be checked.*/
+/*void Creature::FindNeighBors()
+//This function limits number of objects against which collision checks will be performed.
+//Only objects with hitboxes within neighbor_radius will be checked.
 {
 	int my_middle_x = this->hitbox.x + (this->hitbox.w / 2);
 	int my_middle_y = this->hitbox.y + (this->hitbox.h / 2);
@@ -356,18 +371,22 @@ Only objects with hitboxes within neighbor_radius will be checked.*/
 	//	printf("These are neighbors for main character.\n");
 	//}
 }
-
+*/
 void Creature::Move(int x, int y)
 {
 //Moves this object - in case it's a non-player object.
 //Moves all the other creatures in case we're dealing with player object. This way screen scroll is achieved.
     //printf("========[Move called by %p.]=============\n", this);
-	this->RemoveNeighbors();
-	this->FindNeighBors();
+
+	//Determining environment - what neighbors do I have?
+	RemoveNeighbors();
+	FindNeighborsInSet(&current_environment);
+
+	//If Main Character Creature is moved, in fact it stays in place and all the other Creatures on given level are moved.
     if (AmIMainCharacter())
     {
         //Now we're C++11 as fuck!
-        for (Creature* ptr_creature : Creature::class_instances)
+        for (Creature* ptr_creature : Creature::current_environment)
         {
             if (ptr_creature != this) /* Prevents moving the main character. */
             {
@@ -378,7 +397,7 @@ void Creature::Move(int x, int y)
         if (DoICollideWithNeighbors())
         {
             //printf("Collision of main character detected\n");
-            for (Creature* ptr_creature : Creature::class_instances)
+            for (Creature* ptr_creature : Creature::current_environment)
             {
                 if (ptr_creature != this) /* Prevents moving the main character. */
                 {

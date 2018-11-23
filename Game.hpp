@@ -1,8 +1,9 @@
+#ifndef GAME_HPP
+#define GAME_HPP
 #include <Screen.hpp>
 #include <TextureBank.hpp>
 #include <Level.hpp>
-#ifndef GAME_HPP
-#define GAME_HPP
+#include <Creature.hpp>
 
 class Game
 {
@@ -18,7 +19,7 @@ class Game
 		static int debug_counter;
         static Screen* ptr_screen;
         static TextureBank* ptr_texture_bank;
-		static Level* current_level;
+		static Level* ptr_current_level;
 
         //###################
         //FUNCTIONS
@@ -27,7 +28,7 @@ class Game
         static void DestroyGame();
         static void CreateScreen();
 		static void LoadTextures();
-		static void SetCurrentLevel(Level* my_current_level);
+		static void SetCurrentLevel(Level* ptr_my_current_level);
 
 };
 

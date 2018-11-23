@@ -7,7 +7,7 @@
 Screen* Game::ptr_screen;
 TextureBank* Game::ptr_texture_bank;
 int Game::debug_counter;
-Level* Game::current_level;
+Level* Game::ptr_current_level;
 
 //***********************************
 //METHODS
@@ -16,7 +16,7 @@ Level* Game::current_level;
 void Game::InitializeGame()
 {
     printf("Going to initialize game.\n");
-	Game::debug_counter = 10;
+	debug_counter = 10;
     CreateScreen();
     LoadTextures();
 }
@@ -39,7 +39,7 @@ void Game::LoadTextures()
     Game::ptr_texture_bank = new TextureBank(Game::ptr_screen->renderer);
 }
 
-void Game::SetCurrentLevel(Level* my_current_level)
+void Game::SetCurrentLevel(Level* ptr_my_current_level)
 {
-	current_level = my_current_level;
+	ptr_current_level = ptr_my_current_level;
 }

@@ -12,7 +12,7 @@
 #include <TextureBank.hpp>
 #include <Sprite.hpp>
 #include <Creature.hpp>
-#include <CommonHeaderCreatures.hpp>
+#include <LevelComponent.hpp>
 #include <CommonHeaderSprites.hpp>
 
 //###################
@@ -37,11 +37,20 @@ int main(int argc, char* args[])
     Game::InitializeGame();
 
 	Level* my_level = new Level();
-	/*for (int i = 0; i < 10; i++)
-	{
-		my_level->GenerateRandomObjectOnMap();
-	}*/
-	my_level->PrintMap();
+	Game::SetCurrentLevel(my_level);
+	SDL_Rect core_area = { 0,0,0,0 };
+	SDL_Rect* ptr_core_area = &core_area;
+	LevelComponent* ptr_core = my_level->ptr_components_factory->SpawnLevelComponent(levco_core, 0, ptr_core_area);
+	SDL_Rect guy_area = { 10,10,0,0 };
+	SDL_Rect* ptr_guy_area = &guy_area;
+	ptr_core->AddCreature(cre_clawy, ptr_guy_area, force);
+	SDL_Rect box_area = { 20,20,0,0 };
+	SDL_Rect* ptr_box_area = &box_area;
+	ptr_core->AddCreature(cre_flying_box, ptr_box_area, merge);
+	SDL_Rect hero_position = { (Game::ptr_screen->TellScreenWidth()/2),(Game::ptr_screen->TellScreenHeight() / 2),0,0 };
+	SDL_Rect* ptr_hero_position = &hero_position;
+	Creature* ptr_hero = ptr_core->AddCreature(cre_clawy, ptr_hero_position, force);
+	ptr_hero->MakeMeMainCharacter();
 
     Sprite* ptr_blue_background = Sprite::CreateSprite(background);
 	/*SDL_Rect smoke_position = { 500,200,0,0 };
@@ -60,33 +69,11 @@ int main(int argc, char* args[])
 	Maze* my_maze_b = new Maze(my_level, ptr_maze_area_2);
 	*/
 
-
-	/*std::vector<std::vector<CreatureType>> hero_and_env = { {cre_none, cre_none, cre_none},
-	                                                        {cre_none, cre_none, cre_none}, 
-	                                                        {cre_none, cre_none, cre_none} };
-	SDL_Rect env_position = {14,12,0,0};
-	SDL_Rect* ptr_env_position = &env_position;
-	my_level->InsertStructureOntoMap(hero_and_env, ptr_env_position);*/
-	SDL_Rect hero_position = { 13,12,0,0 };
-	SDL_Rect* ptr_hero_position = &hero_position;
-	my_level->InsertCreatureOntoMap(cre_clawy, ptr_hero_position);
-	Creature* ptr_hero = my_level->TellPointerToCreatureInSlot(13,12);
-	ptr_hero->MakeMeMainCharacter();
-
-    /*SDL_Rect hero_position = {320,240,0,0};
-    SDL_Rect* ptr_hero_position = &hero_position;
-	Creature* cre_heros = Creature::SpawnCreature(cre_clawy, ptr_hero_position);
-	cre_heros->MakeMeMainCharacter();*/
-    //my_level->PrintMap();
-	//my_level->TestArray();
-
 	/*
 	SDL_Rect box_4_position = { 25,25,0,0 };
 	SDL_Rect* ptr_box_4_position = &box_4_position;
 	Creature* cre_box4 = Creature::SpawnCreature(cre_flying_box,ptr_box_4_position);
 	*/
-    std::cout << "Creatures present: ";
-    std::cout << Creature::TellInstancesCount() << std::endl;
 
     while (!quit)
     {
@@ -147,8 +134,7 @@ int main(int argc, char* args[])
         //Render texture to screen
 		ptr_blue_background->Render();
 		//#TODO zrobiæ generator Creature, zadbac o destruktor i konstruktor kopiujacy
-		//#TODO napisaæ klasê Level
-		Level::RenderAllPresentCreatures();
+		my_level->RenderAllPresentCreatures();
         //Update screen
         SDL_RenderPresent(Game::ptr_screen->renderer);
     }

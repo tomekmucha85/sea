@@ -1,9 +1,15 @@
-#include <Sprite.hpp>
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
+#include <Sprite.hpp>
+#include <vector>
 
 //cre_none means empty space/no creature present
 enum CreatureType    {cre_none, cre_clawy, cre_flying_box, cre_black_smoke};
+
+//Forward declarations
+class CreatureClawy;
+class CreatureBlackSmoke;
+class FlyingBox;
 
 class Creature
 {
@@ -36,6 +42,10 @@ class Creature
 		//In what layer should the creature exist (important while rendering whole scene)
 		//Who is on the top, who is below?
 		int render_layer = 0;
+		//Pointer to array storing pointers of all co-existing Creatures
+		//std::map<LevelComponentType, std::vector<LevelComponent*>>* environment = nullptr;
+		//What LevelComponent do I belong to?
+		//LevelComponent* ptr_owner = nullptr;
 		//Vector holding creatures present in given radius
 		std::vector <Creature*> my_neighbors;
 		//How far do we seek for neighbors?
@@ -56,8 +66,8 @@ class Creature
         //###################
         int velocity = 5;
         Sprite *ptr_creature_sprite = NULL;
-        //Vector holding pointers to all instances of a class
-        static std::vector <Creature*> class_instances;
+        //Vector holding pointers to all creatures currently present in game.
+        static std::vector <Creature*> current_environment;
         //Holds address of Creature acting as current main character
         static Creature* ptr_current_main_charater;
 
@@ -75,9 +85,11 @@ class Creature
         Creature(Sprite *ptr_my_sprite, int hitbox_margin = 10);
 		Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin = 10, int my_render_layer = 0);
 		~Creature();
-        static Creature* SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position);
+        //static Creature* SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position);
 		void SetMySprite(Sprite* ptr_my_sprite);
 		void SetMyRenderLayer(int layer_number);
+		//void SetOwner(LevelComponent* ptr_my_owner);
+		//LevelComponent* WhoIsMyOwner();
 		void MakeMeObstacle();
 		void MakeMeNotObstacle();
         void Turn(int turn_angle_degree);
@@ -85,7 +97,7 @@ class Creature
         void TurnLeft();
         void Move(int x, int y);
 		//void MovePixelPerfect(int x, int y);
-		void FindNeighBors(); //# TODO - do usuniêcia po skasowaniu tablicy instancji Creatures!
+		//void FindNeighBors(); //# TODO - do usuniêcia po skasowaniu tablicy instancji Creatures!
 		void FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set);
 		void RemoveNeighbors();
         void MovePixelByPixel(int x, int y, bool check_collisions = true);
@@ -106,9 +118,11 @@ class Creature
         void MakeMeMainCharacter();
         bool AmIMainCharacter();
         Creature* WhoIsMainCharacter();
-        void AddToClassInstancesVector();
-		void RemoveFromClassInstancesVector();
-        static int TellInstancesCount();
+        //void AddToClassInstancesVector();
+		//void RemoveFromClassInstancesVector();
+        //static int TellInstancesCount();
         void PrintStupidThings(Creature* ptr_to_creature);
 };
+
+
 #endif // CREATURE_HPP

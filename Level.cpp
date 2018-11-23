@@ -10,8 +10,10 @@
 
 Level::Level()
 {
-	Level::CreateLevelGrid();
+	CreateLevelGrid();
+	CreateComponentsFactory();
 	//Level::CleanLevelGrid();
+
 }
 
 //************
@@ -22,6 +24,7 @@ Level::Level()
 Level::~Level()
 {
 	//#TODO Dopracowaæ!
+	delete ptr_components_factory;
 }
 
 //*****************
@@ -29,15 +32,20 @@ Level::~Level()
 //*****************
 
 //Every component holds its own creatures
-//Level traces components
+//Level traces holds record of its components
 
-
-/*void Level::CreateMaze(SDL_Rect* ptr_maze_area, int maze_index)
+std::map<LevelComponentType, std::vector<LevelComponent*>>* Level::TellPointerToComponentsArray()
 {
-	std::map<std::string, std::vector<LevelComponent*>>* ptr_components_array = &level_components;
-	LevelComponent* ptr_my_maze = new Maze( ptr_components_array, ptr_maze_area, maze_index);
-	level_components["maze"][maze_index] = ptr_my_maze;
-}*/
+	std::map<LevelComponentType, std::vector<LevelComponent*>>* ptr_level_components = &level_components;
+	return ptr_level_components;
+}
+
+FactorySpawningLevelComponents* Level::CreateComponentsFactory()
+{
+	ptr_components_factory = new FactorySpawningLevelComponents(TellPointerToComponentsArray());
+	return ptr_components_factory;
+}
+
 
 //************
 //POPULATING MAP
@@ -123,26 +131,13 @@ Creature* Level::InsertCreatureOntoMap(CreatureType my_type, SDL_Rect* ptr_my_po
 	{
 		printf("Inserting a creature %d onto map. X: %d Y:%d.\n", my_type, x_tile, y_tile);
 		map[y_tile][x_tile].type = my_type;
-		return VivifyCreature(x_tile, y_tile, my_type);
+		//return VivifyCreature(x_tile, y_tile, my_type);
 	}
 	else
 	{
 		printf("Could not place creature %d in tile y: %d x: %d. Tile is not free!\n", my_type, y_tile, x_tile);
 		return nullptr;
 	}
-}
-
-Creature* Level::VivifyCreature(int map_column, int map_row, CreatureType my_type)
-{
-	//#TODO - zrezygnowaæ z offsetu?
-	//Method for spawning creature in desired map tile.
-	int position_x = (map_column - TellMapOffsetX()) * map_block_width;
-	int position_y = (map_row - TellMapOffsetY()) * map_block_height;
-	printf("Vivifying creature map. Coords: x: %d, y: %d, creature type: %d\n", position_x, position_y, my_type);
-	SDL_Rect my_position = { position_x, position_y, 0, 0 };
-	SDL_Rect* ptr_my_position = &my_position;
-	map[map_row][map_column].ptr_creature = Creature::SpawnCreature(my_type, ptr_my_position);
-	return map[map_row][map_column].ptr_creature;
 }
 
 bool Level::RemoveCreatureFromMap(int map_column, int map_row)
@@ -161,32 +156,11 @@ bool Level::RemoveCreatureFromMap(int map_column, int map_row)
 	}
 }
 
-void Level::InsertStructureOntoMap(std::vector<std::vector<CreatureType>> my_structure, SDL_Rect* ptr_my_left_top_position)
-{
-//#TODO brakuje walidacji, czy taki obszar jest zaindeksowany na mapie
-	int start_map_tile_x = ptr_my_left_top_position->x;
-	int start_map_tile_y = ptr_my_left_top_position->y;
-	int current_map_tile_y = start_map_tile_y;
-	for (int i = 0; i < my_structure.size(); i++)
-	{
-		int current_map_tile_x = start_map_tile_x;
-		for (int j = 0; j < my_structure[i].size(); j++)
-		{
-	        //#TODO nie sprawdza, czy miejsce by³o wolne!
-			//printf("Inserting creature %d onto map. X: %d, Y; %d.\n", my_structure[i][j], current_map_tile_x, current_map_tile_y);
-			map[current_map_tile_y][current_map_tile_x].type = my_structure[i][j];
-			current_map_tile_x++;
-		}
-		current_map_tile_y++;
-	}
-}
-
 Creature* Level::TellPointerToCreatureInSlot(int x, int y)
 {
 	Creature* result = map[y][x].ptr_creature;
 	return result;
 }
-
 
 CreatureType Level::PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures)
 {
@@ -282,8 +256,6 @@ int Level::TellMapOffsetY()
 	return map_offset_y;
 }
 
-
-
 void Level::DetermineMapDimensions(float margin)
 {
 	int screen_cols_count = Screen::TellScreenWidth() / map_block_width;
@@ -354,9 +326,15 @@ return 0;
 
 void Level::RenderAllPresentCreatures()
 {
-	for (Creature* ptr_creature : Creature::class_instances)
+	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_components)
 	{
-		ptr_creature->ptr_creature_sprite->Render();
+		std::vector<LevelComponent*> my_level_components = element.second;
+		for (LevelComponent* ptr_my_level_component : my_level_components)
+		{
+			for (Creature* ptr_member_creature : *ptr_my_level_component->TellPtrToCreaturesArray())
+			{
+				ptr_member_creature->ptr_creature_sprite->Render();
+			}
+		}
 	}
-
 }

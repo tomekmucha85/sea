@@ -1,11 +1,13 @@
 #ifndef LEVEL_HPP
 #define LEVEL_HPP
 #include <SDL.h>
+#include <vector>
 #include <map>
 #include <string>
 #include <Creature.hpp>
 #include <LevelComponent.hpp>
-#include <Maze.hpp>
+#include <FactorySpawningLevelComponents.hpp>
+//#include <Maze.hpp>
 
 class Level
 {
@@ -24,7 +26,7 @@ class Level
 		//Variables & const
 		//###################
         //Map of level components
-		std::map<LevelComponentType, std::vector<LevelComponent*>> level_components;
+		std::map<LevelComponentType, std::vector<LevelComponent*>> level_components = {};
 		//Expressed in pixels
 		int map_block_width  = 40;
 		int map_block_height = 40;
@@ -39,17 +41,17 @@ class Level
     public:
 		Level();
 		~Level();
+		//Level components factory
+		FactorySpawningLevelComponents* ptr_components_factory = nullptr;
 		//void CreateMaze(SDL_Rect* ptr_maze_area, int maze_index);
 		void DetermineMapDimensions(float margin=0.5);
-		Creature* VivifyCreature(int map_row, int map_column, CreatureType my_type);
 		void PrintMap();
-		static void RenderAllPresentCreatures();
+		void RenderAllPresentCreatures();
 		void CreateLevelGrid();
 		CreatureType PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures);
 		SDL_Rect FindFreeTile();
 		Creature* InsertCreatureOntoMap(CreatureType my_type, SDL_Rect* ptr_my_position, bool force=false);
 		bool RemoveCreatureFromMap(int map_column, int map_row);
-		void InsertStructureOntoMap(std::vector<std::vector<CreatureType>>, SDL_Rect* ptr_my_left_top_position);
 		void GenerateRandomObjectOnMap();
 		int TellLevelWidth();
 		int TellLevelHeight();
@@ -66,6 +68,8 @@ class Level
 		int TellMapOffsetX();
 		int TellMapOffsetY();
 		Creature* TellPointerToCreatureInSlot(int x, int y);
+		std::map<LevelComponentType, std::vector<LevelComponent*>>* TellPointerToComponentsArray();
+		FactorySpawningLevelComponents* CreateComponentsFactory();
 };
 
 #endif //LEVEL_HPP
