@@ -39,7 +39,18 @@ LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelCompone
 	}
 	else if (my_type == levco_maze)
 	{
-		;
+		if (ptr_my_component_area == nullptr)
+		{
+			std::string exception_text = "No area specified for maze level component!\n";
+			throw std::invalid_argument(exception_text);
+		}
+		else
+		{
+			LevelComponent* ptr_my_component_maze = new LevelComponentMaze(ptr_level_components_array, ptr_my_component_area);
+			EnsureKeyExistsInComponentsArray(my_type);
+			InsertComponentIntoDesiredPlaceInComponentsArray(my_type, ptr_my_component_maze, my_component_index);
+			return ptr_my_component_maze;
+		}
 	}
 	else if (my_type == levco_powerups)
 	{

@@ -27,9 +27,6 @@ class Level
 		//###################
         //Map of level components
 		std::map<LevelComponentType, std::vector<LevelComponent*>> level_components = {};
-		//Expressed in pixels
-		int map_block_width  = 40;
-		int map_block_height = 40;
 		//Expressed in map blocks
 		int initial_level_width = NULL;
 		int initial_level_height = NULL;
@@ -44,7 +41,7 @@ class Level
 		//Level components factory
 		FactorySpawningLevelComponents* ptr_components_factory = nullptr;
 		//void CreateMaze(SDL_Rect* ptr_maze_area, int maze_index);
-		void DetermineMapDimensions(float margin=0.5);
+		//void DetermineMapDimensions(float margin=0.5);
 		void PrintMap();
 		void RenderAllPresentCreatures();
 		void CreateLevelGrid();

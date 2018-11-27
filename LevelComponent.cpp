@@ -25,20 +25,24 @@ std::vector<Creature*>* LevelComponent::TellPtrToCreaturesArray()
 	return my_ptr_to_creatures_array;
 }
 
-std::vector<Creature*> LevelComponent::FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature)
+std::map<Creature*, LevelComponent*> LevelComponent::FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature)
 {
-	ptr_my_creature->RemoveNeighbors();
+	std::map<Creature*, LevelComponent*> result = {};
 	//Iterating over map of Level Component types vs vectors containing pointers to them
-    //#TODO rename "peer" to "all"
 	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : *ptr_peer_level_components)
 	{
 		std::vector<LevelComponent*> my_level_components = element.second;
 		for (LevelComponent* ptr_my_level_component : my_level_components)
 		{
+			ptr_my_creature->RemoveNeighbors();
 			ptr_my_creature->FindNeighborsInSet(ptr_my_level_component->TellPtrToCreaturesArray());
+			for (Creature* ptr_colliding_creature : ptr_my_creature->WhichNeighborsDoICollideWith())
+			{
+				result.insert(std::pair<Creature*, LevelComponent*>(ptr_colliding_creature, ptr_my_level_component));
+			}
 		}
 	}
-	return ptr_my_creature->WhichNeighborsDoICollideWith();
+	return result;
 }
 
 Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode)
@@ -57,7 +61,7 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 		return ptr_my_creature;
 	}
 	//Vector containing pointers to colliding neighbor creatures.
-	std::vector<Creature*> collisions = FindCreatureNeighborsInAllLevelComponents(ptr_my_creature);
+	std::map<Creature*, LevelComponent*> collisions = FindCreatureNeighborsInAllLevelComponents(ptr_my_creature);
 	if (collisions.size() > 0)
 	{
 		//Force mode removes all colliding Creatures.
@@ -66,17 +70,12 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 			printf("Inserting object forcefully, removing all colliding ones.\n");
 			//Removing obstacles
 			//#TODO zoptymalizowaæ - obecnie najpierw szukamy kolizji wœród komponentów, a potem poszukujemy komponentu-w³aœciciela
-			for (Creature* ptr_colliding_creature : collisions)
+			for (std::pair<Creature*, LevelComponent*> collision: collisions)
 			{
-				LevelComponent* ptr_colliding_creature_owner = nullptr/*ptr_colliding_creature->WhoIsMyOwner()*/;
-				if (ptr_colliding_creature_owner != nullptr)
-				{
-					ptr_colliding_creature_owner->RemoveCreature(ptr_colliding_creature);
-				}
-				else
-				{
-					throw "No owner for creature found in current level!";
-				}
+				Creature* ptr_my_creature = collision.first;
+				LevelComponent* ptr_my_level_component = collision.second;
+				printf("Forceful creature removal!\n");
+				ptr_my_level_component->RemoveCreature(ptr_my_creature);
 			}
 			creatures.push_back(ptr_my_creature);
 			Creature::current_environment.push_back(ptr_my_creature);
@@ -108,9 +107,40 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 void LevelComponent::RemoveCreature(Creature* ptr_my_creature)
 {
 	//Removing pointer from my creatures
+	printf("Attempting to remove: %p.\n", ptr_my_creature);
 	creatures.erase(std::remove(creatures.begin(), creatures.end(), ptr_my_creature), creatures.end());
 	Creature::current_environment.erase(std::remove(Creature::current_environment.begin(),
-		Creature::current_environment.end(), ptr_my_creature), Creature::current_environment.end());
+	    Creature::current_environment.end(), ptr_my_creature), Creature::current_environment.end());
 	//Destroying creature.
 	delete ptr_my_creature;
+}
+
+void LevelComponent::RemoveAllCreatures()
+{
+	int i = 1;
+	//Temporary vector holding copy of "creatures"
+	//Necessary, 'cause we don't want to iterate over vector and modify it simultaneously!
+	std::vector<Creature*> creatures_to_remove = creatures;
+	for (Creature* ptr_my_creature : creatures_to_remove)
+	{
+		printf("Creature number %d, address: %p.\n", i, ptr_my_creature);
+		i++;
+		printf("Remaining creatures: %d.\n", creatures.size());
+		printf("Removing creature of type %d.\n", ptr_my_creature->my_type);
+		RemoveCreature(ptr_my_creature);
+	}
+}
+
+//##############################
+//Virtual functions
+//##############################
+
+void LevelComponent::ClearMaze()
+{
+	printf("ClearMaze has no implementation here!\n");
+}
+
+void LevelComponent::GenerateMaze()
+{
+	printf("GenerateMaze has no implementation here!\n");
 }

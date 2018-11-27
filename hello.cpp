@@ -6,7 +6,6 @@
 #include <string>
 #include <Game.hpp>
 #include <Level.hpp>
-#include <Maze.hpp>
 #include <Screen.hpp>
 #include <Texture.hpp>
 #include <TextureBank.hpp>
@@ -41,13 +40,16 @@ int main(int argc, char* args[])
 	SDL_Rect core_area = { 0,0,0,0 };
 	SDL_Rect* ptr_core_area = &core_area;
 	LevelComponent* ptr_core = my_level->ptr_components_factory->SpawnLevelComponent(levco_core, 0, ptr_core_area);
+	SDL_Rect maze_area_a = { 0,0,2280,2280 };
+	SDL_Rect* ptr_maze_area_a = &maze_area_a;
+	LevelComponent* ptr_maze_a = my_level->ptr_components_factory->SpawnLevelComponent(levco_maze, 0, ptr_maze_area_a);
 	SDL_Rect guy_area = { 10,10,0,0 };
 	SDL_Rect* ptr_guy_area = &guy_area;
 	ptr_core->AddCreature(cre_clawy, ptr_guy_area, force);
 	SDL_Rect box_area = { 20,20,0,0 };
 	SDL_Rect* ptr_box_area = &box_area;
 	ptr_core->AddCreature(cre_flying_box, ptr_box_area, merge);
-	SDL_Rect hero_position = { (Game::ptr_screen->TellScreenWidth()/2),(Game::ptr_screen->TellScreenHeight() / 2),0,0 };
+	SDL_Rect hero_position = { (Game::ptr_screen->TellScreenWidth()/2),(Game::ptr_screen->TellScreenHeight() / 2) + 80,0,0 };
 	SDL_Rect* ptr_hero_position = &hero_position;
 	Creature* ptr_hero = ptr_core->AddCreature(cre_clawy, ptr_hero_position, force);
 	ptr_hero->MakeMeMainCharacter();
@@ -58,17 +60,6 @@ int main(int argc, char* args[])
 	Creature* cre_black_smoke_1 = Creature::SpawnCreature(cre_black_smoke, ptr_smoke_position);
 	cre_black_smoke_1->MakeMeNotObstacle();
 	*/
-	//Dimensions expressed in map blocks
-
-	/*
-	SDL_Rect maze_area = { 0, 0, 40, 40 };
-	SDL_Rect* ptr_maze_area = &maze_area;
-	SDL_Rect maze_area_2 = { 20, 20, 40, 40 };
-	SDL_Rect* ptr_maze_area_2 = &maze_area_2;
-	Maze* my_maze_a = new Maze(my_level, ptr_maze_area);
-	Maze* my_maze_b = new Maze(my_level, ptr_maze_area_2);
-	*/
-
 	/*
 	SDL_Rect box_4_position = { 25,25,0,0 };
 	SDL_Rect* ptr_box_4_position = &box_4_position;
@@ -99,8 +90,8 @@ int main(int argc, char* args[])
 					break;
                     case SDLK_a: ptr_hero->TurnLeft(); break;
                     case SDLK_d: ptr_hero->TurnRight(); break;
-					//case SDLK_1: my_maze_a->ClearMaze(); break;
-					//case SDLK_2: my_maze_a->GenerateMaze(); break;
+					case SDLK_1: ptr_maze_a->ClearMaze(); break;
+					case SDLK_2: ptr_maze_a->GenerateMaze(); break;
 					//case SDLK_3: my_maze_b->ClearMaze(); break;
 					//case SDLK_4: my_maze_b->GenerateMaze(); break;
                 }

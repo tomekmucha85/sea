@@ -6,11 +6,6 @@
 //cre_none means empty space/no creature present
 enum CreatureType    {cre_none, cre_clawy, cre_flying_box, cre_black_smoke};
 
-//Forward declarations
-class CreatureClawy;
-class CreatureBlackSmoke;
-class FlyingBox;
-
 class Creature
 {
     private:
@@ -64,8 +59,10 @@ class Creature
         //###################
         //Variables
         //###################
+		// #TODO - daæ inny typ?
+		CreatureType my_type = cre_none;
         int velocity = 5;
-        Sprite *ptr_creature_sprite = NULL;
+        Sprite *ptr_creature_sprite = nullptr;
         //Vector holding pointers to all creatures currently present in game.
         static std::vector <Creature*> current_environment;
         //Holds address of Creature acting as current main character

@@ -145,6 +145,7 @@
     <ClInclude Include="Level.hpp" />
     <ClInclude Include="LevelComponent.hpp" />
     <ClInclude Include="LevelComponentCore.hpp" />
+    <ClInclude Include="LevelComponentMaze.hpp" />
     <ClInclude Include="LevelComponentTest.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="Sprite.hpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelComponent.cpp" />
     <ClCompile Include="LevelComponentCore.cpp" />
+    <ClCompile Include="LevelComponentMaze.cpp" />
     <ClCompile Include="LevelComponentTest.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Sprite.cpp" />

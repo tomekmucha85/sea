@@ -10,7 +10,7 @@
 
 Level::Level()
 {
-	CreateLevelGrid();
+	//CreateLevelGrid();
 	CreateComponentsFactory();
 	//Level::CleanLevelGrid();
 
@@ -53,7 +53,7 @@ FactorySpawningLevelComponents* Level::CreateComponentsFactory()
 
 void Level::CreateLevelGrid()
 {
-	Level::DetermineMapDimensions();
+	//Level::DetermineMapDimensions();
 	MapEntity blank_entity = {cre_none, NULL};
 	std::vector<std::vector<MapEntity>> level_grid(initial_level_height,std::vector<MapEntity>(initial_level_width, blank_entity));
 	map = level_grid;
@@ -256,7 +256,7 @@ int Level::TellMapOffsetY()
 	return map_offset_y;
 }
 
-void Level::DetermineMapDimensions(float margin)
+/*void Level::DetermineMapDimensions(float margin)
 {
 	int screen_cols_count = Screen::TellScreenWidth() / map_block_width;
 	int screen_rows_count = Screen::TellScreenHeight() / map_block_height;
@@ -268,7 +268,7 @@ void Level::DetermineMapDimensions(float margin)
 	printf("rows_count: %d cols_count: %d \n", rows_count, cols_count);
 	Level::SetInitialLevelHeight(rows_count);
 	Level::SetInitialLevelWidth(cols_count);
-}
+}*/
 
 void Level::CleanLevelGrid()
 {

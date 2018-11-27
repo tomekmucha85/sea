@@ -23,9 +23,8 @@ class LevelComponent
 		//Variables
 		//###################
 		SDL_Rect component_area = {0,0,0,0};
-		Creature* test = nullptr;
+		//Creature* test = nullptr;
 		std::vector<Creature*> creatures = {};
-		//Level* ptr_owner = nullptr;
 		std::map<LevelComponentType, std::vector<LevelComponent*>>* ptr_peer_level_components;
 
     public:
@@ -33,7 +32,9 @@ class LevelComponent
         //Variables
         //###################
 		FactorySpawningCreatures* ptr_creatures_factory = nullptr;
-
+		//Expressed in pixels
+		int map_block_width = 40;
+		int map_block_height = 40;
 
 		//###################
 		//Functions
@@ -42,9 +43,15 @@ class LevelComponent
 		~LevelComponent();
 		std::vector<Creature*>* TellPtrToCreaturesArray();
 		void SetPointerToPeerComponentsIndex(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components);
-		std::vector<Creature*> FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature);
+		std::map<Creature*, LevelComponent*> FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature);
 		Creature* AddCreature(CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode);
 		void RemoveCreature(Creature* ptr_my_creature);
+		void RemoveAllCreatures();
+		//###################
+        //Virtual Functions
+        //###################
+		virtual void ClearMaze();
+		virtual void GenerateMaze();
 };
 
 #endif LEVEL_COMPONENT_HPP

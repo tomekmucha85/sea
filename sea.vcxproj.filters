@@ -75,6 +75,9 @@
     <ClInclude Include="FactorySpawningLevelComponents.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelComponentMaze.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Creature.cpp">
@@ -135,6 +138,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FactorySpawningLevelComponents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelComponentMaze.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

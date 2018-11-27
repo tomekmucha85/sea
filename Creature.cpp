@@ -98,6 +98,7 @@ Creature::~Creature()
 {
 	printf("Destructor called for Creature %p.\n", this);
 	//RemoveFromClassInstancesVector();
+	printf("Attempting to remove sprite %p.\n", ptr_creature_sprite);
 	delete ptr_creature_sprite;
 }
 

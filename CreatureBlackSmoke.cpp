@@ -4,4 +4,5 @@ CreatureBlackSmoke::CreatureBlackSmoke(SDL_Rect* ptr_my_position, int hitbox_mar
 	Creature(CreatureBlackSmoke::my_initial_type, ptr_my_position, hitbox_margin, initial_render_layer)
 {
 	printf("Spawned CreatureBlackSmoke.\n");
+	my_type = cre_black_smoke;
 }
