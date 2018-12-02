@@ -140,6 +140,7 @@
     <ClInclude Include="FactorySpawningCreatures.hpp" />
     <ClInclude Include="CreatureFlyingBox.hpp" />
     <ClInclude Include="FactorySpawningLevelComponents.hpp" />
+    <ClInclude Include="FactorySpawningLevels.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="CommonHeaderSprites.hpp" />
     <ClInclude Include="Level.hpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="LevelComponentCore.hpp" />
     <ClInclude Include="LevelComponentMaze.hpp" />
     <ClInclude Include="LevelComponentTest.hpp" />
+    <ClInclude Include="LevelNineMazes.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="Sprite.hpp" />
     <ClInclude Include="SpriteBackground.hpp" />
@@ -163,6 +165,7 @@
     <ClCompile Include="FactorySpawningCreatures.cpp" />
     <ClCompile Include="CreatureFlyingBox.cpp" />
     <ClCompile Include="FactorySpawningLevelComponents.cpp" />
+    <ClCompile Include="FactorySpawningLevels.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="hello.cpp" />
     <ClCompile Include="Level.cpp" />
@@ -170,6 +173,7 @@
     <ClCompile Include="LevelComponentCore.cpp" />
     <ClCompile Include="LevelComponentMaze.cpp" />
     <ClCompile Include="LevelComponentTest.cpp" />
+    <ClCompile Include="LevelNineMazes.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBackground.cpp" />

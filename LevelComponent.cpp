@@ -1,5 +1,13 @@
 #include <LevelComponent.hpp>
+//***********************************
+//DEFINITIONS OF STATIC CLASS MEMBERS
+//***********************************
+int LevelComponent::map_block_width = 40;
+int LevelComponent::map_block_height = 40;
 
+//***********************************
+//FUNCTIONS
+//***********************************
 LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components)
 {
 	SetPointerToPeerComponentsIndex(my_ptr_peer_level_components);
@@ -55,7 +63,7 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 	//Merge mode leaves the Creature unconditionally
 	if (my_mode == merge)
 	{
-		printf("Creature %p spawned in merge mode.\n", ptr_my_creature);
+		//printf("Creature %p spawned in merge mode.\n", ptr_my_creature);
 		creatures.push_back(ptr_my_creature);
 		Creature::current_environment.push_back(ptr_my_creature);
 		return ptr_my_creature;
@@ -67,14 +75,14 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 		//Force mode removes all colliding Creatures.
 		if (my_mode == force)
 		{
-			printf("Inserting object forcefully, removing all colliding ones.\n");
+			//printf("Inserting object forcefully, removing all colliding ones.\n");
 			//Removing obstacles
 			//#TODO zoptymalizowaæ - obecnie najpierw szukamy kolizji wœród komponentów, a potem poszukujemy komponentu-w³aœciciela
 			for (std::pair<Creature*, LevelComponent*> collision: collisions)
 			{
 				Creature* ptr_my_creature = collision.first;
 				LevelComponent* ptr_my_level_component = collision.second;
-				printf("Forceful creature removal!\n");
+				//printf("Forceful creature removal!\n");
 				ptr_my_level_component->RemoveCreature(ptr_my_creature);
 			}
 			creatures.push_back(ptr_my_creature);
@@ -84,20 +92,20 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 		//Safe mode does not insert Creature if collision occurs.
 		else if (my_mode == safe)
 		{
-			printf("Not inserting object, because safe mode is on and collision(s) were detected.\n");
+			//printf("Not inserting object, because safe mode is on and collision(s) were detected.\n");
 			delete ptr_my_creature;
 			return nullptr;
 		}
 		else
 		{
-			printf("Unexpected event while adding creature - insertion mode unknown.\n");
+			//printf("Unexpected event while adding creature - insertion mode unknown.\n");
 			delete ptr_my_creature;
 			return nullptr;
 		}
 	}
 	else
 	{
-		printf("No collisions detected during Creature %p spawn.\n", ptr_my_creature);
+		//printf("No collisions detected during Creature %p spawn.\n", ptr_my_creature);
 		creatures.push_back(ptr_my_creature);
 		Creature::current_environment.push_back(ptr_my_creature);
 		return ptr_my_creature;
@@ -107,7 +115,7 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 void LevelComponent::RemoveCreature(Creature* ptr_my_creature)
 {
 	//Removing pointer from my creatures
-	printf("Attempting to remove: %p.\n", ptr_my_creature);
+	//printf("Attempting to remove: %p.\n", ptr_my_creature);
 	creatures.erase(std::remove(creatures.begin(), creatures.end(), ptr_my_creature), creatures.end());
 	Creature::current_environment.erase(std::remove(Creature::current_environment.begin(),
 	    Creature::current_environment.end(), ptr_my_creature), Creature::current_environment.end());
@@ -143,4 +151,9 @@ void LevelComponent::ClearMaze()
 void LevelComponent::GenerateMaze()
 {
 	printf("GenerateMaze has no implementation here!\n");
+}
+
+void LevelComponent::SetBorderState(Directions border_side, bool value)
+{
+	printf("SetBordersState has no implementation here!\n");
 }

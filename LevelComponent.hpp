@@ -15,6 +15,7 @@ enum LevelComponentType { levco_maze, levco_powerups, levco_test, levco_core };
 //    merge - add creature and do not care if it collides with any other
 //    safe - check if collision occurs. If yes - do not insert
 enum InsertionMode {force,merge,safe};
+enum Directions { north, east, south, west };
 
 class LevelComponent
 {
@@ -33,8 +34,8 @@ class LevelComponent
         //###################
 		FactorySpawningCreatures* ptr_creatures_factory = nullptr;
 		//Expressed in pixels
-		int map_block_width = 40;
-		int map_block_height = 40;
+		static int map_block_width;
+		static int map_block_height;
 
 		//###################
 		//Functions
@@ -52,6 +53,7 @@ class LevelComponent
         //###################
 		virtual void ClearMaze();
 		virtual void GenerateMaze();
+		virtual void SetBorderState(Directions border_side, bool value);
 };
 
 #endif LEVEL_COMPONENT_HPP

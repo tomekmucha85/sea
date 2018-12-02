@@ -14,7 +14,7 @@ SDL_Rect SpriteClawy::initial_texture_clip_clawy = {0,0,45,45};
 SpriteClawy::SpriteClawy(SDL_Rect* ptr_my_position)
 	: Sprite(Game::ptr_texture_bank->ptr_tex_clawy, SpriteClawy::initial_texture_clip_clawy, ptr_my_position)
 {
-    printf("Constructor called for SpriteClawy\n");
+    //printf("Constructor called for SpriteClawy\n");
 }
 
 //***********************************

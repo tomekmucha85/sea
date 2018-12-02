@@ -18,34 +18,7 @@ Creature* Creature::ptr_current_main_charater;
 //**************
 //STATIC METHODS
 //**************
-/*
-Creature* Creature::SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position)
-{
-	Creature* result = NULL;
 
-    if (desired_type == CreatureType::cre_clawy)
-    {
-        printf("Requested hero creature.\n");
-		result = new CreatureClawy(ptr_position);
-    }
-	else if (desired_type == CreatureType::cre_flying_box)
-	{
-		printf("Requested flying box creature. \n");
-		result = new CreatureFlyingBox(ptr_position);
-	}
-	else if (desired_type == CreatureType::cre_black_smoke)
-	{
-		printf("Requested black smoke creature.\n");
-		result = new CreatureBlackSmoke(ptr_position);
-	}
-    else
-    {
-        printf("Requested some other creature.\n");
-    }
-	
-	return result;
-}
-*/
 
 //************
 //DEBUG
@@ -96,9 +69,8 @@ Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hit
 
 Creature::~Creature()
 {
-	printf("Destructor called for Creature %p.\n", this);
-	//RemoveFromClassInstancesVector();
-	printf("Attempting to remove sprite %p.\n", ptr_creature_sprite);
+	//printf("Destructor called for Creature %p.\n", this);
+	//printf("Attempting to remove sprite %p.\n", ptr_creature_sprite);
 	delete ptr_creature_sprite;
 }
 
@@ -106,68 +78,9 @@ Creature::~Creature()
 //MANAGING ALL CLASS INSTANCES
 //****************************
 
-/*void Creature::RemoveFromClassInstancesVector()
-{
-	class_instances.erase(std::remove(class_instances.begin(), class_instances.end(), this), class_instances.end());
-}
-
-void Creature::AddToClassInstancesVector()
-{
-	int instances_count = Creature::TellInstancesCount();
-	int my_render_layer = this->render_layer;
-	//Loop to insert Creature pointer in a proper place (order is kept by render_layer attribute)
-	if (instances_count > 0)
-	{
-		for (int i = 0; i <= instances_count; i++)
-		{
-			int current_item_render_layer = Creature::class_instances[i]->render_layer;
-			//If render layer of added item is higher than render layer of currently examined item
-			//AND we haven't reached last item in vector.
-			if (my_render_layer > current_item_render_layer && i < instances_count - 1)
-			{
-				//printf("%d: did not push into instances vector, cause render layer is higher than current.\n", i);
-			}
-			//If render layer of added item is higher than render layer of currently examined item
-			//AND we have reached last item in vector.
-			else if (my_render_layer > current_item_render_layer && i == instances_count - 1)
-			{
-				Creature::class_instances.push_back(this);
-				//printf("%d: pushed into instances vector as last item, cause reached last item in vector: %d.\n", i, instances_count  -1);
-				break;
-			}
-			//If render layer of added item is equal or lower than render layer of currently examined item
-			else
-			{
-				Creature::class_instances.insert(Creature::class_instances.begin()+i,this);
-				//printf("%d: pushed into instances vector as %d , cause render layer is higher than current.\n",i,i);
-				break;
-			}
-		}
-	}
-	//If vector is empty, push the first item right away
-	else
-	{
-        Creature::class_instances.push_back(this);
-		//printf("Pushed first item into class instances\n");
-	}
-	//for (Creature* cre_in : Creature::class_instances)
-	//{
-	//	printf("Creature present in class instances: %p\n", cre_in);
-	//}
-}
-
-int Creature::TellInstancesCount()
-{
-    return Creature::class_instances.size();
-}
-*/
-
 //**********************
 //SETTING ENVIRONMENT
 //**********************
-
-
-
 
 //**********************
 //SETTING MAIN CHARACTER
@@ -219,16 +132,6 @@ void Creature::SetMyRenderLayer(int layer_number)
 	Creature::render_layer = layer_number;
 }
 
-/*void Creature::SetOwner(LevelComponent* my_ptr_owner)
-{
-	ptr_owner = my_ptr_owner;
-}
-
-LevelComponent* Creature::WhoIsMyOwner()
-{
-	return ptr_owner;
-}
-*/
 //**********
 //COLLISIONS
 //**********
@@ -344,35 +247,6 @@ Only objects with hitboxes within neighbor_radius will be checked.*/
 	//}
 }
 
-
-/*void Creature::FindNeighBors()
-//This function limits number of objects against which collision checks will be performed.
-//Only objects with hitboxes within neighbor_radius will be checked.
-{
-	int my_middle_x = this->hitbox.x + (this->hitbox.w / 2);
-	int my_middle_y = this->hitbox.y + (this->hitbox.h / 2);
-	//int counter = 0;
-	for (Creature* ptr_creature : Creature::class_instances)
-	{
-		int creature_middle_x = ptr_creature->hitbox.x + (ptr_creature->hitbox.w / 2);
-		int creature_middle_y = ptr_creature->hitbox.y + (ptr_creature->hitbox.h / 2);
-		int distance_x = std::abs(creature_middle_x - my_middle_x);
-		int distance_y = std::abs(creature_middle_y - my_middle_y);
-		int distance = sqrt((distance_x * distance_x) + (distance_y*distance_y));
-		//printf("Distance is: x: %d y: %d, overall: %d, neighbor radius is: %d\n", distance_x, distance_y, distance, neighbor_radius);
-		if (distance <= neighbor_radius)
-		{
-			my_neighbors.push_back(ptr_creature);
-			//counter++;
-		}
-	}
-	//printf("Found %d neighbors for %p.\n", counter, this);
-	//if (this->AmIMainCharacter() == true)
-	//{
-	//	printf("These are neighbors for main character.\n");
-	//}
-}
-*/
 void Creature::Move(int x, int y)
 {
 //Moves this object - in case it's a non-player object.
@@ -407,10 +281,10 @@ void Creature::Move(int x, int y)
                 }
             }
         }
-        /*else
+        else
         {
-            printf("Collision of main character not detected.\n");
-        }*/
+			;
+        }
     }
     else
     {

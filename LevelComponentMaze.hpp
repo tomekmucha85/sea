@@ -5,8 +5,6 @@
 #include <algorithm>
 #include <LevelComponent.hpp>
 
-enum Directions { north, east, south, west };
-
 class LevelComponentMaze : public LevelComponent
 {
 private:
@@ -29,9 +27,14 @@ private:
 	int maze_blocks_count_vertical = 0;
 	int maze_blocks_count_horizontal = 0;
 	//Main array storing maze plan
-	std::vector<std::vector<CreatureType>> blueprint = {};
+	std::vector<std::vector<CreatureType>> blueprint;
 	//Array storing maze block status (visited or not visited)
 	int** visited_cells = nullptr;
+	//Should maze have borders on specified sides?
+	bool eastern_border = true;
+	bool western_border = true;
+	bool northern_border = true;
+	bool southern_border = true;
 
 public:
 	LevelComponentMaze(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components,
@@ -50,6 +53,10 @@ public:
 	void RemoveCellWall(Coordinates my_current_cell, Directions my_direction);
 	void VivifyMaze();
 	void CarveExitsFromMaze();
+	void SetBorderState(Directions border_side, bool value);
+	void ManageBorders();
 	void ClearMaze();
+
+	static SDL_Rect CalculateMazeDimensions(int w, int h, int my_maze_block_width = 8, int my_maze_block_height = 8, int my_map_block_size = 40);
 };
 #endif // LEVEL_COMPONENT_MAZE_HPP

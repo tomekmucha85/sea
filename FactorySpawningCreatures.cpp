@@ -6,17 +6,17 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, SDL
 
 	if (desired_type == CreatureType::cre_clawy)
 	{
-		printf("Requested hero creature.\n");
+		//printf("Requested hero creature.\n");
 		result = new CreatureClawy(ptr_position);
 	}
 	else if (desired_type == CreatureType::cre_flying_box)
 	{
-		printf("Requested flying box creature. \n");
+		//printf("Requested flying box creature. \n");
 		result = new CreatureFlyingBox(ptr_position);
 	}
 	else if (desired_type == CreatureType::cre_black_smoke)
 	{
-		printf("Requested black smoke creature.\n");
+		//printf("Requested black smoke creature.\n");
 		result = new CreatureBlackSmoke(ptr_position);
 	}
 	else if (desired_type == CreatureType::cre_none)

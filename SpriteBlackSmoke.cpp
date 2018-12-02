@@ -14,7 +14,7 @@ SDL_Rect SpriteBlackSmoke::initial_texture_clip_black_smoke = { 0,0,50,47 };
 SpriteBlackSmoke::SpriteBlackSmoke(SDL_Rect* ptr_my_position)
 	: Sprite(Game::ptr_texture_bank->ptr_tex_black_smoke, SpriteBlackSmoke::initial_texture_clip_black_smoke, ptr_my_position)
 {
-	printf("Constructor called for SpriteBlackSmoke\n");
+	//printf("Constructor called for SpriteBlackSmoke\n");
 }
 
 

@@ -6,6 +6,7 @@
 #include <string>
 #include <Game.hpp>
 #include <Level.hpp>
+#include <LevelNineMazes.hpp>
 #include <Screen.hpp>
 #include <Texture.hpp>
 #include <TextureBank.hpp>
@@ -35,25 +36,8 @@ int main(int argc, char* args[])
 
     Game::InitializeGame();
 
-	Level* my_level = new Level();
-	Game::SetCurrentLevel(my_level);
-	SDL_Rect core_area = { 0,0,0,0 };
-	SDL_Rect* ptr_core_area = &core_area;
-	LevelComponent* ptr_core = my_level->ptr_components_factory->SpawnLevelComponent(levco_core, 0, ptr_core_area);
-	SDL_Rect maze_area_a = { 0,0,2280,2280 };
-	SDL_Rect* ptr_maze_area_a = &maze_area_a;
-	LevelComponent* ptr_maze_a = my_level->ptr_components_factory->SpawnLevelComponent(levco_maze, 0, ptr_maze_area_a);
-	SDL_Rect guy_area = { 10,10,0,0 };
-	SDL_Rect* ptr_guy_area = &guy_area;
-	ptr_core->AddCreature(cre_clawy, ptr_guy_area, force);
-	SDL_Rect box_area = { 20,20,0,0 };
-	SDL_Rect* ptr_box_area = &box_area;
-	ptr_core->AddCreature(cre_flying_box, ptr_box_area, merge);
-	SDL_Rect hero_position = { (Game::ptr_screen->TellScreenWidth()/2),(Game::ptr_screen->TellScreenHeight() / 2) + 80,0,0 };
-	SDL_Rect* ptr_hero_position = &hero_position;
-	Creature* ptr_hero = ptr_core->AddCreature(cre_clawy, ptr_hero_position, force);
-	ptr_hero->MakeMeMainCharacter();
-
+	Level* first_level = Game::ptr_levels_factory->SpawnLevel(level_ninemazes);
+	Game::SetCurrentLevel(first_level);
     Sprite* ptr_blue_background = Sprite::CreateSprite(background);
 	/*SDL_Rect smoke_position = { 500,200,0,0 };
 	SDL_Rect* ptr_smoke_position = &smoke_position;
@@ -80,18 +64,18 @@ int main(int argc, char* args[])
             {
                 switch( event_handler.key.keysym.sym )
                 {
-                    case SDLK_UP: ptr_hero->MoveForward(); break;
-                    case SDLK_DOWN: ptr_hero->MoveBackward(); break;
-                    case SDLK_LEFT: ptr_hero->StrafeLeft(); break;
-                    case SDLK_RIGHT: ptr_hero->StrafeRight(); break;
-                    case SDLK_w: ptr_hero->MoveForward();
+				    case SDLK_UP: Game::ptr_current_level->ptr_hero->MoveForward(); break;
+                    case SDLK_DOWN: Game::ptr_current_level->ptr_hero->MoveBackward(); break;
+                    case SDLK_LEFT: Game::ptr_current_level->ptr_hero->StrafeLeft(); break;
+                    case SDLK_RIGHT: Game::ptr_current_level->ptr_hero->StrafeRight(); break;
+                    case SDLK_w: Game::ptr_current_level->ptr_hero->MoveForward();
 					break;
-                    case SDLK_s: ptr_hero->MoveBackward();
+                    case SDLK_s: Game::ptr_current_level->ptr_hero->MoveBackward();
 					break;
-                    case SDLK_a: ptr_hero->TurnLeft(); break;
-                    case SDLK_d: ptr_hero->TurnRight(); break;
-					case SDLK_1: ptr_maze_a->ClearMaze(); break;
-					case SDLK_2: ptr_maze_a->GenerateMaze(); break;
+                    case SDLK_a: Game::ptr_current_level->ptr_hero->TurnLeft(); break;
+                    case SDLK_d: Game::ptr_current_level->ptr_hero->TurnRight(); break;
+					//case SDLK_1: ptr_maze_a->ClearMaze(); break;
+					//case SDLK_2: ptr_maze_a->GenerateMaze(); break;
 					//case SDLK_3: my_maze_b->ClearMaze(); break;
 					//case SDLK_4: my_maze_b->GenerateMaze(); break;
                 }
@@ -125,7 +109,7 @@ int main(int argc, char* args[])
         //Render texture to screen
 		ptr_blue_background->Render();
 		//#TODO zrobiæ generator Creature, zadbac o destruktor i konstruktor kopiujacy
-		my_level->RenderAllPresentCreatures();
+		first_level->RenderAllPresentCreatures();
         //Update screen
         SDL_RenderPresent(Game::ptr_screen->renderer);
     }

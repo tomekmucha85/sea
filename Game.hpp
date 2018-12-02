@@ -4,6 +4,8 @@
 #include <TextureBank.hpp>
 #include <Level.hpp>
 #include <Creature.hpp>
+#include <FactorySpawningLevels.hpp>
+#include <ctime>
 
 class Game
 {
@@ -20,6 +22,7 @@ class Game
         static Screen* ptr_screen;
         static TextureBank* ptr_texture_bank;
 		static Level* ptr_current_level;
+		static FactorySpawningLevels* ptr_levels_factory;
 
         //###################
         //FUNCTIONS

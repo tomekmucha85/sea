@@ -8,6 +8,7 @@ Screen* Game::ptr_screen;
 TextureBank* Game::ptr_texture_bank;
 int Game::debug_counter;
 Level* Game::ptr_current_level;
+FactorySpawningLevels* Game::ptr_levels_factory;
 
 //***********************************
 //METHODS
@@ -19,6 +20,8 @@ void Game::InitializeGame()
 	debug_counter = 10;
     CreateScreen();
     LoadTextures();
+	ptr_levels_factory = new FactorySpawningLevels();
+	srand(time(NULL));
 }
 
 void Game::DestroyGame()
@@ -26,6 +29,7 @@ void Game::DestroyGame()
 	printf("Going to destroy game.\n");
 	delete ptr_texture_bank;
 	delete ptr_screen;
+	delete ptr_levels_factory;
 }
 
 void Game::CreateScreen()

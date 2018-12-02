@@ -25,13 +25,8 @@ LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<
 	maze_blocks_count_horizontal = CalculateBlocksCountHorizontally();
 	printf("Maze rows: %d, maze columns: %d, maze blocks vertically: %d, maze blocks horizontally: %d.\n",
 		maze_rows_count, maze_columns_count, maze_blocks_count_vertical, maze_blocks_count_horizontal);
-	PrepareMazeGrid();
-	PrintBlueprint();
 	std::vector<Creature*>* ptr_to_creatures = TellPtrToCreaturesArray();
-	//printf("Current creatures count on level: %d.\n", ptr_to_creatures->size());
-	GenerateMaze();
-	//printf("Current creatures count on level: %d.\n", ptr_to_creatures->size());
-	PrintBlueprint();
+	//PrintBlueprint();
 }
 
 int LevelComponentMaze::CalculateRowsNumber()
@@ -84,10 +79,10 @@ void LevelComponentMaze::PrepareMazeGrid()
 //Method preparing grid on the blueprint - set of square rooms, which walls will be carved afterwards.
 {
 	//Insert all possible maze walls into blueprint
-	for (int row = 0; row <= maze_rows_count; row++)
+	for (int row = 0; row < maze_rows_count; row++)
 	{
 		blueprint.push_back({});
-		for (int column = 0; column <= maze_columns_count; column++)
+		for (int column = 0; column < maze_columns_count; column++)
 		{
 			if (column % (maze_block_width - 1) == 0 || row % (maze_block_height - 1) == 0)
 			{
@@ -105,6 +100,7 @@ void LevelComponentMaze::PrepareMazeGrid()
 void LevelComponentMaze::VivifyMaze()
 //Method spawning creatures according to current maze blueprint.
 {
+	PrintBlueprint();
 	for (int row = 0; row < maze_rows_count; row++)
 	{
 		for (int column = 0; column < maze_columns_count; column++)
@@ -112,13 +108,13 @@ void LevelComponentMaze::VivifyMaze()
 			CreatureType my_type = blueprint[row][column];
 			if (my_type != cre_none)
 			{
-				SDL_Rect my_position = SDL_Rect{ (column*map_block_width), (row*map_block_width),0,0 };
+				SDL_Rect my_position = SDL_Rect{ maze_x_start+(column*map_block_width), 
+					maze_y_start+(row*map_block_width),0,0 };
 				SDL_Rect* ptr_my_position = &my_position;
 				AddCreature(my_type, ptr_my_position, merge);
 			}
 		}
 	}
-
 }
 
 void LevelComponentMaze::PrintBlueprint()
@@ -159,7 +155,6 @@ void LevelComponentMaze::GenerateMaze()
 	 */
 	std::vector <Coordinates> trace;
 	//Pick random maze cell
-	srand(time(NULL));
 	int chosen_maze_block_x = rand() % maze_blocks_count_horizontal;
 	int chosen_maze_block_y = rand() % maze_blocks_count_vertical;
 	//Variable storing currently evaluated cell
@@ -170,44 +165,43 @@ void LevelComponentMaze::GenerateMaze()
 	while (visited_count < maze_blocks_count_horizontal * maze_blocks_count_vertical)
 	{
 		visited_cells[current_cell.y][current_cell.x] = 1;
-		srand(time(NULL));
 		int chosen_direction_index = rand() % possible_directions.size();
 		Directions chosen_direction = possible_directions[chosen_direction_index];
-		printf("Current cell in maze genereation: x:%d y:%d.\n", current_cell.x, current_cell.y);
-		printf("Direction chosen for maze generation: %d.\n", chosen_direction);
-		printf("Visited cells count: %d.\n", visited_count);
+		//printf("Current cell in maze genereation: x:%d y:%d.\n", current_cell.x, current_cell.y);
+		//printf("Direction chosen for maze generation: %d.\n", chosen_direction);
+		//printf("Visited cells count: %d.\n", visited_count);
 		if (CheckIfNeighbourIsAvailable(current_cell, chosen_direction))
 		{
 			visited_count++;
 			trace.push_back(current_cell);
-			printf("Cell x:%d y:%d pushed back into trace.\n", current_cell.x, current_cell.y);
+			//printf("Cell x:%d y:%d pushed back into trace.\n", current_cell.x, current_cell.y);
 			if (chosen_direction == north)
 			{
 				RemoveCellWall(current_cell, chosen_direction);
 				current_cell.y -= 1;
 				possible_directions = { north, west, east, south };
-				printf("Maze trace moved north.\n");
+				//printf("Maze trace moved north.\n");
 			}
 			else if (chosen_direction == south)
 			{
 				RemoveCellWall(current_cell, chosen_direction);
 				current_cell.y += 1;
 				possible_directions = { north, west, east, south };
-				printf("Maze trace moved south.\n");
+				//printf("Maze trace moved south.\n");
 			}
 			else if (chosen_direction == west)
 			{
 				RemoveCellWall(current_cell, chosen_direction);
 				current_cell.x -= 1;
 				possible_directions = { north, west, east, south };
-				printf("Maze trace moved west.\n");
+				//printf("Maze trace moved west.\n");
 			}
 			else if (chosen_direction == east)
 			{
 				RemoveCellWall(current_cell, chosen_direction);
 				current_cell.x += 1;
 				possible_directions = { north, west, east, south };
-				printf("Maze trace moved east.\n");
+				//printf("Maze trace moved east.\n");
 			}
 			else
 			{
@@ -216,33 +210,34 @@ void LevelComponentMaze::GenerateMaze()
 		}
 		else if (possible_directions.size() > 1)
 		{
-			printf("Possible directions left before deletion: %d\n", possible_directions.size());
+			//printf("Possible directions left before deletion: %d\n", possible_directions.size());
 			possible_directions.erase(std::remove(possible_directions.begin(), possible_directions.end(), chosen_direction), possible_directions.end());
 		}
 		else if (trace.size() > 1)
 		{
-			printf("BACKTRACKING!\n");
-			for (int i = 0; i < trace.size(); i++)
-			{
-				printf("Position %d in trace vector: x:%d, y:%d\n", i, trace[i].x, trace[i].y);
-			}
+			//printf("BACKTRACKING!\n");
+			//for (int i = 0; i < trace.size(); i++)
+			//{
+				//printf("Position %d in trace vector: x:%d, y:%d\n", i, trace[i].x, trace[i].y);
+			//}
 			trace.pop_back();
-			printf("AFTER LAST ELEMENT DELETION:\n");
-			for (int i = 0; i < trace.size(); i++)
-			{
-				printf("Position %d in trace vector: x:%d, y:%d\n", i, trace[i].x, trace[i].y);
-			}
+			//printf("AFTER LAST ELEMENT DELETION:\n");
+			//for (int i = 0; i < trace.size(); i++)
+			//{
+				//printf("Position %d in trace vector: x:%d, y:%d\n", i, trace[i].x, trace[i].y);
+			//}
 			current_cell = trace.back();
-			printf("Backtracking. Current cell set for x: %d, y: %d.\n", current_cell.x, current_cell.y);
+			possible_directions = { north, west, east, south };
+			//printf("Backtracking. Current cell set for x: %d, y: %d.\n", current_cell.x, current_cell.y);
 		}
 		else
-			//# TODO - bug z cofaniem do ostatniego elementu trace
 		{
 			printf("Something went wrong during backtracing.\n");
 			break;
 		}
 	}
 	CarveExitsFromMaze();
+	ManageBorders();
 	VivifyMaze();
 	printf("Maze generated.\n");
 }
@@ -250,6 +245,7 @@ void LevelComponentMaze::GenerateMaze()
 void LevelComponentMaze::CreateEmptyVisitedCellsGrid()
 {
 	//Creating a 2D dynamically sized array
+	//#TODO - destruct!
 	int** my_visited_cells = new int*[maze_blocks_count_vertical];
 	for (int row = 0; row < maze_blocks_count_vertical; row++)
 	{
@@ -266,7 +262,7 @@ bool LevelComponentMaze::CheckIfNeighbourIsAvailable(Coordinates my_current_cell
 {
 	if (my_direction == south && my_current_cell.y + 1 < maze_blocks_count_vertical)
 	{
-		printf("South. Visited?: %d\n", visited_cells[my_current_cell.y + 1][my_current_cell.x]);
+		//printf("South. Visited?: %d\n", visited_cells[my_current_cell.y + 1][my_current_cell.x]);
 		if (visited_cells[my_current_cell.y + 1][my_current_cell.x] == 0)
 		{
 			return true;
@@ -278,7 +274,7 @@ bool LevelComponentMaze::CheckIfNeighbourIsAvailable(Coordinates my_current_cell
 	}
 	if (my_direction == north && my_current_cell.y - 1 >= 0)
 	{
-		printf("North. Visited?: %d\n", visited_cells[my_current_cell.y - 1][my_current_cell.x]);
+		//printf("North. Visited?: %d\n", visited_cells[my_current_cell.y - 1][my_current_cell.x]);
 		if (visited_cells[my_current_cell.y - 1][my_current_cell.x] == 0)
 		{
 			return true;
@@ -290,7 +286,7 @@ bool LevelComponentMaze::CheckIfNeighbourIsAvailable(Coordinates my_current_cell
 	}
 	if (my_direction == west && my_current_cell.x - 1 >= 0)
 	{
-		printf("West. Visited?: %d\n", visited_cells[my_current_cell.y][my_current_cell.x - 1]);
+		//printf("West. Visited?: %d\n", visited_cells[my_current_cell.y][my_current_cell.x - 1]);
 		if (visited_cells[my_current_cell.y][my_current_cell.x - 1] == 0)
 		{
 			return true;
@@ -302,7 +298,7 @@ bool LevelComponentMaze::CheckIfNeighbourIsAvailable(Coordinates my_current_cell
 	}
 	if (my_direction == east && my_current_cell.x + 1 < maze_blocks_count_horizontal)
 	{
-		printf("East. Visited?: %d\n", visited_cells[my_current_cell.y][my_current_cell.x + 1]);
+		//printf("East. Visited?: %d\n", visited_cells[my_current_cell.y][my_current_cell.x + 1]);
 		if (visited_cells[my_current_cell.y][my_current_cell.x + 1] == 0)
 		{
 			return true;
@@ -314,7 +310,7 @@ bool LevelComponentMaze::CheckIfNeighbourIsAvailable(Coordinates my_current_cell
 	}
 	else
 	{
-		printf("Chosen direction %d unavailable. 0=north, 1=east, 2=south, 3=west\n", my_direction);
+		//printf("Chosen direction %d unavailable. 0=north, 1=east, 2=south, 3=west\n", my_direction);
 		return false;
 	}
 
@@ -329,8 +325,6 @@ void LevelComponentMaze::RemoveCellWall(Coordinates my_current_cell, Directions 
 			int carved_block_column = (my_current_cell.x)*(maze_block_width - 1) + i;
 			int carved_block_row = (my_current_cell.y)*(maze_block_height - 1);
 			blueprint[carved_block_row][carved_block_column] = cre_none;
-			//SDL_Rect carved_block_position = { carved_block_column, carved_block_row };
-			//SDL_Rect* ptr_carved_block_position = &carved_block_position;
 			// #TODO ustaliæ, czy przekazujemy koordynaty wskaŸnikiem czy przez dwie liczby
 		}
 	}
@@ -341,8 +335,6 @@ void LevelComponentMaze::RemoveCellWall(Coordinates my_current_cell, Directions 
 			int carved_block_column = (my_current_cell.x)*(maze_block_width - 1) + i;
 			int carved_block_row = (my_current_cell.y + 1)*(maze_block_height - 1);
 			blueprint[carved_block_row][carved_block_column] = cre_none;
-			//SDL_Rect carved_block_position = { carved_block_column, carved_block_row };
-			//SDL_Rect* ptr_carved_block_position = &carved_block_position;
 		}
 	}
 	else if (my_direction == east)
@@ -373,51 +365,116 @@ void LevelComponentMaze::CarveExitsFromMaze()
 {
 	//Function providing an exit in every maze outer wall.
 	//Pick random cell from northern boundary
-	srand(time(NULL));
 	int chosen_maze_block_x = rand() % maze_blocks_count_horizontal;
-	int chosen_maze_block_y = 0;
 	for (int i = 1; i < maze_block_width - 1; i++)
 	{
 		int carved_block_column = (chosen_maze_block_x)*(maze_block_width - 1) + i;
-		int carved_block_row = (chosen_maze_block_y)*(maze_block_height - 1);
+		int carved_block_row = 0;
 		blueprint[carved_block_row][carved_block_column] = cre_none;
 	}
 	//Pick random cell from southern boundary
-	srand(time(NULL));
 	chosen_maze_block_x = rand() % maze_blocks_count_horizontal;
-	chosen_maze_block_y = maze_blocks_count_vertical;
 	for (int i = 1; i < maze_block_width - 1; i++)
 	{
 		int carved_block_column = (chosen_maze_block_x)*(maze_block_width - 1) + i;
-		int carved_block_row = (chosen_maze_block_y)*(maze_block_height - 1);
+		int carved_block_row = maze_rows_count-1;
 		blueprint[carved_block_row][carved_block_column] = cre_none;
 	}
 	//Pick random cell from eastern boundary
-	srand(time(NULL));
-	chosen_maze_block_x = 0;
-	chosen_maze_block_y = rand() % maze_blocks_count_vertical;
+	int chosen_maze_block_y = rand() % maze_blocks_count_vertical;
 	for (int i = 1; i < maze_block_height - 1; i++)
 	{
-		int carved_block_column = (chosen_maze_block_x + 1)*(maze_block_width - 1);
+		int carved_block_column = 0;
 		int carved_block_row = (chosen_maze_block_y)*(maze_block_height - 1) + i;
 		blueprint[carved_block_row][carved_block_column] = cre_none;
 	}
 	//Pick random cell from western boundary
-	srand(time(NULL));
-	chosen_maze_block_x = maze_blocks_count_horizontal;
 	chosen_maze_block_y = rand() % maze_blocks_count_vertical;
 	for (int i = 1; i < maze_block_height - 1; i++)
 	{
-		int carved_block_column = (chosen_maze_block_x + 1)*(maze_block_width - 1);
+		int carved_block_column = maze_columns_count-1;
 		int carved_block_row = (chosen_maze_block_y)*(maze_block_height - 1) + i;
 		blueprint[carved_block_row][carved_block_column] = cre_none;
 	}
 }
 
+void LevelComponentMaze::SetBorderState(Directions border_side, bool value)
+{
+	if (border_side == east)
+	{
+		eastern_border = value;
+	}
+	else if (border_side == west)
+	{
+		western_border = value;
+	}
+	else if (border_side == south)
+	{
+		southern_border = value;
+	}
+	else if (border_side == north)
+	{
+		northern_border = value;
+	}
+	else
+	{
+		throw std::invalid_argument("Wrong direction value passed to SetBorderState.\n");
+	}
+}
+
+
+void LevelComponentMaze::ManageBorders()
+{
+	if (western_border == false)
+	{
+		for (int row = 0; row < maze_rows_count; row++)
+		{
+			blueprint[row][0] = cre_none;
+		}
+	}
+	else if (eastern_border == false)
+	{
+		for (int row = 0; row < maze_rows_count; row++)
+		{
+			blueprint[row][maze_columns_count - 1] = cre_none;
+		}
+	}
+	else if (northern_border == false)
+	{
+		for (int column = 0; column < maze_columns_count; column++)
+		{
+			blueprint[0][column] = cre_none;
+		}
+	}
+	else if (southern_border == false)
+	{
+		for (int column = 0; column < maze_columns_count; column++)
+		{
+			blueprint[maze_rows_count-1][column] = cre_none;
+		}
+	}
+}
 void LevelComponentMaze::ClearMaze()
 {
 	std::vector<Creature*>* ptr_to_creatures = TellPtrToCreaturesArray();
 	printf("Current creatures count on level: %d.\n", ptr_to_creatures->size());
 	RemoveAllCreatures();
 	ClearBlueprint();
+}
+
+
+//#######################
+//STATIC HELPERS
+//#######################
+
+SDL_Rect LevelComponentMaze::CalculateMazeDimensions(int w, int h, int my_maze_block_width, int my_maze_block_height, int my_map_block_size)
+{
+	//w and h are expresses in maze blocks
+	printf("Input for calculation: w: %d h: %d.\n", w, h);
+	int pixel_width = (my_maze_block_width*my_map_block_size) + ((my_maze_block_width - 1)*my_map_block_size)*(w-1);
+	int pixel_height = (my_maze_block_height*my_map_block_size) + ((my_maze_block_height - 1)*my_map_block_size)*(h-1);
+	printf("Calculated pixel height: %d.\n", pixel_height);
+	printf("Calculated pixel width: %d.\n", pixel_width);
+	SDL_Rect result = { 0,0,pixel_width,pixel_height };
+	return result;
 }

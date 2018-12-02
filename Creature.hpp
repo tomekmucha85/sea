@@ -37,10 +37,6 @@ class Creature
 		//In what layer should the creature exist (important while rendering whole scene)
 		//Who is on the top, who is below?
 		int render_layer = 0;
-		//Pointer to array storing pointers of all co-existing Creatures
-		//std::map<LevelComponentType, std::vector<LevelComponent*>>* environment = nullptr;
-		//What LevelComponent do I belong to?
-		//LevelComponent* ptr_owner = nullptr;
 		//Vector holding creatures present in given radius
 		std::vector <Creature*> my_neighbors;
 		//How far do we seek for neighbors?
@@ -115,9 +111,6 @@ class Creature
         void MakeMeMainCharacter();
         bool AmIMainCharacter();
         Creature* WhoIsMainCharacter();
-        //void AddToClassInstancesVector();
-		//void RemoveFromClassInstancesVector();
-        //static int TellInstancesCount();
         void PrintStupidThings(Creature* ptr_to_creature);
 };
 

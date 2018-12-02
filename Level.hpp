@@ -7,7 +7,8 @@
 #include <Creature.hpp>
 #include <LevelComponent.hpp>
 #include <FactorySpawningLevelComponents.hpp>
-//#include <Maze.hpp>
+
+enum LevelType {level_ninemazes, level_base};
 
 class Level
 {
@@ -36,35 +37,21 @@ class Level
 		std::vector<std::vector<MapEntity>> map = {};
 
     public:
+		//Pointer to creature serving currently as hero
+		Creature* ptr_hero = nullptr;
+		
+		
 		Level();
 		~Level();
 		//Level components factory
 		FactorySpawningLevelComponents* ptr_components_factory = nullptr;
-		//void CreateMaze(SDL_Rect* ptr_maze_area, int maze_index);
-		//void DetermineMapDimensions(float margin=0.5);
-		void PrintMap();
 		void RenderAllPresentCreatures();
-		void CreateLevelGrid();
 		CreatureType PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures);
-		SDL_Rect FindFreeTile();
-		Creature* InsertCreatureOntoMap(CreatureType my_type, SDL_Rect* ptr_my_position, bool force=false);
-		bool RemoveCreatureFromMap(int map_column, int map_row);
-		void GenerateRandomObjectOnMap();
-		int TellLevelWidth();
-		int TellLevelHeight();
-		void SetInitialLevelWidth(int width);
-		void SetInitialLevelHeight(int height);
-		void CleanLevelGrid();
-		void InsertMapRowAtEnd();
-		void InsertMapRowAtBeginning();
-		void InsertMapColumnAtEnd();
-		void InsertMapColumnAtBeginning();
-		bool CheckIfTileIsFree(int row, int column);
 		void SetMapOffsetX(int columns_count, float margin);
 		void SetMapOffsetY(int rows_count, float margin);
 		int TellMapOffsetX();
 		int TellMapOffsetY();
-		Creature* TellPointerToCreatureInSlot(int x, int y);
+		void SetCurrentHero(Creature* ptr_my_hero);
 		std::map<LevelComponentType, std::vector<LevelComponent*>>* TellPointerToComponentsArray();
 		FactorySpawningLevelComponents* CreateComponentsFactory();
 };

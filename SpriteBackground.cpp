@@ -15,5 +15,5 @@ SDL_Rect SpriteBackground::initial_texture_clip_background = { 0,0,0,0 };
 SpriteBackground::SpriteBackground(SDL_Rect* ptr_my_position)
 	: Sprite(Game::ptr_texture_bank->ptr_tex_background, SpriteBackground::initial_texture_clip_background, ptr_my_position)
 {
-	printf("Constructor called for SpriteBackground\n");
+	//printf("Constructor called for SpriteBackground\n");
 }
