@@ -1,11 +1,15 @@
-#include <SDL.h>
-#include <stdio.h>
-#include <SDL_image.h>
 #include <Sprite.hpp>
-#include <CommonHeaderSprites.hpp>
-#include <Game.hpp>
-#include <stdexcept>
-#include <vector>
+
+//***********************************
+//DEFINITIONS OF STATIC CLASS MEMBERS
+//***********************************
+
+TextureBank* Sprite::ptr_texture_bank = nullptr;
+
+
+//***********************************
+//CONSTRUCTOR
+//***********************************
 
 Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* ptr_my_position)
 {
@@ -97,12 +101,12 @@ void Sprite::Render()
     if (texture_clip.w != 0 && texture_clip.h != 0)
     //If texture clip dimensions were set, apply them.
     {
-		SDL_RenderCopyEx(Game::ptr_screen->renderer, texture, &texture_clip, &position, angle, center, flip);
+		SDL_RenderCopyEx(TellScreen()->renderer, texture, &texture_clip, &position, angle, center, flip);
     }
     else
     //If texture clip dimensions were not set, show whole texture.
     {
-        SDL_RenderCopyEx(Game::ptr_screen->renderer, texture, NULL, &position, angle, center, flip);
+        SDL_RenderCopyEx(TellScreen()->renderer, texture, NULL, &position, angle, center, flip);
     }
 }
 
@@ -171,6 +175,22 @@ SDL_Rect Sprite::TellTextureClip()
     return texture_clip;
 }
 
+//###############
+//STATIC METHODS
+//###############
+
+void Sprite::SetTextureBank(TextureBank* ptr_my_texture_bank)
+{
+	ptr_texture_bank = ptr_my_texture_bank;
+}
+
+TextureBank* Sprite::TellTextureBank()
+{
+	return ptr_texture_bank;
+}
+
+
+
 //#####################
 //Dummy virtual methods
 //#####################
@@ -183,43 +203,4 @@ void Sprite::WalkAnimation()
 void Sprite::SmokeAnimation()
 {
 	printf("Smoke animation called for Sprite\n");
-}
-
-//#####################
-//Method for spawning sprites
-//#####################
-
-Sprite* Sprite::CreateSprite(SpriteType desired_type, SDL_Rect* ptr_position)
-{
-	Sprite* result = NULL;
-	//printf("Going to create a sprite. Requested type: %d\n", desired_type);
-    if (desired_type == clawy)
-    {
-        //printf("Requested clawy object.\n");
-        result = new SpriteClawy(ptr_position);
-        return result;
-    }
-    else if (desired_type == box)
-    {
-        //printf("Requested box object.\n");
-        result = new SpriteBlackBox(ptr_position);
-        return result;
-    }
-	else if (desired_type == background)
-	{
-		//printf("Reqested blue background object.\n");
-		result = new SpriteBackground(ptr_position);
-		return result;
-	}
-	else if (desired_type == black_smoke)
-	{
-		//printf("Reqested black smoke object.\n");
-		result = new SpriteBlackSmoke(ptr_position);
-		return result;
-	}
-    else
-    {
-        //printf("Requested some other object.\n");
-		return result;
-    }
 }

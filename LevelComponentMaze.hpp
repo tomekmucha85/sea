@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <ctime>
 #include <algorithm>
+#include <string>
 #include <LevelComponent.hpp>
 
 class LevelComponentMaze : public LevelComponent

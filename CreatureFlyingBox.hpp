@@ -1,6 +1,5 @@
 #ifndef CREATURE_FBOX_HPP
 #define CREATURE_FBOX_HPP
-#include <Sprite.hpp>
 #include <Creature.hpp>
 class CreatureFlyingBox : public Creature
 {

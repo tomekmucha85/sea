@@ -1,10 +1,15 @@
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
-#include <Sprite.hpp>
 #include <vector>
+#include <Sprite.hpp>
+#include <FactorySpawningSprites.hpp>
+#include <VectorDrawing.hpp>
+
 
 //cre_none means empty space/no creature present
-enum CreatureType    {cre_none, cre_clawy, cre_flying_box, cre_black_smoke};
+enum CreatureType    {cre_none, cre_event_trigger, cre_clawy, cre_flying_box, cre_black_smoke};
+//Functions to be passed, executing triggered event
+typedef void(*TriggeredEvent)();
 
 class Creature
 {
@@ -21,7 +26,8 @@ class Creature
         //###################
         //Variables & const
         //###################
-
+		// Pointer to sprites factory
+		FactorySpawningSprites* ptr_sprites_factory = nullptr;
         //Guess what
         const double PI = 3.14159265;
         //Is creature an obstacle?
@@ -59,8 +65,11 @@ class Creature
 		CreatureType my_type = cre_none;
         int velocity = 5;
         Sprite *ptr_creature_sprite = nullptr;
-        //Vector holding pointers to all creatures currently present in game.
+		VectorDrawing* ptr_creature_vector = nullptr;
+        //Vector holding pointers to all creatures currently present in game except event triggers.
         static std::vector <Creature*> current_environment;
+		//Vector holding pointers to all event triggers present in game.
+		static std::vector <Creature*> current_event_triggers;
         //Holds address of Creature acting as current main character
         static Creature* ptr_current_main_charater;
 
@@ -74,15 +83,12 @@ class Creature
         //###################
         //Functions
         //###################
-		//#TODO - czy pierwszy konstruktor (ponizej) jest w ogóle potrzebny?
-        Creature(Sprite *ptr_my_sprite, int hitbox_margin = 10);
+		Creature(SDL_Rect* ptr_area);
 		Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin = 10, int my_render_layer = 0);
 		~Creature();
-        //static Creature* SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position);
 		void SetMySprite(Sprite* ptr_my_sprite);
+		void SetMyVector(SDL_Rect* ptr_my_area);
 		void SetMyRenderLayer(int layer_number);
-		//void SetOwner(LevelComponent* ptr_my_owner);
-		//LevelComponent* WhoIsMyOwner();
 		void MakeMeObstacle();
 		void MakeMeNotObstacle();
         void Turn(int turn_angle_degree);
@@ -90,7 +96,6 @@ class Creature
         void TurnLeft();
         void Move(int x, int y);
 		//void MovePixelPerfect(int x, int y);
-		//void FindNeighBors(); //# TODO - do usuniêcia po skasowaniu tablicy instancji Creatures!
 		void FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set);
 		void RemoveNeighbors();
         void MovePixelByPixel(int x, int y, bool check_collisions = true);
@@ -102,7 +107,9 @@ class Creature
         void Strafe(int sidestep_angle);
         void StrafeLeft();
         void StrafeRight();
+		void FireEventIfTriggerHit();
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature);
+		bool DoICollideWithThisEventTrigger(Creature* ptr_my_trigger);
         bool DoICollideWithNeighbors();
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
         bool DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w);
@@ -112,6 +119,8 @@ class Creature
         bool AmIMainCharacter();
         Creature* WhoIsMainCharacter();
         void PrintStupidThings(Creature* ptr_to_creature);
+		//void RenderHitbox();
+		virtual void FireEvent();
 };
 
 

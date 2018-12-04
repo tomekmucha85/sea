@@ -137,12 +137,13 @@
     <ClInclude Include="Creature.hpp" />
     <ClInclude Include="CreatureBlackSmoke.hpp" />
     <ClInclude Include="CreatureClawy.hpp" />
+    <ClInclude Include="CreatureEventTrigger.hpp" />
     <ClInclude Include="FactorySpawningCreatures.hpp" />
     <ClInclude Include="CreatureFlyingBox.hpp" />
     <ClInclude Include="FactorySpawningLevelComponents.hpp" />
     <ClInclude Include="FactorySpawningLevels.hpp" />
+    <ClInclude Include="FactorySpawningSprites.hpp" />
     <ClInclude Include="Game.hpp" />
-    <ClInclude Include="CommonHeaderSprites.hpp" />
     <ClInclude Include="Level.hpp" />
     <ClInclude Include="LevelComponent.hpp" />
     <ClInclude Include="LevelComponentCore.hpp" />
@@ -157,15 +158,19 @@
     <ClInclude Include="SpriteClawy.hpp" />
     <ClInclude Include="texture.hpp" />
     <ClInclude Include="TextureBank.hpp" />
+    <ClInclude Include="VectorDrawing.hpp" />
+    <ClInclude Include="VisualComponent.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="CreatureBlackSmoke.cpp" />
     <ClCompile Include="CreatureClawy.cpp" />
+    <ClCompile Include="CreatureEventTrigger.cpp" />
     <ClCompile Include="FactorySpawningCreatures.cpp" />
     <ClCompile Include="CreatureFlyingBox.cpp" />
     <ClCompile Include="FactorySpawningLevelComponents.cpp" />
     <ClCompile Include="FactorySpawningLevels.cpp" />
+    <ClCompile Include="FactorySpawningSprites.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="hello.cpp" />
     <ClCompile Include="Level.cpp" />
@@ -182,6 +187,8 @@
     <ClCompile Include="SpriteClawy.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="TextureBank.cpp" />
+    <ClCompile Include="VectorDrawing.cpp" />
+    <ClCompile Include="VisualComponent.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

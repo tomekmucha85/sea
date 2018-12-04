@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <stdlib.h>
+#include <ctime>
 #include <Creature.hpp>
 #include <LevelComponent.hpp>
 #include <FactorySpawningLevelComponents.hpp>

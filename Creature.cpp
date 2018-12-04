@@ -12,6 +12,7 @@
 //***********************************
 
 std::vector <Creature*> Creature::current_environment;
+std::vector <Creature*> Creature::current_event_triggers;
 std::vector <CreatureType> Creature::walls = { cre_flying_box };
 Creature* Creature::ptr_current_main_charater;
 
@@ -33,34 +34,29 @@ void Creature::PrintStupidThings(Creature* ptr_to_creature)
 //CONSTRUCTORS
 //************
 
-Creature::Creature(Sprite *ptr_my_sprite, int hitbox_margin)
+Creature::Creature(SDL_Rect* ptr_area)
 {
-    //Write entry in static vector class_instances
-    //AddToClassInstancesVector();
-    //Give Creature its Sprite
-    SetMySprite(ptr_my_sprite);
-    //Set the initial value to move upwards by (velocity * pixels)
-    next_step.y = velocity * -1;
-    //#TODO//Change this, so position will be determined by creature
-    SDL_Rect sprite_position = ptr_creature_sprite->TellSpritePosition();
-    Creature::InitializeHitbox(sprite_position,hitbox_margin);
+	printf("Invisible creature constructed.\n");
+	//Hitbox == ptr_area. No margin is set.
+	InitializeHitbox(*ptr_area, 0);
+
 }
 
 Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin, int my_render_layer)
 {
+	ptr_sprites_factory = new FactorySpawningSprites();
 	//Take care of sprite assignment
 	//printf("Will assign sprite to newly spawned creature: %d\n", my_sprite_type);
-	Creature::SetMySprite(Sprite::CreateSprite(my_sprite_type, ptr_my_position));
+	SetMySprite(ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_position));
 	//Set the initial value to move upwards by (velocity * pixels)
 	next_step.y = velocity * -1;
 	//Initialize hitbox
 	//#TODO//Change this, so position will be determined by creature
-	SDL_Rect sprite_position = Creature::ptr_creature_sprite->TellSpritePosition();
-	Creature::InitializeHitbox(sprite_position, hitbox_margin);
+	SDL_Rect sprite_position = ptr_creature_sprite->TellSpritePosition();
+	InitializeHitbox(sprite_position, hitbox_margin);
 	//Set in which layer should this Creature be rendered
-	Creature::SetMyRenderLayer(my_render_layer);
+	SetMyRenderLayer(my_render_layer);
 	//Write entry in static vector class_instances
-	//AddToClassInstancesVector();
 }
 
 //************
@@ -71,7 +67,14 @@ Creature::~Creature()
 {
 	//printf("Destructor called for Creature %p.\n", this);
 	//printf("Attempting to remove sprite %p.\n", ptr_creature_sprite);
-	delete ptr_creature_sprite;
+	if (ptr_creature_sprite != nullptr)
+	{
+		delete ptr_creature_sprite;
+	}
+	if (ptr_creature_vector != nullptr)
+	{
+		delete ptr_creature_vector;
+	}
 }
 
 //****************************
@@ -129,7 +132,13 @@ void Creature::SetMySprite(Sprite* ptr_my_sprite)
 
 void Creature::SetMyRenderLayer(int layer_number)
 {
-	Creature::render_layer = layer_number;
+	render_layer = layer_number;
+}
+
+void Creature::SetMyVector(SDL_Rect* ptr_my_area)
+{
+	SDL_Rect area = *ptr_my_area;
+	ptr_creature_vector = new VectorDrawing(area);
 }
 
 //**********
@@ -261,7 +270,7 @@ void Creature::Move(int x, int y)
     if (AmIMainCharacter())
     {
         //Now we're C++11 as fuck!
-        for (Creature* ptr_creature : Creature::current_environment)
+        for (Creature* ptr_creature : current_environment)
         {
             if (ptr_creature != this) /* Prevents moving the main character. */
             {
@@ -272,7 +281,7 @@ void Creature::Move(int x, int y)
         if (DoICollideWithNeighbors())
         {
             //printf("Collision of main character detected\n");
-            for (Creature* ptr_creature : Creature::current_environment)
+            for (Creature* ptr_creature : current_environment)
             {
                 if (ptr_creature != this) /* Prevents moving the main character. */
                 {
@@ -283,7 +292,8 @@ void Creature::Move(int x, int y)
         }
         else
         {
-			;
+			//Check if any trigger event was entered. If yes - fire event.
+			FireEventIfTriggerHit();
         }
     }
     else
@@ -347,7 +357,14 @@ void Creature::MovePixelByPixel(int x, int y, bool check_collisions)
 
 void Creature::MoveComponents(int x, int y)
 {
-    MoveSprite(x, y);
+	if (ptr_creature_sprite != nullptr) //Not every creature has its sprite - e.g. event trigger has only vector!
+	{
+		MoveSprite(x, y);
+	}
+	if (ptr_creature_vector != nullptr)
+	{
+		;
+	}
     MoveHitbox(x, y);
 }
 
@@ -402,6 +419,47 @@ void Creature::StrafeRight()
 //COLLISIONS
 //**********
 
+void Creature::FireEventIfTriggerHit()
+{
+	for (Creature* ptr_trigger : current_event_triggers)
+	{
+		if (DoICollideWithThisEventTrigger(ptr_trigger))
+		{
+			ptr_trigger->FireEvent();
+		}
+	}
+}
+
+bool Creature::DoICollideWithThisEventTrigger(Creature* ptr_my_trigger)
+{
+	bool result = false;
+	//printf("DoICollideWithNeighbors called for %p.\n", this);
+	int my_x = hitbox.x;
+	int my_y = hitbox.y;
+	int my_w = hitbox.w;
+	int my_h = hitbox.h;
+	//Checking collisions with event triggers. Event triggers do not stop movement!
+	// #TODO usun¹æ powtórzenia w kodzie
+	if (ptr_my_trigger->my_type == cre_event_trigger)
+	{
+		int obs_x = ptr_my_trigger->hitbox.x;
+		int obs_y = ptr_my_trigger->hitbox.y;
+		int obs_w = ptr_my_trigger->hitbox.w;
+		int obs_h = ptr_my_trigger->hitbox.h;
+
+		if (DoICollideXPlane(my_x, my_w, obs_x, obs_w) && DoICollideYPlane(my_y, my_h, obs_y, obs_h))
+		{
+			printf("Collision with event trigger caught by DoICollideWithThisCreature!\n");
+			result = true;
+		}
+	}
+	else
+	{
+		throw std::invalid_argument("DoICollideWithThisTrigger called for non-trigger creature!\n");
+	}
+	return result;
+}
+
 bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature)
 {
 	bool result = false;
@@ -410,6 +468,7 @@ bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature)
 	int my_y = hitbox.y;
 	int my_w = hitbox.w;
 	int my_h = hitbox.h;
+	//Checking collisions with obstacles - creatures, that stop movement.
 	if (ptr_my_creature != this /* Prevents checking collision with itself. */ && ptr_my_creature->is_obstacle == true)
 	{
 		int obs_x = ptr_my_creature->hitbox.x;
@@ -506,4 +565,15 @@ bool Creature::DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h)
 	{
 		return false;
 	}
+}
+
+/*void Creature::RenderHitbox()
+{
+	SDL_Rect* ptr_hitbox = &hitbox;
+	SDL_RenderDrawRect(Game::ptr_screen->renderer, ptr_hitbox);
+}*/
+
+void Creature::FireEvent()
+{
+	printf("Default implementation of FireEvent called!\n");
 }

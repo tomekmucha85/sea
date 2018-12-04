@@ -1,8 +1,4 @@
-#include <stdlib.h>
-#include <ctime>
 #include <Level.hpp>
-#include <Creature.hpp>
-#include <Screen.hpp>
 
 //************
 //CONSTRUCTORS
@@ -122,7 +118,22 @@ void Level::RenderAllPresentCreatures()
 		{
 			for (Creature* ptr_member_creature : *ptr_my_level_component->TellPtrToCreaturesArray())
 			{
-				ptr_member_creature->ptr_creature_sprite->Render();
+				if(ptr_member_creature->ptr_creature_sprite != nullptr)
+				{ 
+					ptr_member_creature->ptr_creature_sprite->Render();
+					//printf("Rendered sprite.\n");
+				}
+				else if (ptr_member_creature->ptr_creature_vector != nullptr)
+				{
+					//printf("Will render vector.\n");
+					ptr_member_creature->ptr_creature_vector->Render();
+					//printf("Rendered vector.\n");
+				}
+				else
+				{
+					printf("This creature has nothing to render!\n");
+					throw "This creature has nothing to render!\n";
+				}
 			}
 		}
 	}

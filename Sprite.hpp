@@ -1,15 +1,20 @@
 #ifndef SPRITE_HPP
 #define SPRITE_HPP
+#include <SDL.h>
+#include <stdio.h>
+#include <SDL_image.h>
+#include <vector>
+#include <stdexcept>
 #include <vector>
 #include <TextureBank.hpp>
+#include <Screen.hpp>
+#include <VisualComponent.hpp>
 
 //###################
 //Data types
 //###################
 
-enum SpriteType   {clawy, background, box, black_smoke};
-
-class Sprite
+class Sprite : public VisualComponent
 {
     private:
 
@@ -20,6 +25,8 @@ class Sprite
 
         //What part of the texture is used
         SDL_Rect texture_clip = {0,0,0,0};
+
+		static TextureBank* ptr_texture_bank;
 
         //###################
         //Functions
@@ -57,6 +64,8 @@ class Sprite
         SDL_Rect CheckTextureDimensions(SDL_Texture* ptr_my_texture);
         SDL_Rect TellSpritePosition();
         SDL_Rect TellTextureClip();
+		static void SetTextureBank(TextureBank* ptr_my_texture_bank);
+		static TextureBank* TellTextureBank();
         void SetTexture(SDL_Texture* ref_my_texture);
         void SetTextureClip(SDL_Rect my_texture_clip);
         void SetPosition(SDL_Rect my_position);
@@ -64,9 +73,5 @@ class Sprite
         void SetPositionY(int new_y);
         void SetPositionW(int new_w);
         void SetPositionH(int new_h);
-
-        //Method for spawning sprites
-        static Sprite* CreateSprite(SpriteType desired_type, SDL_Rect* ptr_position = NULL);
-
 };
 #endif // SPRITE_HPP

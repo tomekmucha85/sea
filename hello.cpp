@@ -13,7 +13,6 @@
 #include <Sprite.hpp>
 #include <Creature.hpp>
 #include <LevelComponent.hpp>
-#include <CommonHeaderSprites.hpp>
 
 //###################
 //Function prototypes
@@ -38,7 +37,6 @@ int main(int argc, char* args[])
 
 	Level* first_level = Game::ptr_levels_factory->SpawnLevel(level_ninemazes);
 	Game::SetCurrentLevel(first_level);
-    Sprite* ptr_blue_background = Sprite::CreateSprite(background);
 	/*SDL_Rect smoke_position = { 500,200,0,0 };
 	SDL_Rect* ptr_smoke_position = &smoke_position;
 	Creature* cre_black_smoke_1 = Creature::SpawnCreature(cre_black_smoke, ptr_smoke_position);
@@ -106,8 +104,6 @@ int main(int argc, char* args[])
         //Clear screen
         SDL_RenderClear(Game::ptr_screen->renderer);
 
-        //Render texture to screen
-		ptr_blue_background->Render();
 		//#TODO zrobiæ generator Creature, zadbac o destruktor i konstruktor kopiujacy
 		first_level->RenderAllPresentCreatures();
         //Update screen

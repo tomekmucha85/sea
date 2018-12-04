@@ -29,6 +29,7 @@ class LevelNineMazes : public Level
 		SDL_Rect Maze_7 = {};
 		SDL_Rect Maze_8 = {};
 		SDL_Rect Maze_9 = {};
+
     public:
 	    LevelNineMazes(int my_cols_count, int my_rows_count);
 		void SetMazeRowsCount(int rows_num);

@@ -113,6 +113,11 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	ptr_maze7->GenerateMaze();
 	ptr_maze8->GenerateMaze();
 	ptr_maze9->GenerateMaze();
+
+	SDL_Rect event_area = {0,0,800,10};
+	SDL_Rect* ptr_event_area = &event_area;
+	TriggeredEvent ptr_func = [] {printf("TRIGGER!\n"); };
+	ptr_maze5->AddCreature(cre_event_trigger, ptr_event_area, merge, ptr_func);
 }
 
 void LevelNineMazes::SetMazeRowsCount(int rows_num)

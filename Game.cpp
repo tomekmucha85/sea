@@ -27,6 +27,9 @@ void Game::InitializeGame()
 void Game::DestroyGame()
 {
 	printf("Going to destroy game.\n");
+	delete ptr_current_level;
+	Sprite::SetTextureBank(nullptr);
+	VisualComponent::SetScreen(nullptr);
 	delete ptr_texture_bank;
 	delete ptr_screen;
 	delete ptr_levels_factory;
@@ -36,11 +39,13 @@ void Game::CreateScreen()
 {
     Game::ptr_screen = new Screen();
     printf("Screen address is: %p\n", Game::ptr_screen);
+	VisualComponent::SetScreen(ptr_screen);
 }
 
 void Game::LoadTextures()
 {
     Game::ptr_texture_bank = new TextureBank(Game::ptr_screen->renderer);
+	Sprite::SetTextureBank(ptr_texture_bank);
 }
 
 void Game::SetCurrentLevel(Level* ptr_my_current_level)

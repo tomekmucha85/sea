@@ -1,6 +1,3 @@
-#include <SDL.h>
-#include <stdio.h>
-#include <SDL_image.h>
 #include <Texture.hpp>
 
 Texture::Texture(std::string path, SDL_Renderer* renderer)

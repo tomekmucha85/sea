@@ -53,10 +53,10 @@ std::map<Creature*, LevelComponent*> LevelComponent::FindCreatureNeighborsInAllL
 	return result;
 }
 
-Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode)
+Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, TriggeredEvent my_event)
 {
 	//Spawning creature and then checking if it can be left on map.
-	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_position);
+	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_position, my_event);
 	//Binding creature with level component
 	//ptr_my_creature->SetOwner(this);
 
@@ -86,7 +86,15 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 				ptr_my_level_component->RemoveCreature(ptr_my_creature);
 			}
 			creatures.push_back(ptr_my_creature);
-			Creature::current_environment.push_back(ptr_my_creature);
+			if (ptr_my_creature->my_type!=cre_event_trigger)
+			{
+				Creature::current_environment.push_back(ptr_my_creature);
+			}
+			else
+			{
+				Creature::current_event_triggers.push_back(ptr_my_creature);
+			}
+
 			return ptr_my_creature;
 		}
 		//Safe mode does not insert Creature if collision occurs.

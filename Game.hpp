@@ -1,11 +1,12 @@
 #ifndef GAME_HPP
 #define GAME_HPP
+#include <ctime>
 #include <Screen.hpp>
 #include <TextureBank.hpp>
 #include <Level.hpp>
-#include <Creature.hpp>
 #include <FactorySpawningLevels.hpp>
-#include <ctime>
+#include <VisualComponent.hpp>
+#include <Sprite.hpp>
 
 class Game
 {

@@ -1,6 +1,5 @@
 #ifndef CREATURE_BLACKSMOKE_HPP
 #define CREATURE_BLACKSMOKE_HPP
-#include <Sprite.hpp>
 #include <Creature.hpp>
 class CreatureBlackSmoke : public Creature
 {
