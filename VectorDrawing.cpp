@@ -4,10 +4,9 @@
 //CONSTRUCTOR
 //###############
 
-VectorDrawing::VectorDrawing(SDL_Rect my_area)
+VectorDrawing::VectorDrawing(SDL_Rect* ptr_my_area) : VisualComponent(ptr_my_area)
 {
 	printf("Entered VectorDrawing constructor.\n");
-	area = my_area;
 	printf("Constructed VectorDrawing.\n");
 }
 
@@ -18,7 +17,7 @@ VectorDrawing::VectorDrawing(SDL_Rect my_area)
 void VectorDrawing::Render()
 {
 	//printf("Will render vector.\n");
-	SDL_Rect* ptr_area = &area;
+	SDL_Rect* ptr_area = &position;
 	SDL_RenderDrawRect(TellScreen()->renderer, ptr_area);
 }
 

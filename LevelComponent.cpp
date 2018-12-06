@@ -53,7 +53,7 @@ std::map<Creature*, LevelComponent*> LevelComponent::FindCreatureNeighborsInAllL
 	return result;
 }
 
-Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, TriggeredEvent my_event)
+Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::function<void()> my_event)
 {
 	//Spawning creature and then checking if it can be left on map.
 	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_position, my_event);
@@ -86,15 +86,7 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 				ptr_my_level_component->RemoveCreature(ptr_my_creature);
 			}
 			creatures.push_back(ptr_my_creature);
-			if (ptr_my_creature->my_type!=cre_event_trigger)
-			{
-				Creature::current_environment.push_back(ptr_my_creature);
-			}
-			else
-			{
-				Creature::current_event_triggers.push_back(ptr_my_creature);
-			}
-
+			Creature::current_environment.push_back(ptr_my_creature);
 			return ptr_my_creature;
 		}
 		//Safe mode does not insert Creature if collision occurs.
@@ -125,8 +117,12 @@ void LevelComponent::RemoveCreature(Creature* ptr_my_creature)
 	//Removing pointer from my creatures
 	//printf("Attempting to remove: %p.\n", ptr_my_creature);
 	creatures.erase(std::remove(creatures.begin(), creatures.end(), ptr_my_creature), creatures.end());
+
+	//#TODO - nie kazaæ szukaæ w dwóch wektorach, skoro creature mo¿e byæ tylko w jednym z nich
+
 	Creature::current_environment.erase(std::remove(Creature::current_environment.begin(),
 	    Creature::current_environment.end(), ptr_my_creature), Creature::current_environment.end());
+
 	//Destroying creature.
 	delete ptr_my_creature;
 }

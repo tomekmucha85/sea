@@ -1,6 +1,6 @@
 #include <CreatureEventTrigger.hpp>
 
-CreatureEventTrigger::CreatureEventTrigger(SDL_Rect* ptr_area, TriggeredEvent my_event) :
+CreatureEventTrigger::CreatureEventTrigger(SDL_Rect* ptr_area, std::function<void()> my_event) :
 	Creature(ptr_area)
 {
 	printf("Spawned an event trigger.\n");
@@ -10,12 +10,13 @@ CreatureEventTrigger::CreatureEventTrigger(SDL_Rect* ptr_area, TriggeredEvent my
 	printf("Assigned type.\n");
 	MakeMeNotObstacle();
 	printf("No obstacle set.\n");
-	ptr_creature_vector = new VectorDrawing(*ptr_area);
+	ptr_creature_vector = new VectorDrawing(ptr_area);
+	printf("Vector %p assigned to trigger %p.\n", ptr_creature_vector, this);
 }
 
 void CreatureEventTrigger::FireEvent()
 {
 	printf("Will fire event!\n");
-	triggered_event;
+	triggered_event();
 	printf("Fired event.\n");
 }

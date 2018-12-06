@@ -1,15 +1,16 @@
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
 #include <vector>
+#include <functional>
 #include <Sprite.hpp>
 #include <FactorySpawningSprites.hpp>
 #include <VectorDrawing.hpp>
+#include <CustomDefinedTypes.hpp>
 
 
 //cre_none means empty space/no creature present
 enum CreatureType    {cre_none, cre_event_trigger, cre_clawy, cre_flying_box, cre_black_smoke};
-//Functions to be passed, executing triggered event
-typedef void(*TriggeredEvent)();
+
 
 class Creature
 {
@@ -68,8 +69,6 @@ class Creature
 		VectorDrawing* ptr_creature_vector = nullptr;
         //Vector holding pointers to all creatures currently present in game except event triggers.
         static std::vector <Creature*> current_environment;
-		//Vector holding pointers to all event triggers present in game.
-		static std::vector <Creature*> current_event_triggers;
         //Holds address of Creature acting as current main character
         static Creature* ptr_current_main_charater;
 
@@ -97,19 +96,19 @@ class Creature
         void Move(int x, int y);
 		//void MovePixelPerfect(int x, int y);
 		void FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set);
+		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
         void MovePixelByPixel(int x, int y, bool check_collisions = true);
         void MoveComponents(int x, int y);
         void MoveSprite(int x, int y);
+		void MoveVector(int x, int y);
         void MoveHitbox(int x, int y);
         void MoveForward();
         void MoveBackward();
         void Strafe(int sidestep_angle);
         void StrafeLeft();
         void StrafeRight();
-		void FireEventIfTriggerHit();
-		bool DoICollideWithThisCreature(Creature* ptr_my_creature);
-		bool DoICollideWithThisEventTrigger(Creature* ptr_my_trigger);
+		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors();
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
         bool DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w);
@@ -120,7 +119,12 @@ class Creature
         Creature* WhoIsMainCharacter();
         void PrintStupidThings(Creature* ptr_to_creature);
 		//void RenderHitbox();
+		//###################
+		//Virtual functions
+		//###################
 		virtual void FireEvent();
+
+
 };
 
 

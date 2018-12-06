@@ -3,12 +3,14 @@
 #include <SDL.h>
 #include <vector>
 #include <map>
+#include <functional>
 #include <string>
 #include <stdlib.h>
 #include <ctime>
 #include <Creature.hpp>
 #include <LevelComponent.hpp>
 #include <FactorySpawningLevelComponents.hpp>
+#include <CustomDefinedTypes.hpp>
 
 enum LevelType {level_ninemazes, level_base};
 
@@ -36,9 +38,13 @@ class Level
 		int map_offset_x = NULL;
 		int map_offset_y = NULL;
 		//Main map array
-		std::vector<std::vector<MapEntity>> map = {};
+		//std::vector<std::vector<MapEntity>> map = {};
 
     public:
+		//Contains actions associated to specific level which will be performed during every game loop.
+		//std::vector<TriggeredEvent> cyclic_actions = {};
+		std::vector<std::function<void(Level*)>> cyclic_actions = {};
+
 		//Pointer to creature serving currently as hero
 		Creature* ptr_hero = nullptr;
 		
@@ -56,6 +62,9 @@ class Level
 		void SetCurrentHero(Creature* ptr_my_hero);
 		std::map<LevelComponentType, std::vector<LevelComponent*>>* TellPointerToComponentsArray();
 		FactorySpawningLevelComponents* CreateComponentsFactory();
+		void PerformCyclicActions();
+		std::vector<Creature*> FindHeroColissionsInGivenComponent(LevelComponent* ptr_my_component, bool check_only_obstacles=true);
+		void RunTriggersHitByHero(LevelComponent* ptr_component_with_triggers);
 };
 
 #endif //LEVEL_HPP

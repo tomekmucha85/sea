@@ -12,7 +12,6 @@
 //***********************************
 
 std::vector <Creature*> Creature::current_environment;
-std::vector <Creature*> Creature::current_event_triggers;
 std::vector <CreatureType> Creature::walls = { cre_flying_box };
 Creature* Creature::ptr_current_main_charater;
 
@@ -39,6 +38,7 @@ Creature::Creature(SDL_Rect* ptr_area)
 	printf("Invisible creature constructed.\n");
 	//Hitbox == ptr_area. No margin is set.
 	InitializeHitbox(*ptr_area, 0);
+	printf("Hitbox is: x: %d y: %d w: %d h: %d.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 
 }
 
@@ -137,8 +137,7 @@ void Creature::SetMyRenderLayer(int layer_number)
 
 void Creature::SetMyVector(SDL_Rect* ptr_my_area)
 {
-	SDL_Rect area = *ptr_my_area;
-	ptr_creature_vector = new VectorDrawing(area);
+	ptr_creature_vector = new VectorDrawing(ptr_my_area);
 }
 
 //**********
@@ -256,6 +255,22 @@ Only objects with hitboxes within neighbor_radius will be checked.*/
 	//}
 }
 
+std::vector<Creature*> Creature::FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles)
+{
+	std::vector<Creature*> result = {};
+	//printf("I am %p. I will find collisions with me in set %p consisting of %d items.\n", this, ptr_my_creatures_set, ptr_my_creatures_set->size());
+	for (Creature* ptr_creature : *ptr_my_creatures_set)
+	{
+		if (DoICollideWithThisCreature(ptr_creature, check_only_obstacles))
+		{
+			printf("Found collision in set!\n");
+			result.push_back(ptr_creature);
+		}
+	}
+	//printf("Found %d collisions of %p in set %p.\n", result.size(), this, ptr_my_creatures_set);
+	return result;
+}
+
 void Creature::Move(int x, int y)
 {
 //Moves this object - in case it's a non-player object.
@@ -292,8 +307,7 @@ void Creature::Move(int x, int y)
         }
         else
         {
-			//Check if any trigger event was entered. If yes - fire event.
-			FireEventIfTriggerHit();
+			;
         }
     }
     else
@@ -363,15 +377,22 @@ void Creature::MoveComponents(int x, int y)
 	}
 	if (ptr_creature_vector != nullptr)
 	{
-		;
+		MoveVector(x, y);
 	}
     MoveHitbox(x, y);
 }
 
+void Creature::MoveVector(int x, int y)
+{
+	//printf("Moved vector!\n");
+	ptr_creature_vector->position.x += x;
+	ptr_creature_vector->position.y += y;
+}
+
 void Creature::MoveSprite(int x, int y)
 {
-    (*ptr_creature_sprite).position.x += x;
-    (*ptr_creature_sprite).position.y += y;
+    ptr_creature_sprite->position.x += x;
+    ptr_creature_sprite->position.y += y;
 }
 
 void Creature::MoveHitbox(int x, int y)
@@ -419,18 +440,8 @@ void Creature::StrafeRight()
 //COLLISIONS
 //**********
 
-void Creature::FireEventIfTriggerHit()
-{
-	for (Creature* ptr_trigger : current_event_triggers)
-	{
-		if (DoICollideWithThisEventTrigger(ptr_trigger))
-		{
-			ptr_trigger->FireEvent();
-		}
-	}
-}
 
-bool Creature::DoICollideWithThisEventTrigger(Creature* ptr_my_trigger)
+bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles)
 {
 	bool result = false;
 	//printf("DoICollideWithNeighbors called for %p.\n", this);
@@ -438,38 +449,14 @@ bool Creature::DoICollideWithThisEventTrigger(Creature* ptr_my_trigger)
 	int my_y = hitbox.y;
 	int my_w = hitbox.w;
 	int my_h = hitbox.h;
-	//Checking collisions with event triggers. Event triggers do not stop movement!
-	// #TODO usun¹æ powtórzenia w kodzie
-	if (ptr_my_trigger->my_type == cre_event_trigger)
-	{
-		int obs_x = ptr_my_trigger->hitbox.x;
-		int obs_y = ptr_my_trigger->hitbox.y;
-		int obs_w = ptr_my_trigger->hitbox.w;
-		int obs_h = ptr_my_trigger->hitbox.h;
 
-		if (DoICollideXPlane(my_x, my_w, obs_x, obs_w) && DoICollideYPlane(my_y, my_h, obs_y, obs_h))
-		{
-			printf("Collision with event trigger caught by DoICollideWithThisCreature!\n");
-			result = true;
-		}
-	}
-	else
-	{
-		throw std::invalid_argument("DoICollideWithThisTrigger called for non-trigger creature!\n");
-	}
-	return result;
-}
+	//Checking collisions with creatures.
+	//Depending on flag "check_only_obstacles":
+	//    - collisions are checked only with Creature entities with "is_obstacle" flag set to true 
+	//    - or with all Creature beings.
 
-bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature)
-{
-	bool result = false;
-	//printf("DoICollideWithNeighbors called for %p.\n", this);
-	int my_x = hitbox.x;
-	int my_y = hitbox.y;
-	int my_w = hitbox.w;
-	int my_h = hitbox.h;
-	//Checking collisions with obstacles - creatures, that stop movement.
-	if (ptr_my_creature != this /* Prevents checking collision with itself. */ && ptr_my_creature->is_obstacle == true)
+	if (ptr_my_creature != this /* Prevents checking collision with itself. */ && 
+		((ptr_my_creature->is_obstacle == true && check_only_obstacles==true)) || (check_only_obstacles == false))
 	{
 		int obs_x = ptr_my_creature->hitbox.x;
 		int obs_y = ptr_my_creature->hitbox.y;

@@ -138,6 +138,7 @@
     <ClInclude Include="CreatureBlackSmoke.hpp" />
     <ClInclude Include="CreatureClawy.hpp" />
     <ClInclude Include="CreatureEventTrigger.hpp" />
+    <ClInclude Include="CustomDefinedTypes.hpp" />
     <ClInclude Include="FactorySpawningCreatures.hpp" />
     <ClInclude Include="CreatureFlyingBox.hpp" />
     <ClInclude Include="FactorySpawningLevelComponents.hpp" />

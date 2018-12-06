@@ -37,6 +37,9 @@ int main(int argc, char* args[])
 
 	Level* first_level = Game::ptr_levels_factory->SpawnLevel(level_ninemazes);
 	Game::SetCurrentLevel(first_level);
+
+	int looped_events = Game::ptr_current_level->cyclic_actions.size();
+	printf("There are %d actions present in current event loop.\n", looped_events);
 	/*SDL_Rect smoke_position = { 500,200,0,0 };
 	SDL_Rect* ptr_smoke_position = &smoke_position;
 	Creature* cre_black_smoke_1 = Creature::SpawnCreature(cre_black_smoke, ptr_smoke_position);
@@ -101,6 +104,8 @@ int main(int argc, char* args[])
 		//#TODO napisaæ wspóln¹ funkcjê dla animacji
 		//cre_black_smoke_1->ptr_creature_sprite->SmokeAnimation();
 
+		//Perform cyclic actions from current level
+		Game::ptr_current_level->PerformCyclicActions();
         //Clear screen
         SDL_RenderClear(Game::ptr_screen->renderer);
 

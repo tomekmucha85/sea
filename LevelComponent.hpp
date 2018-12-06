@@ -5,6 +5,7 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
+#include <functional>
 #include <Creature.hpp>
 #include <FactorySpawningCreatures.hpp>
 
@@ -45,7 +46,7 @@ class LevelComponent
 		std::vector<Creature*>* TellPtrToCreaturesArray();
 		void SetPointerToPeerComponentsIndex(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components);
 		std::map<Creature*, LevelComponent*> FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature);
-		Creature* AddCreature(CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, TriggeredEvent my_event=nullptr);
+		Creature* AddCreature(CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::function<void ()> my_event=nullptr);
 		void RemoveCreature(Creature* ptr_my_creature);
 		void RemoveAllCreatures();
 		//###################

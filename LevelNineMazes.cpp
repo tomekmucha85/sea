@@ -2,6 +2,7 @@
 
 LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 {
+
 	//Core part generation
     // #TODO - uwspólniæ?
 	SDL_Rect core_area = { 0,0,0,0 };
@@ -18,6 +19,27 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	Creature* ptr_hero = ptr_core->AddCreature(cre_clawy, ptr_hero_position, force);
 	ptr_hero->MakeMeMainCharacter();
 	SetCurrentHero(ptr_hero);
+	// Adding component for event triggers
+	LevelComponent* ptr_event_triggers = ptr_components_factory->SpawnLevelComponent(levco_test, 0);
+
+    // Adding event trigger
+	std::function<void()> ptr_func = [] {printf("TRIGGER!\n"); };
+	SDL_Rect event_area = { 0,0,800,10 };
+	SDL_Rect* ptr_event_area = &event_area;
+	ptr_event_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, ptr_func);
+
+	//Adding cyclic action to fire triggers hit by hero
+	//std::function<void()> ptr_test_action = [] {printf("ACTION PERFORMED!\n"); };
+	std::function<void(Level*)> func_fire_triggers = [=] (Level* ptr_level) 
+	{ 
+		std::map<LevelComponentType, std::vector<LevelComponent*>>* ptr_components_array = ptr_level->TellPointerToComponentsArray();
+		std::vector<LevelComponent*> ptr_levco_test_vector = ptr_components_array->operator[](levco_test);
+		LevelComponent* ptr_levco_test_containing_triggers = ptr_levco_test_vector[0];
+		ptr_level->RunTriggersHitByHero(ptr_levco_test_containing_triggers);
+	};
+
+	cyclic_actions.push_back(func_fire_triggers);
+
 
 	//Mazes part
 	// #TODO ucywilizowaæ
@@ -113,11 +135,6 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	ptr_maze7->GenerateMaze();
 	ptr_maze8->GenerateMaze();
 	ptr_maze9->GenerateMaze();
-
-	SDL_Rect event_area = {0,0,800,10};
-	SDL_Rect* ptr_event_area = &event_area;
-	TriggeredEvent ptr_func = [] {printf("TRIGGER!\n"); };
-	ptr_maze5->AddCreature(cre_event_trigger, ptr_event_area, merge, ptr_func);
 }
 
 void LevelNineMazes::SetMazeRowsCount(int rows_num)

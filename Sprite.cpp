@@ -11,7 +11,7 @@ TextureBank* Sprite::ptr_texture_bank = nullptr;
 //CONSTRUCTOR
 //***********************************
 
-Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* ptr_my_position)
+Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* ptr_my_position) : VisualComponent (ptr_my_position)
 {
 	//#TODO - validate arguments?
     //printf("Default constructor called for Sprite.\n");
@@ -63,11 +63,6 @@ void Sprite::SetTextureClip(SDL_Rect my_texture_clip)
     texture_clip = my_texture_clip;
 }
 
-void Sprite::SetPosition(SDL_Rect my_position)
-{
-    position = my_position;
-}
-
 void Sprite::SetPositionX(int new_x)
 {
     position.x = new_x;
@@ -86,14 +81,6 @@ void Sprite::SetPositionW(int new_w)
 void Sprite::SetPositionH(int new_h)
 {
     position.h = new_h;
-}
-
-void Sprite::Move(int velocity_x, int velocity_y)
-{
-    position.x += velocity_x;
-    position.y += velocity_y;
-    velocity_x = 0;
-    velocity_y = 0;
 }
 
 void Sprite::Render()

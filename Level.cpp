@@ -103,6 +103,42 @@ return 0;
 void Level::SetCurrentHero(Creature* ptr_my_hero)
 {
     ptr_hero = ptr_my_hero;
+	printf("Current hero is %p.\n", ptr_my_hero);
+}
+
+//**************
+//CYCLIC ACTIONS
+//**************
+
+void Level::PerformCyclicActions()
+{
+	for (std::function<void(Level*)> action : cyclic_actions)
+	{
+		action(this);
+	}
+}
+
+
+std::vector<Creature*> Level::FindHeroColissionsInGivenComponent(LevelComponent* ptr_my_component, bool check_only_obstacles)
+{
+	//printf("Will look for collisions in component %p, with creature array %p.\n", ptr_my_component, ptr_my_component->TellPtrToCreaturesArray());
+	//printf("Pointer to current hero: %p.\n", ptr_hero);
+	std::vector<Creature*> colliding_creatures = {};
+	colliding_creatures = ptr_hero->FindCollisionsInSet(ptr_my_component->TellPtrToCreaturesArray(), check_only_obstacles);
+	return colliding_creatures;
+}
+
+void Level::RunTriggersHitByHero(LevelComponent* ptr_component_with_triggers)
+{
+	std::vector<Creature*> hit_triggers = FindHeroColissionsInGivenComponent(ptr_component_with_triggers, false);
+	if (hit_triggers.size() > 0)
+	{
+		printf("A trigger was hit!\n");
+		for (Creature* trigger : hit_triggers)
+		{
+			trigger->FireEvent();
+		}
+	}
 }
 
 //************

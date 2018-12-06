@@ -13,7 +13,7 @@ class FactorySpawningCreatures
 
     public:
 		Creature* SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position, 
-			TriggeredEvent my_event = nullptr);
+			std::function<void ()> my_event = nullptr);
 };
 
 #endif //FACTORY_SPAWNING_CREATURES_HPP

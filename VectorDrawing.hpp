@@ -11,7 +11,6 @@ class VectorDrawing : public VisualComponent
 	//###################
 	//Variables
 	//###################
-		SDL_Rect area = {0,0,0,0};
 
 	//###################
 	//Functions
@@ -27,7 +26,7 @@ class VectorDrawing : public VisualComponent
 	//###################
 	//Functions
 	//###################
-		VectorDrawing(SDL_Rect my_area);
+		VectorDrawing(SDL_Rect* ptr_my_area);
 		void Render();
 };
 #endif // VECTOR_DRAWING_HPP

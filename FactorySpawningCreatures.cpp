@@ -1,7 +1,7 @@
 #include <FactorySpawningCreatures.hpp>
 
 Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position,
-	TriggeredEvent my_event)
+	std::function<void()> my_event)
 {
 	Creature* result = NULL;
 
