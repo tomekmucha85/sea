@@ -8,8 +8,11 @@ int LevelComponent::map_block_height = 40;
 //***********************************
 //FUNCTIONS
 //***********************************
-LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components)
+LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components, 
+	SDL_Rect my_component_area)
 {
+	SetComponentArea(my_component_area);
+	printf("Component area is x: %d, y: %d, w: %d, h: %d.\n", component_area.x, component_area.y, component_area.w, component_area.h);
 	SetPointerToPeerComponentsIndex(my_ptr_peer_level_components);
 	ptr_creatures_factory = new FactorySpawningCreatures();
 }
@@ -34,6 +37,11 @@ std::vector<Creature*>* LevelComponent::TellPtrToCreaturesArray()
 SDL_Rect LevelComponent::TellComponentArea()
 {
 	return component_area;
+}
+
+void LevelComponent::SetComponentArea(SDL_Rect my_component_area)
+{
+	component_area = my_component_area;
 }
 
 SDL_Rect LevelComponent::TellComponentEdge(Directions my_direction)

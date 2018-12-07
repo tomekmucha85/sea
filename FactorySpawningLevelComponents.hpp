@@ -18,7 +18,7 @@ class FactorySpawningLevelComponents
     public:
 		FactorySpawningLevelComponents(std::map<LevelComponentType, std::vector<LevelComponent*>>* ptr_my_level_components_array);
 		void SetPointerToComponentsArray(std::map<LevelComponentType, std::vector<LevelComponent*>>* ptr_my_level_components_array);
-	    LevelComponent* SpawnLevelComponent(LevelComponentType my_type, SDL_Rect* ptr_my_component_area=nullptr);
+		LevelComponent* SpawnLevelComponent(LevelComponentType my_type, SDL_Rect my_component_area = {0,0,0,0});
 		void EnsureKeyExistsInComponentsArray(LevelComponentType my_type);
 		void InsertComponentIntoComponentsArray(LevelComponentType my_type, LevelComponent* ptr_my_level_component);
 };

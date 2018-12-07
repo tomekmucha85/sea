@@ -42,7 +42,8 @@ class LevelComponent
 		//###################
 		//Functions
 		//###################
-		LevelComponent(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components);
+		LevelComponent(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components, 
+			SDL_Rect my_component_area = {0,0,0,0});
 		~LevelComponent();
 		std::vector<Creature*>* TellPtrToCreaturesArray();
 		void SetPointerToPeerComponentsIndex(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components);
@@ -51,6 +52,7 @@ class LevelComponent
 		void RemoveCreature(Creature* ptr_my_creature);
 		void RemoveAllCreatures();
 		SDL_Rect TellComponentArea();
+		void SetComponentArea(SDL_Rect my_component_area);
 		SDL_Rect TellComponentEdge(Directions my_direction);
 		//###################
         //Virtual Functions

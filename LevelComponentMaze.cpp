@@ -1,22 +1,25 @@
 #include <LevelComponentMaze.hpp>
 
 LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components, 
-	SDL_Rect* ptr_maze_area) :
-	LevelComponent(my_ptr_peer_level_components)
+	SDL_Rect my_component_area) :
+	LevelComponent(my_ptr_peer_level_components, my_component_area)
 {
-	if (ValidateMazeArea(ptr_maze_area) != true)
+	if (ValidateMazeArea(my_component_area) != true)
 	{
-		std::string exception_text = "Requested maze size w : " + std::to_string(ptr_maze_area->w) + " h: " + std::to_string(ptr_maze_area->w) +
+		std::string exception_text = "Requested maze size w : " + std::to_string(my_component_area.w) + " h: " + std::to_string(my_component_area.w) +
 			" cannot be divided into maze blocks of currently set width: " + std::to_string(maze_block_width*map_block_width) + " height: " +
 			std::to_string(map_block_height*maze_block_width);
 		throw std::invalid_argument(exception_text);
 	}
 	else
 	{
-		maze_x_start = ptr_maze_area->x;
-		maze_y_start = ptr_maze_area->y;
-		maze_w = ptr_maze_area->w;
-		maze_h = ptr_maze_area->h;
+		printf("Maze component area passed to constructor is x: %d, y: %d, w: %d, h: %d.\n",
+			my_component_area.x, my_component_area.y, my_component_area.w, my_component_area.h);
+		maze_x_start = my_component_area.x;
+		maze_y_start = my_component_area.y;
+		maze_w = my_component_area.w;
+		maze_h = my_component_area.h;
+		
 
 	}
 	maze_rows_count = CalculateRowsNumber();
@@ -49,10 +52,10 @@ int LevelComponentMaze::CalculateBlocksCountHorizontally()
 	return (maze_columns_count / (maze_block_width-1));
 }
 
-bool LevelComponentMaze::ValidateMazeArea(SDL_Rect* ptr_maze_area)
+bool LevelComponentMaze::ValidateMazeArea(SDL_Rect maze_area)
 {
-	int maze_h = ptr_maze_area->h;
-	int maze_w = ptr_maze_area->w;
+	int maze_h = maze_area.h;
+	int maze_w = maze_area.w;
 	//If maze height is not dividable into maze block
 	if ((maze_h - maze_block_height * map_block_height) % (maze_block_height*map_block_height - map_block_height) != 0)
 	{

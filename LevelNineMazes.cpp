@@ -6,8 +6,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	//Core part generation
     // #TODO - uwspólniæ?
 	SDL_Rect core_area = { 0,0,0,0 };
-	SDL_Rect* ptr_core_area = &core_area;
-	LevelComponent* ptr_core = ptr_components_factory->SpawnLevelComponent(levco_core, ptr_core_area);
+	LevelComponent* ptr_core = ptr_components_factory->SpawnLevelComponent(levco_core, core_area);
 	SDL_Rect guy_area = { 10,10,0,0 };
 	SDL_Rect* ptr_guy_area = &guy_area;
 	Creature* hero = ptr_core->AddCreature(cre_clawy, ptr_guy_area, force);
@@ -156,8 +155,7 @@ void LevelNineMazes::GenerateMazeNumberNewApproach(int my_number)
 		maze_1 = central_maze_coordinates;
 		maze_1.x += (central_maze_coordinates.w*-1) + map_block_width;
 		maze_1.y += (central_maze_coordinates.h*-1) + map_block_height;
-		SDL_Rect* ptr_area_maze_1 = &maze_1;
-		ptr_maze1 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_1);
+		ptr_maze1 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_1);
 		ptr_maze1->SetBorderState(east, false);
 		ptr_maze1->SetBorderState(south, false);
 		ptr_maze1->GenerateMaze();
@@ -166,8 +164,7 @@ void LevelNineMazes::GenerateMazeNumberNewApproach(int my_number)
 	{
 		maze_2 = central_maze_coordinates;
 		maze_2.y += (central_maze_coordinates.h*-1) + map_block_height;
-		SDL_Rect* ptr_area_maze_2 = &maze_2;
-		ptr_maze2 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_2);
+		ptr_maze2 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_2);
 		ptr_maze2->SetBorderState(south, false);
 		ptr_maze2->GenerateMaze();
 	}
@@ -176,8 +173,7 @@ void LevelNineMazes::GenerateMazeNumberNewApproach(int my_number)
 		maze_3 = central_maze_coordinates;
 		maze_3.x += central_maze_coordinates.w - map_block_width;
 		maze_3.y += (central_maze_coordinates.h*-1) + map_block_height;
-		SDL_Rect* ptr_area_maze_3 = &maze_3;
-		ptr_maze3 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_3);
+		ptr_maze3 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_3);
 		ptr_maze3->SetBorderState(south, false);
 		ptr_maze3->SetBorderState(west, false);
 		ptr_maze3->GenerateMaze();
@@ -186,25 +182,22 @@ void LevelNineMazes::GenerateMazeNumberNewApproach(int my_number)
 	{
 		maze_4 = central_maze_coordinates;
 		maze_4.x += (central_maze_coordinates.w*-1) + map_block_width;
-		SDL_Rect* ptr_area_maze_4 = &maze_4;
-		ptr_maze4 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_4);
+		ptr_maze4 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_4);
 		ptr_maze4->SetBorderState(east, false);
 		ptr_maze4->GenerateMaze();
 	}
 	else if (my_number == 5)
 	{
 		maze_5 = central_maze_coordinates;
-		SDL_Rect* ptr_area_maze_5 = &maze_5;
-		printf("Spawning maze in area: x: %d, y: %d, w: %d, h: %d.\n", ptr_area_maze_5->x, ptr_area_maze_5->y, ptr_area_maze_5->w, ptr_area_maze_5->h);
-		ptr_maze5 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_5);
+		printf("Spawning maze in area: x: %d, y: %d, w: %d, h: %d.\n", maze_5.x, maze_5.y, maze_5.w, maze_5.h);
+		ptr_maze5 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_5);
 		ptr_maze5->GenerateMaze();
 	}
 	else if (my_number == 6)
 	{
 		maze_6 = central_maze_coordinates;
 		maze_6.x += central_maze_coordinates.w - map_block_width;
-		SDL_Rect* ptr_area_maze_6 = &maze_6;
-		ptr_maze6 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_6);
+		ptr_maze6 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_6);
 		ptr_maze6->SetBorderState(west, false);
 		ptr_maze6->GenerateMaze();
 	}
@@ -213,8 +206,7 @@ void LevelNineMazes::GenerateMazeNumberNewApproach(int my_number)
 		maze_7 = central_maze_coordinates;
 		maze_7.x += (central_maze_coordinates.w*-1) + map_block_width;
 		maze_7.y += (central_maze_coordinates.h) - map_block_height;
-		SDL_Rect* ptr_area_maze_7 = &maze_7;
-		ptr_maze7 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_7);
+		ptr_maze7 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_7);
 		ptr_maze7->SetBorderState(east, false);
 		ptr_maze7->SetBorderState(north, false);
 		ptr_maze7->GenerateMaze();
@@ -223,8 +215,7 @@ void LevelNineMazes::GenerateMazeNumberNewApproach(int my_number)
 	{
 		maze_8 = central_maze_coordinates;
 		maze_8.y += (central_maze_coordinates.h) - map_block_height;
-		SDL_Rect* ptr_area_maze_8 = &maze_8;
-		ptr_maze8 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_8);
+		ptr_maze8 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_8);
 		ptr_maze8->SetBorderState(north, false);
 		ptr_maze8->GenerateMaze();
 	}
@@ -233,8 +224,7 @@ void LevelNineMazes::GenerateMazeNumberNewApproach(int my_number)
 		maze_9 = central_maze_coordinates;
 		maze_9.y += (central_maze_coordinates.h * 2) - map_block_height;
 		maze_9.x += central_maze_coordinates.w - map_block_width;
-		SDL_Rect* ptr_area_maze_9 = &maze_9;
-		ptr_maze9 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_9);
+		ptr_maze9 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_9);
 		ptr_maze9->SetBorderState(north, false);
 		ptr_maze9->SetBorderState(west, false);
 		ptr_maze9->GenerateMaze();
@@ -265,8 +255,7 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 		maze_1 = maze_5_dimensions;
 		maze_1.x += (maze_5_dimensions.w*-1) + map_block_width;
 		maze_1.y += (maze_5_dimensions.h*-1) + map_block_height;
-		SDL_Rect* ptr_area_maze_1 = &maze_1;
-		ptr_maze1 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_1);
+		ptr_maze1 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_1);
 		ptr_maze1->SetBorderState(east, false);
         ptr_maze1->SetBorderState(south, false);
 		ptr_maze1->GenerateMaze();
@@ -275,8 +264,7 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 	{
 		maze_2 = maze_5_dimensions;
 		maze_2.y += (maze_5_dimensions.h*-1) + map_block_height;
-		SDL_Rect* ptr_area_maze_2 = &maze_2;
-		ptr_maze2 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_2);
+		ptr_maze2 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_2);
 		ptr_maze2->SetBorderState(south, false);
 		ptr_maze2->GenerateMaze();
 	}
@@ -285,8 +273,7 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 		maze_3 = maze_5_dimensions;
 		maze_3.x += maze_5_dimensions.w - map_block_width;
 		maze_3.y += (maze_5_dimensions.h*-1) + map_block_height;
-		SDL_Rect* ptr_area_maze_3 = &maze_3;
-		ptr_maze3 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_3);
+		ptr_maze3 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_3);
 		ptr_maze3->SetBorderState(south, false);
 		ptr_maze3->SetBorderState(west, false);
 		ptr_maze3->GenerateMaze();
@@ -295,25 +282,22 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 	{
 		maze_4 = maze_5_dimensions;
 		maze_4.x += (maze_5_dimensions.w*-1) + map_block_width;
-		SDL_Rect* ptr_area_maze_4 = &maze_4;
-		ptr_maze4 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_4);
+		ptr_maze4 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_4);
 		ptr_maze4->SetBorderState(east, false);
 		ptr_maze4->GenerateMaze();
 	}
 	else if (my_number == 5)
 	{
 		maze_5 = maze_5_dimensions;
-		SDL_Rect* ptr_area_maze_5 = &maze_5;
-		printf("Spawning maze in area: x: %d, y: %d, w: %d, h: %d.\n", ptr_area_maze_5->x, ptr_area_maze_5->y, ptr_area_maze_5->w, ptr_area_maze_5->h);
-		ptr_maze5 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_5);
+		printf("Spawning maze in area: x: %d, y: %d, w: %d, h: %d.\n", maze_5.x, maze_5.y, maze_5.w, maze_5.h);
+		ptr_maze5 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_5);
 		ptr_maze5->GenerateMaze();
 	}
 	else if (my_number == 6)
 	{
 		maze_6 = maze_5_dimensions;
 		maze_6.x += maze_5_dimensions.w - map_block_width;
-		SDL_Rect* ptr_area_maze_6 = &maze_6;
-		ptr_maze6 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_6);
+		ptr_maze6 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_6);
 		ptr_maze6->SetBorderState(west, false);
 		ptr_maze6->GenerateMaze();
 	}
@@ -322,8 +306,7 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 		maze_7 = maze_5_dimensions;
 		maze_7.x += (maze_5_dimensions.w*-1) + map_block_width;
 		maze_7.y += (maze_5_dimensions.h) - map_block_height;
-		SDL_Rect* ptr_area_maze_7 = &maze_7;
-		ptr_maze7 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_7);
+		ptr_maze7 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_7);
 		ptr_maze7->SetBorderState(east, false);
 		ptr_maze7->SetBorderState(north, false);
 		ptr_maze7->GenerateMaze();
@@ -332,8 +315,7 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 	{
 		maze_8 = maze_5_dimensions;
 		maze_8.y += (maze_5_dimensions.h) - map_block_height;
-		SDL_Rect* ptr_area_maze_8 = &maze_8;
-		ptr_maze8 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_8);
+		ptr_maze8 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_8);
 		ptr_maze8->SetBorderState(north, false);
 		ptr_maze8->GenerateMaze();
 	}
@@ -342,8 +324,7 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 		maze_9 = maze_5_dimensions;
 		maze_9.y += (maze_5_dimensions.h * 2) - map_block_height;
 		maze_9.x += maze_5_dimensions.w - map_block_width;
-		SDL_Rect* ptr_area_maze_9 = &maze_9;
-		ptr_maze9 = ptr_components_factory->SpawnLevelComponent(levco_maze, ptr_area_maze_9);
+		ptr_maze9 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_9);
 		ptr_maze9->SetBorderState(north, false);
 		ptr_maze9->SetBorderState(west, false);
 		ptr_maze9->GenerateMaze();
