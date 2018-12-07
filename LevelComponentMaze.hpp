@@ -58,6 +58,6 @@ public:
 	void ManageBorders();
 	void ClearMaze();
 
-	static SDL_Rect CalculateMazeDimensions(int w, int h, int my_maze_block_width = 8, int my_maze_block_height = 8, int my_map_block_size = 40);
+	static SDL_Rect CalculateMazeDimensions(int w, int h, int my_maze_block_width = 8, int my_maze_block_height = 8);
 };
 #endif // LEVEL_COMPONENT_MAZE_HPP

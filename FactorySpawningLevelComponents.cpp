@@ -19,14 +19,14 @@ void FactorySpawningLevelComponents::EnsureKeyExistsInComponentsArray(LevelCompo
 	}
 }
 
-void FactorySpawningLevelComponents::InsertComponentIntoDesiredPlaceInComponentsArray(LevelComponentType my_type, LevelComponent* ptr_my_level_component, int my_index)
+void FactorySpawningLevelComponents::InsertComponentIntoComponentsArray(LevelComponentType my_type, LevelComponent* ptr_my_level_component)
 {
 	//Access specific map element via pointer to map
 	std::vector<LevelComponent*>* ptr_to_proper_array = &ptr_level_components_array->operator[](my_type);
-	ptr_to_proper_array->insert(ptr_to_proper_array->begin() + my_index, ptr_my_level_component);
+	ptr_to_proper_array->push_back(ptr_my_level_component);
 }
 
-LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelComponentType my_type, int my_component_index, SDL_Rect* ptr_my_component_area)
+LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelComponentType my_type, SDL_Rect* ptr_my_component_area)
 {
 	LevelComponent* result = nullptr;
 
@@ -34,7 +34,8 @@ LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelCompone
 	{
 		LevelComponent* ptr_my_component_core = new LevelComponentCore(ptr_level_components_array);
 		EnsureKeyExistsInComponentsArray(my_type);
-		InsertComponentIntoDesiredPlaceInComponentsArray(my_type, ptr_my_component_core, my_component_index);
+		InsertComponentIntoComponentsArray(my_type, ptr_my_component_core);
+		ptr_my_component_core->my_type = levco_core;
 		return ptr_my_component_core;
 	}
 	else if (my_type == levco_maze)
@@ -48,7 +49,9 @@ LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelCompone
 		{
 			LevelComponent* ptr_my_component_maze = new LevelComponentMaze(ptr_level_components_array, ptr_my_component_area);
 			EnsureKeyExistsInComponentsArray(my_type);
-			InsertComponentIntoDesiredPlaceInComponentsArray(my_type, ptr_my_component_maze, my_component_index);
+			InsertComponentIntoComponentsArray(my_type, ptr_my_component_maze);
+			ptr_my_component_maze->my_type = levco_maze;
+			printf("Spawned maze with address %p.\n", ptr_my_component_maze);
 			return ptr_my_component_maze;
 		}
 	}
@@ -60,8 +63,17 @@ LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelCompone
 	{
 		LevelComponent* ptr_my_component_test = new LevelComponentTest(ptr_level_components_array);
 		EnsureKeyExistsInComponentsArray(my_type);
-		InsertComponentIntoDesiredPlaceInComponentsArray(my_type, ptr_my_component_test, my_component_index);
+		InsertComponentIntoComponentsArray(my_type, ptr_my_component_test);
+		ptr_my_component_test->my_type = levco_test;
 		return ptr_my_component_test;
+	}
+	else if (my_type == levco_triggers)
+	{
+		LevelComponent* ptr_my_component_triggers = new LevelComponentTest(ptr_level_components_array);
+		EnsureKeyExistsInComponentsArray(my_type);
+		InsertComponentIntoComponentsArray(my_type, ptr_my_component_triggers);
+		ptr_my_component_triggers->my_type = levco_triggers;
+		return ptr_my_component_triggers;
 	}
 	else
 	{

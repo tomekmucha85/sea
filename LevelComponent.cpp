@@ -16,10 +16,8 @@ LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelCom
 
 LevelComponent::~LevelComponent()
 {
-	for (Creature* ptr_my_creature : creatures)
-	{
-		RemoveCreature(ptr_my_creature);
-	}
+	printf("Removing level component with address %p.\n", this);
+	RemoveAllCreatures();
 }
 
 void LevelComponent::SetPointerToPeerComponentsIndex(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components)
@@ -31,6 +29,57 @@ std::vector<Creature*>* LevelComponent::TellPtrToCreaturesArray()
 {
 	std::vector<Creature*>* my_ptr_to_creatures_array = &creatures;
 	return my_ptr_to_creatures_array;
+}
+
+SDL_Rect LevelComponent::TellComponentArea()
+{
+	return component_area;
+}
+
+SDL_Rect LevelComponent::TellComponentEdge(Directions my_direction)
+//Returns rectangle 1 pixel high or wide covering entire border of component.
+//Applied only to components with specified dimiensions!
+/*
+
+Example:
+
+level component:
+
+0,0
+---------------
+|             |
+|             |
+|             |
+---------------
+               800,600
+
+SDL_Rect nothern_border = level_component.TellComponentEdge(north);		   
+northern_border == {0,0,800,1}
+
+*/
+{
+	SDL_Rect result = {0,0,0,0};
+	if (my_direction == north)
+	{
+		result = { component_area.x, component_area.y, component_area.w , 1 };
+	}
+	else if (my_direction == south)
+	{
+		result = { component_area.x, component_area.y + component_area.h - 2, component_area.w - 1, 1 };
+	}
+	else if (my_direction == east)
+	{
+		result = { component_area.x, component_area.y, 1, component_area.h };
+	}
+	else if (my_direction == west)
+	{
+		result = { component_area.x + component_area.w - 2, component_area.y, 1, component_area.h };
+	}
+	else
+	{
+		throw "Unknown direction!";
+	}
+	return result;
 }
 
 std::map<Creature*, LevelComponent*> LevelComponent::FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature)
@@ -53,10 +102,11 @@ std::map<Creature*, LevelComponent*> LevelComponent::FindCreatureNeighborsInAllL
 	return result;
 }
 
-Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::function<void()> my_event)
+
+Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal)
 {
 	//Spawning creature and then checking if it can be left on map.
-	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_position, my_event);
+	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_position, my_trigger_signal);
 	//Binding creature with level component
 	//ptr_my_creature->SetOwner(this);
 
@@ -117,12 +167,9 @@ void LevelComponent::RemoveCreature(Creature* ptr_my_creature)
 	//Removing pointer from my creatures
 	//printf("Attempting to remove: %p.\n", ptr_my_creature);
 	creatures.erase(std::remove(creatures.begin(), creatures.end(), ptr_my_creature), creatures.end());
-
-	//#TODO - nie kazaæ szukaæ w dwóch wektorach, skoro creature mo¿e byæ tylko w jednym z nich
-
+	//Removing pointer from Creature class current environment static vector
 	Creature::current_environment.erase(std::remove(Creature::current_environment.begin(),
 	    Creature::current_environment.end(), ptr_my_creature), Creature::current_environment.end());
-
 	//Destroying creature.
 	delete ptr_my_creature;
 }

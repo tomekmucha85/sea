@@ -20,19 +20,33 @@ class LevelNineMazes : public Level
 		-------------
 		
 		*/
-		SDL_Rect Maze_1 = {};
-		SDL_Rect Maze_2 = {};
-		SDL_Rect Maze_3 = {};
-		SDL_Rect Maze_4 = {};
-		SDL_Rect Maze_5 = {};
-		SDL_Rect Maze_6 = {};
-		SDL_Rect Maze_7 = {};
-		SDL_Rect Maze_8 = {};
-		SDL_Rect Maze_9 = {};
+		SDL_Rect maze_1 = {};
+		SDL_Rect maze_2 = {};
+		SDL_Rect maze_3 = {};
+		SDL_Rect maze_4 = {};
+		SDL_Rect maze_5 = {};
+		SDL_Rect maze_6 = {};
+		SDL_Rect maze_7 = {};
+		SDL_Rect maze_8 = {};
+		SDL_Rect maze_9 = {};
+
+
+		LevelComponent* ptr_maze1 = nullptr;
+		LevelComponent* ptr_maze2 = nullptr;
+		LevelComponent* ptr_maze3 = nullptr;
+		LevelComponent* ptr_maze4 = nullptr;
+		LevelComponent* ptr_maze5 = nullptr;
+		LevelComponent* ptr_maze6 = nullptr;
+		LevelComponent* ptr_maze7 = nullptr;
+		LevelComponent* ptr_maze8 = nullptr;
+		LevelComponent* ptr_maze9 = nullptr;
 
     public:
 	    LevelNineMazes(int my_cols_count, int my_rows_count);
 		void SetMazeRowsCount(int rows_num);
 		void SetMazeColsCount(int cols_num);
+		void DeleteMazeNumber(int my_number);
+		void GenerateMazeNumber(int my_number);
+		void GenerateMazeNumberNewApproach(int my_number);
 };
 #endif // LEVEL_NINE_MAZES_HPP

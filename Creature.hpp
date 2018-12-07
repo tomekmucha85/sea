@@ -1,6 +1,7 @@
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
 #include <vector>
+#include <string>
 #include <functional>
 #include <Sprite.hpp>
 #include <FactorySpawningSprites.hpp>
@@ -48,6 +49,10 @@ class Creature
 		std::vector <Creature*> my_neighbors;
 		//How far do we seek for neighbors?
 		int neighbor_radius = 75;
+		// Distance travelled by the hero creature in x plane
+		static long long int main_character_shift_x;
+		// Distance travelled by the hero creature in y plane
+		static long long int main_character_shift_y;
 
         //###################
         //Functions
@@ -117,12 +122,21 @@ class Creature
         void MakeMeMainCharacter();
         bool AmIMainCharacter();
         Creature* WhoIsMainCharacter();
+		static long long int TellXMainCharacterShift();
+		static long long int TellYMainCharacterShift();
+		static void SetXMainCharacterShift(long long int my_shift);
+		static void SetYMainCharacterShift(long long int my_shift);
+		static void IncrementXMainCharacterShift(long long int my_shift);
+		static void IncrementYMainCharacterShift(long long int my_shift);
         void PrintStupidThings(Creature* ptr_to_creature);
-		//void RenderHitbox();
+
 		//###################
 		//Virtual functions
 		//###################
-		virtual void FireEvent();
+		virtual std::string GiveSignal();
+		virtual void ArmTrigger();
+		virtual void DisarmTrigger();
+		bool AmIArmed();
 
 
 };

@@ -10,9 +10,6 @@ class Screen
         //Screen dimension constants
         static const int SCREEN_WIDTH = 800;
         static const int SCREEN_HEIGHT = 600;
-        //"Camera" - used for following character
-        static int x_correction;
-        static int y_correction;
 
     public:
         //The window itself

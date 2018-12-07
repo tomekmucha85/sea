@@ -33,6 +33,13 @@ std::map<LevelComponentType, std::vector<LevelComponent*>>* Level::TellPointerTo
 	return ptr_level_components;
 }
 
+std::vector<LevelComponent*>* Level::TellPointerToSpecificComponentTypeArray(LevelComponentType my_type)
+{
+	std::vector<LevelComponent*>* result = nullptr;
+	result = &(level_components[my_type]);
+	return result;
+}
+
 FactorySpawningLevelComponents* Level::CreateComponentsFactory()
 {
 	ptr_components_factory = new FactorySpawningLevelComponents(TellPointerToComponentsArray());
@@ -106,6 +113,28 @@ void Level::SetCurrentHero(Creature* ptr_my_hero)
 	printf("Current hero is %p.\n", ptr_my_hero);
 }
 
+//*****************
+//REMOVING COMPONENTS
+//*****************
+
+void Level::RemoveLevelComponent(LevelComponent* ptr_my_component)
+{
+	if (ptr_my_component != nullptr)
+	{
+		//Removing pointer from level components array
+		LevelComponentType type = ptr_my_component->my_type;
+		std::vector<LevelComponent*>* ptr_proper_array = TellPointerToSpecificComponentTypeArray(type);
+		ptr_proper_array->erase(std::remove(ptr_proper_array->begin(),
+			ptr_proper_array->end(), ptr_my_component), ptr_proper_array->end());
+		//Deleting level component.
+		delete ptr_my_component;
+	}
+	else
+	{
+		printf("Potinter to component is nullptr. Nothing to delete.\n");
+	}
+}
+
 //**************
 //CYCLIC ACTIONS
 //**************
@@ -134,9 +163,22 @@ void Level::RunTriggersHitByHero(LevelComponent* ptr_component_with_triggers)
 	if (hit_triggers.size() > 0)
 	{
 		printf("A trigger was hit!\n");
-		for (Creature* trigger : hit_triggers)
+		for (Creature* ptr_trigger : hit_triggers)
 		{
-			trigger->FireEvent();
+			//Makes trigger send signal.
+			std::string signal = ptr_trigger->GiveSignal();
+			//If signal is not empty.
+			if (signal != "")
+			{
+			    //If signal found in signals_vs_events array
+				if (signals_vs_events.find(signal) != signals_vs_events.end())
+				{
+					//Fires the event.
+					signals_vs_events[signal]();
+					//Disarms trigger - it won't send signal till armed again.
+					ptr_trigger->DisarmTrigger();
+				}
+			}
 		}
 	}
 }

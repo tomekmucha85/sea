@@ -14,7 +14,8 @@
 std::vector <Creature*> Creature::current_environment;
 std::vector <CreatureType> Creature::walls = { cre_flying_box };
 Creature* Creature::ptr_current_main_charater;
-
+long long int Creature::main_character_shift_x = 0;
+long long int Creature::main_character_shift_y = 0;
 //**************
 //STATIC METHODS
 //**************
@@ -65,8 +66,8 @@ Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hit
 
 Creature::~Creature()
 {
-	//printf("Destructor called for Creature %p.\n", this);
-	//printf("Attempting to remove sprite %p.\n", ptr_creature_sprite);
+	printf("Destructor called for Creature %p.\n", this);
+	printf("Attempting to remove sprite %p.\n", ptr_creature_sprite);
 	if (ptr_creature_sprite != nullptr)
 	{
 		delete ptr_creature_sprite;
@@ -85,9 +86,9 @@ Creature::~Creature()
 //SETTING ENVIRONMENT
 //**********************
 
-//**********************
-//SETTING MAIN CHARACTER
-//**********************
+//******************************************
+//SETTING MAIN CHARACTER AND RECORDING SHIFT
+//******************************************
 
 void Creature::SetMainCharacterToNull()
 {
@@ -115,6 +116,37 @@ Creature* Creature::WhoIsMainCharacter()
 {
     return Creature::ptr_current_main_charater;
 }
+
+long long int Creature::TellXMainCharacterShift()
+{
+	return main_character_shift_x;
+}
+
+long long int Creature::TellYMainCharacterShift()
+{
+	return main_character_shift_y;
+}
+
+void Creature::SetXMainCharacterShift(long long int my_shift)
+{
+	main_character_shift_x = my_shift;
+}
+
+void Creature::SetYMainCharacterShift(long long int my_shift)
+{
+	main_character_shift_y = my_shift;
+}
+
+void Creature::IncrementXMainCharacterShift(long long int my_shift)
+{
+	main_character_shift_x += my_shift;
+}
+
+void Creature::IncrementYMainCharacterShift(long long int my_shift)
+{
+	main_character_shift_y += my_shift;
+}
+
 
 //**************
 //SETTING PARAMS
@@ -307,9 +339,11 @@ void Creature::Move(int x, int y)
         }
         else
         {
-			;
+			IncrementXMainCharacterShift(-x);
+			IncrementYMainCharacterShift(-y);
         }
     }
+	//If any other Creature than main character is moved.
     else
     {
         MovePixelByPixel(x,y,true);
@@ -554,13 +588,28 @@ bool Creature::DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h)
 	}
 }
 
-/*void Creature::RenderHitbox()
-{
-	SDL_Rect* ptr_hitbox = &hitbox;
-	SDL_RenderDrawRect(Game::ptr_screen->renderer, ptr_hitbox);
-}*/
+//********************************************
+//DEFAULT IMPLEMENTATIONS OF VIRTUAL FUNCTIONS
+//********************************************
 
-void Creature::FireEvent()
+void Creature::ArmTrigger()
 {
-	printf("Default implementation of FireEvent called!\n");
+	printf("Default implementation of ArmTrigger called!\n");
+}
+
+void Creature::DisarmTrigger()
+{
+	printf("Default implementation of DisarmTrigger called!\n");
+}
+
+std::string Creature::GiveSignal()
+{
+	printf("Default implementation of GiveSignal called!\n");
+	return std::string("");
+}
+
+bool Creature::AmIArmed()
+{
+	printf("Default implementation of AmIArmed called!\n");
+	return true;
 }

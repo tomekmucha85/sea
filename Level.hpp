@@ -42,8 +42,9 @@ class Level
 
     public:
 		//Contains actions associated to specific level which will be performed during every game loop.
-		//std::vector<TriggeredEvent> cyclic_actions = {};
 		std::vector<std::function<void(Level*)>> cyclic_actions = {};
+		//Contains assignment of trigers to certain creatures
+		std::map<std::string, std::function<void()>> signals_vs_events = {};
 
 		//Pointer to creature serving currently as hero
 		Creature* ptr_hero = nullptr;
@@ -61,10 +62,26 @@ class Level
 		int TellMapOffsetY();
 		void SetCurrentHero(Creature* ptr_my_hero);
 		std::map<LevelComponentType, std::vector<LevelComponent*>>* TellPointerToComponentsArray();
+		std::vector<LevelComponent*>*TellPointerToSpecificComponentTypeArray(LevelComponentType my_type);
 		FactorySpawningLevelComponents* CreateComponentsFactory();
+		void RemoveLevelComponent(LevelComponent* ptr_my_component);
 		void PerformCyclicActions();
 		std::vector<Creature*> FindHeroColissionsInGivenComponent(LevelComponent* ptr_my_component, bool check_only_obstacles=true);
 		void RunTriggersHitByHero(LevelComponent* ptr_component_with_triggers);
+
+		//###################
+		// COMMON LAMBDAS
+		//###################
+
+		//Cyclic action to fire all triggers hit by hero
+		std::function<void(Level*)> func_fire_triggers = [](Level* ptr_level)
+		{
+			std::vector<LevelComponent*>* ptr_trigger_components_vector = ptr_level->TellPointerToSpecificComponentTypeArray(levco_triggers);
+			for (LevelComponent* ptr_component_with_triggers : *ptr_trigger_components_vector)
+			{
+				ptr_level->RunTriggersHitByHero(ptr_component_with_triggers);
+			}
+		};
 };
 
 #endif //LEVEL_HPP

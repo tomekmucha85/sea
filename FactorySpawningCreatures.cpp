@@ -1,7 +1,7 @@
 #include <FactorySpawningCreatures.hpp>
 
 Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position,
-	std::function<void()> my_event)
+	std::string my_trigger_signal)
 {
 	Creature* result = NULL;
 
@@ -27,13 +27,13 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, SDL
 	else if (desired_type == cre_event_trigger)
 	{
 		printf("Requested an event trigger creature.\n");
-		if (my_event == nullptr)
+		if (my_trigger_signal.empty())
 		{
-			throw std::invalid_argument("No event to be triggered! Pointer is empty");
+			throw std::invalid_argument("No trigger signal! String is empty.\n");
 		}
 		else
 		{
-			result = new CreatureEventTrigger(ptr_position, my_event);
+			result = new CreatureEventTrigger(ptr_position, my_trigger_signal);
 		}
 	}
 	else

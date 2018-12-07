@@ -1,10 +1,10 @@
 #include <CreatureEventTrigger.hpp>
 
-CreatureEventTrigger::CreatureEventTrigger(SDL_Rect* ptr_area, std::function<void()> my_event) :
+CreatureEventTrigger::CreatureEventTrigger(SDL_Rect* ptr_area, std::string my_trigger_signal) :
 	Creature(ptr_area)
 {
 	printf("Spawned an event trigger.\n");
-	triggered_event = my_event;
+	trigger_signal = my_trigger_signal;
 	printf("Assigned event.\n");
 	my_type = cre_event_trigger;
 	printf("Assigned type.\n");
@@ -14,9 +14,29 @@ CreatureEventTrigger::CreatureEventTrigger(SDL_Rect* ptr_area, std::function<voi
 	printf("Vector %p assigned to trigger %p.\n", ptr_creature_vector, this);
 }
 
-void CreatureEventTrigger::FireEvent()
+std::string CreatureEventTrigger::GiveSignal()
 {
-	printf("Will fire event!\n");
-	triggered_event();
-	printf("Fired event.\n");
+	if (AmIArmed())
+	{
+		return trigger_signal;
+	}
+	else
+	{
+		return std::string("");
+	}
+}
+
+void CreatureEventTrigger::ArmTrigger()
+{
+	is_armed = true;
+}
+
+void CreatureEventTrigger::DisarmTrigger()
+{
+	is_armed = false;
+}
+
+bool CreatureEventTrigger::AmIArmed()
+{
+	return is_armed;
 }
