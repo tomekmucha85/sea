@@ -15,12 +15,6 @@ LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<
 	{
 		printf("Maze component area passed to constructor is x: %d, y: %d, w: %d, h: %d.\n",
 			my_component_area.x, my_component_area.y, my_component_area.w, my_component_area.h);
-		maze_x_start = my_component_area.x;
-		maze_y_start = my_component_area.y;
-		maze_w = my_component_area.w;
-		maze_h = my_component_area.h;
-		
-
 	}
 	maze_rows_count = CalculateRowsNumber();
 	maze_columns_count = CalculateColumnsNumber();
@@ -34,12 +28,12 @@ LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<
 
 int LevelComponentMaze::CalculateRowsNumber()
 {
-	return (maze_h / map_block_height);
+	return (TellComponentArea().h / map_block_height);
 }
 
 int LevelComponentMaze::CalculateColumnsNumber()
 {
-	return (maze_w / map_block_width);
+	return (TellComponentArea().w / map_block_width);
 }
 
 int LevelComponentMaze::CalculateBlocksCountVertically()
@@ -111,8 +105,8 @@ void LevelComponentMaze::VivifyMaze()
 			CreatureType my_type = blueprint[row][column];
 			if (my_type != cre_none)
 			{
-				SDL_Rect my_position = SDL_Rect{ maze_x_start+(column*map_block_width), 
-					maze_y_start+(row*map_block_width),0,0 };
+				SDL_Rect my_position = SDL_Rect{ TellComponentArea().x + (column*map_block_width), 
+					TellComponentArea().y +(row*map_block_width),0,0 };
 				SDL_Rect* ptr_my_position = &my_position;
 				AddCreature(my_type, ptr_my_position, merge);
 			}
@@ -425,6 +419,30 @@ void LevelComponentMaze::SetBorderState(Directions border_side, bool value)
 	}
 }
 
+bool LevelComponentMaze::TellBorderState(Directions border_side)
+{
+	bool result = true;
+	if (border_side == north)
+	{
+		result = northern_border;
+	}
+	else if (border_side == south)
+	{
+		result = southern_border;
+	}
+	else if (border_side == east)
+	{
+		result = eastern_border;
+	}
+	else if (border_side == west)
+	{
+		result = western_border;
+	}
+	else
+	{
+		throw std::invalid_argument("Unknown direction!\n");
+	}
+}
 
 void LevelComponentMaze::ManageBorders()
 {

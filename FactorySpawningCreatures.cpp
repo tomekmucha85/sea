@@ -36,6 +36,10 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, SDL
 			result = new CreatureEventTrigger(ptr_position, my_trigger_signal);
 		}
 	}
+	else if (desired_type == cre_vector_mask)
+	{
+		result = new CreatureVectorMask(ptr_position);
+	}
 	else
 	{
 		printf("Requested some other creature.\n");

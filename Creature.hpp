@@ -10,7 +10,7 @@
 
 
 //cre_none means empty space/no creature present
-enum CreatureType    {cre_none, cre_event_trigger, cre_clawy, cre_flying_box, cre_black_smoke};
+enum CreatureType    {cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke};
 
 
 class Creature
@@ -95,6 +95,7 @@ class Creature
 		void SetMyRenderLayer(int layer_number);
 		void MakeMeObstacle();
 		void MakeMeNotObstacle();
+		SDL_Rect TellHitbox();
         void Turn(int turn_angle_degree);
         void TurnRight();
         void TurnLeft();

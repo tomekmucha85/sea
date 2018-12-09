@@ -24,10 +24,11 @@ class LevelComponent
 		//###################
 		//Variables
 		//###################
-		SDL_Rect component_area = {0,0,0,0};
 		std::vector<Creature*> creatures = {};
 		std::map<LevelComponentType, std::vector<LevelComponent*>>* ptr_peer_level_components;
-
+		//Invisible creature serving as "mask" of level component. Applied only to level components with defined area.
+		Creature* ptr_component_outline = nullptr;
+		void AddLevelComponentOutline(SDL_Rect my_component_area);
     public:
 		//###################
         //Variables
@@ -52,7 +53,6 @@ class LevelComponent
 		void RemoveCreature(Creature* ptr_my_creature);
 		void RemoveAllCreatures();
 		SDL_Rect TellComponentArea();
-		void SetComponentArea(SDL_Rect my_component_area);
 		SDL_Rect TellComponentEdge(Directions my_direction);
 		//###################
         //Virtual Functions

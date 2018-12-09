@@ -9,6 +9,8 @@ class LevelNineMazes : public Level
 
 		SDL_Rect** mazes_areas[9];
 
+		LevelComponent* ptr_current_central_maze = nullptr;
+
 		/*
 		MAZES DISTRIBUTION:
 		_____________
@@ -20,15 +22,15 @@ class LevelNineMazes : public Level
 		-------------
 		
 		*/
-		SDL_Rect maze_1 = {};
-		SDL_Rect maze_2 = {};
-		SDL_Rect maze_3 = {};
-		SDL_Rect maze_4 = {};
-		SDL_Rect maze_5 = {};
-		SDL_Rect maze_6 = {};
-		SDL_Rect maze_7 = {};
-		SDL_Rect maze_8 = {};
-		SDL_Rect maze_9 = {};
+		SDL_Rect maze_1_area = {};
+		SDL_Rect maze_2_area = {};
+		SDL_Rect maze_3_area = {};
+		SDL_Rect maze_4_area = {};
+		SDL_Rect maze_5_area = {};
+		SDL_Rect maze_6_area = {};
+		SDL_Rect maze_7_area = {};
+		SDL_Rect maze_8_area = {};
+		SDL_Rect maze_9_area = {};
 
 
 		LevelComponent* ptr_maze1 = nullptr;
@@ -45,8 +47,11 @@ class LevelNineMazes : public Level
 	    LevelNineMazes(int my_cols_count, int my_rows_count);
 		void SetMazeRowsCount(int rows_num);
 		void SetMazeColsCount(int cols_num);
+		SDL_Rect CalculateInitialCentralMazeArea();
+		LevelComponent* SpawnInitialCentralMaze();
 		void DeleteMazeNumber(int my_number);
 		void GenerateMazeNumber(int my_number);
-		void GenerateMazeNumberNewApproach(int my_number);
+		void SetCurrentCentralMaze( LevelComponent* ptr_my_maze);
+		LevelComponent* TellCurrentCentralMaze();
 };
 #endif // LEVEL_NINE_MAZES_HPP

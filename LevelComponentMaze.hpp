@@ -14,11 +14,6 @@ private:
 		int x = 0;
 		int y = 0;
 	};
-	//Expressed in pixels
-	int maze_x_start = 0;
-	int maze_y_start = 0;
-	int maze_w = 0;
-	int maze_h = 0;
 	//Expressed in map blocks (1 map block == 1 entry in blueprint)
 	int maze_block_width = 8;
 	int maze_block_height = 8;
@@ -55,6 +50,7 @@ public:
 	void VivifyMaze();
 	void CarveExitsFromMaze();
 	void SetBorderState(Directions border_side, bool value);
+	bool TellBorderState(Directions border_side);
 	void ManageBorders();
 	void ClearMaze();
 

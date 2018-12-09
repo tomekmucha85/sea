@@ -6,6 +6,7 @@
 #include <CreatureClawy.hpp>
 #include <CreatureBlackSmoke.hpp>
 #include <CreatureEventTrigger.hpp>
+#include <CreatureVectorMask.hpp>
 
 class FactorySpawningCreatures
 {

@@ -147,6 +147,10 @@ void Creature::IncrementYMainCharacterShift(long long int my_shift)
 	main_character_shift_y += my_shift;
 }
 
+SDL_Rect Creature::TellHitbox()
+{
+	return hitbox;
+}
 
 //**************
 //SETTING PARAMS

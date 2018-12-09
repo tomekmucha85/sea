@@ -11,16 +11,25 @@ int LevelComponent::map_block_height = 40;
 LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components, 
 	SDL_Rect my_component_area)
 {
-	SetComponentArea(my_component_area);
-	printf("Component area is x: %d, y: %d, w: %d, h: %d.\n", component_area.x, component_area.y, component_area.w, component_area.h);
 	SetPointerToPeerComponentsIndex(my_ptr_peer_level_components);
 	ptr_creatures_factory = new FactorySpawningCreatures();
+	//If component has a defined area, spawn a Creature serving as "mask" covering this area.
+	if (my_component_area.w != 0 && my_component_area.h != 0)
+	{
+		AddLevelComponentOutline(my_component_area);
+	}
 }
 
 LevelComponent::~LevelComponent()
 {
 	printf("Removing level component with address %p.\n", this);
 	RemoveAllCreatures();
+}
+
+void LevelComponent::AddLevelComponentOutline(SDL_Rect my_component_area)
+{
+	SDL_Rect* ptr_my_component_area = &my_component_area;
+	ptr_component_outline =  AddCreature(cre_vector_mask, ptr_my_component_area, merge);
 }
 
 void LevelComponent::SetPointerToPeerComponentsIndex(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components)
@@ -36,12 +45,8 @@ std::vector<Creature*>* LevelComponent::TellPtrToCreaturesArray()
 
 SDL_Rect LevelComponent::TellComponentArea()
 {
-	return component_area;
-}
-
-void LevelComponent::SetComponentArea(SDL_Rect my_component_area)
-{
-	component_area = my_component_area;
+	SDL_Rect current_component_area = ptr_component_outline->TellHitbox();
+	return current_component_area;
 }
 
 SDL_Rect LevelComponent::TellComponentEdge(Directions my_direction)
@@ -67,6 +72,7 @@ northern_border == {0,0,800,1}
 */
 {
 	SDL_Rect result = {0,0,0,0};
+	SDL_Rect component_area = ptr_component_outline->TellHitbox();
 	if (my_direction == north)
 	{
 		result = { component_area.x, component_area.y, component_area.w , 1 };
