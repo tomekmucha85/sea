@@ -69,7 +69,7 @@ class Creature
         //###################
 		// #TODO - daæ inny typ?
 		CreatureType my_type = cre_none;
-        int velocity = 5;
+        int velocity = 8;
         Sprite *ptr_creature_sprite = nullptr;
 		VectorDrawing* ptr_creature_vector = nullptr;
         //Vector holding pointers to all creatures currently present in game except event triggers.

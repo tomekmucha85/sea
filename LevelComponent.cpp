@@ -81,11 +81,11 @@ northern_border == {0,0,800,1}
 	{
 		result = { component_area.x, component_area.y + component_area.h - 2, component_area.w - 1, 1 };
 	}
-	else if (my_direction == east)
+	else if (my_direction == west)
 	{
 		result = { component_area.x, component_area.y, 1, component_area.h };
 	}
-	else if (my_direction == west)
+	else if (my_direction == east)
 	{
 		result = { component_area.x + component_area.w - 2, component_area.y, 1, component_area.h };
 	}
@@ -221,4 +221,12 @@ void LevelComponent::GenerateMaze()
 void LevelComponent::SetBorderState(Directions border_side, bool value)
 {
 	printf("SetBordersState has no implementation here!\n");
+}
+
+bool LevelComponent::TellBorderState(Directions border_side)
+{
+	printf("TallBorderState has no implementation here!\n");
+	//#TODO czy wszêdzie daæ wyj¹tki?
+	throw "No implementation!\n";
+	return true;
 }

@@ -60,6 +60,7 @@ class LevelComponent
 		virtual void ClearMaze();
 		virtual void GenerateMaze();
 		virtual void SetBorderState(Directions border_side, bool value);
+		virtual bool TellBorderState(Directions border_side);
 };
 
 #endif LEVEL_COMPONENT_HPP
