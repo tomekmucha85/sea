@@ -9,6 +9,7 @@
 #include <LevelComponentTest.hpp>
 #include <LevelComponentCore.hpp>
 #include <LevelComponentMaze.hpp>
+#include <LevelComponentTriggers.hpp>
 
 class FactorySpawningLevelComponents
 {

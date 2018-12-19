@@ -70,8 +70,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\tmucha\source\repos\sea;C:\visual_studio_dev_lib\SDL2-2.0.8\include;C:\visual_studio_dev_lib\SDL2_image-2.0.3\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\visual_studio_dev_lib\SDL2-2.0.8\lib\x64;C:\visual_studio_dev_lib\SDL2_image-2.0.3\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\tmucha\source\repos\sea;C:\visual_studio_dev_lib\SDL2-2.0.8\include;C:\visual_studio_dev_lib\SDL2_image-2.0.3\include;C:\visual_studio_dev_lib\emotiv\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\visual_studio_dev_lib\emotiv\lib;C:\visual_studio_dev_lib\SDL2-2.0.8\lib\x64;C:\visual_studio_dev_lib\SDL2_image-2.0.3\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,7 +96,7 @@
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2_image.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2_image.lib;SDL2.lib;edk.lib;glut64.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -138,6 +138,7 @@
     <ClInclude Include="CreatureBlackSmoke.hpp" />
     <ClInclude Include="CreatureClawy.hpp" />
     <ClInclude Include="CreatureEventTrigger.hpp" />
+    <ClInclude Include="CreatureNPC.hpp" />
     <ClInclude Include="CreatureVectorMask.hpp" />
     <ClInclude Include="CustomDefinedTypes.hpp" />
     <ClInclude Include="FactorySpawningCreatures.hpp" />
@@ -165,10 +166,12 @@
     <ClInclude Include="VisualComponent.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Behavior.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="CreatureBlackSmoke.cpp" />
     <ClCompile Include="CreatureClawy.cpp" />
     <ClCompile Include="CreatureEventTrigger.cpp" />
+    <ClCompile Include="CreatureNPC.cpp" />
     <ClCompile Include="CreatureVectorMask.cpp" />
     <ClCompile Include="FactorySpawningCreatures.cpp" />
     <ClCompile Include="CreatureFlyingBox.cpp" />

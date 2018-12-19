@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <Screen.hpp>
+#include <CustomDefinedTypes.hpp>
 
 class VisualComponent
 {
@@ -33,5 +34,7 @@ public:
 	void SetPosition(SDL_Rect my_position);
 	static void SetScreen(Screen* ptr_my_screen);
 	static Screen* TellScreen();
+
+	virtual void SetColor(Color my_color);
 };
 #endif // VISUAL_COMPONENT_HPP

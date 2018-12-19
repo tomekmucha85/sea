@@ -442,6 +442,7 @@ bool LevelComponentMaze::TellBorderState(Directions border_side)
 	{
 		throw std::invalid_argument("Unknown direction!\n");
 	}
+	return result;
 }
 
 void LevelComponentMaze::ManageBorders()

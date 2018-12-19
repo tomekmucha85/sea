@@ -2,8 +2,8 @@
 //***********************************
 //DEFINITIONS OF STATIC CLASS MEMBERS
 //***********************************
-int LevelComponent::map_block_width = 40;
-int LevelComponent::map_block_height = 40;
+int LevelComponent::map_block_width = 32;
+int LevelComponent::map_block_height = 32;
 
 //***********************************
 //FUNCTIONS
@@ -196,12 +196,20 @@ void LevelComponent::RemoveAllCreatures()
 	std::vector<Creature*> creatures_to_remove = creatures;
 	for (Creature* ptr_my_creature : creatures_to_remove)
 	{
-		printf("Creature number %d, address: %p.\n", i, ptr_my_creature);
+		//printf("Creature number %d, address: %p.\n", i, ptr_my_creature);
 		i++;
-		printf("Remaining creatures: %d.\n", creatures.size());
-		printf("Removing creature of type %d.\n", ptr_my_creature->my_type);
+		//printf("Remaining creatures: %d.\n", creatures.size());
+		//printf("Removing creature of type %d.\n", ptr_my_creature->my_type);
 		RemoveCreature(ptr_my_creature);
 	}
+}
+
+std::vector<Creature*> LevelComponent::FindCollisionsWithMainCharacter(bool check_only_obstacles)
+{
+	Creature* ptr_main_character = Creature::ptr_current_main_charater;
+	std::vector<Creature*> colliding_creatures = {};
+	colliding_creatures = ptr_main_character->FindCollisionsInSet(&creatures, check_only_obstacles);
+	return colliding_creatures;
 }
 
 //##############################
@@ -230,3 +238,11 @@ bool LevelComponent::TellBorderState(Directions border_side)
 	throw "No implementation!\n";
 	return true;
 }
+
+ std::vector<std::string> LevelComponent::RunTriggersHitByHero()
+ {
+	 std::vector<std::string> result = {};
+	 printf("RunTriggersHitByHero has no implementation here!\n");
+	 throw "No implementation!\n";
+	 return result;
+ }

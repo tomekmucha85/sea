@@ -47,7 +47,7 @@ class Level
 		std::map<std::string, std::function<void()>> signals_vs_events = {};
 
 		//Pointer to creature serving currently as hero
-		Creature* ptr_hero = nullptr;
+		//Creature* ptr_hero = nullptr;
 		
 		
 		Level();
@@ -60,14 +60,13 @@ class Level
 		void SetMapOffsetY(int rows_count, float margin);
 		int TellMapOffsetX();
 		int TellMapOffsetY();
-		void SetCurrentHero(Creature* ptr_my_hero);
 		std::map<LevelComponentType, std::vector<LevelComponent*>>* TellPointerToComponentsArray();
 		std::vector<LevelComponent*>*TellPointerToSpecificComponentTypeArray(LevelComponentType my_type);
 		FactorySpawningLevelComponents* CreateComponentsFactory();
 		void RemoveLevelComponent(LevelComponent* ptr_my_component);
 		void PerformCyclicActions();
 		std::vector<Creature*> FindHeroColissionsInGivenComponent(LevelComponent* ptr_my_component, bool check_only_obstacles=true);
-		void RunTriggersHitByHero(LevelComponent* ptr_component_with_triggers);
+		void PerformActionsForTriggersHitByHero(LevelComponent* ptr_component_with_triggers);
 
 		//###################
 		// COMMON LAMBDAS
@@ -79,9 +78,11 @@ class Level
 			std::vector<LevelComponent*>* ptr_trigger_components_vector = ptr_level->TellPointerToSpecificComponentTypeArray(levco_triggers);
 			for (LevelComponent* ptr_component_with_triggers : *ptr_trigger_components_vector)
 			{
-				ptr_level->RunTriggersHitByHero(ptr_component_with_triggers);
+				ptr_level->PerformActionsForTriggersHitByHero(ptr_component_with_triggers);
 			}
 		};
+
+		//Cyclic action to execute behavior
 };
 
 #endif //LEVEL_HPP

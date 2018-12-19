@@ -6,6 +6,7 @@
 #include <iterator>
 #include <algorithm>
 #include <functional>
+#include <string>
 #include <Creature.hpp>
 #include <FactorySpawningCreatures.hpp>
 
@@ -54,6 +55,8 @@ class LevelComponent
 		void RemoveAllCreatures();
 		SDL_Rect TellComponentArea();
 		SDL_Rect TellComponentEdge(Directions my_direction);
+		// FIND HERO COLLISIONS!
+		std::vector<Creature*> FindCollisionsWithMainCharacter(bool check_only_obstacles = true);
 		//###################
         //Virtual Functions
         //###################
@@ -61,6 +64,7 @@ class LevelComponent
 		virtual void GenerateMaze();
 		virtual void SetBorderState(Directions border_side, bool value);
 		virtual bool TellBorderState(Directions border_side);
+		virtual std::vector<std::string> RunTriggersHitByHero();
 };
 
 #endif LEVEL_COMPONENT_HPP

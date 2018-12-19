@@ -41,3 +41,12 @@ void VisualComponent::Move(int velocity_x, int velocity_y)
 	velocity_x = 0;
 	velocity_y = 0;
 }
+
+//#####################
+// VIRTUAL METHODS
+//#####################
+
+void VisualComponent::SetColor(Color my_color)
+{
+	printf("Default implementation of SetColor called!\n");
+}

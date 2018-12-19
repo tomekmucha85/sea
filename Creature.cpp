@@ -34,6 +34,8 @@ void Creature::PrintStupidThings(Creature* ptr_to_creature)
 //CONSTRUCTORS
 //************
 
+
+// #TODO - czy potrzebne?
 Creature::Creature(SDL_Rect* ptr_area)
 {
 	printf("Invisible creature constructed.\n");
@@ -46,6 +48,7 @@ Creature::Creature(SDL_Rect* ptr_area)
 Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin, int my_render_layer)
 {
 	ptr_sprites_factory = new FactorySpawningSprites();
+	ptr_behavior = new Behavior(this);
 	//Take care of sprite assignment
 	//printf("Will assign sprite to newly spawned creature: %d\n", my_sprite_type);
 	SetMySprite(ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_position));
@@ -66,8 +69,8 @@ Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hit
 
 Creature::~Creature()
 {
-	printf("Destructor called for Creature %p.\n", this);
-	printf("Attempting to remove sprite %p.\n", ptr_creature_sprite);
+	//printf("Destructor called for Creature %p.\n", this);
+	//printf("Attempting to remove sprite %p.\n", ptr_creature_sprite);
 	if (ptr_creature_sprite != nullptr)
 	{
 		delete ptr_creature_sprite;
@@ -75,6 +78,10 @@ Creature::~Creature()
 	if (ptr_creature_vector != nullptr)
 	{
 		delete ptr_creature_vector;
+	}
+	if (ptr_sprites_factory != nullptr)
+	{
+		delete ptr_sprites_factory;
 	}
 }
 
@@ -174,6 +181,16 @@ void Creature::SetMyRenderLayer(int layer_number)
 void Creature::SetMyVector(SDL_Rect* ptr_my_area)
 {
 	ptr_creature_vector = new VectorDrawing(ptr_my_area);
+}
+
+void Creature::SetVisibility(bool should_be_visible)
+{
+	is_visible = should_be_visible;
+}
+
+bool Creature::AmIVisible()
+{
+	return is_visible;
 }
 
 //**********
@@ -617,3 +634,20 @@ bool Creature::AmIArmed()
 	printf("Default implementation of AmIArmed called!\n");
 	return true;
 }
+/*
+void Creature::MakeDisposable()
+{
+	printf("Default implementation of MakeDisposable called!\n");;
+}
+
+void Creature::MakePermanent()
+{
+	printf("Default implementation of MakePermanent called!\n");
+}
+
+bool Creature::AmIDisposable()
+{
+	printf("Default implementation of AmIDisposable called!\n");
+	return true;
+}
+*/

@@ -49,7 +49,6 @@ FactorySpawningLevelComponents* Level::CreateComponentsFactory()
 CreatureType Level::PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures)
 {
 	int vector_size = my_creatures.size();
-	//srand(time(NULL));
 	CreatureType chosen_creature = my_creatures[rand() % vector_size];
 	printf("Picked random creature: %d.\n", chosen_creature);
 	return chosen_creature;
@@ -107,12 +106,6 @@ return 0;
 
 */
 
-void Level::SetCurrentHero(Creature* ptr_my_hero)
-{
-    ptr_hero = ptr_my_hero;
-	printf("Current hero is %p.\n", ptr_my_hero);
-}
-
 //*****************
 //REMOVING COMPONENTS
 //*****************
@@ -150,36 +143,16 @@ void Level::PerformCyclicActions()
 
 std::vector<Creature*> Level::FindHeroColissionsInGivenComponent(LevelComponent* ptr_my_component, bool check_only_obstacles)
 {
-	//printf("Will look for collisions in component %p, with creature array %p.\n", ptr_my_component, ptr_my_component->TellPtrToCreaturesArray());
-	//printf("Pointer to current hero: %p.\n", ptr_hero);
-	std::vector<Creature*> colliding_creatures = {};
-	colliding_creatures = ptr_hero->FindCollisionsInSet(ptr_my_component->TellPtrToCreaturesArray(), check_only_obstacles);
-	return colliding_creatures;
+	return ptr_my_component->FindCollisionsWithMainCharacter(check_only_obstacles);
 }
 
-void Level::RunTriggersHitByHero(LevelComponent* ptr_component_with_triggers)
+void Level::PerformActionsForTriggersHitByHero(LevelComponent* ptr_component_with_triggers)
 {
-	std::vector<Creature*> hit_triggers = FindHeroColissionsInGivenComponent(ptr_component_with_triggers, false);
-	if (hit_triggers.size() > 0)
+	std::vector<std::string> received_signals = {};
+	received_signals = ptr_component_with_triggers->RunTriggersHitByHero();
+	for (std::string received_signal : received_signals)
 	{
-		printf("A trigger was hit!\n");
-		for (Creature* ptr_trigger : hit_triggers)
-		{
-			//Makes trigger send signal.
-			std::string signal = ptr_trigger->GiveSignal();
-			//If signal is not empty.
-			if (signal != "")
-			{
-			    //If signal found in signals_vs_events array
-				if (signals_vs_events.find(signal) != signals_vs_events.end())
-				{
-					//Fires the event.
-					signals_vs_events[signal]();
-					//Disarms trigger - it won't send signal till armed again.
-					ptr_trigger->DisarmTrigger();
-				}
-			}
-		}
+		signals_vs_events[received_signal]();
 	}
 }
 
@@ -196,21 +169,23 @@ void Level::RenderAllPresentCreatures()
 		{
 			for (Creature* ptr_member_creature : *ptr_my_level_component->TellPtrToCreaturesArray())
 			{
-				if(ptr_member_creature->ptr_creature_sprite != nullptr)
-				{ 
-					ptr_member_creature->ptr_creature_sprite->Render();
-					//printf("Rendered sprite.\n");
-				}
-				else if (ptr_member_creature->ptr_creature_vector != nullptr)
+				if (ptr_member_creature->AmIVisible())
 				{
-					//printf("Will render vector.\n");
-					ptr_member_creature->ptr_creature_vector->Render();
-					//printf("Rendered vector.\n");
-				}
-				else
-				{
-					printf("This creature has nothing to render!\n");
-					throw "This creature has nothing to render!\n";
+					if (ptr_member_creature->ptr_creature_sprite != nullptr)
+					{
+						ptr_member_creature->ptr_creature_sprite->Render();
+						//printf("Rendered sprite.\n");
+					}
+					else if (ptr_member_creature->ptr_creature_vector != nullptr)
+					{
+						ptr_member_creature->ptr_creature_vector->Render();
+						//printf("Rendered vector.\n");
+					}
+					else
+					{
+						printf("This creature has nothing to render!\n");
+						throw "This creature has nothing to render!\n";
+					}
 				}
 			}
 		}

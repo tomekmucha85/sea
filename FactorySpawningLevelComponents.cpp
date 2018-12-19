@@ -69,7 +69,7 @@ LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelCompone
 	}
 	else if (my_type == levco_triggers)
 	{
-		LevelComponent* ptr_my_component_triggers = new LevelComponentTest(ptr_level_components_array);
+		LevelComponent* ptr_my_component_triggers = new LevelComponentTriggers(ptr_level_components_array);
 		EnsureKeyExistsInComponentsArray(my_type);
 		InsertComponentIntoComponentsArray(my_type, ptr_my_component_triggers);
 		ptr_my_component_triggers->my_type = levco_triggers;

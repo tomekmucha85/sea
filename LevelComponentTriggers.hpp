@@ -8,5 +8,6 @@ private:
 public:
 	LevelComponentTriggers(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components, 
 		SDL_Rect my_component_area = { 0,0,0,0 });
+	std::vector<std::string> RunTriggersHitByHero();
 };
 #endif // LEVEL_COMPONENT_TRIGGERS

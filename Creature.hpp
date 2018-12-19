@@ -10,11 +10,14 @@
 
 
 //cre_none means empty space/no creature present
-enum CreatureType    {cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke};
+enum CreatureType    {cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc};
 
+class Behavior;
 
 class Creature
 {
+	friend class Behavior;
+
     private:
         //###################
         //Types
@@ -53,6 +56,10 @@ class Creature
 		static long long int main_character_shift_x;
 		// Distance travelled by the hero creature in y plane
 		static long long int main_character_shift_y;
+		//Should be rendered on screen?
+		bool is_visible = true;
+		//Object determining creatures behavior (AI)
+		Behavior* ptr_behavior = nullptr;
 
         //###################
         //Functions
@@ -122,7 +129,10 @@ class Creature
         static void SetMainCharacterToNull();
         void MakeMeMainCharacter();
         bool AmIMainCharacter();
-        Creature* WhoIsMainCharacter();
+		bool AmIVisible();
+		void SetVisibility(bool should_be_visible);
+        //#TODO - czy nie static?
+		Creature* WhoIsMainCharacter();
 		static long long int TellXMainCharacterShift();
 		static long long int TellYMainCharacterShift();
 		static void SetXMainCharacterShift(long long int my_shift);
@@ -137,10 +147,23 @@ class Creature
 		virtual std::string GiveSignal();
 		virtual void ArmTrigger();
 		virtual void DisarmTrigger();
-		bool AmIArmed();
-
+		virtual bool AmIArmed();
+		/*virtual void MakeDisposable();
+		virtual void MakePermanent();
+		virtual bool AmIDisposable();*/
 
 };
 
+class Behavior
+{
+	friend class Creature;
+
+    private:
+		BehaviorMode mode = beh_idle;
+
+    public:
+		void WhatToDo(Creature* my_creature);
+
+};
 
 #endif // CREATURE_HPP
