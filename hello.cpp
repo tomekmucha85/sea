@@ -121,8 +121,8 @@ int main(int argc, char* args[])
 		{
 			IEE_GetAverageBandPowers(userID, IED_AF3, &theta, &alpha, &low_beta, &high_beta, &gamma);
 
-			printf("Current band values: THETA: %d\n ALPHA: %d\n, LOW BETA: %d\n, HIGH_BETA: %d\n, GAMMA: %d\n.",
-				theta, alpha, low_beta, high_beta, gamma);
+			//printf("Current band values: THETA: %d\n ALPHA: %d\n, LOW BETA: %d\n, HIGH_BETA: %d\n, GAMMA: %d\n.",
+			//	theta, alpha, low_beta, high_beta, gamma);
 		}
 		else if (timer > 100)
 		{

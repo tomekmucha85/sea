@@ -44,6 +44,14 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, SDL
 	{
 		result = new CreatureNPC(ptr_position);
 	}
+	else if (desired_type == cre_spell)
+	{
+		printf("Spell is a base class! Nothing to spawn.\n");
+	}
+	else if (desired_type == cre_spell_ball)
+	{
+		result = new CreatureSpellBall(ptr_position);
+	}
 	else
 	{
 		printf("Requested some other creature.\n");

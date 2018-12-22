@@ -235,6 +235,8 @@ void LevelComponentMaze::GenerateMaze()
 	}
 	CarveExitsFromMaze();
 	ManageBorders();
+	printf("Border state:\n N: %d, E: %d, W: %d, S: %d.\n", TellBorderState(north), TellBorderState(east), TellBorderState(west), TellBorderState(south));
+	printf("Maze columns count: %d, maze rows count: %d.\n", maze_columns_count, maze_rows_count);
 	VivifyMaze();
 	printf("Maze generated.\n");
 }
@@ -454,21 +456,21 @@ void LevelComponentMaze::ManageBorders()
 			blueprint[row][0] = cre_none;
 		}
 	}
-	else if (eastern_border == false)
+	if (eastern_border == false)
 	{
 		for (int row = 0; row < maze_rows_count; row++)
 		{
 			blueprint[row][maze_columns_count - 1] = cre_none;
 		}
 	}
-	else if (northern_border == false)
+	if (northern_border == false)
 	{
 		for (int column = 0; column < maze_columns_count; column++)
 		{
 			blueprint[0][column] = cre_none;
 		}
 	}
-	else if (southern_border == false)
+	if (southern_border == false)
 	{
 		for (int column = 0; column < maze_columns_count; column++)
 		{

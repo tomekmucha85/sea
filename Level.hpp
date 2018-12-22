@@ -64,7 +64,9 @@ class Level
 		std::vector<LevelComponent*>*TellPointerToSpecificComponentTypeArray(LevelComponentType my_type);
 		FactorySpawningLevelComponents* CreateComponentsFactory();
 		void RemoveLevelComponent(LevelComponent* ptr_my_component);
+		//#TODO - dopisaæ metodê dodaj¹c¹ level component zamiast obecnych dzia³añ na wskaŸniku do fabryki
 		void PerformCyclicActions();
+		void MakeLevelComponentsPerformCyclicActions();
 		std::vector<Creature*> FindHeroColissionsInGivenComponent(LevelComponent* ptr_my_component, bool check_only_obstacles=true);
 		void PerformActionsForTriggersHitByHero(LevelComponent* ptr_component_with_triggers);
 
@@ -81,8 +83,6 @@ class Level
 				ptr_level->PerformActionsForTriggersHitByHero(ptr_component_with_triggers);
 			}
 		};
-
-		//Cyclic action to execute behavior
 };
 
 #endif //LEVEL_HPP

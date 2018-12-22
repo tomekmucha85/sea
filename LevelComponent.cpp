@@ -18,11 +18,19 @@ LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelCom
 	{
 		AddLevelComponentOutline(my_component_area);
 	}
+	cyclic_actions.push_back(func_reaper);
 }
 
 LevelComponent::~LevelComponent()
 {
 	printf("Removing level component with address %p.\n", this);
+	if (ptr_component_outline != nullptr)
+	{
+		printf("Coordinates of deleted component: x:%d y:%d w:%d h:%d.\n", ptr_component_outline->TellHitbox().x,
+			ptr_component_outline->TellHitbox().y,
+			ptr_component_outline->TellHitbox().w,
+			ptr_component_outline->TellHitbox().h);
+	}
 	RemoveAllCreatures();
 }
 
@@ -210,6 +218,29 @@ std::vector<Creature*> LevelComponent::FindCollisionsWithMainCharacter(bool chec
 	std::vector<Creature*> colliding_creatures = {};
 	colliding_creatures = ptr_main_character->FindCollisionsInSet(&creatures, check_only_obstacles);
 	return colliding_creatures;
+}
+
+//##############################
+//Cyclic actions
+//##############################
+
+void LevelComponent::PerformCyclicActions()
+{
+	//Perform cyclic actions related to this level component
+	for (std::function<void(LevelComponent*)> action : cyclic_actions)
+	{
+		action(this);
+	}
+	//Perform cyclic actions related to owned creatures.
+	MakeCreaturesPerformCyclicActions();
+}
+
+void LevelComponent::MakeCreaturesPerformCyclicActions()
+{
+	for (Creature* ptr_creature : creatures)
+	{
+		ptr_creature->PerformCyclicActions();
+	}
 }
 
 //##############################

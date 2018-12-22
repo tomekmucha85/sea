@@ -105,6 +105,12 @@
     <ClInclude Include="CreatureNPC.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CreatureSpell.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureSpellBall.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Creature.cpp">
@@ -200,5 +206,14 @@
     <ClCompile Include="Behavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CreatureSpell.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureSpellBall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Documentation.txt" />
   </ItemGroup>
 </Project>

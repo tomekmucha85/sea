@@ -29,6 +29,11 @@ class LevelComponent
 		std::map<LevelComponentType, std::vector<LevelComponent*>>* ptr_peer_level_components;
 		//Invisible creature serving as "mask" of level component. Applied only to level components with defined area.
 		Creature* ptr_component_outline = nullptr;
+		//Contains actions associated to specific creature which will be performed during every game loop / every n game loops.
+		std::vector<std::function<void(LevelComponent*)>> cyclic_actions = {};
+		//###################
+        //Functions
+        //###################
 		void AddLevelComponentOutline(SDL_Rect my_component_area);
     public:
 		//###################
@@ -55,8 +60,9 @@ class LevelComponent
 		void RemoveAllCreatures();
 		SDL_Rect TellComponentArea();
 		SDL_Rect TellComponentEdge(Directions my_direction);
-		// FIND HERO COLLISIONS!
 		std::vector<Creature*> FindCollisionsWithMainCharacter(bool check_only_obstacles = true);
+		void MakeCreaturesPerformCyclicActions();
+		void PerformCyclicActions();
 		//###################
         //Virtual Functions
         //###################
@@ -65,6 +71,24 @@ class LevelComponent
 		virtual void SetBorderState(Directions border_side, bool value);
 		virtual bool TellBorderState(Directions border_side);
 		virtual std::vector<std::string> RunTriggersHitByHero();
+
+		//###################
+        // COMMON LAMBDAS
+        //###################
+
+        //Cyclic action to delete all dead creatures
+		std::function<void(LevelComponent*)> func_reaper = [](LevelComponent* ptr_level_component)
+		{
+			for (Creature* ptr_my_creature : *(ptr_level_component->TellPtrToCreaturesArray()))
+			{
+				if (!ptr_my_creature->AmIAlive())
+				{
+					printf("Headshot!\n");
+					ptr_level_component->RemoveCreature(ptr_my_creature);
+				}
+			}
+		};
+
 };
 
 #endif LEVEL_COMPONENT_HPP

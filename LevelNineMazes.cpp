@@ -7,18 +7,19 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
     // #TODO - uwspólniæ?
 	SDL_Rect core_area = { 0,0,0,0 };
 	LevelComponent* ptr_core = ptr_components_factory->SpawnLevelComponent(levco_core, core_area);
-	SDL_Rect guy_area = { 10,10,0,0 };
-	SDL_Rect* ptr_guy_area = &guy_area;
-	Creature* hero = ptr_core->AddCreature(cre_clawy, ptr_guy_area, force);
-	SDL_Rect box_area = { 20,20,0,0 };
-	SDL_Rect* ptr_box_area = &box_area;
-	ptr_core->AddCreature(cre_flying_box, ptr_box_area, merge);
+	SDL_Rect test_spell_position = {400, 200};
+	Creature* ptr_test_spell = ptr_core->AddCreature(cre_spell_ball, &test_spell_position, merge);
+	ptr_test_spell->SetBehaviorMode(beh_chase_hero);
+	SDL_Rect guy_area = { 400,500,0,0 };
+	Creature* ptr_enemy = ptr_core->AddCreature(cre_clawy, &guy_area, force);
+	ptr_enemy->SetBehaviorMode(beh_chase_hero);
 	SDL_Rect hero_position = { 400,380,0,0 };
 	SDL_Rect* ptr_hero_position = &hero_position;
 	Creature* ptr_hero = ptr_core->AddCreature(cre_clawy, ptr_hero_position, force);
 	ptr_hero->MakeMeMainCharacter();
+	character_offset_x = Creature::WhoIsMainCharacter()->TellHitbox().w;
+	character_offset_y = Creature::WhoIsMainCharacter()->TellHitbox().h;
 	//SetCurrentHero(ptr_hero);
-
 
 	//Adding component for event triggers
 	ptr_border_triggers = ptr_components_factory->SpawnLevelComponent(levco_triggers);
@@ -228,12 +229,20 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 				ptr_maze1->SetBorderState(east, false);
 			}
 		}
+		else
+		{
+			ptr_maze1->SetBorderState(east, false);
+		}
 		if (ptr_maze4 != nullptr)
 		{
 			if (ptr_maze4->TellBorderState(north) == true)
 			{
 				ptr_maze1->SetBorderState(south, false);
 			}
+		}
+		else
+		{
+			ptr_maze1->SetBorderState(south, false);
 		}
 		ptr_maze1->GenerateMaze();
 	}
@@ -250,6 +259,10 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 			{
 				ptr_maze2->SetBorderState(south, false);
 			}
+		}
+		else
+		{
+			ptr_maze2->SetBorderState(south, false);
 		}
 		ptr_maze2->SetBorderState(south, false);
 		ptr_maze2->GenerateMaze();
@@ -268,12 +281,20 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 				ptr_maze3->SetBorderState(south, false);
 			}
 		}
+		else
+		{
+			ptr_maze3->SetBorderState(south, false);
+		}
 		if (ptr_maze2 != nullptr)
 		{
 			if (ptr_maze2->TellBorderState(east) == true)
 			{
 				ptr_maze3->SetBorderState(west, false);
 			}
+		}
+		else
+		{
+			ptr_maze3->SetBorderState(west, false);
 		}
 		ptr_maze3->GenerateMaze();
 	}
@@ -289,6 +310,10 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 			{
 				ptr_maze4->SetBorderState(east, false);
 			}
+		}
+		else
+		{
+			ptr_maze4->SetBorderState(east, false);
 		}
 		ptr_maze4->GenerateMaze();
 	}
@@ -312,6 +337,10 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 				ptr_maze6->SetBorderState(west, false);
 			}
 		}
+		else
+		{
+			ptr_maze6->SetBorderState(west, false);
+		}
 		ptr_maze6->GenerateMaze();
 	}
 	else if (my_number == 7)
@@ -328,6 +357,10 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 				ptr_maze7->SetBorderState(east, false);
 			}
 		}
+		else
+		{
+			ptr_maze7->SetBorderState(east, false);
+		}
 		if (ptr_maze4 != nullptr)
 		{
 			if (ptr_maze4->TellBorderState(south) == true)
@@ -335,12 +368,16 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 				ptr_maze7->SetBorderState(north, false);
 			}
 		}
+		else
+		{
+			ptr_maze7->SetBorderState(north, false);
+		}
 		ptr_maze7->GenerateMaze();
 	}
 	else if (my_number == 8)
 	{
 		maze_8_area = current_central_maze_coordinates;
-		maze_8_area.y += (current_central_maze_coordinates.h) - map_block_height;
+		maze_8_area.y += current_central_maze_coordinates.h - map_block_height;
 		ptr_maze8 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_8_area);
 		printf("WILL GENERATE MAZE %d.\n", my_number);
 		if (ptr_current_central_maze != nullptr)
@@ -350,12 +387,16 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 				ptr_maze8->SetBorderState(north, false);
 			}
 		}
+		else
+		{
+			ptr_maze8->SetBorderState(north, false);
+		}
 		ptr_maze8->GenerateMaze();
 	}
 	else if (my_number == 9)
 	{
 		maze_9_area = current_central_maze_coordinates;
-		maze_9_area.y += (current_central_maze_coordinates.h * 2) - map_block_height;
+		maze_9_area.y += current_central_maze_coordinates.h - map_block_height;
 		maze_9_area.x += current_central_maze_coordinates.w - map_block_width;
 		ptr_maze9 = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_9_area);
 		printf("WILL GENERATE MAZE %d.\n", my_number);
@@ -366,12 +407,20 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 				ptr_maze9->SetBorderState(north, false);
 			}
 		}
+		else
+		{
+			ptr_maze9->SetBorderState(north, false);
+		}
 		if (ptr_maze8 != nullptr)
 		{
 			if (ptr_maze8->TellBorderState(east) == true)
 			{
 				ptr_maze9->SetBorderState(west, false);
 			}
+		}
+		else
+		{
+			ptr_maze9->SetBorderState(west, false);
 		}
 		ptr_maze9->GenerateMaze();
 	}
@@ -406,10 +455,14 @@ void LevelNineMazes::MoveWorldNorth()
 		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);
 	//Creating new north trigger
 	GenerateTrigger(north);
-	//Deleting old south trigger
+	//Deleting old triggers
 	DeleteTrigger(south);
+	DeleteTrigger(east);
+	DeleteTrigger(west);
 	//Creating new south trigger just behind main character's back.
 	GenerateTrigger(south, { 0,character_offset_y,0,0 });
+	GenerateTrigger(west);
+	GenerateTrigger(east);
 }
 
 void LevelNineMazes::MoveWorldSouth()
@@ -418,7 +471,7 @@ void LevelNineMazes::MoveWorldSouth()
 	ptr_maze_to_remove1 = ptr_maze1;
 	ptr_maze_to_remove2 = ptr_maze2;
 	ptr_maze_to_remove3 = ptr_maze3;
-	printf("Mazes to remove: maze 7: %p, maze 8: %p, maze 9: %p.\n", ptr_maze_to_remove1, ptr_maze_to_remove2, ptr_maze_to_remove3);
+	printf("Mazes to remove: maze 1: %p, maze 2: %p, maze 3: %p.\n", ptr_maze_to_remove1, ptr_maze_to_remove2, ptr_maze_to_remove3);
 	//Shift maze pointers downward
 	ptr_maze1 = ptr_maze4;
 	ptr_maze2 = ptr_current_central_maze;
@@ -436,10 +489,14 @@ void LevelNineMazes::MoveWorldSouth()
 		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);
 	//Creating new south trigger
 	GenerateTrigger(south);
-	//Deleting old north trigger
+	//Deleting old triggers
 	DeleteTrigger(north);
+	DeleteTrigger(east);
+	DeleteTrigger(west);
 	//Creating new north trigger just behind main character's back.
 	GenerateTrigger(north, { 0,-character_offset_y,0,0 });
+	GenerateTrigger(west);
+	GenerateTrigger(east);
 
 }
 
@@ -449,6 +506,7 @@ void LevelNineMazes::MoveWorldEast()
 	ptr_maze_to_remove1 = ptr_maze1;
 	ptr_maze_to_remove2 = ptr_maze4;
 	ptr_maze_to_remove3 = ptr_maze7;
+	printf("Mazes to remove: maze 1: %p, maze 2: %p, maze 3: %p.\n", ptr_maze_to_remove1, ptr_maze_to_remove2, ptr_maze_to_remove3);
 	//Shift maze pointers right
 	ptr_maze1 = ptr_maze2;
 	ptr_maze4 = ptr_current_central_maze;
@@ -456,13 +514,24 @@ void LevelNineMazes::MoveWorldEast()
 	ptr_maze2 = ptr_maze3;
 	ptr_current_central_maze = ptr_maze6;
 	ptr_maze8 = ptr_maze9;
-	//Generate new top row of mazes
+	//Generate new eastern row of mazes
 	GenerateMazeNumber(3);
 	GenerateMazeNumber(6);
 	GenerateMazeNumber(9);
 	//Delete western column of mazes
 	DeleteNotNeededMazes();
-
+	printf("Current mazes setup: 1: %p\n2: %p\n3: %p\n4: %p\n5: %p\n6: %p\n7: %p\n8: %p\n9: %p\n",
+		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);
+	//Creating new eastern trigger
+	GenerateTrigger(east);
+	//Deleting old western trigger
+	DeleteTrigger(west);
+	DeleteTrigger(north);
+	DeleteTrigger(south);
+	//Creating new western trigger just behind main character's back.
+	GenerateTrigger(west, { - character_offset_x,0,0,0 });
+	GenerateTrigger(north);
+	GenerateTrigger(south);
 }
 
 void LevelNineMazes::MoveWorldWest()
@@ -478,12 +547,22 @@ void LevelNineMazes::MoveWorldWest()
 	ptr_maze2 = ptr_maze1;
 	ptr_current_central_maze = ptr_maze4;
 	ptr_maze8 = ptr_maze7;
-	//Generate new top row of mazes
+	//Generate new western row of mazes
 	GenerateMazeNumber(1);
 	GenerateMazeNumber(4);
 	GenerateMazeNumber(7);
 	//Delete eastern column of mazes
 	DeleteNotNeededMazes();
+	//Creating new western trigger
+	GenerateTrigger(west);
+	//Deleting old triggers
+	DeleteTrigger(east);
+	DeleteTrigger(north);
+	DeleteTrigger(south);
+	//Creating new western trigger just behind main character's back.
+	GenerateTrigger(east, { character_offset_x,0,0,0 });
+	GenerateTrigger(north);
+	GenerateTrigger(south);
 }
 
 void LevelNineMazes::GenerateTrigger(Directions my_direction, SDL_Rect offset_from_component_border)
@@ -497,7 +576,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, SDL_Rect offset_fr
 		SDL_Rect* ptr_event_area = &event_area;
 		Creature* ptr_my_trigger_north = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_northern_row);
 		signals_vs_events[signal_for_regenerating_northern_row] = ptr_func_trigger_north;
-		printf("Added northern trigger %p x: %d, y: %d, w: %d, h: %d.\n", ptr_my_trigger_north, event_area.x, event_area.y, event_area.w, event_area.h);
+		printf("Added trigger NORTH %p x: %d, y: %d, w: %d, h: %d.\n", ptr_my_trigger_north, event_area.x, event_area.y, event_area.w, event_area.h);
 		//Red
 		ptr_my_trigger_north->ptr_creature_vector->SetColor({255,0,0,255});
 		ptr_trigger_north = ptr_my_trigger_north;
@@ -511,7 +590,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, SDL_Rect offset_fr
 		SDL_Rect* ptr_event_area = &event_area;
 		Creature* ptr_my_trigger_south = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_southern_row);
 		signals_vs_events[signal_for_regenerating_southern_row] = ptr_func_trigger_south;
-		printf("Added southern trigger %p x: %d, y: %d, w: %d, h: %d.\n", ptr_my_trigger_south, event_area.x, event_area.y, event_area.w, event_area.h);
+		printf("Added trigger SOUTH %p x: %d, y: %d, w: %d, h: %d.\n", ptr_my_trigger_south, event_area.x, event_area.y, event_area.w, event_area.h);
 		//Green
 		ptr_my_trigger_south->ptr_creature_vector->SetColor({ 0,255,0,255 });
 		ptr_trigger_south = ptr_my_trigger_south;
@@ -522,10 +601,12 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, SDL_Rect offset_fr
 		SDL_Rect event_area = ptr_current_central_maze->TellComponentEdge(my_direction);
 		event_area.x += offset_from_component_border.x;
 		event_area.y += offset_from_component_border.y;
-		printf("Added trigger x: %d, y: %d, w: %d, h: %d.\n", event_area.x, event_area.y, event_area.w, event_area.h);
+		printf("Added trigger EAST x: %d, y: %d, w: %d, h: %d.\n", event_area.x, event_area.y, event_area.w, event_area.h);
 		SDL_Rect* ptr_event_area = &event_area;
 		Creature* ptr_my_trigger_east = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_eastern_column);
 		signals_vs_events[signal_for_regenerating_eastern_column] = ptr_func_trigger_east;
+		//Blue
+		ptr_my_trigger_east->ptr_creature_vector->SetColor({ 0,0,255,255 });
 		ptr_trigger_east = ptr_my_trigger_east;
 	}
 	else if (my_direction == west)
@@ -534,10 +615,12 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, SDL_Rect offset_fr
 		SDL_Rect event_area = ptr_current_central_maze->TellComponentEdge(my_direction);
 		event_area.x += offset_from_component_border.x;
 		event_area.y += offset_from_component_border.y;
-		printf("Added trigger x: %d, y: %d, w: %d, h: %d.\n", event_area.x, event_area.y, event_area.w, event_area.h);
+		printf("Added trigger WEST x: %d, y: %d, w: %d, h: %d.\n", event_area.x, event_area.y, event_area.w, event_area.h);
 		SDL_Rect* ptr_event_area = &event_area;
 		Creature* ptr_my_trigger_west = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_western_column);
 		signals_vs_events[signal_for_regenerating_western_column] = ptr_func_trigger_west;
+		//Black
+		ptr_my_trigger_west->ptr_creature_vector->SetColor({ 0,0,0,255 });
 		ptr_trigger_west = ptr_my_trigger_west;
 	}
 	else

@@ -48,7 +48,8 @@ Creature::Creature(SDL_Rect* ptr_area)
 Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin, int my_render_layer)
 {
 	ptr_sprites_factory = new FactorySpawningSprites();
-	ptr_behavior = new Behavior(this);
+	ptr_behavior = new Behavior();
+	cyclic_actions.push_back(func_follow_behavior);
 	//Take care of sprite assignment
 	//printf("Will assign sprite to newly spawned creature: %d\n", my_sprite_type);
 	SetMySprite(ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_position));
@@ -569,8 +570,9 @@ bool Creature::DoICollideWithNeighbors()
 	return result;
 }
 
-bool Creature::DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w)
+bool Creature::DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w, int margin)
 {
+	//Margin enables us to detect collision some pixels earlier/later
 	if (my_x >= obs_x && my_x <= obs_x + obs_w)
 	{
 		return true;
@@ -589,8 +591,9 @@ bool Creature::DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w)
 	}
 }
 
-bool Creature::DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h)
+bool Creature::DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h, int margin)
 {
+	//Margin enables us to detect collision some pixels earlier/later
 	if (my_y >= obs_y && my_y <= obs_y + obs_h)
 	{
 		return true;
@@ -607,6 +610,59 @@ bool Creature::DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h)
 	{
 		return false;
 	}
+}
+
+
+//**************
+//CYCLIC ACTIONS
+//**************
+
+void Creature::PerformCyclicActions()
+{
+	for (std::function<void(Creature*)> action : cyclic_actions)
+	{
+		action(this);
+	}
+}
+
+void Creature::AddCyclicAction(std::function<void(Creature*)> my_cyclic_action)
+{
+	cyclic_actions.push_back(my_cyclic_action);
+}
+
+//***********************************
+//MATTER OF LIFE AND DEATH
+//***********************************
+
+void Creature::Kill()
+{
+	am_i_alive = false;
+};
+
+void Creature::Resurrect()
+{
+	am_i_alive = true;
+}
+
+bool Creature::AmIAlive()
+{
+	return am_i_alive;
+}
+
+
+//********************************************
+//BEHAVIOR
+//********************************************
+
+
+void Creature::SetBehaviorMode(BehaviorMode behavior_to_be_set)
+{
+	ptr_behavior->SetMode(behavior_to_be_set);
+}
+
+void Creature::FollowBehavior()
+{
+	ptr_behavior->WhatToDo(this);
 }
 
 //********************************************

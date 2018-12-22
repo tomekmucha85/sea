@@ -139,6 +139,8 @@
     <ClInclude Include="CreatureClawy.hpp" />
     <ClInclude Include="CreatureEventTrigger.hpp" />
     <ClInclude Include="CreatureNPC.hpp" />
+    <ClInclude Include="CreatureSpell.hpp" />
+    <ClInclude Include="CreatureSpellBall.hpp" />
     <ClInclude Include="CreatureVectorMask.hpp" />
     <ClInclude Include="CustomDefinedTypes.hpp" />
     <ClInclude Include="FactorySpawningCreatures.hpp" />
@@ -172,6 +174,8 @@
     <ClCompile Include="CreatureClawy.cpp" />
     <ClCompile Include="CreatureEventTrigger.cpp" />
     <ClCompile Include="CreatureNPC.cpp" />
+    <ClCompile Include="CreatureSpell.cpp" />
+    <ClCompile Include="CreatureSpellBall.cpp" />
     <ClCompile Include="CreatureVectorMask.cpp" />
     <ClCompile Include="FactorySpawningCreatures.cpp" />
     <ClCompile Include="CreatureFlyingBox.cpp" />
@@ -197,6 +201,9 @@
     <ClCompile Include="TextureBank.cpp" />
     <ClCompile Include="VectorDrawing.cpp" />
     <ClCompile Include="VisualComponent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Documentation.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

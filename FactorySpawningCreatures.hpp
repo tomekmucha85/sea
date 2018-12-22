@@ -8,6 +8,8 @@
 #include <CreatureEventTrigger.hpp>
 #include <CreatureVectorMask.hpp>
 #include <CreatureNPC.hpp>
+#include <CreatureSpell.hpp>
+#include <CreatureSpellBall.hpp>
 
 class FactorySpawningCreatures
 {

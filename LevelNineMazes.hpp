@@ -163,18 +163,12 @@ class LevelNineMazes : public Level
 		{
 			printf("TRIGGER!\n");
 			this->MoveWorldEast();
-			this->GenerateTrigger(east);
-			//Creating new south trigger just behind main character's back.
-			this->GenerateTrigger(west, { -character_offset_x,0,0,0 });
 		};
 
 		std::function<void()> ptr_func_trigger_west = [this]()
 		{
 			printf("TRIGGER!\n");
 			this->MoveWorldWest();
-			this->GenerateTrigger(west);
-			//Creating new south trigger just behind main character's back.
-			this->GenerateTrigger(east, { character_offset_x,0,0,0 });
 		};
 };
 #endif // LEVEL_NINE_MAZES_HPP

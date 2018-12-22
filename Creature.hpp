@@ -10,14 +10,14 @@
 
 
 //cre_none means empty space/no creature present
-enum CreatureType    {cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc};
+enum CreatureType    {cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc, cre_spell, cre_spell_ball};
 
 class Behavior;
 
 class Creature
 {
 	friend class Behavior;
-
+	
     private:
         //###################
         //Types
@@ -60,6 +60,10 @@ class Creature
 		bool is_visible = true;
 		//Object determining creatures behavior (AI)
 		Behavior* ptr_behavior = nullptr;
+		//Contains actions associated to specific creature which will be performed during every game loop / every n game loops.
+		std::vector<std::function<void(Creature*)>> cyclic_actions = {};
+		//Is the creature living? Dead creatures should be deleted in LevelComponent plane
+		bool am_i_alive = true;
 
         //###################
         //Functions
@@ -79,7 +83,7 @@ class Creature
         int velocity = 8;
         Sprite *ptr_creature_sprite = nullptr;
 		VectorDrawing* ptr_creature_vector = nullptr;
-        //Vector holding pointers to all creatures currently present in game except event triggers.
+        //Vector holding pointers to all creatures currently present in game
         static std::vector <Creature*> current_environment;
         //Holds address of Creature acting as current main character
         static Creature* ptr_current_main_charater;
@@ -124,21 +128,29 @@ class Creature
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors();
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
-        bool DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w);
-        bool DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h);
+        bool DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w, int margin = 0);
+        bool DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h, int margin = 0);
         static void SetMainCharacterToNull();
         void MakeMeMainCharacter();
         bool AmIMainCharacter();
 		bool AmIVisible();
 		void SetVisibility(bool should_be_visible);
         //#TODO - czy nie static?
-		Creature* WhoIsMainCharacter();
+		static Creature* WhoIsMainCharacter();
 		static long long int TellXMainCharacterShift();
 		static long long int TellYMainCharacterShift();
 		static void SetXMainCharacterShift(long long int my_shift);
 		static void SetYMainCharacterShift(long long int my_shift);
 		static void IncrementXMainCharacterShift(long long int my_shift);
 		static void IncrementYMainCharacterShift(long long int my_shift);
+		void PerformCyclicActions();
+		void AddCyclicAction(std::function<void(Creature*)> my_cyclic_action);
+		//#TODO - napisaæ funkcjê do usuwania akcji cyklicznych
+		void FollowBehavior();
+		void SetBehaviorMode(BehaviorMode behavior_to_be_set);
+		void Kill();
+		void Resurrect();
+		bool AmIAlive();
         void PrintStupidThings(Creature* ptr_to_creature);
 
 		//###################
@@ -152,6 +164,15 @@ class Creature
 		virtual void MakePermanent();
 		virtual bool AmIDisposable();*/
 
+		//###################
+		//COMMON LAMBDAS
+		//###################
+
+		std::function<void(Creature*)> func_follow_behavior = [](Creature* ptr_creature)
+		{
+			ptr_creature->FollowBehavior();
+		};
+
 };
 
 class Behavior
@@ -163,6 +184,7 @@ class Behavior
 
     public:
 		void WhatToDo(Creature* my_creature);
+		void SetMode(BehaviorMode mode_to_be_set);
 
 };
 

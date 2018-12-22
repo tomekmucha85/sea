@@ -1,0 +1,133 @@
+I. Class hierarchy
+Game________
+|           |
+Level       Screen
+|
+LevelComponent
+|
+Creature_________________
+|                        |              
+|                        |
+VisualComponent        Behavior
+|         
+|
+Sprite or VectorDrawing
+|
+Texture
+
+I.1 Creature, LevelComponent and Level - a more detailed look
+
+Level:
+    private nonstatic class members:
+	    //Map holding all level components grouped by their type
+		std::map<LevelComponentType, std::vector<LevelComponent*>> level_components = {};
+		<SOME OMITTED>
+	public nonstatic class members:
+	    //Object spawning new LevelComponents
+		FactorySpawningLevelComponents* ptr_components_factory;
+		<SOME OMITTED>
+
+LevelComponent
+	private nonstatic class members:
+	    //Vector holding all creatures belonging to a LevelComponent
+	    std::vector<Creature*> creatures = {};
+		<SOME OMITTED>
+	public nonstatic class members:
+	    //Object spawning new Creatures
+	    FactorySpawningCreatures* ptr_creatures_factory;
+		<SOME OMITTED>
+
+Creature:
+    static class members:
+	    //Vector holding pointers to all creatures currently present in game
+        static std::vector <Creature*> current_environment;
+        //Holds address of Creature acting as current main character
+        static Creature* ptr_current_main_charater;
+		<SOME OMITTED>
+
+CONCEPT:
+LevelComponent is the enitity taking care of its Creatures. It has a factory for spawning them (ptr_creatures_factory) and methods:
+		Creature* AddCreature(CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal="");
+		void RemoveCreature(Creature* ptr_my_creature);
+		void RemoveAllCreatures();
+
+Level takes care of its LevelComponents. Factory for spawning components is defined there (ptr_components_factory).
+Level has methods:
+		void RemoveLevelComponent(LevelComponent* ptr_my_component);
+When a LevelComponent is removed, it also removes all its Creatures.
+
+Take note, that Creature* pointers are present in two arrays:
+    - static one "current_environment" in Creature class. This array serves when collissions between creatures are evaluated.
+	- "creatures" in LevelComponent class. This array is for grouping Creatures in components.
+
+When a Creature is deleted, its pointer has to be removed from both arrays!
+
+
+II. Cyclic events concept
+
+Level, LevelComponent and Creature instances have cyclic_events arrays of following type:
+
+Level =>		        std::vector<std::function<void(Level*)>> cyclic_actions = {};
+LevelComponent => 		std::vector<std::function<void(LevelComponent*)>> cyclic_actions = {};
+Creature =>      		std::vector<std::function<void(Creature*)>> cyclic_actions = {};
+
+These arrays hold lambda functions like e.g.:
+
+		//Cyclic action to fire all triggers hit by hero
+		std::function<void(Level*)> func_fire_triggers = [](Level* ptr_level)
+		{
+			std::vector<LevelComponent*>* ptr_trigger_components_vector = ptr_level->TellPointerToSpecificComponentTypeArray(levco_triggers);
+			for (LevelComponent* ptr_component_with_triggers : *ptr_trigger_components_vector)
+			{
+				ptr_level->PerformActionsForTriggersHitByHero(ptr_component_with_triggers);
+			}
+		};
+
+Lambdas get pushed into cyclic_events array.
+Then there is a method:
+
+void PerformCyclicActions();
+
+called on currently loaded level during every game loop.
+
+This method does two things:
+    1. Performs all lambdas stored in Level cyclic_events array
+	2. Calls PerformCyclicActions on each LevelComponent stored in level_components array.
+	    2a. Method mentioned in 2. performs all lambdas stored in LevelComponent cyclic_events array
+		2b. Calls PerformCyclicActions on each Creature stored in creatures array
+		    2aa.Method mentioned in 2a. performs all lambdas stored in Creature cyclic_events array
+
+This way a single call of PerformCyclicActions on a Level causes all the cyclic_actions from related LevelComponents and Creatures to be also performed.
+
+III. Triggers concept
+
+CreatureEventTrigger is a Creature, which causes a special effect when collission with main character is detected (Main Character is also a Creature).
+If hit, CreatureEventTrigger produces a "signal" in a form of std::string. This signal is associated with an action to perform by Level object, which
+has a mapping between singnals and events.
+
+Here is the procedure:
+
+1. Level has a method "void PerformActionsForTriggersHitByHero(LevelComponent* ptr_component_containing_triggers)".
+   Level also has a cyclic event func_fire_triggers in a form of lambda pushed into Level's cyclic_events.
+2. During every game cycle a check is performed if any CreatureEventTrigger was hit by main character.
+3. If yes, the following flow occurs:
+
+Level:                      std::map<std::string, std::function<void()>>signals_vs_events
+                                                                                     ^
+                                                                                     |
+                                                                                     |CALLS LAMBDAS ASSOCIATED WITH RECEIVED STRINGS
+                                                                                     |                                                                              
+Level:                      void PerformActionsForTriggersHitByHero(LevelComponent* ptr_component_containing_triggers)
+                                   |                                 ^
+		                           |CALLS                            |
+		                           |                                 |RETURNS ARRAY OF ALL STRINGS PRODUCED BY HIT TRIGGERS
+		                           V                                 |
+LevelComponentTriggers:     std::vector<std::string> RunTriggersHitByHero()
+                                       |                       ^
+								       |CALLS                  |
+								       |                       |RETURNS STRING
+								       V                       |
+CreatureEventTrigger:       std::string CreatureEventTrigger::GiveSignal()
+
+
+---------------------------------FLOW-DIRECTION------------------------------------------------------------------------------------->

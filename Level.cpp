@@ -134,9 +134,25 @@ void Level::RemoveLevelComponent(LevelComponent* ptr_my_component)
 
 void Level::PerformCyclicActions()
 {
+	//Actions on Level plane
 	for (std::function<void(Level*)> action : cyclic_actions)
 	{
 		action(this);
+	}
+
+	//Actions on Level Components plane
+	MakeLevelComponentsPerformCyclicActions();
+}
+
+void Level::MakeLevelComponentsPerformCyclicActions()
+{
+	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_components)
+	{
+		std::vector<LevelComponent*> my_level_components = element.second;
+		for (LevelComponent* ptr_my_level_component : my_level_components)
+		{
+			ptr_my_level_component->PerformCyclicActions();
+		}
 	}
 }
 
