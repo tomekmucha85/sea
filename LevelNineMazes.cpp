@@ -7,9 +7,9 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
     // #TODO - uwspólniæ?
 	SDL_Rect core_area = { 0,0,0,0 };
 	LevelComponent* ptr_core = ptr_components_factory->SpawnLevelComponent(levco_core, core_area);
-	SDL_Rect test_spell_position = {400, 200};
+	SDL_Rect test_spell_position = {390, 100};
 	Creature* ptr_test_spell = ptr_core->AddCreature(cre_spell_ball, &test_spell_position, merge);
-	ptr_test_spell->SetBehaviorMode(beh_chase_hero);
+    ptr_test_spell->SetBehaviorMode(beh_chase_hero);
 	SDL_Rect guy_area = { 400,500,0,0 };
 	Creature* ptr_enemy = ptr_core->AddCreature(cre_clawy, &guy_area, force);
 	ptr_enemy->SetBehaviorMode(beh_chase_hero);

@@ -5,6 +5,8 @@ class CreatureSpell : public Creature
 {
 private:
 	static const SpriteType my_initial_type = black_smoke;
+	//Who cast the spell?
+	Creature* wizard = nullptr;
 public:
 	CreatureSpell(SDL_Rect* ptr_my_position, int hitbox_margin = 10);
 
@@ -12,13 +14,17 @@ public:
     //COMMON LAMBDAS
     //###################
 
-	std::function<void(Creature*)> func_destroy_after_hit = [](Creature* ptr_creature)
+	std::function<void(Creature*)> func_destroy_hit_object = [](Creature* ptr_creature)
 	{
-		printf("Do I collide?\n");
-		if (ptr_creature->DoICollideWithNeighbors())
+		//printf("Do I collide?\n");
+		std::vector<Creature*> hit_creatures = ptr_creature->WhichNeighborsDoICollideWith();
+		if (hit_creatures.size() > 0)
 		{
-			printf("I collide!\n");
-			ptr_creature->Kill();
+			for (Creature* ptr_hit_creature : hit_creatures)
+			{
+				printf("Going to destroy %p !\n", ptr_hit_creature);
+				ptr_hit_creature->Kill();
+			}
 		}
 	};
 };

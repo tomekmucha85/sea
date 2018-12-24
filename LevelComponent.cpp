@@ -114,7 +114,9 @@ std::map<Creature*, LevelComponent*> LevelComponent::FindCreatureNeighborsInAllL
 		for (LevelComponent* ptr_my_level_component : my_level_components)
 		{
 			ptr_my_creature->RemoveNeighbors();
-			ptr_my_creature->FindNeighborsInSet(ptr_my_level_component->TellPtrToCreaturesArray());
+			//#TODO - uproœciæ szukanie s¹siadów
+			std::vector<Creature*> found_neighbors = ptr_my_creature->FindNeighborsInSet(ptr_my_level_component->TellPtrToCreaturesArray());
+			ptr_my_creature->AddToNeighbors(found_neighbors);
 			for (Creature* ptr_colliding_creature : ptr_my_creature->WhichNeighborsDoICollideWith())
 			{
 				result.insert(std::pair<Creature*, LevelComponent*>(ptr_colliding_creature, ptr_my_level_component));

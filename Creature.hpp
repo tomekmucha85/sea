@@ -51,7 +51,7 @@ class Creature
 		//Vector holding creatures present in given radius
 		std::vector <Creature*> my_neighbors;
 		//How far do we seek for neighbors?
-		int neighbor_radius = 75;
+		int default_neighbor_radius = 75;
 		// Distance travelled by the hero creature in x plane
 		static long long int main_character_shift_x;
 		// Distance travelled by the hero creature in y plane
@@ -110,23 +110,26 @@ class Creature
         void Turn(int turn_angle_degree);
         void TurnRight();
         void TurnLeft();
-        void Move(int x, int y);
+        virtual bool Move(int x, int y);
 		//void MovePixelPerfect(int x, int y);
-		void FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set);
+		void AddToNeighbors(std::vector<Creature*> new_neighbors);
+		std::vector<Creature*> FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set, int radius = NULL);
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
-        void MovePixelByPixel(int x, int y, bool check_collisions = true);
+        bool MovePixelByPixel(int x, int y, bool check_collisions = true);
         void MoveComponents(int x, int y);
         void MoveSprite(int x, int y);
 		void MoveVector(int x, int y);
         void MoveHitbox(int x, int y);
-        void MoveForward();
-        void MoveBackward();
-        void Strafe(int sidestep_angle);
-        void StrafeLeft();
-        void StrafeRight();
+        bool MoveForward();
+        bool MoveBackward();
+        bool Strafe(int sidestep_angle);
+        bool StrafeLeft();
+        bool StrafeRight();
+		int TellCurrentAngleDegree();
+		void SetAngleDegree(int my_degree);
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
-        bool DoICollideWithNeighbors();
+        bool DoICollideWithNeighbors(int margin = 0);
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
         bool DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w, int margin = 0);
         bool DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h, int margin = 0);
@@ -135,7 +138,6 @@ class Creature
         bool AmIMainCharacter();
 		bool AmIVisible();
 		void SetVisibility(bool should_be_visible);
-        //#TODO - czy nie static?
 		static Creature* WhoIsMainCharacter();
 		static long long int TellXMainCharacterShift();
 		static long long int TellYMainCharacterShift();
