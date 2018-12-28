@@ -9,9 +9,6 @@
 #include <CustomDefinedTypes.hpp>
 
 
-//cre_none means empty space/no creature present
-enum CreatureType    {cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc, cre_spell, cre_spell_ball};
-
 class Behavior;
 
 class Creature
@@ -19,15 +16,7 @@ class Creature
 	friend class Behavior;
 	
     private:
-        //###################
-        //Types
-        //###################
 
-        struct Coordinates
-        {
-            int x = 0;
-            int y = 0;
-        };
         //###################
         //Variables & const
         //###################
@@ -64,6 +53,8 @@ class Creature
 		std::vector<std::function<void(Creature*)>> cyclic_actions = {};
 		//Is the creature living? Dead creatures should be deleted in LevelComponent plane
 		bool am_i_alive = true;
+		//Requests to spawn other creatures. Requests are collected by LevelComponent
+		std::vector<CreatureSpawnRequest> spawn_requests = {};
 
         //###################
         //Functions
@@ -127,7 +118,9 @@ class Creature
         bool StrafeLeft();
         bool StrafeRight();
 		int TellCurrentAngleDegree();
+		Coordinates TellNextStep();
 		void SetAngleDegree(int my_degree);
+		SDL_Rect CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance);
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors(int margin = 0);
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
@@ -147,12 +140,14 @@ class Creature
 		static void IncrementYMainCharacterShift(long long int my_shift);
 		void PerformCyclicActions();
 		void AddCyclicAction(std::function<void(Creature*)> my_cyclic_action);
+		std::vector<CreatureSpawnRequest>* TellSpawnRequests();
 		//#TODO - napisaæ funkcjê do usuwania akcji cyklicznych
 		void FollowBehavior();
 		void SetBehaviorMode(BehaviorMode behavior_to_be_set);
 		void Kill();
 		void Resurrect();
 		bool AmIAlive();
+		void CastSpell(SpellName my_spell_name);
         void PrintStupidThings(Creature* ptr_to_creature);
 
 		//###################

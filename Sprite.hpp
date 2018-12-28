@@ -56,6 +56,7 @@ class Sprite : public VisualComponent
         //Animations (dummy virtual methods)
         virtual void WalkAnimation();
 		virtual void SmokeAnimation();
+		virtual void VortexAnimation();
 
         //Utilities
         SDL_Rect CheckTextureDimensions(SDL_Texture* ptr_my_texture);

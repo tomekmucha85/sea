@@ -238,8 +238,11 @@ double Creature::DegreeToRadian (int angle_degree)
 
 void Creature::Turn(int turn_angle_degree)
 {
+	printf("Current angle degree: %d.\n", current_angle_degree);
+	printf("Turning by %d degrees.\n", turn_angle_degree);
     current_angle_degree += turn_angle_degree;
     current_angle_degree = NormalizeAngle(current_angle_degree);
+	printf("Current angle after normalization: %d.\n", current_angle_degree);
     double current_angle_radian = DegreeToRadian(current_angle_degree);
     double x_shift_dbl = sin(current_angle_radian) * velocity;
     double y_shift_dbl = cos(current_angle_radian) * velocity;
@@ -252,14 +255,38 @@ void Creature::Turn(int turn_angle_degree)
 //    printf("Y shift is %d\n", next_step.y);
 }
 
+
+Coordinates Creature::TellNextStep()
+{
+	return next_step;
+}
+
 //Preventing angle from exceeding 360 degrees
+
 int Creature::NormalizeAngle(int angle)
 {
-    if (angle > 360 || angle < -360)
+	if (angle < 0)
+	{
+		angle = 360 + angle;
+	}
+	else if (angle >= 360)
+	{
+		angle = 360 - angle;
+	}
+	else if (angle >= 2 * 360 || angle <= -2 * 360)
+	{
+		printf("Angle exceeds 360 twice! Something went wrong.\n");
+		throw std::invalid_argument("Angle outside acceptable range.\n");
+	}
+	else
+	{
+		;
+	}
+    /*if (angle > 360 || angle < -360)
     {
         angle = angle%360;
         //printf("Angle was normalized to %d degrees\n", angle);
-    }
+    }*/
     return angle;
 }
 
@@ -538,6 +565,58 @@ void Creature::SetAngleDegree(int my_degree)
 	current_angle_degree = my_degree;
 }
 
+SDL_Rect Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance)
+{
+	SDL_Rect current_coordinates = TellHitbox();
+	SDL_Rect result = {0,0};
+	int creature_center_x = current_coordinates.x + (current_coordinates.w / 2);
+	int creature_center_y = current_coordinates.y + (current_coordinates.h / 2);
+	int current_angle_degree = TellCurrentAngleDegree();
+	int current_angle_radian = DegreeToRadian(current_angle_degree);
+	/*
+	
+	Notice, that the grid is as following:
+
+315degrees     45 degrees
+		  \	| /
+	       \|/
+	------------------->X
+	        |0,0
+			|
+	        V
+            Y
+	*/
+
+	result.x = creature_center_x + (sin(current_angle_radian) * distance);
+	result.y = creature_center_y + (cos(current_angle_radian) * distance);
+
+
+	/*if (current_angle_degree >= 180)
+	{
+		result.x = creature_center_x - abs(int((sin(current_angle_radian)) * distance));
+		printf("A Result x is %d. Angle is %d\n", result.x, current_angle_radian);
+	}
+	else
+	{
+		result.x = creature_center_x + abs(int((sin(current_angle_radian)) * distance));
+		printf("B Result x is %d.\n", result.x);
+	}
+
+	if (current_angle_degree <= 90 || current_angle_degree >= 270)
+	{
+		result.y = creature_center_y - abs(int((cos(current_angle_radian)) * distance));
+	}
+	else
+	{
+		result.y = creature_center_y + abs(int((cos(current_angle_radian)) * distance));
+	}*/
+
+	printf("Calculated point in distance of %d from creature center x: %d y: %d angle: %d was x: %d y: %d.\n",
+		distance, creature_center_x, creature_center_y, current_angle_degree, result.x, result.y);
+
+	return result;
+}
+
 //**********
 //COLLISIONS
 //**********
@@ -677,6 +756,11 @@ void Creature::AddCyclicAction(std::function<void(Creature*)> my_cyclic_action)
 	cyclic_actions.push_back(my_cyclic_action);
 }
 
+std::vector<CreatureSpawnRequest>* Creature::TellSpawnRequests()
+{
+	return &spawn_requests;
+}
+
 //***********************************
 //MATTER OF LIFE AND DEATH
 //***********************************
@@ -710,6 +794,34 @@ void Creature::SetBehaviorMode(BehaviorMode behavior_to_be_set)
 void Creature::FollowBehavior()
 {
 	ptr_behavior->WhatToDo(this);
+}
+
+//********************************************
+//MAGIC
+//********************************************
+
+void Creature::CastSpell(SpellName my_spell_name)
+{
+	CreatureSpawnRequest spell_request;
+	//#TODO - ucywilizowaæ to mapowanie
+	if (my_spell_name == spell_vortex)
+	{
+		spell_request.type = cre_spell_ball;
+		spell_request.initial_behavior_mode = beh_idle;
+	}
+
+	int desired_distance = 100;
+	//spell_request.initial_position = CalculatePointInGivenDistanceFromCreatureCenter(desired_distance);
+	
+	spell_request.initial_position = { 0,0 };
+
+	printf("Current hero hitbox: x %d y %d w %d h %d.\n ", TellHitbox().x, TellHitbox().y, TellHitbox().w,
+		TellHitbox().h);
+
+	spell_request.initial_angle_degree = TellCurrentAngleDegree();
+	spell_request.insertion_mode = merge;
+
+	spawn_requests.push_back(spell_request);
 }
 
 //********************************************

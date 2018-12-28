@@ -9,7 +9,10 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	LevelComponent* ptr_core = ptr_components_factory->SpawnLevelComponent(levco_core, core_area);
 	SDL_Rect test_spell_position = {390, 100};
 	Creature* ptr_test_spell = ptr_core->AddCreature(cre_spell_ball, &test_spell_position, merge);
-    ptr_test_spell->SetBehaviorMode(beh_chase_hero);
+    ptr_test_spell->SetBehaviorMode(beh_idle);
+	//SDL_Rect test_spell_position2 = { 410, 100 };
+	//Creature* ptr_test_spell2 = ptr_core->AddCreature(cre_spell_ball, &test_spell_position2, merge);
+	//ptr_test_spell2->SetBehaviorMode(beh_idle);
 	SDL_Rect guy_area = { 400,500,0,0 };
 	Creature* ptr_enemy = ptr_core->AddCreature(cre_clawy, &guy_area, force);
 	ptr_enemy->SetBehaviorMode(beh_chase_hero);

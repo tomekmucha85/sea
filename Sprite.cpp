@@ -105,14 +105,14 @@ std::vector <SDL_Rect> Sprite::CalculateAnimationClips( SDL_Rect area, int clip_
         throw std::invalid_argument("Incorrect arguments passed to Sprite::CalculateAnimationClips(). 0 clips would be generated.");
     }
     //How many elements will array hold?
-    int elem_count = (area.w / clip_w) * (area.h / clip_h);
+    int elem_count = ((area.w - area.x) / clip_w) * ((area.h - area.y) / clip_h);
     //printf("Animation element count is: %d\n", elem_count);
 
     //Declare the array. Vector is used for getting size in an easy way later on.
     //SDL_Rect * clips = new SDL_Rect[elem_count];
     std::vector<SDL_Rect> clips(elem_count);
-    int current_x = 0;
-    int current_y = 0;
+    int current_x = area.x;
+    int current_y = area.y;
     //Filling in the array of texture clips
     for (int i = 0; i < elem_count; i++)
     {
@@ -190,4 +190,9 @@ void Sprite::WalkAnimation()
 void Sprite::SmokeAnimation()
 {
 	printf("Smoke animation called for Sprite\n");
+}
+
+void Sprite::VortexAnimation()
+{
+	printf("Vortex animation called for Sprite\n");
 }

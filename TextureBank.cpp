@@ -13,6 +13,8 @@ TextureBank::TextureBank(SDL_Renderer* renderer)
 	ptr_tex_black_smoke = black_smoke->texture;
 	Texture* wall = new Texture(path_image_wall, renderer);
 	ptr_tex_wall = wall->texture;
+	Texture* purple_vortex = new Texture(path_image_purple_vortex, renderer);
+	ptr_tex_purple_vortex = purple_vortex->texture;
     printf("Finished loading textures\n");
 }
 
@@ -23,4 +25,5 @@ TextureBank::~TextureBank()
     delete clawy;
     delete black_box;
 	delete wall;
+	delete purple_vortex;
 }

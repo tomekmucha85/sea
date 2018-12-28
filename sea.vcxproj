@@ -162,6 +162,7 @@
     <ClInclude Include="SpriteBlackBox.hpp" />
     <ClInclude Include="SpriteBlackSmoke.hpp" />
     <ClInclude Include="SpriteClawy.hpp" />
+    <ClInclude Include="SpriteVortex.hpp" />
     <ClInclude Include="texture.hpp" />
     <ClInclude Include="TextureBank.hpp" />
     <ClInclude Include="VectorDrawing.hpp" />
@@ -197,6 +198,7 @@
     <ClCompile Include="SpriteBlackBox.cpp" />
     <ClCompile Include="SpriteBlackSmoke.cpp" />
     <ClCompile Include="SpriteClawy.cpp" />
+    <ClCompile Include="SpriteVortex.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="TextureBank.cpp" />
     <ClCompile Include="VectorDrawing.cpp" />

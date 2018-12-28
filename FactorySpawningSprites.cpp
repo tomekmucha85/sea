@@ -32,6 +32,12 @@ Sprite* FactorySpawningSprites::SpawnSprite(SpriteType desired_type, SDL_Rect* p
 		result = new SpriteBlackSmoke(ptr_position);
 		return result;
 	}
+	else if (desired_type == vortex)
+	{
+		//printf("Reqested vortex object.\n");
+		result = new SpriteVortex(ptr_position);
+		return result;
+	}
 	else
 	{
 		//printf("Requested some other object.\n");

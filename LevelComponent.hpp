@@ -10,14 +10,7 @@
 #include <Creature.hpp>
 #include <FactorySpawningCreatures.hpp>
 
-//Types of possible level components
-enum LevelComponentType { levco_maze, levco_powerups, levco_test, levco_core, levco_triggers };
-//List of possible behaviours while inserting a Creature:
-//    force - add creature and destroy colliding ones
-//    merge - add creature and do not care if it collides with any other
-//    safe - check if collision occurs. If yes - do not insert
-enum InsertionMode {force,merge,safe};
-enum Directions { north, east, south, west };
+
 
 class LevelComponent
 {
@@ -56,6 +49,7 @@ class LevelComponent
 		void SetPointerToPeerComponentsIndex(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components);
 		std::map<Creature*, LevelComponent*> FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature);
 		Creature* AddCreature(CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal="");
+		void ServeSpawnRequest(CreatureSpawnRequest my_request);
 		void RemoveCreature(Creature* ptr_my_creature);
 		void RemoveAllCreatures();
 		SDL_Rect TellComponentArea();
@@ -76,6 +70,22 @@ class LevelComponent
         // COMMON LAMBDAS
         //###################
 
+		/*
+		//Cyclic action to loop through all Creatures in a component
+		std::function<void(LevelComponent*)> func_element_loop = [](LevelComponent* ptr_level_component)
+		{
+			for (Creature* ptr_my_creature : *(ptr_level_component->TellPtrToCreaturesArray()))
+			{
+				if (!ptr_my_creature->AmIAlive())
+				{
+					printf("Headshot!\n");
+					ptr_level_component->RemoveCreature(ptr_my_creature);
+				}
+			}
+		};*/
+
+
+
         //Cyclic action to delete all dead creatures
 		std::function<void(LevelComponent*)> func_reaper = [](LevelComponent* ptr_level_component)
 		{
@@ -89,6 +99,31 @@ class LevelComponent
 			}
 		};
 
+
+		//Cyclic action to serve creature spawn requests places by creatures
+		std::function<void(LevelComponent*)> func_spawn_creatures_on_demand = [](LevelComponent* ptr_level_component)
+		{
+			std::vector<CreatureSpawnRequest> requests_to_serve = {};
+			for (Creature* ptr_my_creature : *(ptr_level_component->TellPtrToCreaturesArray()))
+			{
+				printf("Creature: %p, main creature: %p.\n", ptr_my_creature, Creature::WhoIsMainCharacter());
+				std::vector<CreatureSpawnRequest>* ptr_spawn_requests = ptr_my_creature->TellSpawnRequests();
+				int spawn_requests_number = ptr_spawn_requests->size();
+				if (spawn_requests_number > 0)
+				{
+					for (CreatureSpawnRequest my_request : *(ptr_spawn_requests))
+					{
+						requests_to_serve.push_back(my_request);
+					}
+					ptr_spawn_requests->clear();
+				}
+			}
+
+			for (CreatureSpawnRequest request_to_serve : requests_to_serve)
+			{
+				ptr_level_component->ServeSpawnRequest(request_to_serve);
+			}
+		};
 };
 
 #endif LEVEL_COMPONENT_HPP

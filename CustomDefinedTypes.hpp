@@ -4,6 +4,12 @@
 //Functions to be passed, executing triggered event
 typedef void(*TriggeredEvent)();
 
+struct Coordinates
+{
+	int x = 0;
+	int y = 0;
+};
+
 struct Color
 {
 	int red = 255;
@@ -12,7 +18,37 @@ struct Color
 	int alpha = 255;
 };
 
+//Behavior patterns
+enum BehaviorMode {beh_none, beh_chase_hero, beh_idle };
 
-enum BehaviorMode { beh_chase_hero, beh_idle };
+//cre_none means empty space/no creature present
+enum CreatureType { cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc, cre_spell, cre_spell_ball };
+
+//Names of spells to be cast - spell is a Creature, offspring of CreatureSpell
+enum SpellName {spell_vortex, spell_open_gate};
+
+
+//Types of possible level components
+enum LevelComponentType { levco_maze, levco_powerups, levco_test, levco_core, levco_triggers };
+//List of possible behaviours while inserting a Creature:
+//    force - add creature and destroy colliding ones
+//    merge - add creature and do not care if it collides with any other
+//    safe - check if collision occurs. If yes - do not insert
+
+enum InsertionMode { force, merge, safe };
+
+enum Directions { north, east, south, west };
+
+//A request to spawn a Creature on behalf of other creature. Request is processed by LevelComponent.
+struct CreatureSpawnRequest
+{
+	CreatureType type = cre_none;
+	SDL_Rect initial_position = {0,0,0,0};
+	int initial_angle_degree = 0;
+	BehaviorMode initial_behavior_mode = beh_none;
+	InsertionMode insertion_mode = safe;
+};
+
+
 
 #endif

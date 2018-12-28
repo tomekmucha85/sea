@@ -157,6 +157,7 @@ int main(int argc, char* args[])
 					//case SDLK_2: ptr_maze_a->GenerateMaze(); break;
 					//case SDLK_3: my_maze_b->ClearMaze(); break;
 					//case SDLK_4: my_maze_b->GenerateMaze(); break;
+					case SDLK_q: Creature::ptr_current_main_charater->CastSpell(spell_vortex); break;
                 }
             }
         }

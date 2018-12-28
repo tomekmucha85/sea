@@ -18,6 +18,7 @@ LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelCom
 	{
 		AddLevelComponentOutline(my_component_area);
 	}
+	cyclic_actions.push_back(func_spawn_creatures_on_demand);
 	cyclic_actions.push_back(func_reaper);
 }
 
@@ -129,60 +130,85 @@ std::map<Creature*, LevelComponent*> LevelComponent::FindCreatureNeighborsInAllL
 
 Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal)
 {
+	printf("Current number of creatures: %d.\n", creatures.size());
 	//Spawning creature and then checking if it can be left on map.
 	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_position, my_trigger_signal);
-	//Binding creature with level component
-	//ptr_my_creature->SetOwner(this);
-
+	creatures.push_back(ptr_my_creature);
+	Creature::current_environment.push_back(ptr_my_creature);
+	printf("Current number of creatures after insertion: %d.\n", creatures.size());
 	//Merge mode leaves the Creature unconditionally
 	if (my_mode == merge)
 	{
-		//printf("Creature %p spawned in merge mode.\n", ptr_my_creature);
-		creatures.push_back(ptr_my_creature);
-		Creature::current_environment.push_back(ptr_my_creature);
+		printf("Creature %p spawned in merge mode.\n", ptr_my_creature);
 		return ptr_my_creature;
+		printf("This shall be not printed.\n");
 	}
 	//Vector containing pointers to colliding neighbor creatures.
-	std::map<Creature*, LevelComponent*> collisions = FindCreatureNeighborsInAllLevelComponents(ptr_my_creature);
-	if (collisions.size() > 0)
+	std::map<Creature*, LevelComponent*> neighbors = FindCreatureNeighborsInAllLevelComponents(ptr_my_creature);
+	if (neighbors.size() > 0)
 	{
 		//Force mode removes all colliding Creatures.
 		if (my_mode == force)
 		{
 			//printf("Inserting object forcefully, removing all colliding ones.\n");
 			//Removing obstacles
-			//#TODO zoptymalizowaæ - obecnie najpierw szukamy kolizji wœród komponentów, a potem poszukujemy komponentu-w³aœciciela
-			for (std::pair<Creature*, LevelComponent*> collision: collisions)
+			for (std::pair<Creature*, LevelComponent*> neighbor : neighbors)
 			{
-				Creature* ptr_my_creature = collision.first;
-				LevelComponent* ptr_my_level_component = collision.second;
-				//printf("Forceful creature removal!\n");
-				ptr_my_level_component->RemoveCreature(ptr_my_creature);
+				Creature* ptr_my_neighbor_creature = neighbor.first;
+				LevelComponent* ptr_my_neighbor_level_component = neighbor.second;
+				if (ptr_my_creature->DoICollideWithThisCreature(ptr_my_neighbor_creature))
+				{
+					//printf("Forceful creature removal!\n");
+					ptr_my_neighbor_level_component->RemoveCreature(ptr_my_neighbor_creature);
+				}
 			}
-			creatures.push_back(ptr_my_creature);
-			Creature::current_environment.push_back(ptr_my_creature);
 			return ptr_my_creature;
 		}
 		//Safe mode does not insert Creature if collision occurs.
 		else if (my_mode == safe)
 		{
-			//printf("Not inserting object, because safe mode is on and collision(s) were detected.\n");
-			delete ptr_my_creature;
-			return nullptr;
+			for (std::pair<Creature*, LevelComponent*> neighbor : neighbors)
+			{
+				Creature* ptr_my_neighbor_creature = neighbor.first;
+				LevelComponent* ptr_my_neighbor_level_component = neighbor.second;
+				if (ptr_my_creature->DoICollideWithThisCreature(ptr_my_neighbor_creature))
+				{
+					printf("Not inserting object, because safe mode is on and collision(s) were detected.\n");
+					RemoveCreature(ptr_my_creature);
+					return nullptr;
+				}
+			}
+			printf("Object inserted in safe mode.\n");
+			return ptr_my_creature;
 		}
 		else
 		{
-			//printf("Unexpected event while adding creature - insertion mode unknown.\n");
-			delete ptr_my_creature;
-			return nullptr;
+			printf("Unexpected event while adding creature - insertion mode unknown.\n");
+			throw std::invalid_argument("Unexpected event while adding creature - insertion mode unknown.\n");
 		}
 	}
 	else
 	{
-		//printf("No collisions detected during Creature %p spawn.\n", ptr_my_creature);
-		creatures.push_back(ptr_my_creature);
-		Creature::current_environment.push_back(ptr_my_creature);
+		//printf("No neighbors detected during Creature %p spawn.\n", ptr_my_creature);
 		return ptr_my_creature;
+	}
+}
+
+void LevelComponent::ServeSpawnRequest(CreatureSpawnRequest my_request)
+{
+	Creature* ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_position, my_request.insertion_mode);
+	printf("Served a spawn request. Creature spawned: %p x: %d, y: %d, w: %d, h: %d.\n",
+		ptr_spawned_creature,
+		my_request.initial_position.x, my_request.initial_position.y,
+		my_request.initial_position.w, my_request.initial_position.h);
+	if (ptr_spawned_creature != nullptr)
+	{
+		ptr_spawned_creature->SetAngleDegree(my_request.initial_angle_degree);
+		ptr_spawned_creature->SetBehaviorMode(my_request.initial_behavior_mode);
+	}
+	else
+	{
+		"Did not spawn requested creature!\n";
 	}
 }
 
