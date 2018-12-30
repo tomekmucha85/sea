@@ -10,6 +10,12 @@ struct Coordinates
 	int y = 0;
 };
 
+struct CenterCoordinates
+{
+	int x = 0;
+	int y = 0;
+};
+
 struct Color
 {
 	int red = 255;
@@ -44,6 +50,7 @@ struct CreatureSpawnRequest
 {
 	CreatureType type = cre_none;
 	SDL_Rect initial_position = {0,0,0,0};
+	CenterCoordinates initial_center_cooridnates = {0,0};
 	int initial_angle_degree = 0;
 	BehaviorMode initial_behavior_mode = beh_none;
 	InsertionMode insertion_mode = safe;

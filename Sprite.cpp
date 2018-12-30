@@ -28,7 +28,7 @@ Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* 
 	SetTextureClip(my_texture_clip);
 	//printf("Texture clip set.");
 	SDL_Rect current_texture_clip = TellTextureClip();
-	if (ptr_my_position == NULL)
+	if (ptr_my_position == nullptr)
 	{
 		SetPositionX(0);
 		SetPositionY(0);
@@ -39,6 +39,39 @@ Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* 
 	{
 		SetPositionX(ptr_my_position->x);
 		SetPositionY(ptr_my_position->y);
+		SetPositionW(current_texture_clip.w);
+		SetPositionH(current_texture_clip.h);
+	}
+}
+
+Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, CenterCoordinates* ptr_my_center) : VisualComponent(ptr_my_center)
+{
+	//Constructor building sprite around specified center coordinates
+	//#TODO - validate arguments?
+	SetTexture(ptr_my_texture);
+	//printf("Texture set.");
+	if (my_texture_clip.w == 0 && my_texture_clip.h == 0)
+	{
+		//If there are no width and height params set for texture clip, whole texture is shown.
+		//#TODO pass texture clip by pointer.
+		SDL_Rect dimensions = Sprite::CheckTextureDimensions(ptr_my_texture);
+		my_texture_clip.w = dimensions.w;
+		my_texture_clip.h = dimensions.h;
+	}
+	SetTextureClip(my_texture_clip);
+	//printf("Texture clip set.");
+	SDL_Rect current_texture_clip = TellTextureClip();
+	if (ptr_my_center == nullptr)
+	{
+		SetPositionX(0);
+		SetPositionY(0);
+		SetPositionW(current_texture_clip.w);
+		SetPositionH(current_texture_clip.h);
+	}
+	else
+	{
+		SetPositionX(ptr_my_center->x - (current_texture_clip.w/2));
+		SetPositionY(ptr_my_center->y - (current_texture_clip.h / 2));
 		SetPositionW(current_texture_clip.w);
 		SetPositionH(current_texture_clip.h);
 	}

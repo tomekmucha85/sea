@@ -1,9 +1,28 @@
 #include <FactorySpawningCreatures.hpp>
 
+Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, CenterCoordinates* ptr_my_center,
+	std::string my_trigger_signal)
+{
+	Creature* result = nullptr;
+	if (desired_type == cre_spell_ball)
+	{
+	    result = new CreatureSpellBall(ptr_my_center);
+	}
+		else
+	{
+	printf("Requested some other creature.\n");
+	}
+
+	return result;
+
+}
+
+
+
 Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position,
 	std::string my_trigger_signal)
 {
-	Creature* result = NULL;
+	Creature* result = nullptr;
 
 	if (desired_type == cre_clawy)
 	{

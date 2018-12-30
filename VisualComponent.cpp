@@ -15,6 +15,12 @@ VisualComponent::VisualComponent(SDL_Rect* ptr_my_position)
 	SetPosition(*ptr_my_position);
 }
 
+VisualComponent::VisualComponent(CenterCoordinates* ptr_my_center)
+{
+	//SetPosition(*ptr_my_position);
+	;
+}
+
 //#####################
 // STATIC METHODS
 //#####################

@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <algorithm>
 #include <Creature.hpp>
+//#TODO - oczyœciæ importy w pliku cpp
+
 
 //***********************************
 //DEFINITIONS OF STATIC CLASS MEMBERS
@@ -53,6 +55,24 @@ Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hit
 	//Take care of sprite assignment
 	//printf("Will assign sprite to newly spawned creature: %d\n", my_sprite_type);
 	SetMySprite(ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_position));
+	//Set the initial value to move upwards by (velocity * pixels)
+	next_step.y = velocity * -1;
+	//Initialize hitbox
+	//#TODO//Change this, so position will be determined by creature
+	SDL_Rect sprite_position = ptr_creature_sprite->TellSpritePosition();
+	InitializeHitbox(sprite_position, hitbox_margin);
+	//Set in which layer should this Creature be rendered
+	SetMyRenderLayer(my_render_layer);
+	//Write entry in static vector class_instances
+}
+
+//Constructor spawning a creature around CENTER coordinates given
+Creature::Creature(SpriteType my_sprite_type, CenterCoordinates* ptr_my_center, int hitbox_margin, int my_render_layer)
+{
+	ptr_sprites_factory = new FactorySpawningSprites();
+	ptr_behavior = new Behavior();
+	cyclic_actions.push_back(func_follow_behavior);
+	SetMySprite(ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center));
 	//Set the initial value to move upwards by (velocity * pixels)
 	next_step.y = velocity * -1;
 	//Initialize hitbox
@@ -572,7 +592,7 @@ SDL_Rect Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned int 
 	int creature_center_x = current_coordinates.x + (current_coordinates.w / 2);
 	int creature_center_y = current_coordinates.y + (current_coordinates.h / 2);
 	int current_angle_degree = TellCurrentAngleDegree();
-	int current_angle_radian = DegreeToRadian(current_angle_degree);
+	double current_angle_radian = DegreeToRadian(current_angle_degree);
 	/*
 	
 	Notice, that the grid is as following:
@@ -588,28 +608,8 @@ SDL_Rect Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned int 
 	*/
 
 	result.x = creature_center_x + (sin(current_angle_radian) * distance);
-	result.y = creature_center_y + (cos(current_angle_radian) * distance);
+	result.y = creature_center_y + (cos(current_angle_radian) * distance * -1);
 
-
-	/*if (current_angle_degree >= 180)
-	{
-		result.x = creature_center_x - abs(int((sin(current_angle_radian)) * distance));
-		printf("A Result x is %d. Angle is %d\n", result.x, current_angle_radian);
-	}
-	else
-	{
-		result.x = creature_center_x + abs(int((sin(current_angle_radian)) * distance));
-		printf("B Result x is %d.\n", result.x);
-	}
-
-	if (current_angle_degree <= 90 || current_angle_degree >= 270)
-	{
-		result.y = creature_center_y - abs(int((cos(current_angle_radian)) * distance));
-	}
-	else
-	{
-		result.y = creature_center_y + abs(int((cos(current_angle_radian)) * distance));
-	}*/
 
 	printf("Calculated point in distance of %d from creature center x: %d y: %d angle: %d was x: %d y: %d.\n",
 		distance, creature_center_x, creature_center_y, current_angle_degree, result.x, result.y);
@@ -811,9 +811,8 @@ void Creature::CastSpell(SpellName my_spell_name)
 	}
 
 	int desired_distance = 100;
-	//spell_request.initial_position = CalculatePointInGivenDistanceFromCreatureCenter(desired_distance);
-	
-	spell_request.initial_position = { 0,0 };
+	SDL_Rect center_coordinates = CalculatePointInGivenDistanceFromCreatureCenter(desired_distance);
+	spell_request.initial_center_cooridnates = { center_coordinates.x, center_coordinates.y };
 
 	printf("Current hero hitbox: x %d y %d w %d h %d.\n ", TellHitbox().x, TellHitbox().y, TellHitbox().w,
 		TellHitbox().h);

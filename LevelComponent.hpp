@@ -49,6 +49,8 @@ class LevelComponent
 		void SetPointerToPeerComponentsIndex(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components);
 		std::map<Creature*, LevelComponent*> FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature);
 		Creature* AddCreature(CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal="");
+		Creature* AddCreature(CreatureType my_type, CenterCoordinates* ptr_my_center, InsertionMode my_mode, std::string my_trigger_signal = "");
+		bool DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature, InsertionMode my_mode);
 		void ServeSpawnRequest(CreatureSpawnRequest my_request);
 		void RemoveCreature(Creature* ptr_my_creature);
 		void RemoveAllCreatures();
@@ -106,7 +108,7 @@ class LevelComponent
 			std::vector<CreatureSpawnRequest> requests_to_serve = {};
 			for (Creature* ptr_my_creature : *(ptr_level_component->TellPtrToCreaturesArray()))
 			{
-				printf("Creature: %p, main creature: %p.\n", ptr_my_creature, Creature::WhoIsMainCharacter());
+				//printf("Creature: %p, main creature: %p.\n", ptr_my_creature, Creature::WhoIsMainCharacter());
 				std::vector<CreatureSpawnRequest>* ptr_spawn_requests = ptr_my_creature->TellSpawnRequests();
 				int spawn_requests_number = ptr_spawn_requests->size();
 				if (spawn_requests_number > 0)

@@ -7,6 +7,7 @@ private:
 	static const SpriteType my_initial_type = vortex;
 public:
 	CreatureSpellBall(SDL_Rect* ptr_my_position, int hitbox_margin = 10);
+	CreatureSpellBall(CenterCoordinates* ptr_my_center, int hitbox_margin = 10);
 	void DealDamageInRadius(int radius);
 	bool Move(int x, int y);
 };

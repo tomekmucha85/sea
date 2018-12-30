@@ -30,6 +30,7 @@ public:
 	//Functions
 	//###################
 	VisualComponent(SDL_Rect* ptr_my_position);
+	VisualComponent(CenterCoordinates* ptr_my_center);
 	void Move(int velocity_x, int velocity_y);
 	void SetPosition(SDL_Rect my_position);
 	static void SetScreen(Screen* ptr_my_screen);

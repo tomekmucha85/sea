@@ -128,20 +128,44 @@ std::map<Creature*, LevelComponent*> LevelComponent::FindCreatureNeighborsInAllL
 }
 
 
-Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal)
+Creature* LevelComponent::AddCreature(CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal)
 {
-	printf("Current number of creatures: %d.\n", creatures.size());
 	//Spawning creature and then checking if it can be left on map.
 	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_position, my_trigger_signal);
 	creatures.push_back(ptr_my_creature);
 	Creature::current_environment.push_back(ptr_my_creature);
-	printf("Current number of creatures after insertion: %d.\n", creatures.size());
+	if (DetermineIfCreatureCanBeLeftOnMap(ptr_my_creature, my_mode))
+	{
+		return ptr_my_creature;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+Creature* LevelComponent::AddCreature(CreatureType my_type, CenterCoordinates* ptr_my_center, InsertionMode my_mode, std::string my_trigger_signal)
+{
+	//Spawning creature and then checking if it can be left on map.
+	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_center, my_trigger_signal);
+	creatures.push_back(ptr_my_creature);
+	Creature::current_environment.push_back(ptr_my_creature);
+	if (DetermineIfCreatureCanBeLeftOnMap(ptr_my_creature, my_mode))
+	{
+		return ptr_my_creature;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+bool LevelComponent::DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature, InsertionMode my_mode)
+{
 	//Merge mode leaves the Creature unconditionally
 	if (my_mode == merge)
 	{
-		printf("Creature %p spawned in merge mode.\n", ptr_my_creature);
-		return ptr_my_creature;
-		printf("This shall be not printed.\n");
+		return true;
 	}
 	//Vector containing pointers to colliding neighbor creatures.
 	std::map<Creature*, LevelComponent*> neighbors = FindCreatureNeighborsInAllLevelComponents(ptr_my_creature);
@@ -162,7 +186,7 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 					ptr_my_neighbor_level_component->RemoveCreature(ptr_my_neighbor_creature);
 				}
 			}
-			return ptr_my_creature;
+			return true;
 		}
 		//Safe mode does not insert Creature if collision occurs.
 		else if (my_mode == safe)
@@ -175,11 +199,10 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 				{
 					printf("Not inserting object, because safe mode is on and collision(s) were detected.\n");
 					RemoveCreature(ptr_my_creature);
-					return nullptr;
+					return false;
 				}
 			}
-			printf("Object inserted in safe mode.\n");
-			return ptr_my_creature;
+			return true;
 		}
 		else
 		{
@@ -190,17 +213,27 @@ Creature* LevelComponent::AddCreature( CreatureType my_type, SDL_Rect* ptr_my_po
 	else
 	{
 		//printf("No neighbors detected during Creature %p spawn.\n", ptr_my_creature);
-		return ptr_my_creature;
+		return true;
 	}
 }
 
 void LevelComponent::ServeSpawnRequest(CreatureSpawnRequest my_request)
 {
-	Creature* ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_position, my_request.insertion_mode);
-	printf("Served a spawn request. Creature spawned: %p x: %d, y: %d, w: %d, h: %d.\n",
+	Creature* ptr_spawned_creature = nullptr;
+	//#TODO dopracowaæ warunek
+	if (my_request.initial_center_cooridnates.x == 0 && my_request.initial_center_cooridnates.y == 0)
+	{
+		ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_position, my_request.insertion_mode);
+	}
+	else
+	{
+		ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_center_cooridnates, my_request.insertion_mode);
+	}
+
+	/*printf("Served a spawn request. Creature spawned: %p x: %d, y: %d, w: %d, h: %d.\n",
 		ptr_spawned_creature,
 		my_request.initial_position.x, my_request.initial_position.y,
-		my_request.initial_position.w, my_request.initial_position.h);
+		my_request.initial_position.w, my_request.initial_position.h);*/
 	if (ptr_spawned_creature != nullptr)
 	{
 		ptr_spawned_creature->SetAngleDegree(my_request.initial_angle_degree);

@@ -9,6 +9,7 @@ private:
 	Creature* wizard = nullptr;
 public:
 	CreatureSpell(SpriteType my_initial_type, SDL_Rect* ptr_my_position, int hitbox_margin = 10);
+	CreatureSpell(SpriteType my_initial_type, CenterCoordinates* ptr_my_center, int hitbox_margin = 10);
 
 	//###################
     //COMMON LAMBDAS

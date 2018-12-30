@@ -4,9 +4,26 @@
 //Method for spawning sprites
 //#####################
 
+Sprite* FactorySpawningSprites::SpawnSprite(SpriteType desired_type, CenterCoordinates* ptr_center)
+{
+	Sprite* result = nullptr;
+	//#TODO ucywilizowaæ
+    if (desired_type == vortex)
+	{
+	    //printf("Reqested vortex object.\n");
+	    result = new SpriteVortex(ptr_center);
+	    return result;
+	}
+		else
+	{
+	    //printf("Requested some other object.\n");
+	    return result;
+	}
+}
+
 Sprite* FactorySpawningSprites::SpawnSprite(SpriteType desired_type, SDL_Rect* ptr_position)
 {
-	Sprite* result = NULL;
+	Sprite* result = nullptr;
 	//printf("Going to create a sprite. Requested type: %d\n", desired_type);
 	if (desired_type == clawy)
 	{
