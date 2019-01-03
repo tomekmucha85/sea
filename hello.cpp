@@ -15,6 +15,8 @@
 #include <Sprite.hpp>
 #include <Creature.hpp>
 #include <LevelComponent.hpp>
+#include <Timer.hpp>
+#include <TimerInterval.hpp>
 
 //###################
 //Function prototypes
@@ -68,21 +70,14 @@ int main(int argc, char* args[])
 
 	int looped_events = Game::ptr_current_level->cyclic_actions.size();
 	printf("There are %d actions present in current event loop.\n", looped_events);
-	/*SDL_Rect smoke_position = { 500,200,0,0 };
-	SDL_Rect* ptr_smoke_position = &smoke_position;
-	Creature* cre_black_smoke_1 = Creature::SpawnCreature(cre_black_smoke, ptr_smoke_position);
-	cre_black_smoke_1->MakeMeNotObstacle();
-	*/
-	/*
-	SDL_Rect box_4_position = { 25,25,0,0 };
-	SDL_Rect* ptr_box_4_position = &box_4_position;
-	Creature* cre_box4 = Creature::SpawnCreature(cre_flying_box,ptr_box_4_position);
-	*/
 
-	unsigned int timer = 0;
+	//unsigned int timer = 0;
+	TimerInterval* ptr_emotiv_bands_check = new TimerInterval(2000);
 
     while (!quit)
     {
+		//Timer
+		Timer::CalculateLoopDuration();
 
         //EMOTIV
 		state = IEE_EngineGetNextEvent(eEvent);
@@ -115,18 +110,12 @@ int main(int argc, char* args[])
 		double high_beta = 0;
 		double gamma = 0;
 
-		timer++;
-
-		if (timer == 100)
+		if(ptr_emotiv_bands_check->CheckIfIntervalPassed())
 		{
 			IEE_GetAverageBandPowers(userID, IED_AF3, &theta, &alpha, &low_beta, &high_beta, &gamma);
 
-			//printf("Current band values: THETA: %d\n ALPHA: %d\n, LOW BETA: %d\n, HIGH_BETA: %d\n, GAMMA: %d\n.",
-			//	theta, alpha, low_beta, high_beta, gamma);
-		}
-		else if (timer > 100)
-		{
-			timer = 0;
+			printf("Current band values: THETA: %d\n ALPHA: %d\n, LOW BETA: %d\n, HIGH_BETA: %d\n, GAMMA: %d\n.",
+				theta, alpha, low_beta, high_beta, gamma);
 		}
 
 		//EMOTIV_END
@@ -162,26 +151,8 @@ int main(int argc, char* args[])
             }
         }
 
-        //Test moving creatures
-		
-		/*
-        test++;
-        if (test <= 300)
-        {
-            cre_box3->Move(3,0);
-        }
-        else if (test <= 600)
-        {
-            cre_box3->Move(-3,0);
-        }
-        else
-        {
-            test = 0;
-        }
-		*/
 		//Test background animation
 		//#TODO napisaæ wspóln¹ funkcjê dla animacji
-		//cre_black_smoke_1->ptr_creature_sprite->SmokeAnimation();
 
 		//Perform cyclic actions from current level
 		Game::ptr_current_level->PerformCyclicActions();

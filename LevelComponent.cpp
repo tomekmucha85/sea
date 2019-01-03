@@ -144,7 +144,7 @@ Creature* LevelComponent::AddCreature(CreatureType my_type, SDL_Rect* ptr_my_pos
 	}
 }
 
-Creature* LevelComponent::AddCreature(CreatureType my_type, CenterCoordinates* ptr_my_center, InsertionMode my_mode, std::string my_trigger_signal)
+Creature* LevelComponent::AddCreature(CreatureType my_type, Coordinates* ptr_my_center, InsertionMode my_mode, std::string my_trigger_signal)
 {
 	//Spawning creature and then checking if it can be left on map.
 	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_center, my_trigger_signal);
@@ -220,20 +220,21 @@ bool LevelComponent::DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature
 void LevelComponent::ServeSpawnRequest(CreatureSpawnRequest my_request)
 {
 	Creature* ptr_spawned_creature = nullptr;
-	//#TODO dopracowaæ warunek
-	if (my_request.initial_center_cooridnates.x == 0 && my_request.initial_center_cooridnates.y == 0)
+
+	if (my_request.mode == area_coordinates)
 	{
-		ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_position, my_request.insertion_mode);
+		ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_area, my_request.insertion_mode);
 	}
-	else
+	else if (my_request.mode == center_coordinates)
 	{
 		ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_center_cooridnates, my_request.insertion_mode);
 	}
+	else
+	{
+		printf("Trying to serve a spawn request, but positioning mode %d is not set correctly!\n", my_request.mode);
+		throw std::invalid_argument("Trying to serve a spawn request, but positioning mode is not set correctly!\n");
+	}
 
-	/*printf("Served a spawn request. Creature spawned: %p x: %d, y: %d, w: %d, h: %d.\n",
-		ptr_spawned_creature,
-		my_request.initial_position.x, my_request.initial_position.y,
-		my_request.initial_position.w, my_request.initial_position.h);*/
 	if (ptr_spawned_creature != nullptr)
 	{
 		ptr_spawned_creature->SetAngleDegree(my_request.initial_angle_degree);

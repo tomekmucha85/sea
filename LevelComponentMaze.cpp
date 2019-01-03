@@ -105,10 +105,9 @@ void LevelComponentMaze::VivifyMaze()
 			CreatureType my_type = blueprint[row][column];
 			if (my_type != cre_none)
 			{
-				SDL_Rect my_position = SDL_Rect{ TellComponentArea().x + (column*map_block_width), 
-					TellComponentArea().y +(row*map_block_width),0,0 };
-				SDL_Rect* ptr_my_position = &my_position;
-				AddCreature(my_type, ptr_my_position, merge);
+				Coordinates my_position = { TellComponentArea().x + (column*map_block_width), 
+					TellComponentArea().y +(row*map_block_width) };
+				AddCreature(my_type, &my_position, merge);
 			}
 		}
 	}

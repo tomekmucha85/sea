@@ -15,7 +15,7 @@ class SpriteBlackBox : public Sprite
 
     public:
 
-        SpriteBlackBox(SDL_Rect* my_position = NULL);
+        SpriteBlackBox(Coordinates* ptr_my_center);
 
 };
 

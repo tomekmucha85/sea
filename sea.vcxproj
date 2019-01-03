@@ -156,6 +156,7 @@
     <ClInclude Include="LevelComponentTest.hpp" />
     <ClInclude Include="LevelComponentTriggers.hpp" />
     <ClInclude Include="LevelNineMazes.hpp" />
+    <ClInclude Include="TimerInterval.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="Sprite.hpp" />
     <ClInclude Include="SpriteBackground.hpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="SpriteVortex.hpp" />
     <ClInclude Include="texture.hpp" />
     <ClInclude Include="TextureBank.hpp" />
+    <ClInclude Include="Timer.hpp" />
     <ClInclude Include="VectorDrawing.hpp" />
     <ClInclude Include="VisualComponent.hpp" />
   </ItemGroup>
@@ -201,6 +203,8 @@
     <ClCompile Include="SpriteVortex.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="TextureBank.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerInterval.cpp" />
     <ClCompile Include="VectorDrawing.cpp" />
     <ClCompile Include="VisualComponent.cpp" />
   </ItemGroup>

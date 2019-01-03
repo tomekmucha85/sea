@@ -11,8 +11,8 @@ SDL_Rect SpriteBackground::initial_texture_clip_background = { 0,0,0,0 };
 //CONSTRUCTORS
 //***********************************
 
-SpriteBackground::SpriteBackground(SDL_Rect* ptr_my_position)
-	: Sprite(TellTextureBank()->ptr_tex_background, SpriteBackground::initial_texture_clip_background, ptr_my_position)
+SpriteBackground::SpriteBackground(Coordinates* ptr_my_center)
+	: Sprite(TellTextureBank()->ptr_tex_background, SpriteBackground::initial_texture_clip_background, ptr_my_center)
 {
 	//printf("Constructor called for SpriteBackground\n");
 }

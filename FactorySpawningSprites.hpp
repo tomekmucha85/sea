@@ -15,8 +15,7 @@ class FactorySpawningSprites
     private:
 
     public:
-		Sprite* SpawnSprite(SpriteType desired_type, SDL_Rect* ptr_position = nullptr);
-		Sprite* SpawnSprite(SpriteType desired_type, CenterCoordinates* ptr_center = nullptr);
+		Sprite* SpawnSprite(SpriteType desired_type, Coordinates* ptr_center = nullptr);
 };
 
 #endif //FACTORY_SPAWNING_SPRITESS_HPP

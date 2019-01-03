@@ -21,7 +21,7 @@ class SpriteClawy : public Sprite
 	//###################
 	//Functions
 	//###################
-    SpriteClawy(SDL_Rect* my_position = NULL);
+    SpriteClawy(Coordinates* ptr_my_center);
     void WalkAnimation();
 };
 

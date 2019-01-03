@@ -16,6 +16,10 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 		{
 			ptr_my_creature->Move(-1,0);
 		}
+		else if (mode == beh_projectile)
+		{
+			ptr_my_creature->MoveForward();
+		}
 	}
 }
 

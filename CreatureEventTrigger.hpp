@@ -10,7 +10,7 @@ class CreatureEventTrigger : public Creature
 		bool is_armed = true;
 		//bool should_be_destroyed_after_use = true;
     public:
-	    CreatureEventTrigger(SDL_Rect* ptr_area, std::string my_trigger_signal);
+	    CreatureEventTrigger(SDL_Rect* ptr_my_area, std::string my_trigger_signal);
 		std::string GiveSignal();
 		void ArmTrigger();
 		void DisarmTrigger();

@@ -7,18 +7,17 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
     // #TODO - uwspólniæ?
 	SDL_Rect core_area = { 0,0,0,0 };
 	LevelComponent* ptr_core = ptr_components_factory->SpawnLevelComponent(levco_core, core_area);
-	SDL_Rect test_spell_position = {390, 100};
+	Coordinates test_spell_position = {390, 100};
 	Creature* ptr_test_spell = ptr_core->AddCreature(cre_spell_ball, &test_spell_position, merge);
     ptr_test_spell->SetBehaviorMode(beh_idle);
 	//SDL_Rect test_spell_position2 = { 410, 100 };
 	//Creature* ptr_test_spell2 = ptr_core->AddCreature(cre_spell_ball, &test_spell_position2, merge);
 	//ptr_test_spell2->SetBehaviorMode(beh_idle);
-	SDL_Rect guy_area = { 400,500,0,0 };
-	Creature* ptr_enemy = ptr_core->AddCreature(cre_clawy, &guy_area, force);
+	Coordinates guy_position = { 400,500 };
+	Creature* ptr_enemy = ptr_core->AddCreature(cre_clawy, &guy_position, force);
 	ptr_enemy->SetBehaviorMode(beh_chase_hero);
-	SDL_Rect hero_position = { 400,380,0,0 };
-	SDL_Rect* ptr_hero_position = &hero_position;
-	Creature* ptr_hero = ptr_core->AddCreature(cre_clawy, ptr_hero_position, force);
+	Coordinates hero_position = {400,380};
+	Creature* ptr_hero = ptr_core->AddCreature(cre_clawy,&hero_position, force);
 	ptr_hero->MakeMeMainCharacter();
 	character_offset_x = Creature::WhoIsMainCharacter()->TellHitbox().w;
 	character_offset_y = Creature::WhoIsMainCharacter()->TellHitbox().h;

@@ -10,12 +10,6 @@ struct Coordinates
 	int y = 0;
 };
 
-struct CenterCoordinates
-{
-	int x = 0;
-	int y = 0;
-};
-
 struct Color
 {
 	int red = 255;
@@ -25,7 +19,7 @@ struct Color
 };
 
 //Behavior patterns
-enum BehaviorMode {beh_none, beh_chase_hero, beh_idle };
+enum BehaviorMode {beh_none, beh_chase_hero, beh_idle, beh_projectile };
 
 //cre_none means empty space/no creature present
 enum CreatureType { cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc, cre_spell, cre_spell_ball };
@@ -45,17 +39,19 @@ enum InsertionMode { force, merge, safe };
 
 enum Directions { north, east, south, west };
 
+//Decide if Creature should be spawned with coordinates describing its center point or area occupied by creature.
+enum PositioningMode {center_coordinates, area_coordinates, undefined};
+
 //A request to spawn a Creature on behalf of other creature. Request is processed by LevelComponent.
 struct CreatureSpawnRequest
 {
 	CreatureType type = cre_none;
-	SDL_Rect initial_position = {0,0,0,0};
-	CenterCoordinates initial_center_cooridnates = {0,0};
+	PositioningMode mode = undefined;
+	SDL_Rect initial_area = {0,0,0,0};
+	Coordinates initial_center_cooridnates = {0,0};
 	int initial_angle_degree = 0;
 	BehaviorMode initial_behavior_mode = beh_none;
 	InsertionMode insertion_mode = safe;
 };
-
-
 
 #endif

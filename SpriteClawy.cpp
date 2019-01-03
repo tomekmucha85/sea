@@ -10,8 +10,8 @@ SDL_Rect SpriteClawy::initial_texture_clip_clawy = {0,0,45,45};
 //CONSTRUCTORS
 //***********************************
 
-SpriteClawy::SpriteClawy(SDL_Rect* ptr_my_position)
-	: Sprite(TellTextureBank()->ptr_tex_clawy, SpriteClawy::initial_texture_clip_clawy, ptr_my_position)
+SpriteClawy::SpriteClawy(Coordinates* ptr_my_center)
+	: Sprite(TellTextureBank()->ptr_tex_clawy, SpriteClawy::initial_texture_clip_clawy, ptr_my_center)
 {
     //printf("Constructor called for SpriteClawy\n");
 }

@@ -15,7 +15,7 @@ private:
 
 public:
 
-	SpriteBlackSmoke(SDL_Rect* my_position = NULL);
+	SpriteBlackSmoke(Coordinates* ptr_my_center);
 	void SmokeAnimation();
 };
 

@@ -15,7 +15,7 @@ class SpriteBackground : public Sprite
 
     public:
 
-    SpriteBackground(SDL_Rect* my_position = NULL);
+    SpriteBackground(Coordinates* ptr_my_center);
 
 };
 

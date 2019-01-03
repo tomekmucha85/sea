@@ -1,14 +1,6 @@
 #include <CreatureSpellBall.hpp>
 
-CreatureSpellBall::CreatureSpellBall(SDL_Rect* ptr_my_position, int hitbox_margin) :
-	CreatureSpell(CreatureSpellBall::my_initial_type,  ptr_my_position, hitbox_margin)
-{
-	printf("Spawned CreatureSpellBall.\n");
-	my_type = cre_spell_ball;
-	AddCyclicAction(func_destroy_hit_object);
-}
-
-CreatureSpellBall::CreatureSpellBall(CenterCoordinates* ptr_my_center, int hitbox_margin) :
+CreatureSpellBall::CreatureSpellBall(Coordinates* ptr_my_center, int hitbox_margin) :
 	CreatureSpell(CreatureSpellBall::my_initial_type, ptr_my_center, hitbox_margin)
 {
 	printf("Spawned CreatureSpellBall.\n");

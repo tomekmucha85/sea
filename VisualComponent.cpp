@@ -15,8 +15,9 @@ VisualComponent::VisualComponent(SDL_Rect* ptr_my_position)
 	SetPosition(*ptr_my_position);
 }
 
-VisualComponent::VisualComponent(CenterCoordinates* ptr_my_center)
+VisualComponent::VisualComponent(Coordinates* ptr_my_center)
 {
+	//#TODO - co z t¹ funkcj¹?
 	//SetPosition(*ptr_my_position);
 	;
 }

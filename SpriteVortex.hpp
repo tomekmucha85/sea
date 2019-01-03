@@ -15,8 +15,7 @@ private:
 
 public:
 
-	SpriteVortex(SDL_Rect* my_position = nullptr);
-	SpriteVortex(CenterCoordinates* ptr_my_center = nullptr);
+	SpriteVortex(Coordinates* ptr_my_center);
 	void VortexAnimation();
 };
 

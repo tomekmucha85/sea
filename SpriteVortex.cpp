@@ -10,13 +10,7 @@ SDL_Rect SpriteVortex::initial_texture_clip_vortex = { 0,0,50,50 };
 //CONSTRUCTORS
 //***********************************
 
-SpriteVortex::SpriteVortex(SDL_Rect* ptr_my_position)
-	: Sprite(TellTextureBank()->ptr_tex_purple_vortex, SpriteVortex::initial_texture_clip_vortex, ptr_my_position)
-{
-	;
-}
-
-SpriteVortex::SpriteVortex(CenterCoordinates* ptr_my_center)
+SpriteVortex::SpriteVortex(Coordinates* ptr_my_center)
 	: Sprite(TellTextureBank()->ptr_tex_purple_vortex, SpriteVortex::initial_texture_clip_vortex, ptr_my_center)
 {
 	;

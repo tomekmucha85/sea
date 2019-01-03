@@ -47,27 +47,8 @@ Creature::Creature(SDL_Rect* ptr_area)
 
 }
 
-Creature::Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin, int my_render_layer)
-{
-	ptr_sprites_factory = new FactorySpawningSprites();
-	ptr_behavior = new Behavior();
-	cyclic_actions.push_back(func_follow_behavior);
-	//Take care of sprite assignment
-	//printf("Will assign sprite to newly spawned creature: %d\n", my_sprite_type);
-	SetMySprite(ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_position));
-	//Set the initial value to move upwards by (velocity * pixels)
-	next_step.y = velocity * -1;
-	//Initialize hitbox
-	//#TODO//Change this, so position will be determined by creature
-	SDL_Rect sprite_position = ptr_creature_sprite->TellSpritePosition();
-	InitializeHitbox(sprite_position, hitbox_margin);
-	//Set in which layer should this Creature be rendered
-	SetMyRenderLayer(my_render_layer);
-	//Write entry in static vector class_instances
-}
-
 //Constructor spawning a creature around CENTER coordinates given
-Creature::Creature(SpriteType my_sprite_type, CenterCoordinates* ptr_my_center, int hitbox_margin, int my_render_layer)
+Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin, int my_render_layer)
 {
 	ptr_sprites_factory = new FactorySpawningSprites();
 	ptr_behavior = new Behavior();
@@ -214,6 +195,12 @@ bool Creature::AmIVisible()
 	return is_visible;
 }
 
+void Creature::SetVelocity(int new_velocity)
+{
+	velocity = new_velocity;
+}
+
+
 //**********
 //COLLISIONS
 //**********
@@ -258,21 +245,11 @@ double Creature::DegreeToRadian (int angle_degree)
 
 void Creature::Turn(int turn_angle_degree)
 {
-	printf("Current angle degree: %d.\n", current_angle_degree);
-	printf("Turning by %d degrees.\n", turn_angle_degree);
+	//printf("Current angle degree: %d.\n", current_angle_degree);
+	//printf("Turning by %d degrees.\n", turn_angle_degree);
     current_angle_degree += turn_angle_degree;
     current_angle_degree = NormalizeAngle(current_angle_degree);
-	printf("Current angle after normalization: %d.\n", current_angle_degree);
-    double current_angle_radian = DegreeToRadian(current_angle_degree);
-    double x_shift_dbl = sin(current_angle_radian) * velocity;
-    double y_shift_dbl = cos(current_angle_radian) * velocity;
-    next_step.x = (int) x_shift_dbl;
-    //Multiplied by -1 because negative value means moving upward the screen
-    next_step.y = (int) y_shift_dbl * -1;
-//    printf ("Turn degree is %d which equals %f radians\n", current_angle_degree, current_angle_radian);
-//    printf("Next step coordinates:\n");
-//    printf("X shift is %d\n", next_step.x);
-//    printf("Y shift is %d\n", next_step.y);
+	//printf("Current angle after normalization: %d.\n", current_angle_degree);
 }
 
 
@@ -302,25 +279,20 @@ int Creature::NormalizeAngle(int angle)
 	{
 		;
 	}
-    /*if (angle > 360 || angle < -360)
-    {
-        angle = angle%360;
-        //printf("Angle was normalized to %d degrees\n", angle);
-    }*/
     return angle;
 }
 
 void Creature::TurnRight()
 {
-    Creature::Turn(turn_quant_degree);
-    (*ptr_creature_sprite).angle += turn_quant_degree;
+    Turn(turn_quant_degree);
+    ptr_creature_sprite->angle += turn_quant_degree;
 }
 
 
 void Creature::TurnLeft()
 {
-    Creature::Turn(turn_quant_degree * -1);
-    (*ptr_creature_sprite).angle -= turn_quant_degree;
+    Turn(turn_quant_degree * -1);
+    ptr_creature_sprite->angle -= turn_quant_degree;
 }
 
 void Creature::RemoveNeighbors()
@@ -378,6 +350,20 @@ std::vector<Creature*> Creature::FindCollisionsInSet(std::vector<Creature*>* ptr
 	}
 	//printf("Found %d collisions of %p in set %p.\n", result.size(), this, ptr_my_creatures_set);
 	return result;
+}
+
+void Creature::DetermineNextStep()
+{
+	double current_angle_radian = DegreeToRadian(current_angle_degree);
+	double x_shift_dbl = sin(current_angle_radian) * velocity;
+	double y_shift_dbl = cos(current_angle_radian) * velocity;
+	next_step.x = (int)x_shift_dbl;
+	//Multiplied by -1 because negative value means moving upward the screen
+	next_step.y = (int)y_shift_dbl * -1;
+	//    printf ("Turn degree is %d which equals %f radians\n", current_angle_degree, current_angle_radian);
+	//    printf("Next step coordinates:\n");
+	//    printf("X shift is %d\n", next_step.x);
+	//    printf("Y shift is %d\n", next_step.y);
 }
 
 bool Creature::Move(int x, int y)
@@ -500,6 +486,7 @@ bool Creature::MovePixelByPixel(int x, int y, bool check_collisions)
 
 void Creature::MoveComponents(int x, int y)
 {
+	//#TODO - przerobiæ na VisualComponent
 	if (ptr_creature_sprite != nullptr) //Not every creature has its sprite - e.g. event trigger has only vector!
 	{
 		MoveSprite(x, y);
@@ -533,14 +520,22 @@ void Creature::MoveHitbox(int x, int y)
 
 bool Creature::MoveForward()
 {
+	/*
+	1. ustalic, ile zajê³a poprzednia pêtla t=czas
+	2. float x_step = v * t
+	3. kiedy x_step przekracza 1, wo³amy Move
+
+	*/
+	DetermineNextStep();
 	bool did_i_move_successfully = true;
     did_i_move_successfully = Move(next_step.x, next_step.y);
-    ptr_creature_sprite->WalkAnimation();
+    //ptr_creature_sprite->WalkAnimation();
 	return did_i_move_successfully;
 }
 
 bool Creature::MoveBackward()
 {
+	DetermineNextStep();
 	bool did_i_move_successfully = true;
     did_i_move_successfully = Move(next_step.x * -1, next_step.y * -1);
 	return did_i_move_successfully;
@@ -550,7 +545,7 @@ bool Creature::Strafe(int sidestep_angle)
 {
 	bool did_i_move_successfully = true;
     Coordinates next_step_cache = next_step;
-    double strafing_angle = Creature::DegreeToRadian(current_angle_degree+sidestep_angle);
+    double strafing_angle = DegreeToRadian(current_angle_degree+sidestep_angle);
     double x_shift_dbl = sin(strafing_angle) * velocity;
     double y_shift_dbl = cos(strafing_angle) * velocity;
     next_step.x = (int) x_shift_dbl;
@@ -611,8 +606,8 @@ SDL_Rect Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned int 
 	result.y = creature_center_y + (cos(current_angle_radian) * distance * -1);
 
 
-	printf("Calculated point in distance of %d from creature center x: %d y: %d angle: %d was x: %d y: %d.\n",
-		distance, creature_center_x, creature_center_y, current_angle_degree, result.x, result.y);
+	//printf("Calculated point in distance of %d from creature center x: %d y: %d angle: %d was x: %d y: %d.\n",
+	//	distance, creature_center_x, creature_center_y, current_angle_degree, result.x, result.y);
 
 	return result;
 }
@@ -802,15 +797,17 @@ void Creature::FollowBehavior()
 
 void Creature::CastSpell(SpellName my_spell_name)
 {
+	// #TODO - dorobiæ funkcjê do tworzenia requestów
 	CreatureSpawnRequest spell_request;
 	//#TODO - ucywilizowaæ to mapowanie
 	if (my_spell_name == spell_vortex)
 	{
 		spell_request.type = cre_spell_ball;
-		spell_request.initial_behavior_mode = beh_idle;
+		spell_request.initial_behavior_mode = beh_projectile;
 	}
 
 	int desired_distance = 100;
+	spell_request.mode = center_coordinates;
 	SDL_Rect center_coordinates = CalculatePointInGivenDistanceFromCreatureCenter(desired_distance);
 	spell_request.initial_center_cooridnates = { center_coordinates.x, center_coordinates.y };
 

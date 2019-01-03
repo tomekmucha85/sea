@@ -46,8 +46,7 @@ class Sprite : public VisualComponent
         //###################
         //Functions
         //###################
-        Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, SDL_Rect* ptr_my_position = nullptr);
-		Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, CenterCoordinates* ptr_my_center = nullptr);
+		Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinates* ptr_my_center);
 
         void Render();
         std::vector <SDL_Rect> CalculateAnimationClips( SDL_Rect area, int clip_w, int clip_h);

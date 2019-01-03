@@ -114,6 +114,12 @@
     <ClInclude Include="SpriteVortex.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Timer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerInterval.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Creature.cpp">
@@ -216,6 +222,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SpriteVortex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerInterval.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

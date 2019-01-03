@@ -18,7 +18,7 @@ class FactorySpawningCreatures
     public:
 		Creature* SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position, 
 			std::string my_trigger_signal = nullptr);
-		Creature* SpawnCreature(CreatureType desired_type, CenterCoordinates* ptr_my_center,
+		Creature* SpawnCreature(CreatureType desired_type, Coordinates* ptr_my_center,
 			std::string my_trigger_signal = nullptr);
 };
 

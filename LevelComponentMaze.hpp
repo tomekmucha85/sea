@@ -9,11 +9,7 @@
 class LevelComponentMaze : public LevelComponent
 {
 private:
-	struct Coordinates
-	{
-		int x = 0;
-		int y = 0;
-	};
+
 	//Expressed in map blocks (1 map block == 1 entry in blueprint)
 	int maze_block_width = 8;
 	int maze_block_height = 8;

@@ -71,7 +71,8 @@ class Creature
         //###################
 		// #TODO - daæ inny typ?
 		CreatureType my_type = cre_none;
-        int velocity = 8;
+        int velocity = 3;
+		//#TODO - przerobiæ na VisualComponent
         Sprite *ptr_creature_sprite = nullptr;
 		VectorDrawing* ptr_creature_vector = nullptr;
         //Vector holding pointers to all creatures currently present in game
@@ -90,18 +91,19 @@ class Creature
         //Functions
         //###################
 		Creature(SDL_Rect* ptr_area);
-		Creature(SpriteType my_sprite_type, SDL_Rect* ptr_my_position, int hitbox_margin = 10, int my_render_layer = 0);
-		Creature(SpriteType my_sprite_type, CenterCoordinates* ptr_my_center, int hitbox_margin = 10, int my_render_layer = 0);
+		Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin = 10, int my_render_layer = 0);
 		~Creature();
 		void SetMySprite(Sprite* ptr_my_sprite);
 		void SetMyVector(SDL_Rect* ptr_my_area);
 		void SetMyRenderLayer(int layer_number);
+		void SetVelocity(int new_velocity);
 		void MakeMeObstacle();
 		void MakeMeNotObstacle();
 		SDL_Rect TellHitbox();
         void Turn(int turn_angle_degree);
         void TurnRight();
         void TurnLeft();
+		void DetermineNextStep();
         virtual bool Move(int x, int y);
 		//void MovePixelPerfect(int x, int y);
 		void AddToNeighbors(std::vector<Creature*> new_neighbors);

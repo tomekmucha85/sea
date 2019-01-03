@@ -10,8 +10,8 @@ SDL_Rect SpriteBlackSmoke::initial_texture_clip_black_smoke = { 0,0,50,47 };
 //CONSTRUCTORS
 //***********************************
 
-SpriteBlackSmoke::SpriteBlackSmoke(SDL_Rect* ptr_my_position)
-	: Sprite(TellTextureBank()->ptr_tex_black_smoke, SpriteBlackSmoke::initial_texture_clip_black_smoke, ptr_my_position)
+SpriteBlackSmoke::SpriteBlackSmoke(Coordinates* ptr_my_center)
+	: Sprite(TellTextureBank()->ptr_tex_black_smoke, SpriteBlackSmoke::initial_texture_clip_black_smoke, ptr_my_center)
 {
 	//printf("Constructor called for SpriteBlackSmoke\n");
 }
