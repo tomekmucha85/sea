@@ -26,7 +26,7 @@ void FactorySpawningLevelComponents::InsertComponentIntoComponentsArray(LevelCom
 	ptr_to_proper_array->push_back(ptr_my_level_component);
 }
 
-LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelComponentType my_type, SDL_Rect my_component_area)
+LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelComponentType my_type, PreciseRect my_component_area)
 {
 	LevelComponent* result = nullptr;
 

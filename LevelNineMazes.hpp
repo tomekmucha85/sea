@@ -83,15 +83,15 @@ class LevelNineMazes : public Level
 		Creature* ptr_trigger_east = nullptr;
 
 
-		SDL_Rect maze_1_area = {};
-		SDL_Rect maze_2_area = {};
-		SDL_Rect maze_3_area = {};
-		SDL_Rect maze_4_area = {};
-		SDL_Rect maze_5_area = {};
-		SDL_Rect maze_6_area = {};
-		SDL_Rect maze_7_area = {};
-		SDL_Rect maze_8_area = {};
-		SDL_Rect maze_9_area = {};
+		PreciseRect maze_1_area = {};
+		PreciseRect maze_2_area = {};
+		PreciseRect maze_3_area = {};
+		PreciseRect maze_4_area = {};
+		PreciseRect maze_5_area = {};
+		PreciseRect maze_6_area = {};
+		PreciseRect maze_7_area = {};
+		PreciseRect maze_8_area = {};
+		PreciseRect maze_9_area = {};
 
 /*
            MAZES DISTRIBUTION:
@@ -129,7 +129,7 @@ class LevelNineMazes : public Level
 	    LevelNineMazes(int my_cols_count, int my_rows_count);
 		void SetMazeRowsCount(int rows_num);
 		void SetMazeColsCount(int cols_num);
-		SDL_Rect CalculateInitialCentralMazeArea();
+		PreciseRect CalculateInitialCentralMazeArea();
 		LevelComponent* SpawnInitialCentralMaze();
 		void DeleteMazeNumber(int my_number);
 		void DeleteNotNeededMazes();

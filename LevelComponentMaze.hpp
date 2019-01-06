@@ -30,7 +30,7 @@ private:
 
 public:
 	LevelComponentMaze(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components,
-		SDL_Rect my_component_area = { 0,0,0,0 });
+		PreciseRect my_component_area = { 0,0,0,0 });
 	int CalculateRowsNumber();
 	int CalculateColumnsNumber();
 	int CalculateBlocksCountVertically();
@@ -40,7 +40,7 @@ public:
 	void PrintBlueprint();
 	void GenerateMaze();
 	void CreateEmptyVisitedCellsGrid();
-	bool ValidateMazeArea(SDL_Rect maze_area);
+	bool ValidateMazeArea(PreciseRect maze_area);
 	bool CheckIfNeighbourIsAvailable(Coordinates my_current_cell, Directions my_direction);
 	void RemoveCellWall(Coordinates my_current_cell, Directions my_direction);
 	void VivifyMaze();
@@ -50,6 +50,6 @@ public:
 	void ManageBorders();
 	void ClearMaze();
 
-	static SDL_Rect CalculateMazeDimensions(int w, int h, int my_maze_block_width = 8, int my_maze_block_height = 8);
+	static PreciseRect CalculateMazeDimensions(int w, int h, int my_maze_block_width = 8, int my_maze_block_height = 8);
 };
 #endif // LEVEL_COMPONENT_MAZE_HPP

@@ -47,7 +47,7 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coo
 
 
 
-Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, SDL_Rect* ptr_position,
+Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, PreciseRect* ptr_position,
 	std::string my_trigger_signal)
 {
 	Creature* result = nullptr;

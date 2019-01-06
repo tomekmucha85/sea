@@ -1,6 +1,6 @@
 #include <CreatureEventTrigger.hpp>
 
-CreatureEventTrigger::CreatureEventTrigger(SDL_Rect* ptr_area, std::string my_trigger_signal) :
+CreatureEventTrigger::CreatureEventTrigger(PreciseRect* ptr_area, std::string my_trigger_signal) :
 	Creature(ptr_area)
 {
 	printf("Spawned an event trigger.\n");

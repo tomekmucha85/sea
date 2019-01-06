@@ -18,6 +18,14 @@ struct Color
 	int alpha = 255;
 };
 
+struct PreciseRect
+{
+	float x = 0;
+	float y = 0;
+	float w = 0;
+	float h = 0;
+};
+
 //Behavior patterns
 enum BehaviorMode {beh_none, beh_chase_hero, beh_idle, beh_projectile };
 
@@ -47,7 +55,7 @@ struct CreatureSpawnRequest
 {
 	CreatureType type = cre_none;
 	PositioningMode mode = undefined;
-	SDL_Rect initial_area = {0,0,0,0};
+	PreciseRect initial_area = {0,0,0,0};
 	Coordinates initial_center_cooridnates = {0,0};
 	int initial_angle_degree = 0;
 	BehaviorMode initial_behavior_mode = beh_none;

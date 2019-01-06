@@ -1,7 +1,7 @@
 #include <LevelComponentMaze.hpp>
 
 LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components, 
-	SDL_Rect my_component_area) :
+	PreciseRect my_component_area) :
 	LevelComponent(my_ptr_peer_level_components, my_component_area)
 {
 	if (ValidateMazeArea(my_component_area) != true)
@@ -46,7 +46,7 @@ int LevelComponentMaze::CalculateBlocksCountHorizontally()
 	return (maze_columns_count / (maze_block_width-1));
 }
 
-bool LevelComponentMaze::ValidateMazeArea(SDL_Rect maze_area)
+bool LevelComponentMaze::ValidateMazeArea(PreciseRect maze_area)
 {
 	int maze_h = maze_area.h;
 	int maze_w = maze_area.w;
@@ -490,7 +490,7 @@ void LevelComponentMaze::ClearMaze()
 //STATIC HELPERS
 //#######################
 
-SDL_Rect LevelComponentMaze::CalculateMazeDimensions(int w, int h, int my_maze_block_width, int my_maze_block_height)
+PreciseRect LevelComponentMaze::CalculateMazeDimensions(int w, int h, int my_maze_block_width, int my_maze_block_height)
 {
 	//Calculates area in pixels that would be occupied by maze consisting of w*h maze blocks.
 	//Maze block dimensions are expressed in map_block units. Map block is the smallest building brick with dimensions expressed in pixels.
@@ -502,6 +502,6 @@ SDL_Rect LevelComponentMaze::CalculateMazeDimensions(int w, int h, int my_maze_b
 	int pixel_height = (my_maze_block_height*map_block_width) + ((my_maze_block_height - 1)*map_block_width)*(h-1);
 	printf("Calculated pixel height: %d.\n", pixel_height);
 	printf("Calculated pixel width: %d.\n", pixel_width);
-	SDL_Rect result = { 0,0,pixel_width,pixel_height };
+	PreciseRect result = { 0,0,pixel_width,pixel_height };
 	return result;
 }

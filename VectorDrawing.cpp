@@ -6,7 +6,7 @@
 
 //#TODO - uwzglêdniæ kolor przekazywany do konstruktora w fabryce?
 
-VectorDrawing::VectorDrawing(SDL_Rect* ptr_my_area, Color my_vector_fill_color) : VisualComponent(ptr_my_area)
+VectorDrawing::VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_color) : VisualComponent(ptr_my_area)
 {
 	printf("Entered VectorDrawing constructor.\n");
 	printf("Constructed VectorDrawing.\n");
@@ -20,7 +20,9 @@ VectorDrawing::VectorDrawing(SDL_Rect* ptr_my_area, Color my_vector_fill_color) 
 void VectorDrawing::Render()
 {
 	//printf("Will render vector.\n");
-	SDL_Rect* ptr_area = &position;
+	//#TODO - wykorzystac wspóln¹ funkcjê
+	SDL_Rect position_int = {int(position.x), int(position.y), int(position.w), int(position.h)};
+	SDL_Rect* ptr_area = &position_int;
 	SDL_SetRenderDrawColor(TellScreen()->renderer, vector_fill_color.red,
 		vector_fill_color.green, 
 		vector_fill_color.blue,

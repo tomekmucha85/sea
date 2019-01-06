@@ -9,7 +9,7 @@ int LevelComponent::map_block_height = 32;
 //FUNCTIONS
 //***********************************
 LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components, 
-	SDL_Rect my_component_area)
+	PreciseRect my_component_area)
 {
 	SetPointerToPeerComponentsIndex(my_ptr_peer_level_components);
 	ptr_creatures_factory = new FactorySpawningCreatures();
@@ -35,9 +35,9 @@ LevelComponent::~LevelComponent()
 	RemoveAllCreatures();
 }
 
-void LevelComponent::AddLevelComponentOutline(SDL_Rect my_component_area)
+void LevelComponent::AddLevelComponentOutline(PreciseRect my_component_area)
 {
-	SDL_Rect* ptr_my_component_area = &my_component_area;
+	PreciseRect* ptr_my_component_area = &my_component_area;
 	ptr_component_outline =  AddCreature(cre_vector_mask, ptr_my_component_area, merge);
 }
 
@@ -52,13 +52,13 @@ std::vector<Creature*>* LevelComponent::TellPtrToCreaturesArray()
 	return my_ptr_to_creatures_array;
 }
 
-SDL_Rect LevelComponent::TellComponentArea()
+PreciseRect LevelComponent::TellComponentArea()
 {
-	SDL_Rect current_component_area = ptr_component_outline->TellHitbox();
+	PreciseRect current_component_area = ptr_component_outline->TellHitbox();
 	return current_component_area;
 }
 
-SDL_Rect LevelComponent::TellComponentEdge(Directions my_direction)
+PreciseRect LevelComponent::TellComponentEdge(Directions my_direction)
 //Returns rectangle 1 pixel high or wide covering entire border of component.
 //Applied only to components with specified dimiensions!
 /*
@@ -80,8 +80,8 @@ northern_border == {0,0,800,1}
 
 */
 {
-	SDL_Rect result = {0,0,0,0};
-	SDL_Rect component_area = ptr_component_outline->TellHitbox();
+	PreciseRect result = {0,0,0,0};
+	PreciseRect component_area = ptr_component_outline->TellHitbox();
 	if (my_direction == north)
 	{
 		result = { component_area.x, component_area.y, component_area.w , 1 };
@@ -128,7 +128,7 @@ std::map<Creature*, LevelComponent*> LevelComponent::FindCreatureNeighborsInAllL
 }
 
 
-Creature* LevelComponent::AddCreature(CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal)
+Creature* LevelComponent::AddCreature(CreatureType my_type, PreciseRect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal)
 {
 	//Spawning creature and then checking if it can be left on map.
 	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_position, my_trigger_signal);

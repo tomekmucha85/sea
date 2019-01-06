@@ -77,15 +77,16 @@ void Sprite::SetPositionH(int new_h)
 
 void Sprite::Render()
 {
+	SDL_Rect position_int = ConvertPreciseRectToSdlRect(position);
     if (texture_clip.w != 0 && texture_clip.h != 0)
     //If texture clip dimensions were set, apply them.
     {
-		SDL_RenderCopyEx(TellScreen()->renderer, texture, &texture_clip, &position, angle, center, flip);
+		SDL_RenderCopyEx(TellScreen()->renderer, texture, &texture_clip, &position_int, angle, center, flip);
     }
     else
     //If texture clip dimensions were not set, show whole texture.
     {
-        SDL_RenderCopyEx(TellScreen()->renderer, texture, NULL, &position, angle, center, flip);
+        SDL_RenderCopyEx(TellScreen()->renderer, texture, NULL, &position_int, angle, center, flip);
     }
 }
 
@@ -144,9 +145,10 @@ void Sprite::ResetAnimationFrame()
 //Tell methods
 //#####################
 
-SDL_Rect Sprite::TellSpritePosition()
+PreciseRect Sprite::TellSpritePosition()
 {
-    return position;
+	PreciseRect result = {position.x, position.y, position.w, position.h};
+    return result;
 }
 
 SDL_Rect Sprite::TellTextureClip()
@@ -168,7 +170,11 @@ TextureBank* Sprite::TellTextureBank()
 	return ptr_texture_bank;
 }
 
-
+SDL_Rect Sprite::ConvertPreciseRectToSdlRect(PreciseRect my_rect)
+{
+	SDL_Rect result = { int(my_rect.x), int(my_rect.y), int(my_rect.w), int(my_rect.h) };
+	return result;
+}
 
 //#####################
 //Dummy virtual methods

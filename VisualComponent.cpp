@@ -10,7 +10,7 @@ Screen* VisualComponent::ptr_screen = nullptr;
 // CONSTRUCTOR
 //#######################
 
-VisualComponent::VisualComponent(SDL_Rect* ptr_my_position)
+VisualComponent::VisualComponent(PreciseRect* ptr_my_position)
 {
 	SetPosition(*ptr_my_position);
 }
@@ -36,7 +36,7 @@ void VisualComponent::SetScreen(Screen *ptr_my_screen)
 	ptr_screen = ptr_my_screen;
 }
 
-void VisualComponent::SetPosition(SDL_Rect my_position)
+void VisualComponent::SetPosition(PreciseRect my_position)
 {
 	position = my_position;
 }

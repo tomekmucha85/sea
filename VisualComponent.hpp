@@ -23,16 +23,16 @@ public:
 
     //Where the component is rendered on screen
     ////#TODO Move to private!
-	SDL_Rect position = { 0,0,0,0 };
+	PreciseRect position = { 0,0,0,0 };
 
 
 	//###################
 	//Functions
 	//###################
-	VisualComponent(SDL_Rect* ptr_my_position);
+	VisualComponent(PreciseRect* ptr_my_position);
 	VisualComponent(Coordinates* ptr_my_center);
 	void Move(int velocity_x, int velocity_y);
-	void SetPosition(SDL_Rect my_position);
+	void SetPosition(PreciseRect my_position);
 	static void SetScreen(Screen* ptr_my_screen);
 	static Screen* TellScreen();
 

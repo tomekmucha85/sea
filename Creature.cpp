@@ -38,12 +38,12 @@ void Creature::PrintStupidThings(Creature* ptr_to_creature)
 
 
 // #TODO - czy potrzebne?
-Creature::Creature(SDL_Rect* ptr_area)
+Creature::Creature(PreciseRect* ptr_area)
 {
 	printf("Invisible creature constructed.\n");
 	//Hitbox == ptr_area. No margin is set.
 	InitializeHitbox(*ptr_area, 0);
-	printf("Hitbox is: x: %d y: %d w: %d h: %d.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+	printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 
 }
 
@@ -58,7 +58,7 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 	next_step.y = velocity * -1;
 	//Initialize hitbox
 	//#TODO//Change this, so position will be determined by creature
-	SDL_Rect sprite_position = ptr_creature_sprite->TellSpritePosition();
+	PreciseRect sprite_position = ptr_creature_sprite->TellSpritePosition();
 	InitializeHitbox(sprite_position, hitbox_margin);
 	//Set in which layer should this Creature be rendered
 	SetMyRenderLayer(my_render_layer);
@@ -156,7 +156,7 @@ void Creature::IncrementYMainCharacterShift(long long int my_shift)
 	main_character_shift_y += my_shift;
 }
 
-SDL_Rect Creature::TellHitbox()
+PreciseRect Creature::TellHitbox()
 {
 	return hitbox;
 }
@@ -180,7 +180,7 @@ void Creature::SetMyRenderLayer(int layer_number)
 	render_layer = layer_number;
 }
 
-void Creature::SetMyVector(SDL_Rect* ptr_my_area)
+void Creature::SetMyVector(PreciseRect* ptr_my_area)
 {
 	ptr_creature_vector = new VectorDrawing(ptr_my_area);
 }
@@ -215,7 +215,7 @@ void Creature::MakeMeNotObstacle()
 	is_obstacle = false;
 }
 
-void Creature::InitializeHitbox(SDL_Rect sprite_position, int margin_percent)
+void Creature::InitializeHitbox(PreciseRect sprite_position, int margin_percent)
 {
     //Protection against margin covering whole hitbox
     if (margin_percent >= 50)
@@ -230,7 +230,7 @@ void Creature::InitializeHitbox(SDL_Rect sprite_position, int margin_percent)
     hitbox.w = sprite_position.w - x_margin;
     hitbox.y = sprite_position.y + y_margin;
     hitbox.h = sprite_position.h - y_margin;
-    //printf("Hitbox is: x: %d, y: %d, w: %d, h: %d\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+    //printf("Hitbox is: x: %f, y: %f, w: %f, h: %f\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 }
 
 //********
@@ -580,10 +580,10 @@ void Creature::SetAngleDegree(int my_degree)
 	current_angle_degree = my_degree;
 }
 
-SDL_Rect Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance)
+Coordinates Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance)
 {
-	SDL_Rect current_coordinates = TellHitbox();
-	SDL_Rect result = {0,0};
+	PreciseRect current_coordinates = TellHitbox();
+	Coordinates result = {0,0};
 	int creature_center_x = current_coordinates.x + (current_coordinates.w / 2);
 	int creature_center_y = current_coordinates.y + (current_coordinates.h / 2);
 	int current_angle_degree = TellCurrentAngleDegree();
@@ -808,10 +808,10 @@ void Creature::CastSpell(SpellName my_spell_name)
 
 	int desired_distance = 100;
 	spell_request.mode = center_coordinates;
-	SDL_Rect center_coordinates = CalculatePointInGivenDistanceFromCreatureCenter(desired_distance);
+	Coordinates center_coordinates = CalculatePointInGivenDistanceFromCreatureCenter(desired_distance);
 	spell_request.initial_center_cooridnates = { center_coordinates.x, center_coordinates.y };
 
-	printf("Current hero hitbox: x %d y %d w %d h %d.\n ", TellHitbox().x, TellHitbox().y, TellHitbox().w,
+	printf("Current hero hitbox: x %f y %f w %f h %f.\n ", TellHitbox().x, TellHitbox().y, TellHitbox().w,
 		TellHitbox().h);
 
 	spell_request.initial_angle_degree = TellCurrentAngleDegree();

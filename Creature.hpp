@@ -33,7 +33,8 @@ class Creature
         //Coordinates of next step.
         Coordinates next_step;
         //Hitbox used for calculating collisions.
-        SDL_Rect hitbox = {0,0,0,0};
+        //SDL_Rect hitbox = {0,0,0,0};
+		PreciseRect hitbox = {0,0,0,0};
 		//In what layer should the creature exist (important while rendering whole scene)
 		//Who is on the top, who is below?
 		int render_layer = 0;
@@ -62,7 +63,7 @@ class Creature
 
         double DegreeToRadian (int angle_degree);
         int NormalizeAngle(int angle);
-        void InitializeHitbox(SDL_Rect sprite_position, int margin_percent = 0);
+        void InitializeHitbox(PreciseRect sprite_position, int margin_percent = 0);
 
     public:
 
@@ -90,16 +91,16 @@ class Creature
         //###################
         //Functions
         //###################
-		Creature(SDL_Rect* ptr_area);
+		Creature(PreciseRect* ptr_area);
 		Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin = 10, int my_render_layer = 0);
 		~Creature();
 		void SetMySprite(Sprite* ptr_my_sprite);
-		void SetMyVector(SDL_Rect* ptr_my_area);
+		void SetMyVector(PreciseRect* ptr_my_area);
 		void SetMyRenderLayer(int layer_number);
 		void SetVelocity(int new_velocity);
 		void MakeMeObstacle();
 		void MakeMeNotObstacle();
-		SDL_Rect TellHitbox();
+		PreciseRect TellHitbox();
         void Turn(int turn_angle_degree);
         void TurnRight();
         void TurnLeft();
@@ -123,7 +124,7 @@ class Creature
 		int TellCurrentAngleDegree();
 		Coordinates TellNextStep();
 		void SetAngleDegree(int my_degree);
-		SDL_Rect CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance);
+		Coordinates CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance);
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors(int margin = 0);
 		std::vector<Creature*> WhichNeighborsDoICollideWith();

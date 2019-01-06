@@ -1,6 +1,6 @@
 #include <CreatureVectorMask.hpp>
 
-CreatureVectorMask::CreatureVectorMask(SDL_Rect* ptr_area) :
+CreatureVectorMask::CreatureVectorMask(PreciseRect* ptr_area) :
 	Creature(ptr_area)
 {
 	printf("Spawned a vector mask.\n");

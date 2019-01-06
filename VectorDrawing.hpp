@@ -26,7 +26,7 @@ public:
 	//###################
 	//Functions
 	//###################
-	VectorDrawing(SDL_Rect* ptr_my_area, Color my_vector_fill_color = {255,255,255,0});
+	VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_color = {255,255,255,0});
 	void SetColor(Color my_color);
 	void Render();
 };

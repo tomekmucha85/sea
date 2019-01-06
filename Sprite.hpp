@@ -60,7 +60,7 @@ class Sprite : public VisualComponent
 
         //Utilities
         SDL_Rect CheckTextureDimensions(SDL_Texture* ptr_my_texture);
-        SDL_Rect TellSpritePosition();
+        PreciseRect TellSpritePosition();
         SDL_Rect TellTextureClip();
 		static void SetTextureBank(TextureBank* ptr_my_texture_bank);
 		static TextureBank* TellTextureBank();
@@ -70,5 +70,6 @@ class Sprite : public VisualComponent
         void SetPositionY(int new_y);
         void SetPositionW(int new_w);
         void SetPositionH(int new_h);
+		static SDL_Rect ConvertPreciseRectToSdlRect(PreciseRect my_rect);
 };
 #endif // SPRITE_HPP

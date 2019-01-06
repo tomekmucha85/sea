@@ -27,7 +27,7 @@ class LevelComponent
 		//###################
         //Functions
         //###################
-		void AddLevelComponentOutline(SDL_Rect my_component_area);
+		void AddLevelComponentOutline(PreciseRect my_component_area);
     public:
 		//###################
         //Variables
@@ -43,19 +43,19 @@ class LevelComponent
 		//Functions
 		//###################
 		LevelComponent(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components, 
-			SDL_Rect my_component_area = {0,0,0,0});
+			PreciseRect my_component_area = {0,0,0,0});
 		~LevelComponent();
 		std::vector<Creature*>* TellPtrToCreaturesArray();
 		void SetPointerToPeerComponentsIndex(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components);
 		std::map<Creature*, LevelComponent*> FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature);
-		Creature* AddCreature(CreatureType my_type, SDL_Rect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal="");
+		Creature* AddCreature(CreatureType my_type, PreciseRect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal="");
 		Creature* AddCreature(CreatureType my_type, Coordinates* ptr_my_center, InsertionMode my_mode, std::string my_trigger_signal = "");
 		bool DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature, InsertionMode my_mode);
 		void ServeSpawnRequest(CreatureSpawnRequest my_request);
 		void RemoveCreature(Creature* ptr_my_creature);
 		void RemoveAllCreatures();
-		SDL_Rect TellComponentArea();
-		SDL_Rect TellComponentEdge(Directions my_direction);
+		PreciseRect TellComponentArea();
+		PreciseRect TellComponentEdge(Directions my_direction);
 		std::vector<Creature*> FindCollisionsWithMainCharacter(bool check_only_obstacles = true);
 		void MakeCreaturesPerformCyclicActions();
 		void PerformCyclicActions();
