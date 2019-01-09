@@ -53,6 +53,7 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 	ptr_sprites_factory = new FactorySpawningSprites();
 	ptr_behavior = new Behavior();
 	cyclic_actions.push_back(func_follow_behavior);
+	cyclic_actions.push_back(func_follow_physics);
 	SetMySprite(ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center));
 	//Set the initial value to move upwards by (velocity * pixels)
 	next_step.y = velocity * -1;
@@ -195,12 +196,6 @@ bool Creature::AmIVisible()
 	return is_visible;
 }
 
-void Creature::SetVelocity(int new_velocity)
-{
-	velocity = new_velocity;
-}
-
-
 //**********
 //COLLISIONS
 //**********
@@ -222,10 +217,8 @@ void Creature::InitializeHitbox(PreciseRect sprite_position, int margin_percent)
     {
         throw std::invalid_argument("Incorrect argument passed to Creature::InitializeHitbox. Hitbox margin would consume whole hitbox.");
     }
-    float x_margin = sprite_position.w*((float) margin_percent/100);
-    float y_margin = sprite_position.h*((float) margin_percent/100);
-    x_margin = (int) x_margin;
-    y_margin = (int) y_margin;
+    double x_margin = sprite_position.w*(static_cast<double>(margin_percent)/100);
+    double y_margin = sprite_position.h*(static_cast<double>(margin_percent) /100);
     hitbox.x = sprite_position.x + x_margin;
     hitbox.w = sprite_position.w - x_margin;
     hitbox.y = sprite_position.y + y_margin;
@@ -316,16 +309,16 @@ Only objects with hitboxes within default_neighbor_radius will be checked.*/
 		//printf("Radius equals %d.\n", radius);
 	}
 	//printf("Set to be examined is sized %d.\n", ptr_my_creatures_set->size());
-	int my_middle_x = this->hitbox.x + (this->hitbox.w / 2);
-	int my_middle_y = this->hitbox.y + (this->hitbox.h / 2);
+	double my_middle_x = this->hitbox.x + (this->hitbox.w / 2);
+	double my_middle_y = this->hitbox.y + (this->hitbox.h / 2);
 	for (Creature* ptr_creature : *ptr_my_creatures_set)
 	{
-		int creature_middle_x = ptr_creature->hitbox.x + (ptr_creature->hitbox.w / 2);
-		int creature_middle_y = ptr_creature->hitbox.y + (ptr_creature->hitbox.h / 2);
-		int distance_x = std::abs(creature_middle_x - my_middle_x);
-		int distance_y = std::abs(creature_middle_y - my_middle_y);
-		int distance = sqrt((distance_x * distance_x) + (distance_y*distance_y));
-		//printf("Distance is: x: %d y: %d, overall: %d, neighbor radius is: %d\n", distance_x, distance_y, distance, default_neighbor_radius);
+		double creature_middle_x = ptr_creature->hitbox.x + (ptr_creature->hitbox.w / 2);
+		double creature_middle_y = ptr_creature->hitbox.y + (ptr_creature->hitbox.h / 2);
+		double distance_x = std::abs(creature_middle_x - my_middle_x);
+		double distance_y = std::abs(creature_middle_y - my_middle_y);
+		double distance = sqrt((distance_x * distance_x) + (distance_y*distance_y));
+		//printf("Distance is: x: %f y: %f, overall: %f, neighbor radius is: %d\n", distance_x, distance_y, distance, default_neighbor_radius);
 
 		if (distance <= radius)
 		{
@@ -352,21 +345,23 @@ std::vector<Creature*> Creature::FindCollisionsInSet(std::vector<Creature*>* ptr
 	return result;
 }
 
-void Creature::DetermineNextStep()
+void Creature::DetermineNextStep(double time_passed)
 {
+	//printf("Time passed: %f.\n", time_passed);
 	double current_angle_radian = DegreeToRadian(current_angle_degree);
-	double x_shift_dbl = sin(current_angle_radian) * velocity;
-	double y_shift_dbl = cos(current_angle_radian) * velocity;
-	next_step.x = (int)x_shift_dbl;
+	                                                             //Miliseconds into seconds
+	double x_shift_dbl = sin(current_angle_radian) * velocity * (time_passed * 0.001);
+	double y_shift_dbl = cos(current_angle_radian) * velocity * (time_passed * 0.001);
+	next_step.x = x_shift_dbl;
 	//Multiplied by -1 because negative value means moving upward the screen
-	next_step.y = (int)y_shift_dbl * -1;
+	next_step.y = y_shift_dbl * -1;
 	//    printf ("Turn degree is %d which equals %f radians\n", current_angle_degree, current_angle_radian);
 	//    printf("Next step coordinates:\n");
-	//    printf("X shift is %d\n", next_step.x);
-	//    printf("Y shift is %d\n", next_step.y);
+	//    printf("X shift is %f\n", next_step.x);
+	//    printf("Y shift is %f\n", next_step.y);
 }
 
-bool Creature::Move(int x, int y)
+bool Creature::Move(double x, double y)
 {
 //Moves this object - in case it's a non-player object.
 //Moves all the other creatures in case we're dealing with player object. This way screen scroll is achieved.
@@ -392,6 +387,7 @@ bool Creature::Move(int x, int y)
                 ptr_creature->MovePixelByPixel(-x,-y,false);
             }
         }
+		//printf("Moving all map entities by x: %f, y: %f.\n", -x, -y);
         //printf("Checking main character collision.\n");
         if (DoICollideWithNeighbors())
         {
@@ -422,69 +418,22 @@ bool Creature::Move(int x, int y)
 	return did_i_move_successfully;
 }
 
-bool Creature::MovePixelByPixel(int x, int y, bool check_collisions)
-//Moves creature components (sprite, hitbox etc.) pixel by pixel.
-//If going to move creature by (x=2,y=2) pixels, first moves one pixel to the right (x plane)
-//then moves one pixel down (y plane), then repeats sequence. Collision check is performed after
-//every step.
+bool Creature::MovePixelByPixel(double x, double y, bool check_collisions)
 //Returns true is no collision occurred, or false in case of a collision.
 {
-	bool did_i_move_successfully_x_plane = true;
-	bool did_i_move_successfully_y_plane = true;
+	//#TODO - dorobiæ dzielenie ruchu na standardowe jednostki
+	//#TODO - dorobiæ wycofywanie
 	bool did_i_move_successfully = false;
-    //printf("Move pixel by pixel called for %p.\n", this);
-    while(x!=0 || y!=0)
+    MoveComponents(x,y);
+    if (DoICollideWithNeighbors() && check_collisions)
     {
-        //printf("Moving pixel by pixel. Mov points left: x: %d, y: %d.\n", x,y);
-        int step_quant_x = 0;
-        int step_quant_y = 0;
-//X plane part
-        if (x>0)
-        {
-            step_quant_x = 1;
-            x--;
-        }
-        else if (x<0)
-        {
-            step_quant_x = -1;
-            x++;
-        }
-        MoveComponents(step_quant_x,0);
-        if (DoICollideWithNeighbors() && check_collisions)
-        {
-            //printf("Move points zeroed. (x movement).\n");
-            x = 0;
-            y = 0;
-            MoveComponents(-step_quant_x,0);
-			did_i_move_successfully_x_plane = false;
-        }
-//Y plane part
-        if (y>0)
-        {
-            step_quant_y = 1;
-            y--;
-        }
-        else if (y<0)
-        {
-            step_quant_y = -1;
-            y++;
-        }
-        MoveComponents(0,step_quant_y);
-        if (DoICollideWithNeighbors() && check_collisions)
-        {
-            //printf("Move points zeroed. (y movement).\n");
-            y = 0;
-            x = 0;
-            MoveComponents(0,-step_quant_y);
-			did_i_move_successfully_y_plane = false;
-        }
+        MoveComponents(-x,-y);
+		did_i_move_successfully = false;
     }
-
-	did_i_move_successfully = (did_i_move_successfully_x_plane && did_i_move_successfully_y_plane);
 	return(did_i_move_successfully);
 }
 
-void Creature::MoveComponents(int x, int y)
+void Creature::MoveComponents(double x, double y)
 {
 	//#TODO - przerobiæ na VisualComponent
 	if (ptr_creature_sprite != nullptr) //Not every creature has its sprite - e.g. event trigger has only vector!
@@ -498,47 +447,52 @@ void Creature::MoveComponents(int x, int y)
     MoveHitbox(x, y);
 }
 
-void Creature::MoveVector(int x, int y)
+void Creature::MoveVector(double x, double y)
 {
 	//printf("Moved vector!\n");
-	ptr_creature_vector->position.x += x;
-	ptr_creature_vector->position.y += y;
+	ptr_creature_vector->Move(x, y);
+	//ptr_creature_vector->position.x += x;
+	//ptr_creature_vector->position.y += y;
 }
 
-void Creature::MoveSprite(int x, int y)
+void Creature::MoveSprite(double x, double y)
 {
-    ptr_creature_sprite->position.x += x;
-    ptr_creature_sprite->position.y += y;
+	ptr_creature_sprite->Move(x, y);
+    //ptr_creature_sprite->position.x += x;
+    //ptr_creature_sprite->position.y += y;
 }
 
-void Creature::MoveHitbox(int x, int y)
+void Creature::MoveHitbox(double x, double y)
 {
     hitbox.x += x;
     hitbox.y += y;
     //printf("New hitbox coordinates: x: %d y: %d\n", hitbox.x, hitbox.y);
 }
 
-bool Creature::MoveForward()
+void Creature::ThrustForward()
 {
-	/*
-	1. ustalic, ile zajê³a poprzednia pêtla t=czas
-	2. float x_step = v * t
-	3. kiedy x_step przekracza 1, wo³amy Move
-
-	*/
-	DetermineNextStep();
-	bool did_i_move_successfully = true;
+	//bool did_i_move_successfully = true;
+	/*DetermineNextStep(Timer::loop_duration);
     did_i_move_successfully = Move(next_step.x, next_step.y);
-    //ptr_creature_sprite->WalkAnimation();
-	return did_i_move_successfully;
+    //ptr_creature_sprite->WalkAnimation();*/
+	SetVelocity(default_velocity);
+	//return did_i_move_successfully;
 }
 
-bool Creature::MoveBackward()
+void Creature::ThrustBackward()
 {
-	DetermineNextStep();
+	//bool did_i_move_successfully = true;
+	/*DetermineNextStep(Timer::loop_duration);
 	bool did_i_move_successfully = true;
     did_i_move_successfully = Move(next_step.x * -1, next_step.y * -1);
-	return did_i_move_successfully;
+	return did_i_move_successfully;*/
+	SetVelocity(-default_velocity);
+	//return did_i_move_successfully;
+}
+
+void Creature::SetVelocity(float my_velocity)
+{
+	velocity = my_velocity;
 }
 
 bool Creature::Strafe(int sidestep_angle)
@@ -546,8 +500,8 @@ bool Creature::Strafe(int sidestep_angle)
 	bool did_i_move_successfully = true;
     Coordinates next_step_cache = next_step;
     double strafing_angle = DegreeToRadian(current_angle_degree+sidestep_angle);
-    double x_shift_dbl = sin(strafing_angle) * velocity;
-    double y_shift_dbl = cos(strafing_angle) * velocity;
+    double x_shift_dbl = sin(strafing_angle) * velocity * Timer::loop_duration;
+    double y_shift_dbl = cos(strafing_angle) * velocity * Timer::loop_duration;
     next_step.x = (int) x_shift_dbl;
     //Multiplied by -1 because negative value means moving upward the screen
     next_step.y = (int) y_shift_dbl * -1;
@@ -584,8 +538,8 @@ Coordinates Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned i
 {
 	PreciseRect current_coordinates = TellHitbox();
 	Coordinates result = {0,0};
-	int creature_center_x = current_coordinates.x + (current_coordinates.w / 2);
-	int creature_center_y = current_coordinates.y + (current_coordinates.h / 2);
+	double creature_center_x = current_coordinates.x + (current_coordinates.w / 2);
+	double creature_center_y = current_coordinates.y + (current_coordinates.h / 2);
 	int current_angle_degree = TellCurrentAngleDegree();
 	double current_angle_radian = DegreeToRadian(current_angle_degree);
 	/*
@@ -621,10 +575,10 @@ bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_
 {
 	bool result = false;
 	//printf("DoICollideWithNeighbors called for %p.\n", this);
-	int my_x = hitbox.x;
-	int my_y = hitbox.y;
-	int my_w = hitbox.w;
-	int my_h = hitbox.h;
+	double my_x = hitbox.x;
+	double my_y = hitbox.y;
+	double my_w = hitbox.w;
+	double my_h = hitbox.h;
 
 	//Checking collisions with creatures.
 	//Depending on flag "check_only_obstacles":
@@ -634,10 +588,10 @@ bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_
 	if (ptr_my_creature != this /* Prevents checking collision with itself. */ && 
 		((ptr_my_creature->is_obstacle == true && check_only_obstacles==true)) || (check_only_obstacles == false))
 	{
-		int obs_x = ptr_my_creature->hitbox.x;
-		int obs_y = ptr_my_creature->hitbox.y;
-		int obs_w = ptr_my_creature->hitbox.w;
-		int obs_h = ptr_my_creature->hitbox.h;
+		double obs_x = ptr_my_creature->hitbox.x;
+		double obs_y = ptr_my_creature->hitbox.y;
+		double obs_w = ptr_my_creature->hitbox.w;
+		double obs_h = ptr_my_creature->hitbox.h;
 
 		if (DoICollideXPlane(my_x, my_w, obs_x, obs_w) && DoICollideYPlane(my_y, my_h, obs_y, obs_h))
 		{
@@ -666,19 +620,19 @@ bool Creature::DoICollideWithNeighbors(int margin)
 {
     bool result = false;
     //printf("DoICollideWithNeighbors called for %p.\n", this);
-	int my_x = hitbox.x;
-	int my_y = hitbox.y;
-	int my_w = hitbox.w;
-	int my_h = hitbox.h;
+	double my_x = hitbox.x;
+	double my_y = hitbox.y;
+	double my_w = hitbox.w;
+	double my_h = hitbox.h;
 	//for (Creature* ptr_creature : Creature::class_instances)
 	for (Creature* ptr_creature : this->my_neighbors)
 	{
 		if (ptr_creature != this /* Prevents checking collision with itself. */ && ptr_creature->is_obstacle == true)
 		{
-			int obs_x = ptr_creature->hitbox.x;
-			int obs_y = ptr_creature->hitbox.y;
-			int obs_w = ptr_creature->hitbox.w;
-			int obs_h = ptr_creature->hitbox.h;
+			double obs_x = ptr_creature->hitbox.x;
+			double obs_y = ptr_creature->hitbox.y;
+			double obs_w = ptr_creature->hitbox.w;
+			double obs_h = ptr_creature->hitbox.h;
 		
 			if (DoICollideXPlane(my_x,my_w,obs_x,obs_w, margin) && DoICollideYPlane(my_y,my_h,obs_y,obs_h, margin))
 			{
@@ -690,7 +644,7 @@ bool Creature::DoICollideWithNeighbors(int margin)
 	return result;
 }
 
-bool Creature::DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w, int margin)
+bool Creature::DoICollideXPlane(double my_x, double my_w, double obs_x, double obs_w, int margin)
 {
 	//Margin enables us to detect collision some pixels earlier/later
 	//Default margin is 0.
@@ -712,7 +666,7 @@ bool Creature::DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w, int ma
 	}
 }
 
-bool Creature::DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h, int margin)
+bool Creature::DoICollideYPlane(double my_y, double my_h, double obs_y, double obs_h, int margin)
 {
 	//Margin enables us to detect collision some pixels earlier/later
 	if ((my_y - margin) >= obs_y && (my_y - margin) <= obs_y + obs_h)
@@ -773,6 +727,25 @@ void Creature::Resurrect()
 bool Creature::AmIAlive()
 {
 	return am_i_alive;
+}
+
+//********************************************
+//PHYSICS
+//********************************************
+
+void Creature::FollowPhysics()
+{
+	if (velocity != 0)
+	{
+		double time_passed = Timer::loop_duration;
+		DetermineNextStep(time_passed);
+		Move(next_step.x, next_step.y);
+		/*if (this == Creature::ptr_current_main_charater)
+		{
+			printf("Main character has velocity of %f.\n", velocity);
+			printf("Next step x: %f, y: %f.\n");
+		}*/
+	}
 }
 
 

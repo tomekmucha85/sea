@@ -9,6 +9,11 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coo
 		//printf("Requested hero creature.\n");
 		result = new CreatureClawy(ptr_my_center);
 	}
+	else if (desired_type == cre_blue_bground)
+	{
+		//printf("Requested blue background creature. \n");
+		result = new CreatureBlueBackground(ptr_my_center);
+	}
 	else if (desired_type == cre_flying_box)
 	{
 		//printf("Requested flying box creature. \n");

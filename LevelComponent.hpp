@@ -110,7 +110,7 @@ class LevelComponent
 			{
 				//printf("Creature: %p, main creature: %p.\n", ptr_my_creature, Creature::WhoIsMainCharacter());
 				std::vector<CreatureSpawnRequest>* ptr_spawn_requests = ptr_my_creature->TellSpawnRequests();
-				int spawn_requests_number = ptr_spawn_requests->size();
+				int spawn_requests_number = static_cast<int>(ptr_spawn_requests->size());
 				if (spawn_requests_number > 0)
 				{
 					for (CreatureSpawnRequest my_request : *(ptr_spawn_requests))

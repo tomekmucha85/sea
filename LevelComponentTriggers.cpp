@@ -21,7 +21,7 @@ std::vector<std::string> LevelComponentTriggers::RunTriggersHitByHero()
 		//Make trigger send signal.
 		std::string signal = ptr_trigger->GiveSignal();
 		printf("A trigger %p was hit!\n", ptr_trigger);
-		printf("Trigger position is: x:%d y:%d w:%d h:%d.\n", ptr_trigger->TellHitbox().x,
+		printf("Trigger position is: x:%f y:%f w:%f h:%f.\n", ptr_trigger->TellHitbox().x,
 			ptr_trigger->TellHitbox().y,
 			ptr_trigger->TellHitbox().w,
 			ptr_trigger->TellHitbox().h);

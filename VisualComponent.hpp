@@ -31,7 +31,7 @@ public:
 	//###################
 	VisualComponent(PreciseRect* ptr_my_position);
 	VisualComponent(Coordinates* ptr_my_center);
-	void Move(int velocity_x, int velocity_y);
+	void Move(double step_x, double step_y);
 	void SetPosition(PreciseRect my_position);
 	static void SetScreen(Screen* ptr_my_screen);
 	static Screen* TellScreen();

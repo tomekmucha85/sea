@@ -48,7 +48,7 @@ FactorySpawningLevelComponents* Level::CreateComponentsFactory()
 
 CreatureType Level::PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures)
 {
-	int vector_size = my_creatures.size();
+	int vector_size = static_cast<int>(my_creatures.size());
 	CreatureType chosen_creature = my_creatures[rand() % vector_size];
 	printf("Picked random creature: %d.\n", chosen_creature);
 	return chosen_creature;

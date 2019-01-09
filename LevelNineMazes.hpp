@@ -72,8 +72,8 @@ class LevelNineMazes : public Level
 
 		SDL_Rect** mazes_areas[9];
 
-		int character_offset_x = 50;
-		int character_offset_y = 50;
+		double character_offset_x = 50;
+		double character_offset_y = 50;
 
 		LevelComponent* ptr_border_triggers = nullptr;
 		//Triggers generating new level parts:
@@ -140,7 +140,7 @@ class LevelNineMazes : public Level
 		void MoveWorldSouth();
 		void MoveWorldEast();
 		void MoveWorldWest();
-		void GenerateTrigger(Directions my_direction, SDL_Rect offset_from_component_border = {0,0,0,0});
+		void GenerateTrigger(Directions my_direction, PreciseRect offset_from_component_border = {0,0,0,0});
 		void DeleteTrigger(Directions my_direction);
 
 		//###################

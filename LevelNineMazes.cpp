@@ -19,8 +19,8 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	Coordinates hero_position = {400,380};
 	Creature* ptr_hero = ptr_core->AddCreature(cre_clawy,&hero_position, force);
 	ptr_hero->MakeMeMainCharacter();
-	character_offset_x = Creature::WhoIsMainCharacter()->TellHitbox().w;
-	character_offset_y = Creature::WhoIsMainCharacter()->TellHitbox().h;
+	//character_offset_x = Creature::WhoIsMainCharacter()->TellHitbox().w;
+	//character_offset_y = Creature::WhoIsMainCharacter()->TellHitbox().h;
 	//SetCurrentHero(ptr_hero);
 
 	//Adding component for event triggers
@@ -190,7 +190,7 @@ PreciseRect LevelNineMazes::CalculateInitialCentralMazeArea()
 LevelComponent* LevelNineMazes::SpawnInitialCentralMaze()
 {
 	PreciseRect maze_area = CalculateInitialCentralMazeArea();
-	printf("Spawning maze in area: x: %d, y: %d, w: %d, h: %d.\n", maze_area.x, maze_area.y, maze_area.w, maze_area.h);
+	printf("Spawning maze in area: x: %f, y: %f, w: %f, h: %f.\n", maze_area.x, maze_area.y, maze_area.w, maze_area.h);
 	LevelComponent* ptr_central_maze = ptr_components_factory->SpawnLevelComponent(levco_maze, maze_area);
 	printf("WILL GENERATE INITIAL CENTRAL MAZE.\n");
 	ptr_central_maze->GenerateMaze();
@@ -214,7 +214,7 @@ void LevelNineMazes::GenerateMazeNumber(int my_number)
 	}
 
 	current_central_maze_coordinates = ptr_current_central_maze->TellComponentArea();
-	printf("Current central component area: x: %d, y: %d, w: %d, h: %d.\n", current_central_maze_coordinates.x,
+	printf("Current central component area: x: %f, y: %f, w: %f, h: %f.\n", current_central_maze_coordinates.x,
 		current_central_maze_coordinates.y, current_central_maze_coordinates.w, current_central_maze_coordinates.h);
 
 	if (my_number == 1)
@@ -567,7 +567,7 @@ void LevelNineMazes::MoveWorldWest()
 	GenerateTrigger(south);
 }
 
-void LevelNineMazes::GenerateTrigger(Directions my_direction, SDL_Rect offset_from_component_border)
+void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset_from_component_border)
 {
 	if (my_direction == north)
 	{
@@ -578,7 +578,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, SDL_Rect offset_fr
 		PreciseRect* ptr_event_area = &event_area;
 		Creature* ptr_my_trigger_north = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_northern_row);
 		signals_vs_events[signal_for_regenerating_northern_row] = ptr_func_trigger_north;
-		printf("Added trigger NORTH %p x: %d, y: %d, w: %d, h: %d.\n", ptr_my_trigger_north, event_area.x, event_area.y, event_area.w, event_area.h);
+		printf("Added trigger NORTH %p x: %f, y: %f, w: %f, h: %f.\n", ptr_my_trigger_north, event_area.x, event_area.y, event_area.w, event_area.h);
 		//Red
 		ptr_my_trigger_north->ptr_creature_vector->SetColor({255,0,0,255});
 		ptr_trigger_north = ptr_my_trigger_north;
@@ -592,7 +592,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, SDL_Rect offset_fr
 		PreciseRect* ptr_event_area = &event_area;
 		Creature* ptr_my_trigger_south = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_southern_row);
 		signals_vs_events[signal_for_regenerating_southern_row] = ptr_func_trigger_south;
-		printf("Added trigger SOUTH %p x: %d, y: %d, w: %d, h: %d.\n", ptr_my_trigger_south, event_area.x, event_area.y, event_area.w, event_area.h);
+		printf("Added trigger SOUTH %p x: %f, y: %f, w: %f, h: %f.\n", ptr_my_trigger_south, event_area.x, event_area.y, event_area.w, event_area.h);
 		//Green
 		ptr_my_trigger_south->ptr_creature_vector->SetColor({ 0,255,0,255 });
 		ptr_trigger_south = ptr_my_trigger_south;
@@ -603,7 +603,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, SDL_Rect offset_fr
 		PreciseRect event_area = ptr_current_central_maze->TellComponentEdge(my_direction);
 		event_area.x += offset_from_component_border.x;
 		event_area.y += offset_from_component_border.y;
-		printf("Added trigger EAST x: %d, y: %d, w: %d, h: %d.\n", event_area.x, event_area.y, event_area.w, event_area.h);
+		printf("Added trigger EAST x: %f, y: %f, w: %f, h: %f.\n", event_area.x, event_area.y, event_area.w, event_area.h);
 		PreciseRect* ptr_event_area = &event_area;
 		Creature* ptr_my_trigger_east = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_eastern_column);
 		signals_vs_events[signal_for_regenerating_eastern_column] = ptr_func_trigger_east;
@@ -617,7 +617,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, SDL_Rect offset_fr
 		PreciseRect event_area = ptr_current_central_maze->TellComponentEdge(my_direction);
 		event_area.x += offset_from_component_border.x;
 		event_area.y += offset_from_component_border.y;
-		printf("Added trigger WEST x: %d, y: %d, w: %d, h: %d.\n", event_area.x, event_area.y, event_area.w, event_area.h);
+		printf("Added trigger WEST x: %f, y: %f, w: %f, h: %f.\n", event_area.x, event_area.y, event_area.w, event_area.h);
 		PreciseRect* ptr_event_area = &event_area;
 		Creature* ptr_my_trigger_west = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_western_column);
 		signals_vs_events[signal_for_regenerating_western_column] = ptr_func_trigger_west;

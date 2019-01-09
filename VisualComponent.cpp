@@ -41,12 +41,17 @@ void VisualComponent::SetPosition(PreciseRect my_position)
 	position = my_position;
 }
 
-void VisualComponent::Move(int velocity_x, int velocity_y)
+void VisualComponent::Move(double step_x, double step_y)
 {
-	position.x += velocity_x;
-	position.y += velocity_y;
-	velocity_x = 0;
-	velocity_y = 0;
+	position.x += step_x;
+	position.y += step_y;
+	/*printf("Moved %p by x: %f y: %f. Current position: x: %f, y: %f, w: %f, h: %f.\n",
+		this, step_x, step_y, position.x, position.y, position.w, position.h);
+	printf("Casting position to int: x: %d, y: %d, w: %d, h: %d.\n",
+		static_cast<int>(position.x),
+		static_cast<int>(position.y), 
+		static_cast<int>(position.w), 
+		static_cast<int>(position.h));*/
 }
 
 //#####################

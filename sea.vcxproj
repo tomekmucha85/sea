@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="Creature.hpp" />
     <ClInclude Include="CreatureBlackSmoke.hpp" />
+    <ClInclude Include="CreatureBlueBackground.hpp" />
     <ClInclude Include="CreatureClawy.hpp" />
     <ClInclude Include="CreatureEventTrigger.hpp" />
     <ClInclude Include="CreatureNPC.hpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="LevelComponentTest.hpp" />
     <ClInclude Include="LevelComponentTriggers.hpp" />
     <ClInclude Include="LevelNineMazes.hpp" />
+    <ClInclude Include="LevelTest.hpp" />
     <ClInclude Include="TimerInterval.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="Sprite.hpp" />
@@ -174,6 +176,7 @@
     <ClCompile Include="Behavior.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="CreatureBlackSmoke.cpp" />
+    <ClCompile Include="CreatureBlueBackground.cpp" />
     <ClCompile Include="CreatureClawy.cpp" />
     <ClCompile Include="CreatureEventTrigger.cpp" />
     <ClCompile Include="CreatureNPC.cpp" />
@@ -194,6 +197,7 @@
     <ClCompile Include="LevelComponentTest.cpp" />
     <ClCompile Include="LevelComponentTriggers.cpp" />
     <ClCompile Include="LevelNineMazes.cpp" />
+    <ClCompile Include="LevelTest.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBackground.cpp" />

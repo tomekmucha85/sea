@@ -12,8 +12,6 @@
 #include <FactorySpawningLevelComponents.hpp>
 #include <CustomDefinedTypes.hpp>
 
-enum LevelType {level_ninemazes, level_base};
-
 class Level
 {
     private:

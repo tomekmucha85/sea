@@ -12,7 +12,7 @@ public:
 	//VARIABLES
 	Uint32 start_time = 0;
 	Uint32 interval = 0;
-	int intervals_passed_during_last_check = 0;
+	Uint32 intervals_passed_during_last_check = 0;
 
 	//FUNCTIONS
 	TimerInterval(Uint32 my_interval);

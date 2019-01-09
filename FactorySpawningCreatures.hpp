@@ -5,6 +5,7 @@
 #include <CreatureFlyingBox.hpp>
 #include <CreatureClawy.hpp>
 #include <CreatureBlackSmoke.hpp>
+#include <CreatureBlueBackground.hpp>
 #include <CreatureEventTrigger.hpp>
 #include <CreatureVectorMask.hpp>
 #include <CreatureNPC.hpp>

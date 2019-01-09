@@ -22,7 +22,7 @@ void CreatureSpellBall::DealDamageInRadius(int radius)
 
 // #TODO - dodaæ pole animacji w Creature! oderwaæ animacjê od logiki
 
-bool CreatureSpellBall::Move(int x, int y)
+bool CreatureSpellBall::Move(float x, float y)
 {
 	//Overload of Creature::Move causing object to be killed after first collision
 	bool was_move_successfull = Creature::Move(x,y);

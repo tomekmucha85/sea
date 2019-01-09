@@ -3,15 +3,15 @@
 //***********************************
 //DEFINITIONS OF STATIC CLASS MEMBERS
 //***********************************
-Uint32 Timer::loop_duration = 0;
-Uint32 Timer::time_last_loop_finished = NULL;
+double Timer::loop_duration = 0;
+double Timer::time_last_loop_finished = NULL;
 
 
 //***********************************
 //FUNCTIONS
 //***********************************
 
-Uint32 Timer::GetCurrentTime()
+double Timer::GetCurrentTime()
 {
 	return SDL_GetTicks();
 }
@@ -26,7 +26,7 @@ void Timer::CalculateLoopDuration()
 	}
 	else
 	{
-		Uint32 current_time = GetCurrentTime();
+		double current_time = GetCurrentTime();
 		loop_duration = current_time - time_last_loop_finished;
 		time_last_loop_finished = current_time;
 	}

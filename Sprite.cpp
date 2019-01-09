@@ -29,8 +29,8 @@ Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinate
 	//printf("Texture clip set.");
 	SDL_Rect current_texture_clip = TellTextureClip();
 
-	SetPositionX(ptr_my_center->x - (current_texture_clip.w / 2));
-	SetPositionY(ptr_my_center->y - (current_texture_clip.h / 2));
+	SetPositionX(static_cast<int>(ptr_my_center->x) - (current_texture_clip.w / 2));
+	SetPositionY(static_cast<int>(ptr_my_center->y) - (current_texture_clip.h / 2));
 	SetPositionW(current_texture_clip.w);
 	SetPositionH(current_texture_clip.h);
 
@@ -55,22 +55,22 @@ void Sprite::SetTextureClip(SDL_Rect my_texture_clip)
     texture_clip = my_texture_clip;
 }
 
-void Sprite::SetPositionX(int new_x)
+void Sprite::SetPositionX(double new_x)
 {
     position.x = new_x;
 }
 
-void Sprite::SetPositionY(int new_y)
+void Sprite::SetPositionY(double new_y)
 {
     position.y = new_y;
 }
 
-void Sprite::SetPositionW(int new_w)
+void Sprite::SetPositionW(double new_w)
 {
     position.w = new_w;
 }
 
-void Sprite::SetPositionH(int new_h)
+void Sprite::SetPositionH(double new_h)
 {
     position.h = new_h;
 }
@@ -82,7 +82,7 @@ void Sprite::Render()
     //If texture clip dimensions were set, apply them.
     {
 		SDL_RenderCopyEx(TellScreen()->renderer, texture, &texture_clip, &position_int, angle, center, flip);
-    }
+	}
     else
     //If texture clip dimensions were not set, show whole texture.
     {
@@ -126,7 +126,7 @@ std::vector <SDL_Rect> Sprite::CalculateAnimationClips( SDL_Rect area, int clip_
 
 void Sprite::PlayAnimation(std::vector <SDL_Rect> animation_clips, int delay_between_frames)
 {
-    int animation_frames_count = animation_clips.size();
+    int animation_frames_count = static_cast<int>(animation_clips.size());
     texture_clip = animation_clips[animation_frame/delay_between_frames];
     Sprite::Render();
     animation_frame++;
@@ -172,7 +172,13 @@ TextureBank* Sprite::TellTextureBank()
 
 SDL_Rect Sprite::ConvertPreciseRectToSdlRect(PreciseRect my_rect)
 {
-	SDL_Rect result = { int(my_rect.x), int(my_rect.y), int(my_rect.w), int(my_rect.h) };
+	SDL_Rect result = 
+	{ 
+		static_cast<int>(my_rect.x), 
+		static_cast<int>(my_rect.y),
+		static_cast<int>(my_rect.w),
+		static_cast<int>(my_rect.h)
+	};
 	return result;
 }
 

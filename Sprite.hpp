@@ -41,7 +41,6 @@ class Sprite : public VisualComponent
         SDL_Point* center = NULL;
         SDL_RendererFlip flip = SDL_FLIP_NONE;
         double angle = 0;
-        //int velocity_val = 5;
 
         //###################
         //Functions
@@ -66,10 +65,10 @@ class Sprite : public VisualComponent
 		static TextureBank* TellTextureBank();
         void SetTexture(SDL_Texture* ref_my_texture);
         void SetTextureClip(SDL_Rect my_texture_clip);
-        void SetPositionX(int new_x);
-        void SetPositionY(int new_y);
-        void SetPositionW(int new_w);
-        void SetPositionH(int new_h);
+        void SetPositionX(double new_x);
+        void SetPositionY(double new_y);
+        void SetPositionW(double new_w);
+        void SetPositionH(double new_h);
 		static SDL_Rect ConvertPreciseRectToSdlRect(PreciseRect my_rect);
 };
 #endif // SPRITE_HPP

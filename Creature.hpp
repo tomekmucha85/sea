@@ -7,6 +7,7 @@
 #include <FactorySpawningSprites.hpp>
 #include <VectorDrawing.hpp>
 #include <CustomDefinedTypes.hpp>
+#include <Timer.hpp>
 
 
 class Behavior;
@@ -33,7 +34,6 @@ class Creature
         //Coordinates of next step.
         Coordinates next_step;
         //Hitbox used for calculating collisions.
-        //SDL_Rect hitbox = {0,0,0,0};
 		PreciseRect hitbox = {0,0,0,0};
 		//In what layer should the creature exist (important while rendering whole scene)
 		//Who is on the top, who is below?
@@ -72,7 +72,8 @@ class Creature
         //###################
 		// #TODO - daæ inny typ?
 		CreatureType my_type = cre_none;
-        int velocity = 3;
+        float velocity = 0;
+		float default_velocity = 200;
 		//#TODO - przerobiæ na VisualComponent
         Sprite *ptr_creature_sprite = nullptr;
 		VectorDrawing* ptr_creature_vector = nullptr;
@@ -97,27 +98,27 @@ class Creature
 		void SetMySprite(Sprite* ptr_my_sprite);
 		void SetMyVector(PreciseRect* ptr_my_area);
 		void SetMyRenderLayer(int layer_number);
-		void SetVelocity(int new_velocity);
 		void MakeMeObstacle();
 		void MakeMeNotObstacle();
 		PreciseRect TellHitbox();
         void Turn(int turn_angle_degree);
         void TurnRight();
         void TurnLeft();
-		void DetermineNextStep();
-        virtual bool Move(int x, int y);
+		void DetermineNextStep(double time_passed);
+        virtual bool Move(double x, double y);
 		//void MovePixelPerfect(int x, int y);
 		void AddToNeighbors(std::vector<Creature*> new_neighbors);
 		std::vector<Creature*> FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set, int radius = NULL);
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
-        bool MovePixelByPixel(int x, int y, bool check_collisions = true);
-        void MoveComponents(int x, int y);
-        void MoveSprite(int x, int y);
-		void MoveVector(int x, int y);
-        void MoveHitbox(int x, int y);
-        bool MoveForward();
-        bool MoveBackward();
+		void SetVelocity(float my_velocity);
+        bool MovePixelByPixel(double x, double y, bool check_collisions = true);
+        void MoveComponents(double x, double y);
+        void MoveSprite(double x, double y);
+		void MoveVector(double x, double y);
+        void MoveHitbox(double x, double y);
+        void ThrustForward();
+        void ThrustBackward();
         bool Strafe(int sidestep_angle);
         bool StrafeLeft();
         bool StrafeRight();
@@ -128,8 +129,8 @@ class Creature
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors(int margin = 0);
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
-        bool DoICollideXPlane(int my_x, int my_w, int obs_x, int obs_w, int margin = 0);
-        bool DoICollideYPlane(int my_y, int my_h, int obs_y, int obs_h, int margin = 0);
+        bool DoICollideXPlane(double my_x, double my_w, double obs_x, double obs_w, int margin = 0);
+        bool DoICollideYPlane(double my_y, double my_h, double obs_y, double obs_h, int margin = 0);
         static void SetMainCharacterToNull();
         void MakeMeMainCharacter();
         bool AmIMainCharacter();
@@ -146,6 +147,7 @@ class Creature
 		void AddCyclicAction(std::function<void(Creature*)> my_cyclic_action);
 		std::vector<CreatureSpawnRequest>* TellSpawnRequests();
 		//#TODO - napisaæ funkcjê do usuwania akcji cyklicznych
+		void FollowPhysics();
 		void FollowBehavior();
 		void SetBehaviorMode(BehaviorMode behavior_to_be_set);
 		void Kill();
@@ -172,6 +174,11 @@ class Creature
 		std::function<void(Creature*)> func_follow_behavior = [](Creature* ptr_creature)
 		{
 			ptr_creature->FollowBehavior();
+		};
+
+		std::function<void(Creature*)> func_follow_physics = [](Creature* ptr_creature)
+		{
+			ptr_creature->FollowPhysics();
 		};
 
 };

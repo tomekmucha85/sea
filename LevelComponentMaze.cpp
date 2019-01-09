@@ -13,7 +13,7 @@ LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<
 	}
 	else
 	{
-		printf("Maze component area passed to constructor is x: %d, y: %d, w: %d, h: %d.\n",
+		printf("Maze component area passed to constructor is x: %f, y: %f, w: %f, h: %f.\n",
 			my_component_area.x, my_component_area.y, my_component_area.w, my_component_area.h);
 	}
 	maze_rows_count = CalculateRowsNumber();
@@ -28,12 +28,12 @@ LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<
 
 int LevelComponentMaze::CalculateRowsNumber()
 {
-	return (TellComponentArea().h / map_block_height);
+	return static_cast<int>((TellComponentArea().h / map_block_height));
 }
 
 int LevelComponentMaze::CalculateColumnsNumber()
 {
-	return (TellComponentArea().w / map_block_width);
+	return static_cast<int>((TellComponentArea().w / map_block_width));
 }
 
 int LevelComponentMaze::CalculateBlocksCountVertically()
@@ -48,8 +48,8 @@ int LevelComponentMaze::CalculateBlocksCountHorizontally()
 
 bool LevelComponentMaze::ValidateMazeArea(PreciseRect maze_area)
 {
-	int maze_h = maze_area.h;
-	int maze_w = maze_area.w;
+	int maze_h = static_cast<int>(maze_area.h);
+	int maze_w = static_cast<int>(maze_area.w);
 	//If maze height is not dividable into maze block
 	if ((maze_h - maze_block_height * map_block_height) % (maze_block_height*map_block_height - map_block_height) != 0)
 	{
@@ -154,13 +154,13 @@ void LevelComponentMaze::GenerateMaze()
 	int chosen_maze_block_x = rand() % maze_blocks_count_horizontal;
 	int chosen_maze_block_y = rand() % maze_blocks_count_vertical;
 	//Variable storing currently evaluated cell
-	Coordinates current_cell = { chosen_maze_block_x, chosen_maze_block_y };
+	Coordinates current_cell = { static_cast<double>(chosen_maze_block_x), static_cast<double>(chosen_maze_block_y)};
 	CreateEmptyVisitedCellsGrid();
 	int visited_count = 1; //Initially set to 1, cause cell where we begin is visited at start.
 	std::vector<Directions> possible_directions = { north, west, east, south };
 	while (visited_count < maze_blocks_count_horizontal * maze_blocks_count_vertical)
 	{
-		visited_cells[current_cell.y][current_cell.x] = 1;
+		visited_cells[int(current_cell.y)][int(current_cell.x)] = 1;
 		int chosen_direction_index = rand() % possible_directions.size();
 		Directions chosen_direction = possible_directions[chosen_direction_index];
 		//printf("Current cell in maze genereation: x:%d y:%d.\n", current_cell.x, current_cell.y);
@@ -261,7 +261,7 @@ bool LevelComponentMaze::CheckIfNeighbourIsAvailable(Coordinates my_current_cell
 	if (my_direction == south && my_current_cell.y + 1 < maze_blocks_count_vertical)
 	{
 		//printf("South. Visited?: %d\n", visited_cells[my_current_cell.y + 1][my_current_cell.x]);
-		if (visited_cells[my_current_cell.y + 1][my_current_cell.x] == 0)
+		if (visited_cells[int(my_current_cell.y) + 1][int(my_current_cell.x)] == 0)
 		{
 			return true;
 		}
@@ -273,7 +273,7 @@ bool LevelComponentMaze::CheckIfNeighbourIsAvailable(Coordinates my_current_cell
 	if (my_direction == north && my_current_cell.y - 1 >= 0)
 	{
 		//printf("North. Visited?: %d\n", visited_cells[my_current_cell.y - 1][my_current_cell.x]);
-		if (visited_cells[my_current_cell.y - 1][my_current_cell.x] == 0)
+		if (visited_cells[int(my_current_cell.y) - 1][int(my_current_cell.x)] == 0)
 		{
 			return true;
 		}
@@ -285,7 +285,7 @@ bool LevelComponentMaze::CheckIfNeighbourIsAvailable(Coordinates my_current_cell
 	if (my_direction == west && my_current_cell.x - 1 >= 0)
 	{
 		//printf("West. Visited?: %d\n", visited_cells[my_current_cell.y][my_current_cell.x - 1]);
-		if (visited_cells[my_current_cell.y][my_current_cell.x - 1] == 0)
+		if (visited_cells[int(my_current_cell.y)][int(my_current_cell.x) - 1] == 0)
 		{
 			return true;
 		}
@@ -297,7 +297,7 @@ bool LevelComponentMaze::CheckIfNeighbourIsAvailable(Coordinates my_current_cell
 	if (my_direction == east && my_current_cell.x + 1 < maze_blocks_count_horizontal)
 	{
 		//printf("East. Visited?: %d\n", visited_cells[my_current_cell.y][my_current_cell.x + 1]);
-		if (visited_cells[my_current_cell.y][my_current_cell.x + 1] == 0)
+		if (visited_cells[int(my_current_cell.y)][int(my_current_cell.x) + 1] == 0)
 		{
 			return true;
 		}
@@ -320,8 +320,8 @@ void LevelComponentMaze::RemoveCellWall(Coordinates my_current_cell, Directions 
 	{
 		for (int i = 1; i < maze_block_width - 1; i++)
 		{
-			int carved_block_column = (my_current_cell.x)*(maze_block_width - 1) + i;
-			int carved_block_row = (my_current_cell.y)*(maze_block_height - 1);
+			int carved_block_column = (static_cast<int>(my_current_cell.x))*(maze_block_width - 1) + i;
+			int carved_block_row = (static_cast<int>(my_current_cell.y))*(maze_block_height - 1);
 			blueprint[carved_block_row][carved_block_column] = cre_none;
 			// #TODO ustaliæ, czy przekazujemy koordynaty wskaŸnikiem czy przez dwie liczby
 		}
@@ -330,8 +330,8 @@ void LevelComponentMaze::RemoveCellWall(Coordinates my_current_cell, Directions 
 	{
 		for (int i = 1; i < maze_block_width - 1; i++)
 		{
-			int carved_block_column = (my_current_cell.x)*(maze_block_width - 1) + i;
-			int carved_block_row = (my_current_cell.y + 1)*(maze_block_height - 1);
+			int carved_block_column = (static_cast<int>(my_current_cell.x))*(maze_block_width - 1) + i;
+			int carved_block_row = (static_cast<int>(my_current_cell.y + 1))*(maze_block_height - 1);
 			blueprint[carved_block_row][carved_block_column] = cre_none;
 		}
 	}
@@ -339,8 +339,8 @@ void LevelComponentMaze::RemoveCellWall(Coordinates my_current_cell, Directions 
 	{
 		for (int i = 1; i < maze_block_height - 1; i++)
 		{
-			int carved_block_column = (my_current_cell.x + 1)*(maze_block_width - 1);
-			int carved_block_row = (my_current_cell.y)*(maze_block_height - 1) + i;
+			int carved_block_column = (static_cast<int>(my_current_cell.x) + 1)*(maze_block_width - 1);
+			int carved_block_row = (static_cast<int>(my_current_cell.y))*(maze_block_height - 1) + i;
 			blueprint[carved_block_row][carved_block_column] = cre_none;
 		}
 	}
@@ -348,8 +348,8 @@ void LevelComponentMaze::RemoveCellWall(Coordinates my_current_cell, Directions 
 	{
 		for (int i = 1; i < maze_block_height - 1; i++)
 		{
-			int carved_block_column = (my_current_cell.x)*(maze_block_width - 1);
-			int carved_block_row = (my_current_cell.y)*(maze_block_height - 1) + i;
+			int carved_block_column = (static_cast<int>(my_current_cell.x))*(maze_block_width - 1);
+			int carved_block_row = (static_cast<int>(my_current_cell.y))*(maze_block_height - 1) + i;
 			blueprint[carved_block_row][carved_block_column] = cre_none;
 		}
 	}
@@ -480,7 +480,7 @@ void LevelComponentMaze::ManageBorders()
 void LevelComponentMaze::ClearMaze()
 {
 	std::vector<Creature*>* ptr_to_creatures = TellPtrToCreaturesArray();
-	printf("Current creatures count on level: %d.\n", ptr_to_creatures->size());
+	printf("Current creatures count on level: %zd.\n", ptr_to_creatures->size());
 	RemoveAllCreatures();
 	ClearBlueprint();
 }
@@ -498,10 +498,10 @@ PreciseRect LevelComponentMaze::CalculateMazeDimensions(int w, int h, int my_maz
 	int map_block_height = LevelComponent::map_block_height;
 	//w and h are expresses in maze blocks
 	printf("Input for calculation: w: %d h: %d.\n", w, h);
-	int pixel_width = (my_maze_block_width*map_block_width) + ((my_maze_block_width - 1)*map_block_width)*(w-1);
-	int pixel_height = (my_maze_block_height*map_block_width) + ((my_maze_block_height - 1)*map_block_width)*(h-1);
-	printf("Calculated pixel height: %d.\n", pixel_height);
-	printf("Calculated pixel width: %d.\n", pixel_width);
+	double pixel_width = (my_maze_block_width*map_block_width) + ((my_maze_block_width - 1)*map_block_width)*(w-1);
+	double pixel_height = (my_maze_block_height*map_block_width) + ((my_maze_block_height - 1)*map_block_width)*(h-1);
+	printf("Calculated pixel height: %f.\n", pixel_height);
+	printf("Calculated pixel width: %f.\n", pixel_width);
 	PreciseRect result = { 0,0,pixel_width,pixel_height };
 	return result;
 }

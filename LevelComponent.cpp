@@ -27,7 +27,8 @@ LevelComponent::~LevelComponent()
 	printf("Removing level component with address %p.\n", this);
 	if (ptr_component_outline != nullptr)
 	{
-		printf("Coordinates of deleted component: x:%d y:%d w:%d h:%d.\n", ptr_component_outline->TellHitbox().x,
+		printf("Coordinates of deleted component: x:%f y:%f w:%f h:%f.\n", 
+			ptr_component_outline->TellHitbox().x,
 			ptr_component_outline->TellHitbox().y,
 			ptr_component_outline->TellHitbox().w,
 			ptr_component_outline->TellHitbox().h);

@@ -7,6 +7,7 @@
 #include <string>
 #include <Level.hpp>
 #include <LevelNineMazes.hpp>
+#include <LevelTest.hpp>
 
 class FactorySpawningLevels
 {

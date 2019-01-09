@@ -8,8 +8,6 @@
 #include <SpriteBlackSmoke.hpp>
 #include <SpriteVortex.hpp>
 
-enum SpriteType { clawy, background, box, black_smoke, vortex };
-
 class FactorySpawningSprites
 {
     private:

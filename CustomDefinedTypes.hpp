@@ -6,8 +6,8 @@ typedef void(*TriggeredEvent)();
 
 struct Coordinates
 {
-	int x = 0;
-	int y = 0;
+	double x = 0;
+	double y = 0;
 };
 
 struct Color
@@ -20,17 +20,24 @@ struct Color
 
 struct PreciseRect
 {
-	float x = 0;
-	float y = 0;
-	float w = 0;
-	float h = 0;
+	double x = 0;
+	double y = 0;
+	double w = 0;
+	double h = 0;
 };
+
+
+//Level names
+enum LevelType { level_ninemazes, level_base, level_test };
 
 //Behavior patterns
 enum BehaviorMode {beh_none, beh_chase_hero, beh_idle, beh_projectile };
 
+//Sprite names
+enum SpriteType { clawy, background, box, black_smoke, vortex };
+
 //cre_none means empty space/no creature present
-enum CreatureType { cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc, cre_spell, cre_spell_ball };
+enum CreatureType { cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc, cre_spell, cre_spell_ball, cre_blue_bground };
 
 //Names of spells to be cast - spell is a Creature, offspring of CreatureSpell
 enum SpellName {spell_vortex, spell_open_gate};

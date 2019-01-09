@@ -63,22 +63,20 @@ int main(int argc, char* args[])
 
 	//EMOTIV_END
 
-
-
 	Level* first_level = Game::ptr_levels_factory->SpawnLevel(level_ninemazes);
+	//Level* test_level = Game::ptr_levels_factory->SpawnLevel(level_test);
 	Game::SetCurrentLevel(first_level);
 
-	int looped_events = Game::ptr_current_level->cyclic_actions.size();
+	int looped_events = static_cast<int>(Game::ptr_current_level->cyclic_actions.size());
 	printf("There are %d actions present in current event loop.\n", looped_events);
 
-	//unsigned int timer = 0;
 	TimerInterval* ptr_emotiv_bands_check = new TimerInterval(2000);
 
     while (!quit)
     {
 		//Timer
 		Timer::CalculateLoopDuration();
-
+		//printf("Loop duration: %f.\n", Timer::loop_duration);
         //EMOTIV
 		state = IEE_EngineGetNextEvent(eEvent);
 
@@ -114,7 +112,7 @@ int main(int argc, char* args[])
 		{
 			IEE_GetAverageBandPowers(userID, IED_AF3, &theta, &alpha, &low_beta, &high_beta, &gamma);
 
-			printf("Current band values: THETA: %d\n ALPHA: %d\n, LOW BETA: %d\n, HIGH_BETA: %d\n, GAMMA: %d\n.",
+			printf("Current band values: THETA: %f\n ALPHA: %f\n, LOW BETA: %f\n, HIGH_BETA: %f\n, GAMMA: %f\n.",
 				theta, alpha, low_beta, high_beta, gamma);
 		}
 
@@ -128,39 +126,50 @@ int main(int argc, char* args[])
             {
                 quit = true;
             }
-            else if(event_handler.type == SDL_KEYDOWN)
+            else if(event_handler.type == SDL_KEYDOWN && event_handler.key.repeat == 0)
             {
                 switch( event_handler.key.keysym.sym )
                 {
-				    case SDLK_UP: Creature::ptr_current_main_charater->MoveForward(); break;
-                    case SDLK_DOWN: Creature::ptr_current_main_charater->MoveBackward(); break;
+				    case SDLK_UP: Creature::ptr_current_main_charater->ThrustForward(); break;
+                    case SDLK_DOWN: Creature::ptr_current_main_charater->ThrustBackward(); break;
                     case SDLK_LEFT: Creature::ptr_current_main_charater->StrafeLeft(); break;
                     case SDLK_RIGHT: Creature::ptr_current_main_charater->StrafeRight(); break;
-                    case SDLK_w: Creature::ptr_current_main_charater->MoveForward();
+                    case SDLK_w: Creature::ptr_current_main_charater->ThrustForward();
 					break;
-                    case SDLK_s: Creature::ptr_current_main_charater->MoveBackward();
+                    case SDLK_s: Creature::ptr_current_main_charater->ThrustBackward();
 					break;
                     case SDLK_a: Creature::ptr_current_main_charater->TurnLeft(); break;
                     case SDLK_d: Creature::ptr_current_main_charater->TurnRight(); break;
-					//case SDLK_1: ptr_maze_a->ClearMaze(); break;
-					//case SDLK_2: ptr_maze_a->GenerateMaze(); break;
-					//case SDLK_3: my_maze_b->ClearMaze(); break;
-					//case SDLK_4: my_maze_b->GenerateMaze(); break;
 					case SDLK_q: Creature::ptr_current_main_charater->CastSpell(spell_vortex); break;
                 }
             }
+			else if (event_handler.type == SDL_KEYUP && event_handler.key.repeat == 0)
+			{
+				switch (event_handler.key.keysym.sym)
+				{
+				case SDLK_UP: Creature::ptr_current_main_charater->SetVelocity(0); break;
+				case SDLK_DOWN: Creature::ptr_current_main_charater->SetVelocity(0); break;
+				case SDLK_LEFT: Creature::ptr_current_main_charater->StrafeLeft(); break;
+				case SDLK_RIGHT: Creature::ptr_current_main_charater->StrafeRight(); break;
+				case SDLK_w: Creature::ptr_current_main_charater->SetVelocity(0);
+					break;
+				case SDLK_s: Creature::ptr_current_main_charater->SetVelocity(0);
+					break;
+				case SDLK_a: Creature::ptr_current_main_charater->TurnLeft(); break;
+				case SDLK_d: Creature::ptr_current_main_charater->TurnRight(); break;
+				case SDLK_q: Creature::ptr_current_main_charater->CastSpell(spell_vortex); break;
+				}
+			}
         }
-
-		//Test background animation
-		//#TODO napisaæ wspóln¹ funkcjê dla animacji
 
 		//Perform cyclic actions from current level
 		Game::ptr_current_level->PerformCyclicActions();
+
         //Clear screen
         SDL_RenderClear(Game::ptr_screen->renderer);
 
 		//#TODO zrobiæ generator Creature, zadbac o destruktor i konstruktor kopiujacy
-		first_level->RenderAllPresentCreatures();
+		Game::ptr_current_level->RenderAllPresentCreatures();
         //Update screen
         SDL_RenderPresent(Game::ptr_screen->renderer);
     }
