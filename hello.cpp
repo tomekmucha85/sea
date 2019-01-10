@@ -126,6 +126,14 @@ int main(int argc, char* args[])
             {
                 quit = true;
             }
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_a)
+			{
+				Creature::ptr_current_main_charater->TurnLeft();
+			}
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_d)
+			{
+				Creature::ptr_current_main_charater->TurnRight();
+			}
             else if(event_handler.type == SDL_KEYDOWN && event_handler.key.repeat == 0)
             {
                 switch( event_handler.key.keysym.sym )
@@ -138,8 +146,6 @@ int main(int argc, char* args[])
 					break;
                     case SDLK_s: Creature::ptr_current_main_charater->ThrustBackward();
 					break;
-                    case SDLK_a: Creature::ptr_current_main_charater->TurnLeft(); break;
-                    case SDLK_d: Creature::ptr_current_main_charater->TurnRight(); break;
 					case SDLK_q: Creature::ptr_current_main_charater->CastSpell(spell_vortex); break;
                 }
             }
@@ -155,9 +161,6 @@ int main(int argc, char* args[])
 					break;
 				case SDLK_s: Creature::ptr_current_main_charater->SetVelocity(0);
 					break;
-				case SDLK_a: Creature::ptr_current_main_charater->TurnLeft(); break;
-				case SDLK_d: Creature::ptr_current_main_charater->TurnRight(); break;
-				case SDLK_q: Creature::ptr_current_main_charater->CastSpell(spell_vortex); break;
 				}
 			}
         }

@@ -215,6 +215,20 @@
   <ItemGroup>
     <Text Include="Documentation.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\bground.png" />
+    <Image Include="images\black_box.png" />
+    <Image Include="images\black_smoke.png" />
+    <Image Include="images\guy.png" />
+    <Image Include="images\vortex.png" />
+    <Image Include="images\wall32x32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\guy.xcf" />
+    <None Include="images\smoke_animation.xcf" />
+    <None Include="images\vortex.xcf" />
+    <None Include="images\wall32x32.xcf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -112,7 +112,7 @@ class Creature
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
 		void SetVelocity(float my_velocity);
-        bool MovePixelByPixel(double x, double y, bool check_collisions = true);
+        bool ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool check_collisions = true);
         void MoveComponents(double x, double y);
         void MoveSprite(double x, double y);
 		void MoveVector(double x, double y);

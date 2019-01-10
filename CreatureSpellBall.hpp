@@ -8,6 +8,6 @@ private:
 public:
 	CreatureSpellBall(Coordinates* ptr_my_center, int hitbox_margin = 10);
 	void DealDamageInRadius(int radius);
-	bool Move(float x, float y);
+	bool Move(double x, double y);
 };
 #endif // CREATURE_SPELL_BALL_HPP

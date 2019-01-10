@@ -384,7 +384,7 @@ bool Creature::Move(double x, double y)
         {
             if (ptr_creature != this) /* Prevents moving the main character. */
             {
-                ptr_creature->MovePixelByPixel(-x,-y,false);
+                ptr_creature->ShiftPositionAndRevertIfCollisionOccured(-x,-y,false);
             }
         }
 		//printf("Moving all map entities by x: %f, y: %f.\n", -x, -y);
@@ -397,7 +397,7 @@ bool Creature::Move(double x, double y)
                 if (ptr_creature != this) /* Prevents moving the main character. */
                 {
                     //#TODO - consider snapshot approach so less calculations will be needed.
-                    ptr_creature->MovePixelByPixel(x,y,false); /* Reverting changes made in last step.*/
+                    ptr_creature->ShiftPositionAndRevertIfCollisionOccured(x,y,false); /* Reverting changes made in last step.*/
                 }
             }
 			did_i_move_successfully = false;
@@ -413,17 +413,16 @@ bool Creature::Move(double x, double y)
 	//If any other Creature than main character is moved.
     else
     {
-        did_i_move_successfully = MovePixelByPixel(x,y,true);
+        did_i_move_successfully = ShiftPositionAndRevertIfCollisionOccured(x,y,true);
     }
 	return did_i_move_successfully;
 }
 
-bool Creature::MovePixelByPixel(double x, double y, bool check_collisions)
+bool Creature::ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool check_collisions)
 //Returns true is no collision occurred, or false in case of a collision.
 {
 	//#TODO - dorobiæ dzielenie ruchu na standardowe jednostki
-	//#TODO - dorobiæ wycofywanie
-	bool did_i_move_successfully = false;
+	bool did_i_move_successfully = true;
     MoveComponents(x,y);
     if (DoICollideWithNeighbors() && check_collisions)
     {

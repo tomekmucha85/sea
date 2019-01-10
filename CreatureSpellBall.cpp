@@ -22,9 +22,9 @@ void CreatureSpellBall::DealDamageInRadius(int radius)
 
 // #TODO - dodaæ pole animacji w Creature! oderwaæ animacjê od logiki
 
-bool CreatureSpellBall::Move(float x, float y)
+bool CreatureSpellBall::Move(double x, double y)
 {
-	//Overload of Creature::Move causing object to be killed after first collision
+	//Overload of Creature::Move causing object to be killed after first collision and damage all object in given radius
 	bool was_move_successfull = Creature::Move(x,y);
 	ptr_creature_sprite->VortexAnimation();
 	if (!was_move_successfull)

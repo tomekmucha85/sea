@@ -13,105 +13,60 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Creatures">
+      <UniqueIdentifier>{3461089c-b919-4f4f-9c27-871875de0095}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Creatures">
+      <UniqueIdentifier>{1749b519-638f-4dc1-b3c4-1889c5ef2521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\LevelComponents">
+      <UniqueIdentifier>{3976ed89-0c7a-4f07-8f1f-f7243b986227}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\LevelComponents">
+      <UniqueIdentifier>{55b10fbd-ff6f-4cd3-adb8-310f55f497bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Levels">
+      <UniqueIdentifier>{8b3a5283-753f-45b2-9674-72240891d8b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Levels">
+      <UniqueIdentifier>{06902961-88c7-48d0-b4c6-bbb6b3c10ff3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Textures">
+      <UniqueIdentifier>{ce54fb02-426a-4555-9b33-f46cf6dfa0a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Textures">
+      <UniqueIdentifier>{42398ef2-636c-4653-aed5-88f3e0e5b00d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VisualComponents">
+      <UniqueIdentifier>{da72a5fd-c127-46d2-8c28-1b558825304b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VisualComponents\Sprites">
+      <UniqueIdentifier>{a553b987-d63d-4022-b853-8dcc02179ac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VisualComponents">
+      <UniqueIdentifier>{b1c6a2f3-d3b1-4688-b63e-f7bdbe01a978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VisualComponents\Sprites">
+      <UniqueIdentifier>{fb29bc6f-6b02-4c23-8b0b-10039d30bc88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VisualComponents\VectorDrawings">
+      <UniqueIdentifier>{e0a7fc85-5387-4566-aade-b96fa3535788}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VisualComponents\VectorDrawings">
+      <UniqueIdentifier>{7df9e3bc-1e7a-4868-8da3-3ebe5d337eed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\images">
+      <UniqueIdentifier>{b3a14c0f-68ca-4d2c-9cb4-0feb756d603c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Creature.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CreatureClawy.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Screen.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteBackground.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteBlackBox.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteClawy.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureBank.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CreatureFlyingBox.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Level.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteBlackSmoke.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CreatureBlackSmoke.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelComponent.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelComponentTest.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelComponentCore.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FactorySpawningCreatures.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FactorySpawningLevelComponents.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelComponentMaze.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelNineMazes.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FactorySpawningLevels.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CreatureEventTrigger.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VectorDrawing.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FactorySpawningSprites.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VisualComponent.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CustomDefinedTypes.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelComponentTriggers.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CreatureVectorMask.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CreatureNPC.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CreatureSpell.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CreatureSpellBall.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteVortex.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Timer.hpp">
@@ -120,17 +75,104 @@
     <ClInclude Include="TimerInterval.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelTest.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Creature.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureBlackSmoke.hpp">
+      <Filter>Header Files\Creatures</Filter>
     </ClInclude>
     <ClInclude Include="CreatureBlueBackground.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureClawy.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureEventTrigger.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureFlyingBox.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureNPC.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureSpell.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureSpellBall.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureVectorMask.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="FactorySpawningCreatures.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteBackground.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteBlackBox.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteBlackSmoke.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteClawy.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteVortex.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="FactorySpawningSprites.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelComponent.hpp">
+      <Filter>Header Files\LevelComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelComponentCore.hpp">
+      <Filter>Header Files\LevelComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelComponentMaze.hpp">
+      <Filter>Header Files\LevelComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelComponentTest.hpp">
+      <Filter>Header Files\LevelComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelComponentTriggers.hpp">
+      <Filter>Header Files\LevelComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="FactorySpawningLevelComponents.hpp">
+      <Filter>Header Files\LevelComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.hpp">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelNineMazes.hpp">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelTest.hpp">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.hpp">
+      <Filter>Header Files\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureBank.hpp">
+      <Filter>Header Files\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="FactorySpawningLevels.hpp">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="VisualComponent.hpp">
+      <Filter>Header Files\VisualComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorDrawing.hpp">
+      <Filter>Header Files\VisualComponents\VectorDrawings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Creature.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -140,94 +182,7 @@
     <ClCompile Include="Screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteBackground.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteBlackBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteClawy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureBank.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CreatureClawy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CreatureFlyingBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Level.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteBlackSmoke.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CreatureBlackSmoke.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelComponentTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelComponentCore.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FactorySpawningCreatures.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FactorySpawningLevelComponents.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelComponentMaze.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelNineMazes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FactorySpawningLevels.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CreatureEventTrigger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VectorDrawing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FactorySpawningSprites.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VisualComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelComponentTriggers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CreatureVectorMask.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CreatureNPC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Behavior.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CreatureSpell.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CreatureSpellBall.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteVortex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
@@ -236,14 +191,140 @@
     <ClCompile Include="TimerInterval.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelTest.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Creature.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureBlackSmoke.cpp">
+      <Filter>Source Files\Creatures</Filter>
     </ClCompile>
     <ClCompile Include="CreatureBlueBackground.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureClawy.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureEventTrigger.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureFlyingBox.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureNPC.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureSpell.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureSpellBall.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureVectorMask.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="FactorySpawningCreatures.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="FactorySpawningSprites.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteBackground.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteBlackBox.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteBlackSmoke.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteClawy.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteVortex.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelComponent.cpp">
+      <Filter>Source Files\LevelComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelComponentCore.cpp">
+      <Filter>Source Files\LevelComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelComponentMaze.cpp">
+      <Filter>Source Files\LevelComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelComponentTest.cpp">
+      <Filter>Source Files\LevelComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelComponentTriggers.cpp">
+      <Filter>Source Files\LevelComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="FactorySpawningLevelComponents.cpp">
+      <Filter>Source Files\LevelComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelNineMazes.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelTest.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureBank.cpp">
+      <Filter>Source Files\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="FactorySpawningLevels.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="VisualComponent.cpp">
+      <Filter>Source Files\VisualComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorDrawing.cpp">
+      <Filter>Source Files\VisualComponents\VectorDrawings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Documentation.txt" />
+    <Text Include="Documentation.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\bground.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="images\black_box.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="images\black_smoke.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="images\guy.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="images\vortex.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+    <Image Include="images\wall32x32.png">
+      <Filter>Resource Files\images</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\guy.xcf">
+      <Filter>Resource Files\images</Filter>
+    </None>
+    <None Include="images\smoke_animation.xcf">
+      <Filter>Resource Files\images</Filter>
+    </None>
+    <None Include="images\vortex.xcf">
+      <Filter>Resource Files\images</Filter>
+    </None>
+    <None Include="images\wall32x32.xcf">
+      <Filter>Resource Files\images</Filter>
+    </None>
   </ItemGroup>
 </Project>
