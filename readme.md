@@ -14,3 +14,5 @@ C:\dev\sea;C:\dev\SDL2-2.0.9\include;C:\dev\SDL2_image-2.0.4\include;C:\dev\comm
 ```
 C:\dev\community-sdk-master\lib\win64;C:\dev\SDL2-2.0.9\lib\x64;C:\dev\SDL2_image-2.0.4\lib\x64;$(LibraryPath)
 ```
+* Build and run project. It will fail.
+* Copy C:\dev\sea to C:\dev\sea\x64\Debug
