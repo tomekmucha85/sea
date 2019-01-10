@@ -4,7 +4,7 @@
 class CreatureSpellBall : public CreatureSpell
 {
 private:
-	static const SpriteType my_initial_type = vortex;
+	static const SpriteType my_initial_type = spr_vortex;
 public:
 	CreatureSpellBall(Coordinates* ptr_my_center, int hitbox_margin = 10);
 	void DealDamageInRadius(int radius);

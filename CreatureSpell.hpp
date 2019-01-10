@@ -4,7 +4,7 @@
 class CreatureSpell : public Creature
 {
 private:
-	static const SpriteType my_initial_type = black_smoke;
+	static const SpriteType my_initial_type = spr_black_smoke;
 	//Who cast the spell?
 	Creature* wizard = nullptr;
 public:

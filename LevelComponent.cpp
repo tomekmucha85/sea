@@ -145,10 +145,10 @@ Creature* LevelComponent::AddCreature(CreatureType my_type, PreciseRect* ptr_my_
 	}
 }
 
-Creature* LevelComponent::AddCreature(CreatureType my_type, Coordinates* ptr_my_center, InsertionMode my_mode, std::string my_trigger_signal)
+Creature* LevelComponent::AddCreature(CreatureType my_type, Coordinates* ptr_my_center, InsertionMode my_mode, int my_render_layer)
 {
 	//Spawning creature and then checking if it can be left on map.
-	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_center, my_trigger_signal);
+	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_center, my_render_layer);
 	creatures.push_back(ptr_my_creature);
 	Creature::current_environment.push_back(ptr_my_creature);
 	if (DetermineIfCreatureCanBeLeftOnMap(ptr_my_creature, my_mode))

@@ -4,7 +4,7 @@
 class CreatureClawy : public Creature
 {
 private:
-	static const SpriteType my_initial_type = clawy;
+	static const SpriteType my_initial_type = spr_clawy;
 	static const int default_velocity = 8;
 public:
 	CreatureClawy(Coordinates* ptr_my_center, int hitbox_margin = 10);

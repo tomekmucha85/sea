@@ -51,18 +51,23 @@ int main(int argc, char* args[])
 
 	bool is_connected_to_emo = false;
 
-	if (IEE_EngineRemoteConnect(address.c_str(), composerPort) != EDK_OK) 
+	if (IEE_EngineConnect() == EDK_OK)
 	{
-		std::string errMsg = "Cannot connect to EmoComposer on [" +
+		is_connected_to_emo = true;
+		printf("Successfully connected to Emotiv device!\n");
+	}
+	else if (IEE_EngineRemoteConnect(address.c_str(), composerPort) == EDK_OK) 
+	{
+		is_connected_to_emo = true;
+		printf("Connected to EmoComposer!\n");
+	}
+	else
+	{
+		std::string errMsg = "Cannot connect neither to Emotiv device nor to EmoComposer on [" +
 			address + "]";
 		printf("Cannot connect to EmoComposer!\n");
 		//throw std::runtime_error(errMsg.c_str());
 		printf("WARNING!\nDID NOT CONNECT TO EMO ENGINE.\n WARNING!\n");
-	}
-	else
-	{
-		is_connected_to_emo = true;
-		printf("Connected to EmoComposer!\n");
 	}
 
 	//EMOTIV_END
@@ -76,8 +81,19 @@ int main(int argc, char* args[])
 
 	TimerInterval* ptr_emotiv_bands_check = new TimerInterval(2000);
 
+	int cooldown = 0;
+
     while (!quit)
     {
+		//Cooldown decreasing
+		if (cooldown > 0)
+		{
+			if (cooldown == 1)
+			{
+				printf("COOLDOWN PASSED!\n");
+			}
+			cooldown--;
+		}
 		//Timer
 		Timer::CalculateLoopDuration();
 		//printf("Loop duration: %f.\n", Timer::loop_duration);
@@ -96,10 +112,15 @@ int main(int argc, char* args[])
 				{
 					IEE_EmoEngineEventGetEmoState(eEvent, eState);
 					const float timestamp = IS_GetTimeFromStart(eState);
-					printf("Got update at %f!\n", timestamp);
-					if (IS_FacialExpressionIsBlink(eState) == 1)
+					//printf("Got update at %f!\n", timestamp);
+					if (IS_FacialExpressionIsLeftWink(eState) == 1)
 					{
-						printf("Blink!\n");
+						if (cooldown == 0)
+						{
+							printf("Wink!\n");
+							Creature::ptr_current_main_charater->CastSpell(spell_vortex);
+							cooldown = 200;
+						}
 					}
 				}
 			}
@@ -118,8 +139,8 @@ int main(int argc, char* args[])
 			{
 				IEE_GetAverageBandPowers(userID, IED_AF3, &theta, &alpha, &low_beta, &high_beta, &gamma);
 
-				printf("Current band values: THETA: %f\n ALPHA: %f\n, LOW BETA: %f\n, HIGH_BETA: %f\n, GAMMA: %f\n.",
-					theta, alpha, low_beta, high_beta, gamma);
+				/*printf("Current band values: THETA: %f\n ALPHA: %f\n, LOW BETA: %f\n, HIGH_BETA: %f\n, GAMMA: %f\n.",
+					theta, alpha, low_beta, high_beta, gamma);*/
 			}
 		}
 		//EMOTIV_END
@@ -175,6 +196,10 @@ int main(int argc, char* args[])
 			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_q && event_handler.key.repeat == 0)
 			{
 				Creature::ptr_current_main_charater->CastSpell(spell_vortex);
+			}
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_e && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->CastSpell(spell_open_gate);
 			}
         }
 

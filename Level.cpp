@@ -29,14 +29,14 @@ Level::~Level()
 
 std::map<LevelComponentType, std::vector<LevelComponent*>>* Level::TellPointerToComponentsArray()
 {
-	std::map<LevelComponentType, std::vector<LevelComponent*>>* ptr_level_components = &level_components;
+	std::map<LevelComponentType, std::vector<LevelComponent*>>* ptr_level_components = &level_component_types_vs_level_components;
 	return ptr_level_components;
 }
 
 std::vector<LevelComponent*>* Level::TellPointerToSpecificComponentTypeArray(LevelComponentType my_type)
 {
 	std::vector<LevelComponent*>* result = nullptr;
-	result = &(level_components[my_type]);
+	result = &(level_component_types_vs_level_components[my_type]);
 	return result;
 }
 
@@ -146,7 +146,7 @@ void Level::PerformCyclicActions()
 
 void Level::MakeLevelComponentsPerformCyclicActions()
 {
-	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_components)
+	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_component_types_vs_level_components)
 	{
 		std::vector<LevelComponent*> my_level_components = element.second;
 		for (LevelComponent* ptr_my_level_component : my_level_components)
@@ -155,7 +155,6 @@ void Level::MakeLevelComponentsPerformCyclicActions()
 		}
 	}
 }
-
 
 std::vector<Creature*> Level::FindHeroColissionsInGivenComponent(LevelComponent* ptr_my_component, bool check_only_obstacles)
 {
@@ -178,7 +177,11 @@ void Level::PerformActionsForTriggersHitByHero(LevelComponent* ptr_component_wit
 
 void Level::RenderAllPresentCreatures()
 {
-	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_components)
+	// Such map should be automatically ordered by ascending key values
+	std::map<int, std::vector<Creature*>> render_layers_vs_creatures = {};
+
+	//Order creatures by their render layer
+	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_component_types_vs_level_components)
 	{
 		std::vector<LevelComponent*> my_level_components = element.second;
 		for (LevelComponent* ptr_my_level_component : my_level_components)
@@ -187,23 +190,48 @@ void Level::RenderAllPresentCreatures()
 			{
 				if (ptr_member_creature->AmIVisible())
 				{
-					if (ptr_member_creature->ptr_creature_sprite != nullptr)
-					{
-						ptr_member_creature->ptr_creature_sprite->Render();
-						//printf("Rendered sprite.\n");
-					}
-					else if (ptr_member_creature->ptr_creature_vector != nullptr)
-					{
-						ptr_member_creature->ptr_creature_vector->Render();
-						//printf("Rendered vector.\n");
-					}
-					else
-					{
-						printf("This creature has nothing to render!\n");
-						throw "This creature has nothing to render!\n";
-					}
+					render_layers_vs_creatures[ptr_member_creature->TellRenderLayer()].push_back(ptr_member_creature);
 				}
 			}
 		}
+	}
+
+	//printf("%d creatures to render.\n", static_cast<int>(render_layers_vs_creatures.size()));
+
+	//Render ordered creatures
+	for (std::pair<int, std::vector<Creature*>> element : render_layers_vs_creatures)
+	{
+		std::vector<Creature*> creatures_to_render = element.second;
+		for (Creature* ptr_creature_to_render : creatures_to_render)
+		{
+			RenderCreatureVisualComponent(ptr_creature_to_render);
+		}
+	}
+}
+
+void Level::RenderCreatureVisualComponent(Creature* ptr_my_creature)
+{
+	//#TODO przerobiæ na visual component
+
+	if (ptr_my_creature == nullptr)
+	{
+		printf("Cannot render nullptr!\n");
+		throw std::invalid_argument("Cannot render nullptr!\n");
+	}
+
+	if (ptr_my_creature->ptr_creature_sprite != nullptr)
+	{
+		ptr_my_creature->ptr_creature_sprite->Render();
+		//printf("Rendered sprite.\n");
+	}
+	else if (ptr_my_creature->ptr_creature_vector != nullptr)
+	{
+		ptr_my_creature->ptr_creature_vector->Render();
+		//printf("Rendered vector.\n");
+	}
+	else
+	{
+		printf("This creature has nothing to render!\n");
+		throw "This creature has nothing to render!\n";
 	}
 }

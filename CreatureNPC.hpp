@@ -4,7 +4,7 @@
 class CreatureNPC : public Creature
 {
 private:
-	static const SpriteType my_initial_type = clawy;
+	static const SpriteType my_initial_type = spr_clawy;
 public:
 	CreatureNPC(Coordinates* ptr_my_center, int hitbox_margin = 10);
 };

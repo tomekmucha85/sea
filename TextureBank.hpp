@@ -24,6 +24,8 @@ class TextureBank
 		Texture* purple_vortex = NULL;
 		std::string path_image_purple_vortex = "images/vortex.png";
 		Texture* wall = NULL;
+		std::string path_image_exit = "images/exit_lit.png";
+		Texture* exit = NULL;
 
     public:
         //###################
@@ -35,6 +37,7 @@ class TextureBank
 		SDL_Texture* ptr_tex_black_smoke = NULL;
 		SDL_Texture* ptr_tex_wall = NULL;
 		SDL_Texture* ptr_tex_purple_vortex = NULL;
+		SDL_Texture* ptr_tex_exit = NULL;
         //###################
         //Functions
         //###################

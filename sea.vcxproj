@@ -142,6 +142,7 @@
     <ClInclude Include="CreatureNPC.hpp" />
     <ClInclude Include="CreatureSpell.hpp" />
     <ClInclude Include="CreatureSpellBall.hpp" />
+    <ClInclude Include="CreatureSpellOpenDoors.hpp" />
     <ClInclude Include="CreatureVectorMask.hpp" />
     <ClInclude Include="CustomDefinedTypes.hpp" />
     <ClInclude Include="FactorySpawningCreatures.hpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="LevelComponentTriggers.hpp" />
     <ClInclude Include="LevelNineMazes.hpp" />
     <ClInclude Include="LevelTest.hpp" />
+    <ClInclude Include="SpriteExit.hpp" />
     <ClInclude Include="TimerInterval.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="Sprite.hpp" />
@@ -182,6 +184,7 @@
     <ClCompile Include="CreatureNPC.cpp" />
     <ClCompile Include="CreatureSpell.cpp" />
     <ClCompile Include="CreatureSpellBall.cpp" />
+    <ClCompile Include="CreatureSpellOpenDoors.cpp" />
     <ClCompile Include="CreatureVectorMask.cpp" />
     <ClCompile Include="FactorySpawningCreatures.cpp" />
     <ClCompile Include="CreatureFlyingBox.cpp" />
@@ -204,6 +207,7 @@
     <ClCompile Include="SpriteBlackBox.cpp" />
     <ClCompile Include="SpriteBlackSmoke.cpp" />
     <ClCompile Include="SpriteClawy.cpp" />
+    <ClCompile Include="SpriteExit.cpp" />
     <ClCompile Include="SpriteVortex.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="TextureBank.cpp" />

@@ -29,7 +29,7 @@ class Level
 		//Variables & const
 		//###################
         //Map of level components
-		std::map<LevelComponentType, std::vector<LevelComponent*>> level_components = {};
+		std::map<LevelComponentType, std::vector<LevelComponent*>> level_component_types_vs_level_components = {};
 		//Expressed in map blocks
 		int initial_level_width = NULL;
 		int initial_level_height = NULL;
@@ -52,6 +52,7 @@ class Level
 		~Level();
 		//Level components factory
 		FactorySpawningLevelComponents* ptr_components_factory = nullptr;
+		void RenderCreatureVisualComponent(Creature* ptr_my_creature);
 		void RenderAllPresentCreatures();
 		CreatureType PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures);
 		void SetMapOffsetX(int columns_count, float margin);

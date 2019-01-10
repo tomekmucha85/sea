@@ -1,7 +1,6 @@
 #include <FactorySpawningCreatures.hpp>
 
-Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coordinates* ptr_my_center,
-	std::string my_trigger_signal)
+Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coordinates* ptr_my_center, int render_layer)
 {
 	Creature* result = nullptr;
 	if (desired_type == cre_clawy)
@@ -11,12 +10,12 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coo
 	}
 	else if (desired_type == cre_blue_bground)
 	{
-		//printf("Requested blue background creature. \n");
+		//printf("Requested blue spr_background creature. \n");
 		result = new CreatureBlueBackground(ptr_my_center);
 	}
 	else if (desired_type == cre_flying_box)
 	{
-		//printf("Requested flying box creature. \n");
+		//printf("Requested flying spr_box creature. \n");
 		result = new CreatureFlyingBox(ptr_my_center);
 	}
 	else if (desired_type == cre_black_smoke)
@@ -40,11 +39,17 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coo
 	{
 		result = new CreatureSpellBall(ptr_my_center);
 	}
+	else if (desired_type == cre_spell_open_doors)
+	{
+		result = new CreatureSpellOpenDoors(ptr_my_center);
+	}
 	else
 	{
 		printf("Trying to spawn invalid Creature type!\n");
 		throw std::invalid_argument("Trying to spawn invalid Creature type!\n");
 	}
+
+	result->SetMyRenderLayer(render_layer);
 
 	return result;
 

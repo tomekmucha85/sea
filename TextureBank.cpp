@@ -15,6 +15,8 @@ TextureBank::TextureBank(SDL_Renderer* renderer)
 	ptr_tex_wall = wall->texture;
 	Texture* purple_vortex = new Texture(path_image_purple_vortex, renderer);
 	ptr_tex_purple_vortex = purple_vortex->texture;
+	Texture* exit = new Texture(path_image_exit, renderer);
+	ptr_tex_exit = exit->texture;
     printf("Finished loading textures\n");
 }
 
@@ -26,4 +28,5 @@ TextureBank::~TextureBank()
     delete black_box;
 	delete wall;
 	delete purple_vortex;
+	delete exit;
 }

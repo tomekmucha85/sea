@@ -361,7 +361,7 @@ void LevelComponentMaze::RemoveCellWall(Coordinates my_current_cell, Directions 
 
 void LevelComponentMaze::CarveExitsFromMaze()
 {
-	//Function providing an exit in every maze outer wall.
+	//Function providing an spr_exit in every maze outer wall.
 	//Pick random cell from northern boundary
 	int chosen_maze_block_x = rand() % maze_blocks_count_horizontal;
 	for (int i = 1; i < maze_block_width - 1; i++)

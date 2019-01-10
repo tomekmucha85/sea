@@ -5,14 +5,11 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 
 	//Core part generation
     // #TODO - uwspólniæ?
+	// #TODO - dorobiæ ³adowanie levela, jeœli kilka jest utworzonych naraz
 	PreciseRect core_area = { 0,0,0,0 };
 	LevelComponent* ptr_core = ptr_components_factory->SpawnLevelComponent(levco_core, core_area);
 	Coordinates test_spell_position = {390, 100};
-	Creature* ptr_test_spell = ptr_core->AddCreature(cre_spell_ball, &test_spell_position, merge);
-    ptr_test_spell->SetBehaviorMode(beh_idle);
-	//SDL_Rect test_spell_position2 = { 410, 100 };
-	//Creature* ptr_test_spell2 = ptr_core->AddCreature(cre_spell_ball, &test_spell_position2, merge);
-	//ptr_test_spell2->SetBehaviorMode(beh_idle);
+	Creature* ptr_test_spell = ptr_core->AddCreature(cre_spell_ball, &test_spell_position, merge, 1);
 	Coordinates guy_position = { 400,500 };
 	Creature* ptr_enemy = ptr_core->AddCreature(cre_clawy, &guy_position, force);
 	ptr_enemy->SetBehaviorMode(beh_chase_hero);
@@ -21,7 +18,6 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	ptr_hero->MakeMeMainCharacter();
 	//character_offset_x = Creature::WhoIsMainCharacter()->TellHitbox().w;
 	//character_offset_y = Creature::WhoIsMainCharacter()->TellHitbox().h;
-	//SetCurrentHero(ptr_hero);
 
 	//Adding component for event triggers
 	ptr_border_triggers = ptr_components_factory->SpawnLevelComponent(levco_triggers);
@@ -83,13 +79,6 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	GenerateTrigger(south);
 	GenerateTrigger(east);
 	GenerateTrigger(west);
-	/*
-	SDL_Rect event_area = ptr_current_central_maze->TellComponentEdge(north);
-	//printf("Added trigger x: %d, y: %d, w: %d, h: %d.\n", event_area.x, event_area.y, event_area.w, event_area.h);
-	SDL_Rect* ptr_event_area = &event_area;
-	Creature* ptr_trigger_north = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_northern_row);
-	signals_vs_events[signal_for_regenerating_northern_row] = ptr_func_trigger_north;
-	*/
 	printf("Current mazes setup: 1: %p\n2: %p\n3: %p\n4: %p\n5: %p\n6: %p\n7: %p\n8: %p\n9: %p\n",
 		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);
 

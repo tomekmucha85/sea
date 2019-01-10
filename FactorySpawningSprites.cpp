@@ -8,34 +8,40 @@ Sprite* FactorySpawningSprites::SpawnSprite(SpriteType desired_type, Coordinates
 {
 	Sprite* result = nullptr;
 	//printf("Going to create a sprite. Requested type: %d\n", desired_type);
-	if (desired_type == clawy)
+	if (desired_type == spr_clawy)
 	{
-		//printf("Requested clawy object.\n");
+		//printf("Requested spr_clawy object.\n");
 		result = new SpriteClawy(ptr_center);
 		return result;
 	}
-	else if (desired_type == box)
+	else if (desired_type == spr_box)
 	{
-		//printf("Requested box object.\n");
+		//printf("Requested spr_box object.\n");
 		result = new SpriteBlackBox(ptr_center);
 		return result;
 	}
-	else if (desired_type == background)
+	else if (desired_type == spr_background)
 	{
-		//printf("Reqested blue background object.\n");
+		//printf("Reqested blue spr_background object.\n");
 		result = new SpriteBackground(ptr_center);
 		return result;
 	}
-	else if (desired_type == black_smoke)
+	else if (desired_type == spr_black_smoke)
 	{
 		//printf("Reqested black smoke object.\n");
 		result = new SpriteBlackSmoke(ptr_center);
 		return result;
 	}
-	else if (desired_type == vortex)
+	else if (desired_type == spr_vortex)
 	{
-		//printf("Reqested vortex object.\n");
+		//printf("Reqested spr_vortex object.\n");
 		result = new SpriteVortex(ptr_center);
+		return result;
+	}
+	else if (desired_type == spr_exit)
+	{
+		//printf("Reqested spr_exit object.\n");
+		result = new SpriteExit(ptr_center);
 		return result;
 	}
 	else

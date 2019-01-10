@@ -14,7 +14,7 @@
 //***********************************
 
 std::vector <Creature*> Creature::current_environment;
-std::vector <CreatureType> Creature::walls = { cre_flying_box };
+std::vector <CreatureType> Creature::walls = { cre_flying_box, cre_spell_open_doors };
 Creature* Creature::ptr_current_main_charater;
 long long int Creature::main_character_shift_x = 0;
 long long int Creature::main_character_shift_y = 0;
@@ -48,7 +48,7 @@ Creature::Creature(PreciseRect* ptr_area)
 }
 
 //Constructor spawning a creature around CENTER coordinates given
-Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin, int my_render_layer)
+Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin)
 {
 	ptr_sprites_factory = new FactorySpawningSprites();
 	ptr_behavior = new Behavior();
@@ -61,8 +61,6 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 	//#TODO//Change this, so position will be determined by creature
 	PreciseRect sprite_position = ptr_creature_sprite->TellSpritePosition();
 	InitializeHitbox(sprite_position, hitbox_margin);
-	//Set in which layer should this Creature be rendered
-	SetMyRenderLayer(my_render_layer);
 	//Write entry in static vector class_instances
 }
 
@@ -163,7 +161,7 @@ PreciseRect Creature::TellHitbox()
 }
 
 //**************
-//SETTING PARAMS
+//SETTING AND TELLING PARAMS
 //**************
 
 void Creature::SetMySprite(Sprite* ptr_my_sprite)
@@ -194,6 +192,11 @@ void Creature::SetVisibility(bool should_be_visible)
 bool Creature::AmIVisible()
 {
 	return is_visible;
+}
+
+int Creature::TellRenderLayer()
+{
+	return render_layer;
 }
 
 //**********
@@ -470,23 +473,13 @@ void Creature::MoveHitbox(double x, double y)
 
 void Creature::ThrustForward()
 {
-	//bool did_i_move_successfully = true;
-	/*DetermineNextStep(Timer::loop_duration);
-    did_i_move_successfully = Move(next_step.x, next_step.y);
-    //ptr_creature_sprite->WalkAnimation();*/
 	SetVelocity(default_velocity);
-	//return did_i_move_successfully;
 }
 
 void Creature::ThrustBackward()
 {
-	//bool did_i_move_successfully = true;
-	/*DetermineNextStep(Timer::loop_duration);
-	bool did_i_move_successfully = true;
-    did_i_move_successfully = Move(next_step.x * -1, next_step.y * -1);
-	return did_i_move_successfully;*/
+
 	SetVelocity(-default_velocity);
-	//return did_i_move_successfully;
 }
 
 void Creature::SetVelocity(float my_velocity)
@@ -494,6 +487,7 @@ void Creature::SetVelocity(float my_velocity)
 	velocity = my_velocity;
 }
 
+//#TODO - naprawiæ strafe
 bool Creature::Strafe(int sidestep_angle)
 {
 	bool did_i_move_successfully = true;
@@ -776,6 +770,10 @@ void Creature::CastSpell(SpellName my_spell_name)
 	{
 		spell_request.type = cre_spell_ball;
 		spell_request.initial_behavior_mode = beh_projectile;
+	}
+	else if (my_spell_name == spell_open_gate)
+	{
+		spell_request.type = cre_spell_open_doors;
 	}
 
 	int desired_distance = 100;

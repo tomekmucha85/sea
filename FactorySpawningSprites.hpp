@@ -7,6 +7,7 @@
 #include <SpriteBlackBox.hpp>
 #include <SpriteBlackSmoke.hpp>
 #include <SpriteVortex.hpp>
+#include <SpriteExit.hpp>
 
 class FactorySpawningSprites
 {

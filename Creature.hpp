@@ -93,11 +93,12 @@ class Creature
         //Functions
         //###################
 		Creature(PreciseRect* ptr_area);
-		Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin = 10, int my_render_layer = 0);
+		Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin = 10);
 		~Creature();
 		void SetMySprite(Sprite* ptr_my_sprite);
 		void SetMyVector(PreciseRect* ptr_my_area);
 		void SetMyRenderLayer(int layer_number);
+		int TellRenderLayer();
 		void MakeMeObstacle();
 		void MakeMeNotObstacle();
 		PreciseRect TellHitbox();

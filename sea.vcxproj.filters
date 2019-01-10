@@ -171,6 +171,12 @@
     <ClInclude Include="VectorDrawing.hpp">
       <Filter>Header Files\VisualComponents\VectorDrawings</Filter>
     </ClInclude>
+    <ClInclude Include="CreatureSpellOpenDoors.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteExit.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -286,6 +292,12 @@
     </ClCompile>
     <ClCompile Include="VectorDrawing.cpp">
       <Filter>Source Files\VisualComponents\VectorDrawings</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureSpellOpenDoors.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteExit.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

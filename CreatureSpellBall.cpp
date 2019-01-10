@@ -17,10 +17,14 @@ void CreatureSpellBall::DealDamageInRadius(int radius)
 		{
 			ptr_one_sorry_creature->Kill();
 		}
+		else if (ptr_one_sorry_creature->my_type == cre_spell_open_doors)
+		{
+			ptr_one_sorry_creature->Kill();
+		}
 	}
 }
 
-// #TODO - dodaæ pole animacji w Creature! oderwaæ animacjê od logiki
+// #TODO - dodaæ pole animacji w Creature! Oderwaæ animacjê od logiki
 
 bool CreatureSpellBall::Move(double x, double y)
 {

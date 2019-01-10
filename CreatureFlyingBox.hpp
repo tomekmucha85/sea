@@ -4,7 +4,7 @@
 class CreatureFlyingBox : public Creature
 {
 private:
-	static const SpriteType my_initial_type = box;
+	static const SpriteType my_initial_type = spr_box;
 public:
 	CreatureFlyingBox(Coordinates* ptr_my_center, int hitbox_margin = 10);
 };
