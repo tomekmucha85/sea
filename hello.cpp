@@ -49,15 +49,19 @@ int main(int argc, char* args[])
 	int state = 0;
 	std::string  address = "127.0.0.1";
 
+	bool is_connected_to_emo = false;
+
 	if (IEE_EngineRemoteConnect(address.c_str(), composerPort) != EDK_OK) 
 	{
 		std::string errMsg = "Cannot connect to EmoComposer on [" +
 			address + "]";
 		printf("Cannot connect to EmoComposer!\n");
-		throw std::runtime_error(errMsg.c_str());
+		//throw std::runtime_error(errMsg.c_str());
+		printf("WARNING!\nDID NOT CONNECT TO EMO ENGINE.\n WARNING!\n");
 	}
 	else
 	{
+		is_connected_to_emo = true;
 		printf("Connected to EmoComposer!\n");
 	}
 
@@ -78,44 +82,46 @@ int main(int argc, char* args[])
 		Timer::CalculateLoopDuration();
 		//printf("Loop duration: %f.\n", Timer::loop_duration);
         //EMOTIV
-		state = IEE_EngineGetNextEvent(eEvent);
-
-		// New event needs to be handled
-		if (state == EDK_OK)
+		if (is_connected_to_emo)
 		{
-			IEE_Event_t eventType = IEE_EmoEngineEventGetType(eEvent);
-			IEE_EmoEngineEventGetUserId(eEvent, &userID);
-			// Log the EmoState if it has been updated
-			if (eventType == IEE_EmoStateUpdated)
+			state = IEE_EngineGetNextEvent(eEvent);
+
+			// New event needs to be handled
+			if (state == EDK_OK)
 			{
-				IEE_EmoEngineEventGetEmoState(eEvent, eState);
-				const float timestamp = IS_GetTimeFromStart(eState);
-				printf("Got update at %f!\n", timestamp);
-				if (IS_FacialExpressionIsBlink(eState) == 1)
+				IEE_Event_t eventType = IEE_EmoEngineEventGetType(eEvent);
+				IEE_EmoEngineEventGetUserId(eEvent, &userID);
+				// Log the EmoState if it has been updated
+				if (eventType == IEE_EmoStateUpdated)
 				{
-					printf("Blink!\n");
+					IEE_EmoEngineEventGetEmoState(eEvent, eState);
+					const float timestamp = IS_GetTimeFromStart(eState);
+					printf("Got update at %f!\n", timestamp);
+					if (IS_FacialExpressionIsBlink(eState) == 1)
+					{
+						printf("Blink!\n");
+					}
 				}
 			}
-		}
-		else if (state != EDK_NO_EVENT) 
-		{
-			std::cout << "Internal error in Emotiv Engine!" << std::endl;
-			break;
-		}
-		double theta = 0;
-		double alpha = 0;
-		double low_beta = 0;
-		double high_beta = 0;
-		double gamma = 0;
+			else if (state != EDK_NO_EVENT)
+			{
+				std::cout << "Internal error in Emotiv Engine!" << std::endl;
+				break;
+			}
+			double theta = 0;
+			double alpha = 0;
+			double low_beta = 0;
+			double high_beta = 0;
+			double gamma = 0;
 
-		if(ptr_emotiv_bands_check->CheckIfIntervalPassed())
-		{
-			IEE_GetAverageBandPowers(userID, IED_AF3, &theta, &alpha, &low_beta, &high_beta, &gamma);
+			if (ptr_emotiv_bands_check->CheckIfIntervalPassed())
+			{
+				IEE_GetAverageBandPowers(userID, IED_AF3, &theta, &alpha, &low_beta, &high_beta, &gamma);
 
-			printf("Current band values: THETA: %f\n ALPHA: %f\n, LOW BETA: %f\n, HIGH_BETA: %f\n, GAMMA: %f\n.",
-				theta, alpha, low_beta, high_beta, gamma);
+				printf("Current band values: THETA: %f\n ALPHA: %f\n, LOW BETA: %f\n, HIGH_BETA: %f\n, GAMMA: %f\n.",
+					theta, alpha, low_beta, high_beta, gamma);
+			}
 		}
-
 		//EMOTIV_END
 
         //Handle events on queue
