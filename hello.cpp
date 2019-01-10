@@ -140,34 +140,41 @@ int main(int argc, char* args[])
 			{
 				Creature::ptr_current_main_charater->TurnRight();
 			}
-            else if(event_handler.type == SDL_KEYDOWN && event_handler.key.repeat == 0)
-            {
-                switch( event_handler.key.keysym.sym )
-                {
-				    case SDLK_UP: Creature::ptr_current_main_charater->ThrustForward(); break;
-                    case SDLK_DOWN: Creature::ptr_current_main_charater->ThrustBackward(); break;
-                    case SDLK_LEFT: Creature::ptr_current_main_charater->StrafeLeft(); break;
-                    case SDLK_RIGHT: Creature::ptr_current_main_charater->StrafeRight(); break;
-                    case SDLK_w: Creature::ptr_current_main_charater->ThrustForward();
-					break;
-                    case SDLK_s: Creature::ptr_current_main_charater->ThrustBackward();
-					break;
-					case SDLK_q: Creature::ptr_current_main_charater->CastSpell(spell_vortex); break;
-                }
-            }
-			else if (event_handler.type == SDL_KEYUP && event_handler.key.repeat == 0)
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_w && event_handler.key.repeat == 0)
 			{
-				switch (event_handler.key.keysym.sym)
-				{
-				case SDLK_UP: Creature::ptr_current_main_charater->SetVelocity(0); break;
-				case SDLK_DOWN: Creature::ptr_current_main_charater->SetVelocity(0); break;
-				case SDLK_LEFT: Creature::ptr_current_main_charater->StrafeLeft(); break;
-				case SDLK_RIGHT: Creature::ptr_current_main_charater->StrafeRight(); break;
-				case SDLK_w: Creature::ptr_current_main_charater->SetVelocity(0);
-					break;
-				case SDLK_s: Creature::ptr_current_main_charater->SetVelocity(0);
-					break;
-				}
+		        Creature::ptr_current_main_charater->ThrustForward();
+			}
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_s && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->ThrustBackward();
+			}
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_UP && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->ThrustForward();
+			}
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_DOWN && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->ThrustBackward();
+			}
+			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_w && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->SetVelocity(0);
+			}
+			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_s && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->SetVelocity(0);
+			}
+			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_UP && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->SetVelocity(0);
+			}
+			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_DOWN && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->SetVelocity(0);
+			}
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_q && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->CastSpell(spell_vortex);
 			}
         }
 
@@ -183,13 +190,17 @@ int main(int argc, char* args[])
         SDL_RenderPresent(Game::ptr_screen->renderer);
     }
     //Do cleanup
+	delete ptr_emotiv_bands_check;
     Game::DestroyGame();
     //Quit SDL subsystems
     IMG_Quit();
     SDL_Quit();
-	IEE_EngineDisconnect();
-	IEE_EmoStateFree(eState);
-	IEE_EmoEngineEventFree(eEvent);
-
+	//Quit Emotiv subsystem
+	if (is_connected_to_emo)
+	{
+		IEE_EngineDisconnect();
+		IEE_EmoStateFree(eState);
+		IEE_EmoEngineEventFree(eEvent);
+	}
     return 0;
 }
