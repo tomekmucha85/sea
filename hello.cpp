@@ -51,12 +51,12 @@ int main(int argc, char* args[])
 
 	bool is_connected_to_emo = false;
 
-	if (IEE_EngineConnect() == EDK_OK)
+	/*if (IEE_EngineConnect() == EDK_OK)
 	{
 		is_connected_to_emo = true;
 		printf("Successfully connected to Emotiv device!\n");
 	}
-	else if (IEE_EngineRemoteConnect(address.c_str(), composerPort) == EDK_OK) 
+	else*/ if (IEE_EngineRemoteConnect(address.c_str(), composerPort) == EDK_OK) 
 	{
 		is_connected_to_emo = true;
 		printf("Connected to EmoComposer!\n");
