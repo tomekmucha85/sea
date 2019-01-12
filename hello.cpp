@@ -153,13 +153,21 @@ int main(int argc, char* args[])
             {
                 quit = true;
             }
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_a)
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_a && event_handler.key.repeat == 0)
 			{
 				Creature::ptr_current_main_charater->TurnLeft();
 			}
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_d)
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_d && event_handler.key.repeat == 0)
 			{
 				Creature::ptr_current_main_charater->TurnRight();
+			}
+			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_a && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->TurnStop();
+			}
+			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_d && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->TurnStop();
 			}
 			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_w && event_handler.key.repeat == 0)
 			{
