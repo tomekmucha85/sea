@@ -9,7 +9,9 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 		{
 			if (ptr_my_creature->my_type == cre_spell_ball)
 			{
-				ptr_my_creature->ptr_creature_sprite->VortexAnimation();
+				//#TODO ucywilizowaæ
+				Sprite* ptr_sprite = static_cast<Sprite*>(ptr_my_creature->ptr_creature_visual_component);
+				ptr_sprite->VortexAnimation();
 			}
 		}
 		else if (mode == beh_chase_hero)

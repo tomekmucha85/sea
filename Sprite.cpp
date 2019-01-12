@@ -13,6 +13,7 @@ TextureBank* Sprite::ptr_texture_bank = nullptr;
 
 Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinates* ptr_my_center) : VisualComponent(ptr_my_center)
 {
+	SetMyType(visco_sprite);
 	//Constructor building sprite around specified center coordinates
 	//#TODO - validate arguments?
 	SetTexture(ptr_my_texture);
@@ -29,8 +30,8 @@ Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinate
 	//printf("Texture clip set.");
 	SDL_Rect current_texture_clip = TellTextureClip();
 
-	SetPositionX(static_cast<int>(ptr_my_center->x) - (current_texture_clip.w / 2));
-	SetPositionY(static_cast<int>(ptr_my_center->y) - (current_texture_clip.h / 2));
+	SetPositionX(static_cast<int>(center.x - (current_texture_clip.w / 2)));
+	SetPositionY(static_cast<int>(center.y - (current_texture_clip.h / 2)));
 	SetPositionW(current_texture_clip.w);
 	SetPositionH(current_texture_clip.h);
 
@@ -55,38 +56,22 @@ void Sprite::SetTextureClip(SDL_Rect my_texture_clip)
     texture_clip = my_texture_clip;
 }
 
-void Sprite::SetPositionX(double new_x)
-{
-    position.x = new_x;
-}
-
-void Sprite::SetPositionY(double new_y)
-{
-    position.y = new_y;
-}
-
-void Sprite::SetPositionW(double new_w)
-{
-    position.w = new_w;
-}
-
-void Sprite::SetPositionH(double new_h)
-{
-    position.h = new_h;
-}
-
 void Sprite::Render()
 {
 	SDL_Rect position_int = ConvertPreciseRectToSdlRect(position);
-    if (texture_clip.w != 0 && texture_clip.h != 0)
-    //If texture clip dimensions were set, apply them.
-    {
-		SDL_RenderCopyEx(TellScreen()->renderer, texture, &texture_clip, &position_int, angle, center, flip);
+	if (texture_clip.w != 0 && texture_clip.h != 0)
+	{
+		SDL_Point relative_center = {static_cast<int>(position.w)/2, static_cast<int>(position.h)/2};
+		SDL_RenderCopyEx(TellScreen()->renderer, texture, &texture_clip, &position_int, angle, &relative_center, flip);
+		//printf("RENDER: Sprite center: x: %d, y: %d.\n", center.x, center.y);
+		//printf("RENDER: Sprite position: x: %d, y: %d, w: %d, h: %d\n", position.x, position.y, position.w, position.h);
+		//printf("RENDER: Sprite angle: %f.\n", angle);
 	}
     else
-    //If texture clip dimensions were not set, show whole texture.
+    //If texture clip dimensions were not set, throw an exception.
     {
-        SDL_RenderCopyEx(TellScreen()->renderer, texture, NULL, &position_int, angle, center, flip);
+		printf("Texture clip w and h set to zero!\n");
+		throw std::invalid_argument("Texture clip w and h set to zero!\n");
     }
 }
 
@@ -147,8 +132,7 @@ void Sprite::ResetAnimationFrame()
 
 PreciseRect Sprite::TellSpritePosition()
 {
-	PreciseRect result = {position.x, position.y, position.w, position.h};
-    return result;
+    return position;
 }
 
 SDL_Rect Sprite::TellTextureClip()
@@ -168,18 +152,6 @@ void Sprite::SetTextureBank(TextureBank* ptr_my_texture_bank)
 TextureBank* Sprite::TellTextureBank()
 {
 	return ptr_texture_bank;
-}
-
-SDL_Rect Sprite::ConvertPreciseRectToSdlRect(PreciseRect my_rect)
-{
-	SDL_Rect result = 
-	{ 
-		static_cast<int>(my_rect.x), 
-		static_cast<int>(my_rect.y),
-		static_cast<int>(my_rect.w),
-		static_cast<int>(my_rect.h)
-	};
-	return result;
 }
 
 //#####################

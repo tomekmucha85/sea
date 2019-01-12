@@ -30,7 +30,11 @@ bool CreatureSpellBall::Move(double x, double y)
 {
 	//Overload of Creature::Move causing object to be killed after first collision and damage all object in given radius
 	bool was_move_successfull = Creature::Move(x,y);
-	ptr_creature_sprite->VortexAnimation();
+
+	//#TODO ucywilizowaæ
+	Sprite* ptr_sprite = static_cast<Sprite*>(ptr_creature_visual_component);
+	ptr_sprite->VortexAnimation();
+
 	if (!was_move_successfull)
 	{
 		DealDamageInRadius(40);

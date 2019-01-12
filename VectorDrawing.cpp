@@ -8,6 +8,7 @@
 
 VectorDrawing::VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_color) : VisualComponent(ptr_my_area)
 {
+	SetMyType(visco_vector);
 	printf("Entered VectorDrawing constructor.\n");
 	printf("Constructed VectorDrawing.\n");
 	vector_fill_color = my_vector_fill_color;
@@ -20,14 +21,12 @@ VectorDrawing::VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_colo
 void VectorDrawing::Render()
 {
 	//printf("Will render vector.\n");
-	//#TODO - wykorzystac wspóln¹ funkcjê
-	SDL_Rect position_int = {int(position.x), int(position.y), int(position.w), int(position.h)};
-	SDL_Rect* ptr_area = &position_int;
+	SDL_Rect position_int = ConvertPreciseRectToSdlRect(position);
 	SDL_SetRenderDrawColor(TellScreen()->renderer, vector_fill_color.red,
 		vector_fill_color.green, 
 		vector_fill_color.blue,
 		vector_fill_color.alpha);
-	SDL_RenderFillRect(TellScreen()->renderer, ptr_area);
+	SDL_RenderFillRect(TellScreen()->renderer, &position_int);
 	//Reset renderer color back to white
 	SDL_SetRenderDrawColor(TellScreen()->renderer, 255, 255, 255, 255);
 }

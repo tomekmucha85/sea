@@ -8,8 +8,6 @@ CreatureVectorMask::CreatureVectorMask(PreciseRect* ptr_area) :
 	printf("Assigned type.\n");
 	MakeMeNotObstacle();
 	printf("No obstacle set.\n");
-	ptr_creature_vector = new VectorDrawing(ptr_area);
-	printf("Vector %p assigned to mask %p.\n", ptr_creature_vector, this);
 	//By default this creature should not be rendered on screen.
 	SetVisibility(false);
 }

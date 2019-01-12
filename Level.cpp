@@ -211,27 +211,10 @@ void Level::RenderAllPresentCreatures()
 
 void Level::RenderCreatureVisualComponent(Creature* ptr_my_creature)
 {
-	//#TODO przerobiæ na visual component
-
 	if (ptr_my_creature == nullptr)
 	{
 		printf("Cannot render nullptr!\n");
 		throw std::invalid_argument("Cannot render nullptr!\n");
 	}
-
-	if (ptr_my_creature->ptr_creature_sprite != nullptr)
-	{
-		ptr_my_creature->ptr_creature_sprite->Render();
-		//printf("Rendered sprite.\n");
-	}
-	else if (ptr_my_creature->ptr_creature_vector != nullptr)
-	{
-		ptr_my_creature->ptr_creature_vector->Render();
-		//printf("Rendered vector.\n");
-	}
-	else
-	{
-		printf("This creature has nothing to render!\n");
-		throw "This creature has nothing to render!\n";
-	}
+	ptr_my_creature->ptr_creature_visual_component->Render();
 }

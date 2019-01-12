@@ -111,7 +111,7 @@ int main(int argc, char* args[])
 				if (eventType == IEE_EmoStateUpdated)
 				{
 					IEE_EmoEngineEventGetEmoState(eEvent, eState);
-					const float timestamp = IS_GetTimeFromStart(eState);
+					float timestamp = IS_GetTimeFromStart(eState);
 					//printf("Got update at %f!\n", timestamp);
 					if (IS_FacialExpressionIsLeftWink(eState) == 1)
 					{

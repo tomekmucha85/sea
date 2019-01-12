@@ -17,14 +17,22 @@ VisualComponent::VisualComponent(PreciseRect* ptr_my_position)
 
 VisualComponent::VisualComponent(Coordinates* ptr_my_center)
 {
-	//#TODO - co z t¹ funkcj¹?
-	//SetPosition(*ptr_my_position);
-	;
+	SetCenter(*ptr_my_center);
 }
 
-//#####################
-// STATIC METHODS
-//#####################
+//##########################
+// SETTING & TELLING PARAMS
+//##########################
+
+VisualComponentType VisualComponent::TellMyType()
+{
+	return type;
+}
+
+void VisualComponent::SetMyType(VisualComponentType my_type)
+{
+	type = my_type;
+}
 
 Screen* VisualComponent::TellScreen()
 {
@@ -41,6 +49,31 @@ void VisualComponent::SetPosition(PreciseRect my_position)
 	position = my_position;
 }
 
+void VisualComponent::SetPositionX(int new_x)
+{
+	position.x = new_x;
+}
+
+void VisualComponent::SetPositionY(int new_y)
+{
+	position.y = new_y;
+}
+
+void VisualComponent::SetPositionW(int new_w)
+{
+	position.w = new_w;
+}
+
+void VisualComponent::SetPositionH(int new_h)
+{
+	position.h = new_h;
+}
+
+void VisualComponent::SetCenter(Coordinates my_center)
+{
+	center = my_center;
+}
+
 void VisualComponent::Move(double step_x, double step_y)
 {
 	position.x += step_x;
@@ -52,6 +85,44 @@ void VisualComponent::Move(double step_x, double step_y)
 		static_cast<int>(position.y), 
 		static_cast<int>(position.w), 
 		static_cast<int>(position.h));*/
+}
+
+//#####################
+// UTILITIES
+//#####################
+
+SDL_Rect VisualComponent::ConvertPreciseRectToSdlRect(PreciseRect my_rect)
+{
+	SDL_Rect result =
+	{
+		static_cast<int>(my_rect.x),
+		static_cast<int>(my_rect.y),
+		static_cast<int>(my_rect.w),
+		static_cast<int>(my_rect.h)
+	};
+	return result;
+}
+
+SDL_Point VisualComponent::ConvertCoordinatesToSdlPoint(Coordinates my_coordinates)
+{
+	SDL_Point result =
+	{
+		static_cast<int>(my_coordinates.x),
+		static_cast<int>(my_coordinates.y),
+	};
+	return result;
+}
+
+PreciseRect VisualComponent::ConvertSdlRectToPreciseRect(SDL_Rect my_rect)
+{
+	PreciseRect result =
+	{
+		static_cast<double>(my_rect.x),
+		static_cast<double>(my_rect.y),
+		static_cast<double>(my_rect.w),
+		static_cast<double>(my_rect.h),
+	};
+	return result;
 }
 
 //#####################

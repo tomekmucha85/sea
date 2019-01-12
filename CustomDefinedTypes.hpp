@@ -27,6 +27,9 @@ struct PreciseRect
 };
 
 
+//Types of Visual Components
+enum VisualComponentType {visco_sprite, visco_vector, visco_undetermined};
+
 //Level names
 enum LevelType { level_ninemazes, level_base, level_test };
 

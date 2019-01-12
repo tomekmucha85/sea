@@ -3,6 +3,13 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <stdexcept>
+#include <algorithm>
 #include <Sprite.hpp>
 #include <FactorySpawningSprites.hpp>
 #include <VectorDrawing.hpp>
@@ -74,9 +81,11 @@ class Creature
 		CreatureType my_type = cre_none;
         float velocity = 0;
 		float default_velocity = 200;
-		//#TODO - przerobiæ na VisualComponent
-        Sprite *ptr_creature_sprite = nullptr;
-		VectorDrawing* ptr_creature_vector = nullptr;
+
+		VisualComponent* ptr_creature_visual_component = nullptr;
+
+        //Sprite* ptr_creature_sprite = nullptr;
+		//VectorDrawing* ptr_creature_vector = nullptr;
         //Vector holding pointers to all creatures currently present in game
         static std::vector <Creature*> current_environment;
         //Holds address of Creature acting as current main character
@@ -95,8 +104,9 @@ class Creature
 		Creature(PreciseRect* ptr_area);
 		Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin = 10);
 		~Creature();
-		void SetMySprite(Sprite* ptr_my_sprite);
-		void SetMyVector(PreciseRect* ptr_my_area);
+		void SetMyVisualComponent(VisualComponent* ptr_my_visual_component);
+		//void SetMySprite(Sprite* ptr_my_sprite);
+		//void SetMyVector(SDL_Rect* ptr_my_area);
 		void SetMyRenderLayer(int layer_number);
 		int TellRenderLayer();
 		void MakeMeObstacle();
@@ -115,8 +125,9 @@ class Creature
 		void SetVelocity(float my_velocity);
         bool ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool check_collisions = true);
         void MoveComponents(double x, double y);
-        void MoveSprite(double x, double y);
-		void MoveVector(double x, double y);
+		void MoveVisualComponent(double x, double y);
+        //void MoveSprite(double x, double y);
+		//void MoveVector(double x, double y);
         void MoveHitbox(double x, double y);
         void ThrustForward();
         void ThrustBackward();

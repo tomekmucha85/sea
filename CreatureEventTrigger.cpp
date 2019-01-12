@@ -10,8 +10,6 @@ CreatureEventTrigger::CreatureEventTrigger(PreciseRect* ptr_area, std::string my
 	printf("Assigned type.\n");
 	MakeMeNotObstacle();
 	printf("No obstacle set.\n");
-	ptr_creature_vector = new VectorDrawing(ptr_area);
-	printf("Vector %p assigned to trigger %p.\n", ptr_creature_vector, this);
 }
 
 std::string CreatureEventTrigger::GiveSignal()

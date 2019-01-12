@@ -1,13 +1,4 @@
-#include <SDL.h>
-#include <SDL_image.h>
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-#include <stdexcept>
-#include <algorithm>
 #include <Creature.hpp>
-//#TODO - oczyœciæ importy w pliku cpp
-
 
 //***********************************
 //DEFINITIONS OF STATIC CLASS MEMBERS
@@ -37,11 +28,12 @@ void Creature::PrintStupidThings(Creature* ptr_to_creature)
 //************
 
 
-// #TODO - czy potrzebne?
 Creature::Creature(PreciseRect* ptr_area)
 {
 	printf("Invisible creature constructed.\n");
 	//Hitbox == ptr_area. No margin is set.
+	VectorDrawing* ptr_vector_drawing = new VectorDrawing(ptr_area);
+	SetMyVisualComponent(ptr_vector_drawing);
 	InitializeHitbox(*ptr_area, 0);
 	printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 
@@ -54,12 +46,12 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 	ptr_behavior = new Behavior();
 	cyclic_actions.push_back(func_follow_behavior);
 	cyclic_actions.push_back(func_follow_physics);
-	SetMySprite(ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center));
+	Sprite* ptr_sprite = ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center);
+	SetMyVisualComponent(ptr_sprite);
 	//Set the initial value to move upwards by (velocity * pixels)
 	next_step.y = velocity * -1;
 	//Initialize hitbox
-	//#TODO//Change this, so position will be determined by creature
-	PreciseRect sprite_position = ptr_creature_sprite->TellSpritePosition();
+	PreciseRect sprite_position = ptr_sprite->TellSpritePosition();
 	InitializeHitbox(sprite_position, hitbox_margin);
 	//Write entry in static vector class_instances
 }
@@ -71,28 +63,12 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 Creature::~Creature()
 {
 	//printf("Destructor called for Creature %p.\n", this);
-	//printf("Attempting to remove sprite %p.\n", ptr_creature_sprite);
-	if (ptr_creature_sprite != nullptr)
-	{
-		delete ptr_creature_sprite;
-	}
-	if (ptr_creature_vector != nullptr)
-	{
-		delete ptr_creature_vector;
-	}
+	delete ptr_creature_visual_component;
 	if (ptr_sprites_factory != nullptr)
 	{
 		delete ptr_sprites_factory;
 	}
 }
-
-//****************************
-//MANAGING ALL CLASS INSTANCES
-//****************************
-
-//**********************
-//SETTING ENVIRONMENT
-//**********************
 
 //******************************************
 //SETTING MAIN CHARACTER AND RECORDING SHIFT
@@ -164,24 +140,19 @@ PreciseRect Creature::TellHitbox()
 //SETTING AND TELLING PARAMS
 //**************
 
-void Creature::SetMySprite(Sprite* ptr_my_sprite)
+void Creature::SetMyVisualComponent(VisualComponent* ptr_my_visual_component)
 {
-	if (ptr_creature_sprite != NULL)
+	if (ptr_creature_visual_component != nullptr)
 	{
-		delete ptr_creature_sprite;
-		printf("SetMySprite deleted current sprite object.");
+		delete ptr_creature_visual_component;
+		printf("SetMyVisualComponent deleted current visual component.");
 	}
-	ptr_creature_sprite = ptr_my_sprite;
+	ptr_creature_visual_component = ptr_my_visual_component;
 }
 
 void Creature::SetMyRenderLayer(int layer_number)
 {
 	render_layer = layer_number;
-}
-
-void Creature::SetMyVector(PreciseRect* ptr_my_area)
-{
-	ptr_creature_vector = new VectorDrawing(ptr_my_area);
 }
 
 void Creature::SetVisibility(bool should_be_visible)
@@ -226,7 +197,7 @@ void Creature::InitializeHitbox(PreciseRect sprite_position, int margin_percent)
     hitbox.w = sprite_position.w - x_margin;
     hitbox.y = sprite_position.y + y_margin;
     hitbox.h = sprite_position.h - y_margin;
-    //printf("Hitbox is: x: %f, y: %f, w: %f, h: %f\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+    //printf("Hitbox is initialized at: x: %f, y: %f, w: %f, h: %f\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 }
 
 //********
@@ -281,14 +252,26 @@ int Creature::NormalizeAngle(int angle)
 void Creature::TurnRight()
 {
     Turn(turn_quant_degree);
-    ptr_creature_sprite->angle += turn_quant_degree;
+	ptr_creature_visual_component->angle += turn_quant_degree;
+	/*printf("Sprite center: x: %f, y: %f.\n", ptr_creature_visual_component->center.x, ptr_creature_visual_component->center.y);
+    printf("Sprite position: x: %f, y: %f, w: %f, h: %f\n", ptr_creature_visual_component->position.x, ptr_creature_visual_component->position.y,
+		ptr_creature_visual_component->position.w, ptr_creature_visual_component->position.h);
+	printf("Sprite angle: %f.\n", ptr_creature_visual_component->angle);
+	printf("Creature hitbox: x: %f, y: %f, w: %f, h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+	printf("Creature hitbox center: x: %f y: %f.\n", hitbox.x + (hitbox.w /2), hitbox.y + (hitbox.h /2));*/
 }
 
 
 void Creature::TurnLeft()
 {
     Turn(turn_quant_degree * -1);
-    ptr_creature_sprite->angle -= turn_quant_degree;
+    ptr_creature_visual_component->angle -= turn_quant_degree;
+	/*printf("Sprite center: x: %f, y: %f.\n", ptr_creature_visual_component->center.x, ptr_creature_visual_component->center.y);
+	printf("Sprite position: x: %f, y: %f, w: %f, h: %f\n", ptr_creature_visual_component->position.x, ptr_creature_visual_component->position.y,
+		ptr_creature_visual_component->position.w, ptr_creature_visual_component->position.h);
+	printf("Sprite angle: %f.\n", ptr_creature_visual_component->angle);
+	printf("Creature hitbox: x: %f, y: %f, w: %f, h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+	printf("Creature hitbox center: x: %f y: %f.\n", hitbox.x + (hitbox.w / 2), hitbox.y + (hitbox.h / 2));*/
 }
 
 void Creature::RemoveNeighbors()
@@ -437,38 +420,24 @@ bool Creature::ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool
 
 void Creature::MoveComponents(double x, double y)
 {
-	//#TODO - przerobiæ na VisualComponent
-	if (ptr_creature_sprite != nullptr) //Not every creature has its sprite - e.g. event trigger has only vector!
-	{
-		MoveSprite(x, y);
-	}
-	if (ptr_creature_vector != nullptr)
-	{
-		MoveVector(x, y);
-	}
+	MoveVisualComponent(x, y);
     MoveHitbox(x, y);
 }
 
-void Creature::MoveVector(double x, double y)
+void Creature::MoveVisualComponent(double x, double y)
 {
-	//printf("Moved vector!\n");
-	ptr_creature_vector->Move(x, y);
-	//ptr_creature_vector->position.x += x;
-	//ptr_creature_vector->position.y += y;
-}
-
-void Creature::MoveSprite(double x, double y)
-{
-	ptr_creature_sprite->Move(x, y);
-    //ptr_creature_sprite->position.x += x;
-    //ptr_creature_sprite->position.y += y;
+	ptr_creature_visual_component->Move(x,y);
 }
 
 void Creature::MoveHitbox(double x, double y)
 {
     hitbox.x += x;
     hitbox.y += y;
-    //printf("New hitbox coordinates: x: %d y: %d\n", hitbox.x, hitbox.y);
+    /*printf("New hitbox coordinates for %p: x: %f y: %f\n", this, hitbox.x, hitbox.y);
+	printf("Sprite position: x: %f, y: %f.\n", this->ptr_creature_visual_component->position.x,
+		this->ptr_creature_visual_component->position.y);
+	printf("X offset: %f, Y: offset: %f.\n", hitbox.x - this->ptr_creature_visual_component->position.x,
+		hitbox.y - this->ptr_creature_visual_component->position.y);*/
 }
 
 void Creature::ThrustForward()
@@ -588,7 +557,9 @@ bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_
 
 		if (DoICollideXPlane(my_x, my_w, obs_x, obs_w) && DoICollideYPlane(my_y, my_h, obs_y, obs_h))
 		{
-			//printf("Collision caught by DoICollideWithThisCreature!\n");
+			/*printf("Collision caught by DoICollideWithThisCreature!\n");
+			printf("My coordinates:       x: %f, y: %f, w: %f, h: %f.\n", my_x, my_y, my_w, my_h);
+			printf("Collider coordinates: x: %f, y: %f, w: %f, h: %f.\n", obs_x, obs_y, obs_w, obs_h);*/
 			result = true;
 		}
 	}
@@ -608,29 +579,17 @@ std::vector<Creature*> Creature::WhichNeighborsDoICollideWith()
 	return result;
 }
 
-// #TODO - funkcja do rozbicia na iteracjê po s¹siadach i sprawdzanie kolizji
 bool Creature::DoICollideWithNeighbors(int margin)
 {
     bool result = false;
     //printf("DoICollideWithNeighbors called for %p.\n", this);
-	double my_x = hitbox.x;
-	double my_y = hitbox.y;
-	double my_w = hitbox.w;
-	double my_h = hitbox.h;
-	//for (Creature* ptr_creature : Creature::class_instances)
 	for (Creature* ptr_creature : this->my_neighbors)
 	{
 		if (ptr_creature != this /* Prevents checking collision with itself. */ && ptr_creature->is_obstacle == true)
 		{
-			double obs_x = ptr_creature->hitbox.x;
-			double obs_y = ptr_creature->hitbox.y;
-			double obs_w = ptr_creature->hitbox.w;
-			double obs_h = ptr_creature->hitbox.h;
-		
-			if (DoICollideXPlane(my_x,my_w,obs_x,obs_w, margin) && DoICollideYPlane(my_y,my_h,obs_y,obs_h, margin))
+			if (DoICollideWithThisCreature(ptr_creature))
 			{
-			    //printf("Collision caught by DoICollideWithNeighbors!\n");
-			    result = true;
+				result = true;
 			}
 		}
 	}
