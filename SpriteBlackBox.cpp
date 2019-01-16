@@ -4,7 +4,7 @@
 //DEFINITIONS OF STATIC CLASS MEMBERS
 //***********************************
 
-SDL_Rect SpriteBlackBox::initial_texture_clip_black_box = { 0,0,32,32 };
+SDL_Rect SpriteBlackBox::initial_texture_clip_black_box = { 336,0,48,48 };
 
 //***********************************
 //CONSTRUCTORS

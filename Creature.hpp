@@ -2,6 +2,7 @@
 #define CREATURE_HPP
 #include <vector>
 #include <string>
+#include <map>
 #include <functional>
 #include <SDL.h>
 #include <SDL_image.h>
@@ -22,6 +23,7 @@ class Behavior;
 class Creature
 {
 	friend class Behavior;
+	friend class Magic;
 	
     private:
 
@@ -61,6 +63,8 @@ class Creature
 		std::vector<std::function<void(Creature*)>> cyclic_actions = {};
 		//Is the creature living? Dead creatures should be deleted in LevelComponent plane
 		bool am_i_alive = true;
+		//How much mana do I have?
+		int mana = 100;
 		//Requests to spawn other creatures. Requests are collected by LevelComponent
 		std::vector<CreatureSpawnRequest> spawn_requests = {};
 
@@ -159,6 +163,7 @@ class Creature
 		void AddCyclicAction(std::function<void(Creature*)> my_cyclic_action);
 		std::vector<CreatureSpawnRequest>* TellSpawnRequests();
 		//#TODO - napisaæ funkcjê do usuwania akcji cyklicznych
+		void PushIntoSpawnRequests(CreatureSpawnRequest my_request);
 		void FollowPhysics();
 		void FollowBehavior();
 		void SetBehaviorMode(BehaviorMode behavior_to_be_set);
@@ -166,6 +171,9 @@ class Creature
 		void Resurrect();
 		bool AmIAlive();
 		void CastSpell(SpellName my_spell_name);
+		int TellManaLevel();
+		void SetManaLevel(int new_level);
+		void ChangeManaLevel(int change_amount);
         void PrintStupidThings(Creature* ptr_to_creature);
 
 		//###################
@@ -207,5 +215,21 @@ class Behavior
 		void SetMode(BehaviorMode mode_to_be_set);
 
 };
+
+class Magic
+{
+
+	friend class Creature;
+
+    private:
+		//Spell characteristics: 
+        static std::map<SpellName, int> spell_name_vs_mana_cost;
+
+    public:
+		static bool CastSpell(SpellName desired_name, Creature* ptr_wizard);
+		static bool DoIHaveEnoughMana(SpellName desired_name, Creature* ptr_wizard);
+		static void PaySpellCost(SpellName desired_name, Creature* ptr_wizard);
+};
+
 
 #endif // CREATURE_HPP

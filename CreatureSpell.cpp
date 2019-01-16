@@ -6,3 +6,4 @@ CreatureSpell::CreatureSpell(SpriteType my_initial_type, Coordinates* ptr_my_cen
 	//printf("Spawned CreatureSpell.\n");
 	my_type = cre_spell;
 }
+

@@ -151,6 +151,7 @@
     <ClInclude Include="FactorySpawningLevels.hpp" />
     <ClInclude Include="FactorySpawningSprites.hpp" />
     <ClInclude Include="Game.hpp" />
+    <ClInclude Include="GUI.hpp" />
     <ClInclude Include="Level.hpp" />
     <ClInclude Include="LevelComponent.hpp" />
     <ClInclude Include="LevelComponentCore.hpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="FactorySpawningLevels.cpp" />
     <ClCompile Include="FactorySpawningSprites.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="hello.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelComponent.cpp" />
@@ -202,6 +204,7 @@
     <ClCompile Include="LevelNineMazes.cpp" />
     <ClCompile Include="LevelTest.cpp" />
     <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Magic.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBackground.cpp" />
     <ClCompile Include="SpriteBlackBox.cpp" />

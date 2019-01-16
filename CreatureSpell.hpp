@@ -7,6 +7,7 @@ private:
 	static const SpriteType my_initial_type = spr_black_smoke;
 	//Who cast the spell?
 	Creature* wizard = nullptr;
+
 public:
 	CreatureSpell(SpriteType my_initial_type, Coordinates* ptr_my_center, int hitbox_margin = 10);
 

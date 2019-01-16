@@ -177,6 +177,9 @@
     <ClInclude Include="SpriteExit.hpp">
       <Filter>Header Files\VisualComponents\Sprites</Filter>
     </ClInclude>
+    <ClInclude Include="GUI.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -298,6 +301,12 @@
     </ClCompile>
     <ClCompile Include="SpriteExit.cpp">
       <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="Magic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

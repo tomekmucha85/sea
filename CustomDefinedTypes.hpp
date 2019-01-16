@@ -43,8 +43,7 @@ enum SpriteType { spr_clawy, spr_background, spr_box, spr_black_smoke, spr_vorte
 enum CreatureType { cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc, cre_spell, cre_spell_ball, cre_spell_open_doors, cre_blue_bground };
 
 //Names of spells to be cast - spell is a Creature, offspring of CreatureSpell
-enum SpellName {spell_vortex, spell_open_gate};
-
+enum SpellName {spell_none, spell_vortex, spell_open_gate};
 
 //Types of possible level components
 enum LevelComponentType { levco_maze, levco_powerups, levco_test, levco_core, levco_triggers };
