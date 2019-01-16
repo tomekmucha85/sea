@@ -214,8 +214,10 @@ void Creature::Turn(int turn_angle_degree)
 {
 	//printf("Current angle degree: %d.\n", current_angle_degree);
 	//printf("Turning by %d degrees.\n", turn_angle_degree);
-    current_angle_degree += turn_angle_degree;
+    current_angle_degree += turn_angle_degree * turnSpeed;
     current_angle_degree = NormalizeAngle(current_angle_degree);
+	ptr_creature_visual_component->angle += turn_quant_degree * turnDirection * turnSpeed;
+
 	//printf("Current angle after normalization: %d.\n", current_angle_degree);
 }
 
@@ -251,15 +253,32 @@ int Creature::NormalizeAngle(int angle)
 
 void Creature::TurnRight()
 {
-    Turn(turn_quant_degree);
-	ptr_creature_visual_component->angle += turn_quant_degree;
+	//if (turnDirection == 0)
+		turnDirection = 1;
+   	/*printf("Sprite center: x: %f, y: %f.\n", ptr_creature_visual_component->center.x, ptr_creature_visual_component->center.y);
+    printf("Sprite position: x: %f, y: %f, w: %f, h: %f\n", ptr_creature_visual_component->position.x, ptr_creature_visual_component->position.y,
+		ptr_creature_visual_component->position.w, ptr_creature_visual_component->position.h);
+	printf("Sprite angle: %f.\n", ptr_creature_visual_component->angle);
+	printf("Creature hitbox: x: %f, y: %f, w: %f, h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+	printf("Creature hitbox center: x: %f y: %f.\n", hitbox.x + (hitbox.w /2), hitbox.y + (hitbox.h /2));*/
 }
 
 
 void Creature::TurnLeft()
 {
-    Turn(turn_quant_degree * -1);
-    ptr_creature_visual_component->angle -= turn_quant_degree;
+	//if(turnDirection == 0)
+		turnDirection = -1;
+	/*printf("Sprite center: x: %f, y: %f.\n", ptr_creature_visual_component->center.x, ptr_creature_visual_component->center.y);
+	printf("Sprite position: x: %f, y: %f, w: %f, h: %f\n", ptr_creature_visual_component->position.x, ptr_creature_visual_component->position.y,
+		ptr_creature_visual_component->position.w, ptr_creature_visual_component->position.h);
+	printf("Sprite angle: %f.\n", ptr_creature_visual_component->angle);
+	printf("Creature hitbox: x: %f, y: %f, w: %f, h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+	printf("Creature hitbox center: x: %f y: %f.\n", hitbox.x + (hitbox.w / 2), hitbox.y + (hitbox.h / 2));*/
+}
+
+void Creature::TurnStop() 
+{
+	turnDirection = 0;
 }
 
 void Creature::RemoveNeighbors()
@@ -627,15 +646,6 @@ bool Creature::DoICollideYPlane(double my_y, double my_h, double obs_y, double o
 	}
 }
 
-//**************
-//SPAWN REQUESTS
-//**************
-
-void Creature::PushIntoSpawnRequests(CreatureSpawnRequest my_request)
-{
-	spawn_requests.push_back(my_request);
-}
-
 
 //**************
 //CYCLIC ACTIONS
@@ -684,17 +694,22 @@ bool Creature::AmIAlive()
 
 void Creature::FollowPhysics()
 {
+	// Forward/backward move
 	if (velocity != 0)
 	{
 		double time_passed = Timer::loop_duration;
 		DetermineNextStep(time_passed);
 		Move(next_step.x, next_step.y);
+
 		/*if (this == Creature::ptr_current_main_charater)
 		{
 			printf("Main character has velocity of %f.\n", velocity);
 			printf("Next step x: %f, y: %f.\n");
 		}*/
 	}
+
+	// Rotation
+	Turn(turn_quant_degree * turnDirection);
 }
 
 
@@ -719,22 +734,31 @@ void Creature::FollowBehavior()
 
 void Creature::CastSpell(SpellName my_spell_name)
 {
-	Magic::CastSpell(my_spell_name, this);
-}
+	// #TODO - dorobiæ funkcjê do tworzenia requestów
+	CreatureSpawnRequest spell_request;
+	//#TODO - ucywilizowaæ to mapowanie
+	if (my_spell_name == spell_vortex)
+	{
+		spell_request.type = cre_spell_ball;
+		spell_request.initial_behavior_mode = beh_projectile;
+	}
+	else if (my_spell_name == spell_open_gate)
+	{
+		spell_request.type = cre_spell_open_doors;
+	}
 
-void Creature::ChangeManaLevel(int change_amount)
-{
-	mana += change_amount;
-}
+	int desired_distance = 100;
+	spell_request.mode = center_coordinates;
+	Coordinates center_coordinates = CalculatePointInGivenDistanceFromCreatureCenter(desired_distance);
+	spell_request.initial_center_cooridnates = { center_coordinates.x, center_coordinates.y };
 
-int Creature::TellManaLevel()
-{
-	return mana;
-}
+	printf("Current hero hitbox: x %f y %f w %f h %f.\n ", TellHitbox().x, TellHitbox().y, TellHitbox().w,
+		TellHitbox().h);
 
-void Creature::SetManaLevel(int new_level)
-{
-	mana = new_level;
+	spell_request.initial_angle_degree = TellCurrentAngleDegree();
+	spell_request.insertion_mode = merge;
+
+	spawn_requests.push_back(spell_request);
 }
 
 //********************************************
