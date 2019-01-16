@@ -214,9 +214,10 @@ void Creature::Turn(int turn_angle_degree)
 {
 	//printf("Current angle degree: %d.\n", current_angle_degree);
 	//printf("Turning by %d degrees.\n", turn_angle_degree);
-    current_angle_degree += turn_angle_degree * turnSpeed;
+    // #TODO mno¿yæ przez prêdkoœæ jeszcze przed wywo³aniem funkcji.
+    current_angle_degree += static_cast<int>(turn_angle_degree * turn_speed);
     current_angle_degree = NormalizeAngle(current_angle_degree);
-	ptr_creature_visual_component->angle += turn_quant_degree * turnDirection * turnSpeed;
+	ptr_creature_visual_component->angle += turn_quant_degree * turn_direction * turn_speed;
 
 	//printf("Current angle after normalization: %d.\n", current_angle_degree);
 }
@@ -253,8 +254,8 @@ int Creature::NormalizeAngle(int angle)
 
 void Creature::TurnRight()
 {
-	//if (turnDirection == 0)
-		turnDirection = 1;
+	//if (turn_direction == 0)
+		turn_direction = 1;
    	/*printf("Sprite center: x: %f, y: %f.\n", ptr_creature_visual_component->center.x, ptr_creature_visual_component->center.y);
     printf("Sprite position: x: %f, y: %f, w: %f, h: %f\n", ptr_creature_visual_component->position.x, ptr_creature_visual_component->position.y,
 		ptr_creature_visual_component->position.w, ptr_creature_visual_component->position.h);
@@ -266,8 +267,8 @@ void Creature::TurnRight()
 
 void Creature::TurnLeft()
 {
-	//if(turnDirection == 0)
-		turnDirection = -1;
+	//if(turn_direction == 0)
+		turn_direction = -1;
 	/*printf("Sprite center: x: %f, y: %f.\n", ptr_creature_visual_component->center.x, ptr_creature_visual_component->center.y);
 	printf("Sprite position: x: %f, y: %f, w: %f, h: %f\n", ptr_creature_visual_component->position.x, ptr_creature_visual_component->position.y,
 		ptr_creature_visual_component->position.w, ptr_creature_visual_component->position.h);
@@ -278,7 +279,7 @@ void Creature::TurnLeft()
 
 void Creature::TurnStop() 
 {
-	turnDirection = 0;
+	turn_direction = 0;
 }
 
 void Creature::RemoveNeighbors()
@@ -646,6 +647,15 @@ bool Creature::DoICollideYPlane(double my_y, double my_h, double obs_y, double o
 	}
 }
 
+//**************
+//SPAWN REQUESTS
+//**************
+
+void Creature::PushIntoSpawnRequests(CreatureSpawnRequest my_request)
+{
+	spawn_requests.push_back(my_request);
+}
+
 
 //**************
 //CYCLIC ACTIONS
@@ -709,7 +719,7 @@ void Creature::FollowPhysics()
 	}
 
 	// Rotation
-	Turn(turn_quant_degree * turnDirection);
+	Turn(turn_quant_degree * turn_direction);
 }
 
 
@@ -734,31 +744,22 @@ void Creature::FollowBehavior()
 
 void Creature::CastSpell(SpellName my_spell_name)
 {
-	// #TODO - dorobiæ funkcjê do tworzenia requestów
-	CreatureSpawnRequest spell_request;
-	//#TODO - ucywilizowaæ to mapowanie
-	if (my_spell_name == spell_vortex)
-	{
-		spell_request.type = cre_spell_ball;
-		spell_request.initial_behavior_mode = beh_projectile;
-	}
-	else if (my_spell_name == spell_open_gate)
-	{
-		spell_request.type = cre_spell_open_doors;
-	}
+	Magic::CastSpell(my_spell_name, this);
+}
 
-	int desired_distance = 100;
-	spell_request.mode = center_coordinates;
-	Coordinates center_coordinates = CalculatePointInGivenDistanceFromCreatureCenter(desired_distance);
-	spell_request.initial_center_cooridnates = { center_coordinates.x, center_coordinates.y };
+void Creature::ChangeManaLevel(int change_amount)
+{
+	mana += change_amount;
+}
 
-	printf("Current hero hitbox: x %f y %f w %f h %f.\n ", TellHitbox().x, TellHitbox().y, TellHitbox().w,
-		TellHitbox().h);
+int Creature::TellManaLevel()
+{
+	return mana;
+}
 
-	spell_request.initial_angle_degree = TellCurrentAngleDegree();
-	spell_request.insertion_mode = merge;
-
-	spawn_requests.push_back(spell_request);
+void Creature::SetManaLevel(int new_level)
+{
+	mana = new_level;
 }
 
 //********************************************

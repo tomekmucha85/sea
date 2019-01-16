@@ -86,8 +86,8 @@ class Creature
         float velocity = 0;
 		float default_velocity = 200;
 
-		float turnSpeed = 0.4f; // How fast creature turns around
-		int turnDirection = 0; // -1 = left, 1 = right, 0 = no turning.
+		float turn_speed = 0.4f; // How fast creature turns around
+		int turn_direction = 0; // -1 = left, 1 = right, 0 = no turning.
 
 		VisualComponent* ptr_creature_visual_component = nullptr;
 
