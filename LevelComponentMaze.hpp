@@ -43,6 +43,13 @@ public:
 	bool ValidateMazeArea(PreciseRect maze_area);
 	bool CheckIfNeighbourIsAvailable(Coordinates my_current_cell, Directions my_direction);
 	void RemoveCellWall(Coordinates my_current_cell, Directions my_direction);
+	void DetermineAppropriateSpriteClips(std::vector<std::vector<CreatureType>>* ptr_my_blueprint);
+	//#TODO - przerobiæ na tablicê
+	std::vector<std::vector<CreatureType>> GetBlueptrintElementContextInGivenRadius(
+		std::vector<std::vector<CreatureType>>* ptr_my_blueprintint, 
+		int checked_element_column, 
+		int checked_element_row, 
+		int radius);
 	void VivifyMaze();
 	void CarveExitsFromMaze();
 	void SetBorderState(Directions border_side, bool value);
