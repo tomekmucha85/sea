@@ -219,6 +219,7 @@ int main(int argc, char* args[])
 
 		//#TODO zrobiæ generator Creature, zadbac o destruktor i konstruktor kopiujacy
 		Game::ptr_current_level->RenderAllPresentCreatures();
+		Game::ptr_current_level->RenderGui();
         //Update screen
         SDL_RenderPresent(Game::ptr_screen->renderer);
     }

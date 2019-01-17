@@ -8,6 +8,7 @@
 #include <SpriteBlackSmoke.hpp>
 #include <SpriteVortex.hpp>
 #include <SpriteExit.hpp>
+#include <SpriteGuiManaBar.hpp>
 
 class FactorySpawningSprites
 {

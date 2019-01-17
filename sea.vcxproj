@@ -161,6 +161,7 @@
     <ClInclude Include="LevelNineMazes.hpp" />
     <ClInclude Include="LevelTest.hpp" />
     <ClInclude Include="SpriteExit.hpp" />
+    <ClInclude Include="SpriteGuiManaBar.hpp" />
     <ClInclude Include="TimerInterval.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="Sprite.hpp" />
@@ -211,6 +212,7 @@
     <ClCompile Include="SpriteBlackSmoke.cpp" />
     <ClCompile Include="SpriteClawy.cpp" />
     <ClCompile Include="SpriteExit.cpp" />
+    <ClCompile Include="SpriteGuiManaBar.cpp" />
     <ClCompile Include="SpriteVortex.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="TextureBank.cpp" />

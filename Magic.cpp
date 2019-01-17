@@ -4,8 +4,8 @@
 std::map<SpellName, int> Magic::spell_name_vs_mana_cost = 
 {
 	{spell_none, 0 },
-	{spell_vortex, 10 },
-	{spell_open_gate, 20 }
+	{spell_vortex, 1 },
+	{spell_open_gate, 2 }
 };
 
 bool Magic::CastSpell(SpellName desired_name, Creature* ptr_wizard)
@@ -74,4 +74,5 @@ bool Magic::DoIHaveEnoughMana(SpellName desired_name, Creature* ptr_wizard)
 void Magic::PaySpellCost(SpellName desired_name, Creature* ptr_wizard)
 {
 	ptr_wizard->ChangeManaLevel(spell_name_vs_mana_cost[desired_name]*-1);
+	printf("Current mana level: %d.\n", ptr_wizard->TellManaLevel());
 }

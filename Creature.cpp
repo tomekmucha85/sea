@@ -217,11 +217,10 @@ void Creature::Turn(int turn_angle_degree)
     // #TODO mno¿yæ przez prêdkoœæ jeszcze przed wywo³aniem funkcji.
     current_angle_degree += static_cast<int>(turn_angle_degree * turn_speed);
     current_angle_degree = NormalizeAngle(current_angle_degree);
+	//#TODO - normalizowaæ k¹t tak¿e w przypadku Sprite
 	ptr_creature_visual_component->angle += turn_quant_degree * turn_direction * turn_speed;
-
 	//printf("Current angle after normalization: %d.\n", current_angle_degree);
 }
-
 
 Coordinates Creature::TellNextStep()
 {

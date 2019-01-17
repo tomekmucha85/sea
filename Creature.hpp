@@ -64,7 +64,7 @@ class Creature
 		//Is the creature living? Dead creatures should be deleted in LevelComponent plane
 		bool am_i_alive = true;
 		//How much mana do I have?
-		int mana = 100;
+		int mana = 2;
 		//Requests to spawn other creatures. Requests are collected by LevelComponent
 		std::vector<CreatureSpawnRequest> spawn_requests = {};
 

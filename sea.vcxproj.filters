@@ -180,6 +180,9 @@
     <ClInclude Include="GUI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteGuiManaBar.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -275,9 +278,6 @@
     <ClCompile Include="Level.cpp">
       <Filter>Source Files\Levels</Filter>
     </ClCompile>
-    <ClCompile Include="LevelNineMazes.cpp">
-      <Filter>Source Files\Levels</Filter>
-    </ClCompile>
     <ClCompile Include="LevelTest.cpp">
       <Filter>Source Files\Levels</Filter>
     </ClCompile>
@@ -307,6 +307,12 @@
     </ClCompile>
     <ClCompile Include="GUI.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelNineMazes.cpp">
+      <Filter>Source Files\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteGuiManaBar.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

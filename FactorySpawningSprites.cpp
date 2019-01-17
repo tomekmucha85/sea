@@ -44,6 +44,12 @@ Sprite* FactorySpawningSprites::SpawnSprite(SpriteType desired_type, Coordinates
 		result = new SpriteExit(ptr_center);
 		return result;
 	}
+	else if (desired_type == spr_gui_mana_bar)
+	{
+		//printf("Reqested spr_gui_mana_bar object.\n");
+		result = new SpriteGuiManaBar(ptr_center);
+		return result;
+	}
 	else
 	{
 		//printf("Requested some other object.\n");

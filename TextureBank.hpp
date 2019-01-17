@@ -13,31 +13,34 @@ class TextureBank
         //Variables
         //###################
         std::string path_image_bground = "images/bground.png";
-        Texture* background = NULL;
+        Texture* background = nullptr;
         std::string path_image_clawy = "images/guy.png";
-        Texture* clawy = NULL;
+        Texture* clawy = nullptr;
         std::string path_image_black_box = "images/black_box.png";
-        Texture* black_box = NULL;
+        Texture* black_box = nullptr;
 		std::string path_image_black_smoke = "images/black_smoke.png";
-		Texture* black_smoke = NULL;
+		Texture* black_smoke = nullptr;
 		std::string path_image_wall = "images/walls_48_x_48.png";
-		Texture* purple_vortex = NULL;
+		Texture* purple_vortex = nullptr;
 		std::string path_image_purple_vortex = "images/vortex.png";
-		Texture* wall = NULL;
+		Texture* wall = nullptr;
 		std::string path_image_exit = "images/exit_lit.png";
-		Texture* exit = NULL;
+		Texture* exit = nullptr;
+		std::string path_image_gui_mana_bar = "images/GUI_mana_bar.png";
+		Texture* gui_mana_bar = nullptr;
 
     public:
         //###################
         //Variables
         //###################
-        SDL_Texture* ptr_tex_background = NULL;
-        SDL_Texture* ptr_tex_clawy = NULL;
-        SDL_Texture* ptr_tex_black_box = NULL;
-		SDL_Texture* ptr_tex_black_smoke = NULL;
-		SDL_Texture* ptr_tex_wall = NULL;
-		SDL_Texture* ptr_tex_purple_vortex = NULL;
-		SDL_Texture* ptr_tex_exit = NULL;
+        SDL_Texture* ptr_tex_background = nullptr;
+        SDL_Texture* ptr_tex_clawy = nullptr;
+        SDL_Texture* ptr_tex_black_box = nullptr;
+		SDL_Texture* ptr_tex_black_smoke = nullptr;
+		SDL_Texture* ptr_tex_wall = nullptr;
+		SDL_Texture* ptr_tex_purple_vortex = nullptr;
+		SDL_Texture* ptr_tex_exit = nullptr;
+		SDL_Texture* ptr_tex_gui_mana_bar = nullptr;
         //###################
         //Functions
         //###################

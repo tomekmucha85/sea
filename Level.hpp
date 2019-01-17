@@ -10,6 +10,7 @@
 #include <Creature.hpp>
 #include <LevelComponent.hpp>
 #include <FactorySpawningLevelComponents.hpp>
+#include <GUI.hpp>
 #include <CustomDefinedTypes.hpp>
 
 class Level
@@ -28,6 +29,7 @@ class Level
 		//###################
 		//Variables & const
 		//###################
+		GUI* ptr_gui = nullptr;
         //Map of level components
 		std::map<LevelComponentType, std::vector<LevelComponent*>> level_component_types_vs_level_components = {};
 		//Expressed in map blocks
@@ -54,6 +56,7 @@ class Level
 		FactorySpawningLevelComponents* ptr_components_factory = nullptr;
 		void RenderCreatureVisualComponent(Creature* ptr_my_creature);
 		void RenderAllPresentCreatures();
+		void RenderGui();
 		CreatureType PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures);
 		void SetMapOffsetX(int columns_count, float margin);
 		void SetMapOffsetY(int rows_count, float margin);

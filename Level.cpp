@@ -7,6 +7,7 @@
 Level::Level()
 {
 	CreateComponentsFactory();
+	ptr_gui = new GUI();
 }
 
 //************
@@ -17,6 +18,7 @@ Level::Level()
 Level::~Level()
 {
 	//#TODO Dopracowaæ!
+	delete ptr_gui;
 	delete ptr_components_factory;
 }
 
@@ -141,6 +143,9 @@ void Level::PerformCyclicActions()
 	}
 
 	//Actions on Level Components plane
+
+	//#TODO - zrobiæ to ³adniej
+	ptr_gui->ManageForCreature(Creature::ptr_current_main_charater);
 	MakeLevelComponentsPerformCyclicActions();
 }
 
@@ -217,4 +222,14 @@ void Level::RenderCreatureVisualComponent(Creature* ptr_my_creature)
 		throw std::invalid_argument("Cannot render nullptr!\n");
 	}
 	ptr_my_creature->ptr_creature_visual_component->Render();
+}
+
+void Level::RenderGui()
+{
+	if (ptr_gui == nullptr)
+	{
+		printf("Cannot render nullptr!\n");
+		throw std::invalid_argument("Cannot render nullptr!\n");
+	}
+	ptr_gui->RenderComponents();
 }
