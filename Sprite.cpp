@@ -172,3 +172,8 @@ void Sprite::VortexAnimation()
 {
 	printf("Vortex animation called for Sprite\n");
 }
+
+void Sprite::SetClipAccordingToWallType(WallType my_type)
+{
+	printf("Setting wall clip called for Sprite\n");
+}

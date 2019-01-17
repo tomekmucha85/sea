@@ -95,7 +95,7 @@ void LevelComponentMaze::PrepareMazeGrid()
 }
 
 std::vector<std::vector<CreatureType>> LevelComponentMaze::GetBlueptrintElementContextInGivenRadius(
-	std::vector<std::vector<CreatureType>>* ptr_my_blueprintint,
+	std::vector<std::vector<CreatureType>>* ptr_my_blueprint,
 	int checked_element_column, 
 	int checked_element_row, 
 	int radius)
@@ -106,17 +106,16 @@ std::vector<std::vector<CreatureType>> LevelComponentMaze::GetBlueptrintElementC
 		throw std::invalid_argument("Given radius below 1!\n");
 	}
 
-	int start_row = checked_element_row - radius - 1;
-	int start_column = checked_element_column - radius - 1;
-	printf("Start row is: %d. Start column is %d.\n", start_row, start_column);
+	int start_row = checked_element_row - radius;
+	int start_column = checked_element_column - radius;
 
 	//Determining context
 	std::vector<std::vector<CreatureType>> result = {};
-	for (int current_row = start_row; current_row < start_row + radius*2 + 1; current_row++)
+	for (int current_row = start_row; current_row <= checked_element_row + radius; current_row++)
 	{
 		std::vector<CreatureType> empty_row = {};
 		result.push_back(empty_row);
-		for (int current_column = start_column; current_column < start_column + radius*2 + 1; current_column++)
+		for (int current_column = start_column; current_column <= checked_element_column + radius; current_column++)
 		{
 			//printf("Checking for row: %d column: %d \n", current_row, current_column);
 			CreatureType blueprint_element = cre_none;
@@ -125,21 +124,23 @@ std::vector<std::vector<CreatureType>> LevelComponentMaze::GetBlueptrintElementC
 			    //If we're trying to retrieve blueprint row or column below 0.
 				//printf("Value below 0.\n");
 			}
-			else if (current_column - 1 > ptr_my_blueprintint->operator[](current_row).size())
+			else if (current_column - 1 > static_cast<int>(ptr_my_blueprint->operator[](current_row).size()))
 			{
 				//If we're trying to retrieve blueprint column beyond blueprint radius.
 				//printf("Column value out of range.\n");
+				;
 			}
-			else if (current_row - 1 > ptr_my_blueprintint->size())
+			else if (current_row - 1 > static_cast<int>(ptr_my_blueprint->size()))
 			{
 				//If we're trying to retrieve blueprint row beyond blueprint radius.
-				printf("Row value out of range, cause current row-1 is %d and blueprint size is %d.\n",
-					current_row-1, ptr_my_blueprintint->size());
+				/*printf("Row value out of range, cause current row-1 is %d and blueprint size is %d.\n",
+					current_row-1, static_cast<int>(ptr_my_blueprint->size()));*/
+				;
 			}
 			else
 			{
 				//#TODO - dorobiæ try?
-				blueprint_element = ptr_my_blueprintint->operator[](current_row)[current_column];
+				blueprint_element = ptr_my_blueprint->operator[](current_row)[current_column];
 			}
 			//printf("Will push value %d.\n", blueprint_element);
 			result[static_cast<int>(result.size()-1)].push_back(blueprint_element);
@@ -149,6 +150,7 @@ std::vector<std::vector<CreatureType>> LevelComponentMaze::GetBlueptrintElementC
 	printf("WILL PRINT SURROUNDING OF ELEMENT col: %d row: %d IN MAZE\n", checked_element_column, checked_element_row);
 	printf("Context size: %d.\n", static_cast<int>(result.size()));
 	printf("Given radius was: %d.\n", radius);
+	printf("Start row is: %d. Start column is %d.\n", start_row, start_column);
 
 	for (std::vector<CreatureType> row : result)
 	{
@@ -175,21 +177,21 @@ std::vector<std::vector<CreatureType>> LevelComponentMaze::GetBlueptrintElementC
 void LevelComponentMaze::VivifyMaze()
 //Method spawning creatures according to current maze blueprint.
 {
-	PrintBlueprint();
+	//PrintBlueprint();
 
-	std::vector<std::vector<CreatureType>>context = GetBlueptrintElementContextInGivenRadius(&blueprint,
-		maze_block_width,
-		maze_block_height,
+	/*std::vector<std::vector<CreatureType>>context = GetBlueptrintElementContextInGivenRadius(&blueprint,
+		maze_block_width-1,
+		maze_block_height-1,
 		5);
 	std::vector<std::vector<CreatureType>>context_closer = GetBlueptrintElementContextInGivenRadius(&blueprint,
-		maze_block_width,
-		maze_block_height,
+		maze_block_width-1,
+		maze_block_height-1,
 		1);
 	
 	std::vector<std::vector<CreatureType>>context_0 = GetBlueptrintElementContextInGivenRadius(&blueprint,
 		0,
 		0,
-		1);
+		1);*/
 
 	for (int row = 0; row < maze_rows_count; row++)
 	{

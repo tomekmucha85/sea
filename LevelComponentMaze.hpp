@@ -46,7 +46,7 @@ public:
 	void DetermineAppropriateSpriteClips(std::vector<std::vector<CreatureType>>* ptr_my_blueprint);
 	//#TODO - przerobiæ na tablicê
 	std::vector<std::vector<CreatureType>> GetBlueptrintElementContextInGivenRadius(
-		std::vector<std::vector<CreatureType>>* ptr_my_blueprintint, 
+		std::vector<std::vector<CreatureType>>* ptr_my_blueprint, 
 		int checked_element_column, 
 		int checked_element_row, 
 		int radius);

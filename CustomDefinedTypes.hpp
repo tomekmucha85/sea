@@ -39,6 +39,24 @@ enum BehaviorMode {beh_none, beh_chase_hero, beh_idle, beh_projectile };
 //Sprite names
 enum SpriteType { spr_clawy, spr_background, spr_box, spr_black_smoke, spr_vortex, spr_exit, spr_gui_mana_bar };
 
+//Wall blocks
+enum WallType { 
+	wall_bottom ,
+	wall_corner_bottom_left_inward,
+	wall_corner_bottom_left_outward,
+	wall_corner_bottom_right_inward,
+	wall_corner_bottom_right_outward,
+	wall_left,
+	wall_right,
+	wall_top,
+	wall_top_ending_left,
+	wall_top_ending_right,
+	wall_corner_upper_left_inward,
+	wall_corner_upper_left_outward,
+	wall_corner_upper_right_inward,
+	wall_corner_upper_right_outward,
+};
+
 //cre_none means empty space/no creature present
 enum CreatureType { cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc, cre_spell, cre_spell_ball, cre_spell_open_doors, cre_blue_bground };
 
