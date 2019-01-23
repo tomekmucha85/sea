@@ -44,8 +44,12 @@ public:
 	void SetCenter(Coordinates my_center);
 	virtual void Render() = 0;
 	static void SetScreen(Screen* ptr_my_screen);
-	virtual void SetColor(Color my_color);
 
+	//VIRTUAL FUNCTIONS
+	virtual void SetColor(Color my_color);
+	virtual void SetClipAccordingToWallType(WallType my_type);
+
+	//STATIC HELPERS
 	static Screen* TellScreen();
 	static SDL_Rect ConvertPreciseRectToSdlRect(PreciseRect my_rect);
 	static SDL_Point ConvertCoordinatesToSdlPoint(Coordinates my_coordinates);

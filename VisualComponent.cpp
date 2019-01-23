@@ -133,3 +133,8 @@ void VisualComponent::SetColor(Color my_color)
 {
 	printf("Default implementation of SetColor called!\n");
 }
+
+void VisualComponent::SetClipAccordingToWallType(WallType my_type)
+{
+	printf("Default implementation of SetClipAccordingToWallType called.\n");
+}

@@ -110,6 +110,8 @@ std::vector<std::vector<CreatureType>> LevelComponentMaze::GetBlueptrintElementC
 	int start_column = checked_element_column - radius;
 
 	//Determining context
+	/*printf("Blueprint size: %d rows, %d columns.\n", static_cast<int>(ptr_my_blueprint->size()),
+		static_cast<int>(ptr_my_blueprint->operator[](0).size()));*/
 	std::vector<std::vector<CreatureType>> result = {};
 	for (int current_row = start_row; current_row <= checked_element_row + radius; current_row++)
 	{
@@ -124,29 +126,31 @@ std::vector<std::vector<CreatureType>> LevelComponentMaze::GetBlueptrintElementC
 			    //If we're trying to retrieve blueprint row or column below 0.
 				//printf("Value below 0.\n");
 			}
-			else if (current_column - 1 > static_cast<int>(ptr_my_blueprint->operator[](current_row).size()))
+			//ORDER OF CONDITIONS IS IMPORTANT
+			else if (current_row >= static_cast<int>(ptr_my_blueprint->size()))
+			{
+				//If we're trying to retrieve blueprint row beyond blueprint radius.
+				/*printf("Row value out of range, cause current row-1 is %d and blueprint size is %d.\n",
+					current_row - 1, static_cast<int>(ptr_my_blueprint->size()));*/
+				;
+			}
+			else if (current_column >= static_cast<int>(ptr_my_blueprint->operator[](current_row).size()))
 			{
 				//If we're trying to retrieve blueprint column beyond blueprint radius.
 				//printf("Column value out of range.\n");
 				;
 			}
-			else if (current_row - 1 > static_cast<int>(ptr_my_blueprint->size()))
-			{
-				//If we're trying to retrieve blueprint row beyond blueprint radius.
-				/*printf("Row value out of range, cause current row-1 is %d and blueprint size is %d.\n",
-					current_row-1, static_cast<int>(ptr_my_blueprint->size()));*/
-				;
-			}
 			else
 			{
 				//#TODO - dorobiæ try?
+				//printf("Row and column value in allowed range.\n");
 				blueprint_element = ptr_my_blueprint->operator[](current_row)[current_column];
 			}
 			//printf("Will push value %d.\n", blueprint_element);
 			result[static_cast<int>(result.size()-1)].push_back(blueprint_element);
 		}
 	}
-
+/*
 	printf("WILL PRINT SURROUNDING OF ELEMENT col: %d row: %d IN MAZE\n", checked_element_column, checked_element_row);
 	printf("Context size: %d.\n", static_cast<int>(result.size()));
 	printf("Given radius was: %d.\n", radius);
@@ -169,10 +173,43 @@ std::vector<std::vector<CreatureType>> LevelComponentMaze::GetBlueptrintElementC
 	}
 	printf("\n");
 	printf("PRINTED SURROUNDING OF ELEMENT IN MAZE\n");
-
+*/
 	return result;
 }
 
+void LevelComponentMaze::SetAppropriateSpriteClips(std::vector<std::vector<CreatureType>>* ptr_my_blueprint, int column, int row, Creature* ptr_creature)
+{
+	std::vector<std::vector<CreatureType>> my_surrounding = GetBlueptrintElementContextInGivenRadius(ptr_my_blueprint, column, row, 1);
+	if (my_surrounding == pattern_upper_corner_left)
+	{
+		ptr_creature->ptr_creature_visual_component->SetClipAccordingToWallType(wall_corner_upper_left_inward);
+		//printf("Upper left corner recognized!\n");
+	}
+	else if (my_surrounding == pattern_upper_corner_right)
+	{
+		ptr_creature->ptr_creature_visual_component->SetClipAccordingToWallType(wall_corner_upper_right_inward);
+		//printf("Upper right corner recognized!\n");
+	}
+	else if (my_surrounding == pattern_bottom_corner_left)
+	{
+		ptr_creature->ptr_creature_visual_component->SetClipAccordingToWallType(wall_corner_bottom_left_inward);
+		//printf("Upper left corner recognized!\n");
+	}
+	else if (my_surrounding == pattern_bottom_corner_right)
+	{
+		ptr_creature->ptr_creature_visual_component->SetClipAccordingToWallType(wall_corner_bottom_right_inward);
+		//printf("Upper right corner recognized!\n");
+	}
+	else if (my_surrounding == pattern_bottom_vertical)
+	{
+		ptr_creature->ptr_creature_visual_component->SetClipAccordingToWallType(wall_left);
+		//printf("Upper right corner recognized!\n");
+	}
+	else
+	{
+		;
+	}
+}
 
 void LevelComponentMaze::VivifyMaze()
 //Method spawning creatures according to current maze blueprint.
@@ -202,7 +239,8 @@ void LevelComponentMaze::VivifyMaze()
 			{
 				Coordinates my_position = { TellComponentArea().x + (column*map_block_width), 
 					TellComponentArea().y +(row*map_block_width) };
-				AddCreature(my_type, &my_position, merge);
+				Creature* ptr_new_creature = AddCreature(my_type, &my_position, merge);
+				SetAppropriateSpriteClips(&blueprint, column, row, ptr_new_creature);
 			}
 		}
 	}

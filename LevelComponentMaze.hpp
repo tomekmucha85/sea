@@ -28,6 +28,68 @@ private:
 	bool northern_border = true;
 	bool southern_border = true;
 
+	//Patterns of maze elements
+	/*
+	    __
+	   |
+	
+	*/
+	std::vector<std::vector<CreatureType>> pattern_upper_corner_left =
+	{
+		{cre_none, cre_none,       cre_none},
+	    {cre_none, cre_flying_box, cre_flying_box},
+	    {cre_none, cre_flying_box, cre_none}
+	};
+
+	/*
+	  __
+        |
+
+   */
+	std::vector<std::vector<CreatureType>> pattern_upper_corner_right =
+	{
+		{cre_none,       cre_none,       cre_none},
+		{cre_flying_box, cre_flying_box, cre_none},
+		{cre_none,       cre_flying_box, cre_none}
+	};
+
+	/*
+
+	|__
+
+   */
+	std::vector<std::vector<CreatureType>> pattern_bottom_corner_left =
+	{
+		{cre_none,       cre_flying_box,       cre_none},
+		{cre_none,       cre_flying_box,       cre_flying_box},
+		{cre_none,       cre_none,             cre_none}
+	};
+
+
+	/*
+
+	__|
+
+   */
+	std::vector<std::vector<CreatureType>> pattern_bottom_corner_right =
+	{
+		{cre_none,       cre_flying_box,       cre_none},
+		{cre_flying_box, cre_flying_box,       cre_none},
+		{cre_none,       cre_none,             cre_none}
+	};
+
+	/*
+	|
+	|
+	|
+   */
+	std::vector<std::vector<CreatureType>> pattern_bottom_vertical =
+	{
+		{cre_none,       cre_flying_box,       cre_none},
+		{cre_none,       cre_flying_box,       cre_none},
+		{cre_none,       cre_flying_box,       cre_none}
+	};
+
 public:
 	LevelComponentMaze(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components,
 		PreciseRect my_component_area = { 0,0,0,0 });
@@ -43,7 +105,7 @@ public:
 	bool ValidateMazeArea(PreciseRect maze_area);
 	bool CheckIfNeighbourIsAvailable(Coordinates my_current_cell, Directions my_direction);
 	void RemoveCellWall(Coordinates my_current_cell, Directions my_direction);
-	void DetermineAppropriateSpriteClips(std::vector<std::vector<CreatureType>>* ptr_my_blueprint);
+	void SetAppropriateSpriteClips(std::vector<std::vector<CreatureType>>* ptr_my_blueprint, int column, int row, Creature* ptr_creature);
 	//#TODO - przerobiæ na tablicê
 	std::vector<std::vector<CreatureType>> GetBlueptrintElementContextInGivenRadius(
 		std::vector<std::vector<CreatureType>>* ptr_my_blueprint, 

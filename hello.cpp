@@ -209,6 +209,10 @@ int main(int argc, char* args[])
 			{
 				Creature::ptr_current_main_charater->CastSpell(spell_open_gate);
 			}
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_r && event_handler.key.repeat == 0)
+			{
+				Creature::ptr_current_main_charater->ThrustTowardsPoint({320,240});
+			}
         }
 
 		//Perform cyclic actions from current level

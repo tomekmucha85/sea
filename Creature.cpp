@@ -204,12 +204,6 @@ void Creature::InitializeHitbox(PreciseRect sprite_position, int margin_percent)
 //MOVEMENT
 //********
 
-double Creature::DegreeToRadian (int angle_degree)
-{
-    double angle_radian = (angle_degree * PI) / 180;
-    return angle_radian;
-}
-
 void Creature::Turn(int turn_angle_degree)
 {
 	//printf("Current angle degree: %d.\n", current_angle_degree);
@@ -341,7 +335,7 @@ std::vector<Creature*> Creature::FindCollisionsInSet(std::vector<Creature*>* ptr
 void Creature::DetermineNextStep(double time_passed)
 {
 	//printf("Time passed: %f.\n", time_passed);
-	double current_angle_radian = DegreeToRadian(current_angle_degree);
+	double current_angle_radian = Angle::DegreeToRadian(current_angle_degree);
 	                                                             //Miliseconds into seconds
 	double x_shift_dbl = sin(current_angle_radian) * velocity * (time_passed * 0.001);
 	double y_shift_dbl = cos(current_angle_radian) * velocity * (time_passed * 0.001);
@@ -458,6 +452,47 @@ void Creature::ThrustBackward()
 	SetVelocity(-default_velocity);
 }
 
+void Creature::ThrustTowardsPoint(Coordinates destination)
+{
+	//int desired_angle = 0;
+
+	Coordinates my_center = TellCenterPoint();
+	//Vector pointing north
+	MathVector* ptr_vector_pointing_north = new MathVector(my_center.x, my_center.y, my_center.x, my_center.y - 100);
+	//Vector pointing towards given point
+	MathVector* ptr_vector_pointing_towards_given_point = new MathVector(my_center.x, my_center.y, destination.x, destination.y);
+	MathVectorValue vector_pointing_north_value = ptr_vector_pointing_north->TellValue();
+	MathVectorValue vector_pointing_towards_given_point_value = ptr_vector_pointing_towards_given_point->TellValue();
+	double vector_pointing_north_len = ptr_vector_pointing_north->TellLength();
+	double vector_pointing_towards_given_point_len = ptr_vector_pointing_towards_given_point->TellLength();
+	double vec_product = MathVector::ScalarProduct(*ptr_vector_pointing_north, *ptr_vector_pointing_towards_given_point);
+
+	double angle_between_vectors_radian = MathVector::TellRadianAngleBetweenVectors(*ptr_vector_pointing_north, *ptr_vector_pointing_towards_given_point);
+    
+	printf("Current position: x: %f y: %f.\n", my_center.x, my_center.y);
+	printf("North pointing vector: value: x: %f y: %f len: %f x1: %f x2: %f y1: %f y2: %f \n", 
+		vector_pointing_north_value.x,
+		vector_pointing_north_value.y,
+        ptr_vector_pointing_north->TellLength(),
+		ptr_vector_pointing_north->TellStartingX(),
+		ptr_vector_pointing_north->TellStartingX() + ptr_vector_pointing_north->TellValue().x,
+		ptr_vector_pointing_north->TellStartingY(),
+		ptr_vector_pointing_north->TellStartingY() + ptr_vector_pointing_north->TellValue().y);
+	printf("Vector pointing in given direction: value: x: %f y: %f len: %f x1: %f x2: %f y1: %f y2: %f \n",
+		vector_pointing_towards_given_point_value.x,
+		vector_pointing_towards_given_point_value.y,
+		ptr_vector_pointing_towards_given_point->TellLength(),
+		ptr_vector_pointing_towards_given_point->TellStartingX(),
+		ptr_vector_pointing_towards_given_point->TellStartingX() + ptr_vector_pointing_towards_given_point->TellValue().x,
+		ptr_vector_pointing_towards_given_point->TellStartingY(),
+		ptr_vector_pointing_towards_given_point->TellStartingY() + ptr_vector_pointing_towards_given_point->TellValue().y);
+	printf("Calculated angle in radian: %f.\n", angle_between_vectors_radian);
+	printf("Calculated angle in degrees: %d.\n", Angle::RadianToDegree(angle_between_vectors_radian));
+	printf("Calculated true angle in degrees: %d.\n", 360 - Angle::RadianToDegree(angle_between_vectors_radian));
+	delete ptr_vector_pointing_north;
+	delete ptr_vector_pointing_towards_given_point;
+}
+
 void Creature::SetVelocity(float my_velocity)
 {
 	velocity = my_velocity;
@@ -468,7 +503,7 @@ bool Creature::Strafe(int sidestep_angle)
 {
 	bool did_i_move_successfully = true;
     Coordinates next_step_cache = next_step;
-    double strafing_angle = DegreeToRadian(current_angle_degree+sidestep_angle);
+    double strafing_angle = Angle::DegreeToRadian(current_angle_degree+sidestep_angle);
     double x_shift_dbl = sin(strafing_angle) * velocity * Timer::loop_duration;
     double y_shift_dbl = cos(strafing_angle) * velocity * Timer::loop_duration;
     next_step.x = (int) x_shift_dbl;
@@ -498,6 +533,12 @@ int Creature::TellCurrentAngleDegree()
 	return current_angle_degree;
 }
 
+Coordinates Creature::TellCenterPoint()
+{
+	Coordinates result = {hitbox.x+(hitbox.w/2), hitbox.y+(hitbox.w/2)};
+	return result;
+}
+
 void Creature::SetAngleDegree(int my_degree)
 {
 	current_angle_degree = my_degree;
@@ -510,7 +551,7 @@ Coordinates Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned i
 	double creature_center_x = current_coordinates.x + (current_coordinates.w / 2);
 	double creature_center_y = current_coordinates.y + (current_coordinates.h / 2);
 	int current_angle_degree = TellCurrentAngleDegree();
-	double current_angle_radian = DegreeToRadian(current_angle_degree);
+	double current_angle_radian = Angle::DegreeToRadian(current_angle_degree);
 	/*
 	
 	Notice, that the grid is as following:

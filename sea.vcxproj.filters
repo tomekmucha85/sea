@@ -183,6 +183,9 @@
     <ClInclude Include="SpriteGuiManaBar.hpp">
       <Filter>Header Files\VisualComponents\Sprites</Filter>
     </ClInclude>
+    <ClInclude Include="CommonMath.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -313,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="SpriteGuiManaBar.cpp">
       <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonMath.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

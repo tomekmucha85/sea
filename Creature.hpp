@@ -16,6 +16,7 @@
 #include <VectorDrawing.hpp>
 #include <CustomDefinedTypes.hpp>
 #include <Timer.hpp>
+#include <CommonMath.hpp>
 
 
 class Behavior;
@@ -32,8 +33,6 @@ class Creature
         //###################
 		// Pointer to sprites factory
 		FactorySpawningSprites* ptr_sprites_factory = nullptr;
-        //Guess what
-        const double PI = 3.14159265;
         //Is creature an obstacle?
         bool is_obstacle = true;
         //How many degrees will the creature turn in a single turn function call
@@ -72,7 +71,6 @@ class Creature
         //Functions
         //###################
 
-        double DegreeToRadian (int angle_degree);
         int NormalizeAngle(int angle);
         void InitializeHitbox(PreciseRect sprite_position, int margin_percent = 0);
 
@@ -134,15 +132,15 @@ class Creature
         bool ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool check_collisions = true);
         void MoveComponents(double x, double y);
 		void MoveVisualComponent(double x, double y);
-        //void MoveSprite(double x, double y);
-		//void MoveVector(double x, double y);
         void MoveHitbox(double x, double y);
         void ThrustForward();
         void ThrustBackward();
+		void ThrustTowardsPoint(Coordinates destination);
         bool Strafe(int sidestep_angle);
         bool StrafeLeft();
         bool StrafeRight();
 		int TellCurrentAngleDegree();
+		Coordinates TellCenterPoint();
 		Coordinates TellNextStep();
 		void SetAngleDegree(int my_degree);
 		Coordinates CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance);
