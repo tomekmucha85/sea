@@ -468,6 +468,23 @@ void Creature::ThrustTowardsPoint(Coordinates destination)
 	double vec_product = MathVector::ScalarProduct(*ptr_vector_pointing_north, *ptr_vector_pointing_towards_given_point);
 
 	double angle_between_vectors_radian = MathVector::TellRadianAngleBetweenVectors(*ptr_vector_pointing_north, *ptr_vector_pointing_towards_given_point);
+	int angle_between_vectors_degrees = Angle::RadianToDegree(angle_between_vectors_radian);
+	
+	int real_angle_between_vectors_degrees = 0;
+	if (ptr_vector_pointing_towards_given_point->TellValue().x <= 0)
+	{
+	    real_angle_between_vectors_degrees = 360 - angle_between_vectors_degrees;
+	}
+	else
+	{
+		real_angle_between_vectors_degrees = angle_between_vectors_degrees;
+	}
+
+
+	if (current_angle_degree != real_angle_between_vectors_degrees)
+	{
+		SetAngleDegree(real_angle_between_vectors_degrees);
+	}
     
 	printf("Current position: x: %f y: %f.\n", my_center.x, my_center.y);
 	printf("North pointing vector: value: x: %f y: %f len: %f x1: %f x2: %f y1: %f y2: %f \n", 
@@ -487,8 +504,8 @@ void Creature::ThrustTowardsPoint(Coordinates destination)
 		ptr_vector_pointing_towards_given_point->TellStartingY(),
 		ptr_vector_pointing_towards_given_point->TellStartingY() + ptr_vector_pointing_towards_given_point->TellValue().y);
 	printf("Calculated angle in radian: %f.\n", angle_between_vectors_radian);
-	printf("Calculated angle in degrees: %d.\n", Angle::RadianToDegree(angle_between_vectors_radian));
-	printf("Calculated true angle in degrees: %d.\n", 360 - Angle::RadianToDegree(angle_between_vectors_radian));
+	printf("Calculated angle in degrees: %d.\n", angle_between_vectors_degrees);
+	printf("Calculated true angle in degrees: %d.\n", real_angle_between_vectors_degrees);
 	delete ptr_vector_pointing_north;
 	delete ptr_vector_pointing_towards_given_point;
 }
@@ -542,6 +559,7 @@ Coordinates Creature::TellCenterPoint()
 void Creature::SetAngleDegree(int my_degree)
 {
 	current_angle_degree = my_degree;
+	ptr_creature_visual_component->angle = my_degree;
 }
 
 Coordinates Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance)

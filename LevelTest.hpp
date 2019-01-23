@@ -8,6 +8,7 @@ class LevelTest : public Level
 
     public:
 		LevelTest();
+		Creature* ptr_test_creature = nullptr;
 };
 
 #endif //LEVEL_TEST_HPP

@@ -57,6 +57,7 @@ double MathVector::ScalarProduct(MathVector a, MathVector b)
 double MathVector::TellRadianAngleBetweenVectors(MathVector a, MathVector b)
 {
 	double cosinus_between_vectors = ScalarProduct(a,b) / (a.TellLength() * b.TellLength());
+	double angle = acos(cosinus_between_vectors);
 	return acos(cosinus_between_vectors);
 }
 

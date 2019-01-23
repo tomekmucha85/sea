@@ -8,6 +8,7 @@
 #include <IedkErrorCode.h>
 #include <Game.hpp>
 #include <Level.hpp>
+#include <LevelTest.hpp>
 #include <LevelNineMazes.hpp>
 #include <Screen.hpp>
 #include <Texture.hpp>
@@ -72,9 +73,9 @@ int main(int argc, char* args[])
 
 	//EMOTIV_END
 
-	Level* first_level = Game::ptr_levels_factory->SpawnLevel(level_ninemazes);
-	//Level* test_level = Game::ptr_levels_factory->SpawnLevel(level_test);
-	Game::SetCurrentLevel(first_level);
+	//Level* first_level = Game::ptr_levels_factory->SpawnLevel(level_ninemazes);
+	Level* test_level = Game::ptr_levels_factory->SpawnLevel(level_test);
+	Game::SetCurrentLevel(test_level);
 
 	int looped_events = static_cast<int>(Game::ptr_current_level->cyclic_actions.size());
 	printf("There are %d actions present in current event loop.\n", looped_events);
@@ -211,7 +212,7 @@ int main(int argc, char* args[])
 			}
 			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_r && event_handler.key.repeat == 0)
 			{
-				Creature::ptr_current_main_charater->ThrustTowardsPoint({320,240});
+				Creature::ptr_current_main_charater->ThrustTowardsPoint(static_cast<LevelTest*>(test_level)->ptr_test_creature->TellCenterPoint());
 			}
         }
 
