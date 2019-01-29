@@ -72,3 +72,35 @@ int Angle::RadianToDegree(double angle_radian)
 	int angle_degree = static_cast<int>((angle_radian * 180) / PI);
 	return angle_degree;
 }
+
+//Preventing angle from exceeding 360 degrees
+
+int Angle::NormalizeAngle(int angle)
+{
+	if (angle < 0)
+	{
+		angle = 360 + angle;
+	}
+	else if (angle >= 360)
+	{
+		angle = 360 - angle;
+	}
+	else if (angle >= 2 * 360 || angle <= -2 * 360)
+	{
+		printf("Angle exceeds 360 twice! Something went wrong.\n");
+		throw std::invalid_argument("Angle outside acceptable range.\n");
+	}
+	else
+	{
+		;
+	}
+	return angle;
+}
+
+double Distance::CalculateDistanceBetweenPoints(Coordinates a, Coordinates b)
+{
+	double distance_x = std::abs(a.x - b.x);
+	double distance_y = std::abs(a.y - b.y);
+	double distance = sqrt(pow(distance_x,2) + pow(distance_y,2));
+	return distance;
+}

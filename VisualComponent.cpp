@@ -74,6 +74,17 @@ void VisualComponent::SetCenter(Coordinates my_center)
 	center = my_center;
 }
 
+void VisualComponent::SetAngleDegrees(int my_angle)
+{
+	angle = Angle::NormalizeAngle(my_angle);
+}
+
+void VisualComponent::TurnByAngleDegrees(int my_angle)
+{
+	angle += my_angle;
+	angle = Angle::NormalizeAngle(angle);
+}
+
 void VisualComponent::Move(double step_x, double step_y)
 {
 	position.x += step_x;

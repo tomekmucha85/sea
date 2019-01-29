@@ -16,6 +16,8 @@
 #include <VectorDrawing.hpp>
 #include <CustomDefinedTypes.hpp>
 #include <Timer.hpp>
+#include <Navigator.hpp>
+#include <FactorySpawningNavigators.hpp>
 #include <CommonMath.hpp>
 
 
@@ -71,7 +73,7 @@ class Creature
         //Functions
         //###################
 
-        int NormalizeAngle(int angle);
+
         void InitializeHitbox(PreciseRect sprite_position, int margin_percent = 0);
 
     public:
@@ -81,10 +83,10 @@ class Creature
         //###################
 		// #TODO - daæ inny typ?
 		CreatureType my_type = cre_none;
-        float velocity = 0;
-		float default_velocity = 200;
+        double velocity = 0;
+		double default_velocity = 100;
 
-		float turn_speed = 0.4f; // How fast creature turns around
+		double turn_speed = 0.4; // How fast creature turns around
 		int turn_direction = 0; // -1 = left, 1 = right, 0 = no turning.
 
 		VisualComponent* ptr_creature_visual_component = nullptr;
@@ -110,8 +112,6 @@ class Creature
 		Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin = 10);
 		~Creature();
 		void SetMyVisualComponent(VisualComponent* ptr_my_visual_component);
-		//void SetMySprite(Sprite* ptr_my_sprite);
-		//void SetMyVector(SDL_Rect* ptr_my_area);
 		void SetMyRenderLayer(int layer_number);
 		int TellRenderLayer();
 		void MakeMeObstacle();
@@ -128,13 +128,15 @@ class Creature
 		std::vector<Creature*> FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set, int radius = NULL);
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
-		void SetVelocity(float my_velocity);
+		void SetVelocity(double my_velocity);
         bool ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool check_collisions = true);
         void MoveComponents(double x, double y);
 		void MoveVisualComponent(double x, double y);
+		void MoveBehaviorComponent(double x, double y);
         void MoveHitbox(double x, double y);
-        void ThrustForward();
-        void ThrustBackward();
+        void ThrustForward(double velocity=NULL);
+        void ThrustBackward(double velocity=NULL);
+		void TurnTowardsPoint(Coordinates point);
 		void ThrustTowardsPoint(Coordinates destination);
         bool Strafe(int sidestep_angle);
         bool StrafeLeft();
@@ -211,10 +213,17 @@ class Behavior
 
     private:
 		BehaviorMode mode = beh_idle;
+		//Object generating navigators
+		FactorySpawningNavigators* ptr_navigators_factory = nullptr;
+		//Object generating waypoints
+		Navigator* ptr_navigator = nullptr;
 
     public:
+		Behavior();
+		~Behavior();
 		void WhatToDo(Creature* my_creature);
 		void SetMode(BehaviorMode mode_to_be_set);
+		void Move(Coordinates movement);
 
 };
 

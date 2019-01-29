@@ -150,6 +150,7 @@
     <ClInclude Include="CreatureFlyingBox.hpp" />
     <ClInclude Include="FactorySpawningLevelComponents.hpp" />
     <ClInclude Include="FactorySpawningLevels.hpp" />
+    <ClInclude Include="FactorySpawningNavigators.hpp" />
     <ClInclude Include="FactorySpawningSprites.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GUI.hpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="LevelComponentTriggers.hpp" />
     <ClInclude Include="LevelNineMazes.hpp" />
     <ClInclude Include="LevelTest.hpp" />
+    <ClInclude Include="Navigator.hpp" />
     <ClInclude Include="SpriteExit.hpp" />
     <ClInclude Include="SpriteGuiManaBar.hpp" />
     <ClInclude Include="TimerInterval.hpp" />
@@ -194,6 +196,7 @@
     <ClCompile Include="CreatureFlyingBox.cpp" />
     <ClCompile Include="FactorySpawningLevelComponents.cpp" />
     <ClCompile Include="FactorySpawningLevels.cpp" />
+    <ClCompile Include="FactorySpawningNavigators.cpp" />
     <ClCompile Include="FactorySpawningSprites.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GUI.cpp" />
@@ -206,6 +209,7 @@
     <ClCompile Include="LevelComponentTriggers.cpp" />
     <ClCompile Include="LevelNineMazes.cpp" />
     <ClCompile Include="LevelTest.cpp" />
+    <ClCompile Include="Navigator.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Magic.cpp" />
     <ClCompile Include="Sprite.cpp" />

@@ -67,6 +67,7 @@ Creature::~Creature()
 	if (ptr_sprites_factory != nullptr)
 	{
 		delete ptr_sprites_factory;
+		delete ptr_behavior;
 	}
 }
 
@@ -210,9 +211,8 @@ void Creature::Turn(int turn_angle_degree)
 	//printf("Turning by %d degrees.\n", turn_angle_degree);
     // #TODO mno¿yæ przez prêdkoœæ jeszcze przed wywo³aniem funkcji.
     current_angle_degree += static_cast<int>(turn_angle_degree * turn_speed);
-    current_angle_degree = NormalizeAngle(current_angle_degree);
-	//#TODO - normalizowaæ k¹t tak¿e w przypadku Sprite
-	ptr_creature_visual_component->angle += turn_quant_degree * turn_direction * turn_speed;
+	current_angle_degree = Angle::NormalizeAngle(current_angle_degree);
+	ptr_creature_visual_component->TurnByAngleDegrees(static_cast<int>(turn_quant_degree * turn_direction * turn_speed));
 	//printf("Current angle after normalization: %d.\n", current_angle_degree);
 }
 
@@ -221,29 +221,6 @@ Coordinates Creature::TellNextStep()
 	return next_step;
 }
 
-//Preventing angle from exceeding 360 degrees
-
-int Creature::NormalizeAngle(int angle)
-{
-	if (angle < 0)
-	{
-		angle = 360 + angle;
-	}
-	else if (angle >= 360)
-	{
-		angle = 360 - angle;
-	}
-	else if (angle >= 2 * 360 || angle <= -2 * 360)
-	{
-		printf("Angle exceeds 360 twice! Something went wrong.\n");
-		throw std::invalid_argument("Angle outside acceptable range.\n");
-	}
-	else
-	{
-		;
-	}
-    return angle;
-}
 
 void Creature::TurnRight()
 {
@@ -296,18 +273,13 @@ Only objects with hitboxes within default_neighbor_radius will be checked.*/
 		//printf("Radius equals %d.\n", radius);
 	}
 	//printf("Set to be examined is sized %d.\n", ptr_my_creatures_set->size());
-	double my_middle_x = this->hitbox.x + (this->hitbox.w / 2);
-	double my_middle_y = this->hitbox.y + (this->hitbox.h / 2);
+	Coordinates my_center = TellCenterPoint();
 	for (Creature* ptr_creature : *ptr_my_creatures_set)
 	{
-		double creature_middle_x = ptr_creature->hitbox.x + (ptr_creature->hitbox.w / 2);
-		double creature_middle_y = ptr_creature->hitbox.y + (ptr_creature->hitbox.h / 2);
-		double distance_x = std::abs(creature_middle_x - my_middle_x);
-		double distance_y = std::abs(creature_middle_y - my_middle_y);
-		double distance = sqrt((distance_x * distance_x) + (distance_y*distance_y));
-		//printf("Distance is: x: %f y: %f, overall: %f, neighbor radius is: %d\n", distance_x, distance_y, distance, default_neighbor_radius);
+		Coordinates creatures_center = ptr_creature->TellCenterPoint();
+		double distance = Distance::CalculateDistanceBetweenPoints(my_center, creatures_center);
 
-		if (distance <= radius)
+		if (static_cast<int>(distance) <= radius)
 		{
 			result.push_back(ptr_creature);
 		}
@@ -334,6 +306,7 @@ std::vector<Creature*> Creature::FindCollisionsInSet(std::vector<Creature*>* ptr
 
 void Creature::DetermineNextStep(double time_passed)
 {
+	//#TODO - przerobiæ next_step na wektor
 	//printf("Time passed: %f.\n", time_passed);
 	double current_angle_radian = Angle::DegreeToRadian(current_angle_degree);
 	                                                             //Miliseconds into seconds
@@ -372,6 +345,7 @@ bool Creature::Move(double x, double y)
             if (ptr_creature != this) /* Prevents moving the main character. */
             {
                 ptr_creature->ShiftPositionAndRevertIfCollisionOccured(-x,-y,false);
+				ptr_creature->MoveBehaviorComponent(-x, -y);
             }
         }
 		//printf("Moving all map entities by x: %f, y: %f.\n", -x, -y);
@@ -441,76 +415,79 @@ void Creature::MoveHitbox(double x, double y)
 		hitbox.y - this->ptr_creature_visual_component->position.y);*/
 }
 
-void Creature::ThrustForward()
+void Creature::MoveBehaviorComponent(double x, double y)
 {
-	SetVelocity(default_velocity);
+	if (ptr_behavior != nullptr)
+	{
+		//#TODO przerobiæ wszystkie funkcje Movexxx tak, by przyjmowa³y Coordinates.
+		ptr_behavior->Move({ x,y });
+	}
 }
 
-void Creature::ThrustBackward()
+void Creature::ThrustForward(double velocity)
 {
-
-	SetVelocity(-default_velocity);
+	if (velocity)
+	{
+		SetVelocity(velocity);
+	}
+	else
+	{
+		SetVelocity(default_velocity);
+	}
 }
 
-void Creature::ThrustTowardsPoint(Coordinates destination)
+void Creature::ThrustBackward(double velocity)
 {
-	//int desired_angle = 0;
+	if (velocity)
+	{
+		SetVelocity(-velocity);
+	}
+	else
+	{
+		SetVelocity(-default_velocity);
+	}
+}
 
+void Creature::TurnTowardsPoint(Coordinates point)
+{
 	Coordinates my_center = TellCenterPoint();
+	//printf("Running towards: x: %f, y: %f.\n", point.x, point.y);
 	//Vector pointing north
 	MathVector* ptr_vector_pointing_north = new MathVector(my_center.x, my_center.y, my_center.x, my_center.y - 100);
 	//Vector pointing towards given point
-	MathVector* ptr_vector_pointing_towards_given_point = new MathVector(my_center.x, my_center.y, destination.x, destination.y);
-	MathVectorValue vector_pointing_north_value = ptr_vector_pointing_north->TellValue();
-	MathVectorValue vector_pointing_towards_given_point_value = ptr_vector_pointing_towards_given_point->TellValue();
-	double vector_pointing_north_len = ptr_vector_pointing_north->TellLength();
-	double vector_pointing_towards_given_point_len = ptr_vector_pointing_towards_given_point->TellLength();
-	double vec_product = MathVector::ScalarProduct(*ptr_vector_pointing_north, *ptr_vector_pointing_towards_given_point);
+	MathVector* ptr_vector_pointing_towards_given_point = new MathVector(my_center.x, my_center.y, point.x, point.y);
 
 	double angle_between_vectors_radian = MathVector::TellRadianAngleBetweenVectors(*ptr_vector_pointing_north, *ptr_vector_pointing_towards_given_point);
 	int angle_between_vectors_degrees = Angle::RadianToDegree(angle_between_vectors_radian);
 	
+	//Calculate if angle should be positive or negative
 	int real_angle_between_vectors_degrees = 0;
 	if (ptr_vector_pointing_towards_given_point->TellValue().x <= 0)
 	{
-	    real_angle_between_vectors_degrees = 360 - angle_between_vectors_degrees;
+		real_angle_between_vectors_degrees = 360 - angle_between_vectors_degrees;
 	}
 	else
 	{
-		real_angle_between_vectors_degrees = angle_between_vectors_degrees;
+	    real_angle_between_vectors_degrees = angle_between_vectors_degrees;
 	}
 
-
+	//Set desired angle
 	if (current_angle_degree != real_angle_between_vectors_degrees)
 	{
 		SetAngleDegree(real_angle_between_vectors_degrees);
 	}
-    
-	printf("Current position: x: %f y: %f.\n", my_center.x, my_center.y);
-	printf("North pointing vector: value: x: %f y: %f len: %f x1: %f x2: %f y1: %f y2: %f \n", 
-		vector_pointing_north_value.x,
-		vector_pointing_north_value.y,
-        ptr_vector_pointing_north->TellLength(),
-		ptr_vector_pointing_north->TellStartingX(),
-		ptr_vector_pointing_north->TellStartingX() + ptr_vector_pointing_north->TellValue().x,
-		ptr_vector_pointing_north->TellStartingY(),
-		ptr_vector_pointing_north->TellStartingY() + ptr_vector_pointing_north->TellValue().y);
-	printf("Vector pointing in given direction: value: x: %f y: %f len: %f x1: %f x2: %f y1: %f y2: %f \n",
-		vector_pointing_towards_given_point_value.x,
-		vector_pointing_towards_given_point_value.y,
-		ptr_vector_pointing_towards_given_point->TellLength(),
-		ptr_vector_pointing_towards_given_point->TellStartingX(),
-		ptr_vector_pointing_towards_given_point->TellStartingX() + ptr_vector_pointing_towards_given_point->TellValue().x,
-		ptr_vector_pointing_towards_given_point->TellStartingY(),
-		ptr_vector_pointing_towards_given_point->TellStartingY() + ptr_vector_pointing_towards_given_point->TellValue().y);
-	printf("Calculated angle in radian: %f.\n", angle_between_vectors_radian);
-	printf("Calculated angle in degrees: %d.\n", angle_between_vectors_degrees);
-	printf("Calculated true angle in degrees: %d.\n", real_angle_between_vectors_degrees);
+	// Cleanup
 	delete ptr_vector_pointing_north;
 	delete ptr_vector_pointing_towards_given_point;
 }
 
-void Creature::SetVelocity(float my_velocity)
+void Creature::ThrustTowardsPoint(Coordinates destination)
+{
+	TurnTowardsPoint(destination);
+	ThrustForward();
+}
+
+void Creature::SetVelocity(double my_velocity)
 {
 	velocity = my_velocity;
 }
@@ -559,7 +536,7 @@ Coordinates Creature::TellCenterPoint()
 void Creature::SetAngleDegree(int my_degree)
 {
 	current_angle_degree = my_degree;
-	ptr_creature_visual_component->angle = my_degree;
+	ptr_creature_visual_component->SetAngleDegrees(my_degree);
 }
 
 Coordinates Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance)

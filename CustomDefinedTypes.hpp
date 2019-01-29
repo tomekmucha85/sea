@@ -34,7 +34,21 @@ enum VisualComponentType {visco_sprite, visco_vector, visco_undetermined};
 enum LevelType { level_ninemazes, level_base, level_test };
 
 //Behavior patterns
-enum BehaviorMode {beh_none, beh_chase_hero, beh_idle, beh_projectile };
+enum BehaviorMode {
+	beh_none,
+	beh_chase_hero,
+	beh_idle,
+	beh_projectile,
+	beh_run_in_circles,
+	beh_run_along_predefined_path,
+	beh_test_movement
+};
+
+//Navigator modes of opearation
+enum NavigatorMode {navig_undetermined, navig_circle, navig_coordinates_list};
+
+//Navigation states
+enum NavigationState {active, inactive};
 
 //Sprite names
 enum SpriteType { spr_clawy, spr_background, spr_box, spr_black_smoke, spr_vortex, spr_exit, spr_gui_mana_bar };

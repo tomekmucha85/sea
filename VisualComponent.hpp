@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <Screen.hpp>
 #include <CustomDefinedTypes.hpp>
+#include <CommonMath.hpp>
 
 class VisualComponent
 {
@@ -26,7 +27,7 @@ public:
     ////#TODO Move to private!
 	PreciseRect position = { 0,0,0,0 };
 	Coordinates center = {0,0};
-	double angle = 0;
+	int angle = 0;
 
 	//###################
 	//Functions
@@ -42,6 +43,8 @@ public:
 	void SetPositionW(int new_w);
 	void SetPositionH(int new_h);
 	void SetCenter(Coordinates my_center);
+	void SetAngleDegrees(int my_angle);
+	void TurnByAngleDegrees(int my_angle);
 	virtual void Render() = 0;
 	static void SetScreen(Screen* ptr_my_screen);
 

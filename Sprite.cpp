@@ -158,6 +158,11 @@ TextureBank* Sprite::TellTextureBank()
 //Dummy virtual methods
 //#####################
 
+void Sprite::IdleAnimation()
+{
+	printf("Idle animation called for Sprite\n");
+}
+
 void Sprite::WalkAnimation()
 {
     printf("Walk animation called for Sprite\n");

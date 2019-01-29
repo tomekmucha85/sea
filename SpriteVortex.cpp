@@ -20,6 +20,11 @@ SpriteVortex::SpriteVortex(Coordinates* ptr_my_center)
 //OVERLOADED VIRTUAL METHODS
 //***********************************
 
+void SpriteVortex::IdleAnimation()
+{
+	VortexAnimation();
+}
+
 void SpriteVortex::VortexAnimation()
 {
 	SDL_Rect vortex_animation_area = { 2000,0,6000,50 };

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
+#include <CustomDefinedTypes.hpp>
 
 struct MathVectorValue 
 {
@@ -42,6 +43,15 @@ class Angle
     public:
 		static double DegreeToRadian(int angle_degree);
 		static int RadianToDegree(double angle_radian);
+		static int NormalizeAngle(int angle);
+};
+
+class Distance
+{
+    private:
+
+    public:
+		static double CalculateDistanceBetweenPoints(Coordinates a, Coordinates b);
 };
 
 #endif // COMMON_MATH_HPP

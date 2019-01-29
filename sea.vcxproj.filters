@@ -186,6 +186,12 @@
     <ClInclude Include="CommonMath.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Navigator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FactorySpawningNavigators.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -318,6 +324,12 @@
       <Filter>Source Files\VisualComponents\Sprites</Filter>
     </ClCompile>
     <ClCompile Include="CommonMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FactorySpawningNavigators.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Navigator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

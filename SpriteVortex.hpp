@@ -17,6 +17,7 @@ public:
 
 	SpriteVortex(Coordinates* ptr_my_center);
 	void VortexAnimation();
+	void IdleAnimation();
 };
 
 #endif //SPRITEVORTEX_HPP

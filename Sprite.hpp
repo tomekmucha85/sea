@@ -51,6 +51,7 @@ class Sprite : public VisualComponent
         void ResetAnimationFrame();
 
         //Animations (dummy virtual methods)
+		virtual void IdleAnimation();
         virtual void WalkAnimation();
 		virtual void SmokeAnimation();
 		virtual void VortexAnimation();
