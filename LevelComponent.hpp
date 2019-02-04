@@ -50,10 +50,12 @@ class LevelComponent
 		std::map<Creature*, LevelComponent*> FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature);
 		Creature* AddCreature(CreatureType my_type, PreciseRect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal="");
 		Creature* AddCreature(CreatureType my_type, Coordinates* ptr_my_center, InsertionMode my_mode, int my_render_layer = 0);
+		void AddExistingCreature(Creature* ptr_my_creature);
 		bool DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature, InsertionMode my_mode);
 		void ServeSpawnRequest(CreatureSpawnRequest my_request);
 		void RemoveCreature(Creature* ptr_my_creature);
 		void RemoveAllCreatures();
+		void RemoveAllCreaturesExceptHero();
 		PreciseRect TellComponentArea();
 		PreciseRect TellComponentEdge(Directions my_direction);
 		std::vector<Creature*> FindCollisionsWithMainCharacter(bool check_only_obstacles = true);

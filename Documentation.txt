@@ -58,6 +58,8 @@ When a LevelComponent is removed, it also removes all its Creatures.
 
 Take note, that Creature* pointers are present in two arrays:
     - static one "current_environment" in Creature class. This array serves when collissions between creatures are evaluated.
+	  Also this array stores pointer to current main character (because main hero creature is intended to live
+	  longer than any given LevelComponent).
 	- "creatures" in LevelComponent class. This array is for grouping Creatures in components.
 
 When a Creature is deleted, its pointer has to be removed from both arrays!
@@ -98,6 +100,12 @@ This method does two things:
 		    2aa.Method mentioned in 2a. performs all lambdas stored in Creature cyclic_events array
 
 This way a single call of PerformCyclicActions on a Level causes all the cyclic_actions from related LevelComponents and Creatures to be also performed.
+
+Why lambdas?
+
+Lambdas were used instead of "ordinary" function calls because this way cyclic events list may be easily altered durign game. All it takes is to push/remove
+a lambda into/from vector.
+On the other hand, if there's a cyclic action ALWAYS to be performed, it can be an "ordinary" function called within PerformCyclicActions().
 
 III. Triggers concept
 

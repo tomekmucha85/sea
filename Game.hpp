@@ -1,6 +1,7 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 #include <ctime>
+#include <algorithm>
 #include <Screen.hpp>
 #include <TextureBank.hpp>
 #include <Level.hpp>
@@ -11,7 +12,7 @@
 class Game
 {
     private:
-
+		static std::vector <Level*> currently_existing_levels;
 
     public:
 
@@ -29,6 +30,11 @@ class Game
         //FUNCTIONS
         //###################
         static void InitializeGame();
+		static Level* InitializeLevel(LevelType my_type);
+		static void DestroyLevel(Level* ptr_destroyed_level);
+		static void PrepareSingleLevel(LevelType my_type);
+		static void UnloadLevel(Level* ptr_unloaded_level);
+		static void LoadLevel(Level* ptr_loaded_level);
         static void DestroyGame();
         static void CreateScreen();
 		static void LoadTextures();

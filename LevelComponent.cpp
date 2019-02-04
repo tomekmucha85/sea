@@ -24,6 +24,7 @@ LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelCom
 
 LevelComponent::~LevelComponent()
 {
+	delete ptr_creatures_factory;
 	printf("Removing level component with address %p.\n", this);
 	if (ptr_component_outline != nullptr)
 	{
@@ -33,7 +34,7 @@ LevelComponent::~LevelComponent()
 			ptr_component_outline->TellHitbox().w,
 			ptr_component_outline->TellHitbox().h);
 	}
-	RemoveAllCreatures();
+	RemoveAllCreaturesExceptHero();
 }
 
 void LevelComponent::AddLevelComponentOutline(PreciseRect my_component_area)
@@ -161,6 +162,12 @@ Creature* LevelComponent::AddCreature(CreatureType my_type, Coordinates* ptr_my_
 	}
 }
 
+void LevelComponent::AddExistingCreature(Creature* ptr_my_creature)
+{
+	//#TODO - zabezpieczyæ siê przed dowi¹zaniem Creature jednoczeœnie do dwóch komponentów
+	creatures.push_back(ptr_my_creature);
+}
+
 bool LevelComponent::DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature, InsertionMode my_mode)
 {
 	//Merge mode leaves the Creature unconditionally
@@ -272,6 +279,20 @@ void LevelComponent::RemoveAllCreatures()
 		//printf("Remaining creatures: %d.\n", creatures.size());
 		//printf("Removing creature of type %d.\n", ptr_my_creature->my_type);
 		RemoveCreature(ptr_my_creature);
+	}
+}
+
+void LevelComponent::RemoveAllCreaturesExceptHero()
+{
+	int i = 1;
+	std::vector<Creature*> creatures_to_remove = creatures;
+	for (Creature* ptr_my_creature : creatures_to_remove)
+	{
+		i++;
+		if (ptr_my_creature != Creature::ptr_current_main_charater)
+		{
+			RemoveCreature(ptr_my_creature);
+		}
 	}
 }
 

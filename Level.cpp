@@ -7,7 +7,18 @@
 Level::Level()
 {
 	CreateComponentsFactory();
+	//Core part generation
+	PreciseRect core_area = { 0,0,0,0 };
+	ptr_initial_core = ptr_components_factory->SpawnLevelComponent(levco_core, core_area);
+	//Spawning hero if needed
+	Creature* ptr_hero = SpawnHero();
+	ptr_initial_core->AddExistingCreature(ptr_hero);
+	//Spawning GUI
 	ptr_gui = new GUI();
+	//Adding default cyclic actions
+	cyclic_actions.push_back(func_fire_triggers);
+	cyclic_actions.push_back(func_check_and_react_if_player_won);
+	cyclic_actions.push_back(func_check_and_react_if_player_lost);
 }
 
 //************
@@ -17,9 +28,23 @@ Level::Level()
 
 Level::~Level()
 {
-	//#TODO Dopracowaæ!
+	RemoveAllLevelComponents();
 	delete ptr_gui;
 	delete ptr_components_factory;
+}
+
+//************
+//LOADER
+//************
+
+void Level::LoadLevel()
+{
+	;
+}
+
+void Level::LoadLevelCreaturesIntoEnvironment()
+{
+    ;
 }
 
 //*****************
@@ -28,6 +53,37 @@ Level::~Level()
 
 //Every component holds its own creatures
 //Level traces holds record of its components
+
+Creature* Level::SpawnHero(CreatureType hero_type, Coordinates* ptr_hero_position)
+{
+	if (Creature::ptr_current_main_charater != nullptr)
+	{
+		printf("There is an existing main hero Creature. Will not spawn a new one.\n");
+		if (ptr_hero_position != nullptr)
+		{
+			Creature::ptr_current_main_charater->SetPosition(*ptr_hero_position);
+		}
+		else
+		{
+			Creature::ptr_current_main_charater->SetPosition(default_hero_start_position);
+		}
+	}
+	else
+	{
+		printf("There is no hero Creature yet. Will spawn a new one.\n");
+		Creature* ptr_new_hero = nullptr;
+		if (ptr_hero_position != nullptr)
+		{
+			ptr_new_hero = ptr_initial_core->AddCreature(hero_type, ptr_hero_position, force);
+		}
+		else
+		{
+			ptr_new_hero = ptr_initial_core->AddCreature(hero_type, &default_hero_start_position, force);
+		}
+        ptr_new_hero->MakeMeMainCharacter();
+	}
+	return Creature::ptr_current_main_charater;
+}
 
 std::map<LevelComponentType, std::vector<LevelComponent*>>* Level::TellPointerToComponentsArray()
 {
@@ -126,7 +182,87 @@ void Level::RemoveLevelComponent(LevelComponent* ptr_my_component)
 	}
 	else
 	{
-		printf("Potinter to component is nullptr. Nothing to delete.\n");
+		printf("Pointer to component is nullptr. Nothing to delete.\n");
+	}
+}
+
+void Level::RemoveAllLevelComponents()
+{
+	std::map<LevelComponentType, std::vector<LevelComponent*>> level_component_types_vs_level_components_copy = level_component_types_vs_level_components;
+	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_component_types_vs_level_components_copy)
+	{
+		std::vector<LevelComponent*> my_level_components = element.second;
+		for (LevelComponent* ptr_my_level_component : my_level_components)
+		{
+			RemoveLevelComponent(ptr_my_level_component);
+		}
+	}
+}
+
+//*******************************************
+//WIN SOME LOOSE SOME - IT'S ALL A GAME TO ME
+//*******************************************
+
+void Level::Pause()
+{
+	is_paused = true;
+}
+
+void Level::UnPause()
+{
+	is_paused = false;
+}
+
+bool Level::TellIfPaused()
+{
+	return is_paused;
+}
+
+bool Level::TellIfPlayerWon()
+{
+	return has_player_won;
+}
+
+bool Level::TellIfPlayerLost()
+{
+	return has_player_lost;
+}
+
+void Level::Win()
+{
+	has_player_won = true;
+}
+
+void Level::Loose()
+{
+	has_player_lost = true;
+}
+
+bool Level::CheckIfPlayerIsAlive()
+{
+	if (Creature::ptr_current_main_charater->AmIAlive())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Level::FinishLevel(LevelEnding my_ending)
+{
+	if (my_ending == victory)
+	{
+		printf("You won!\n");
+	}
+	else if (my_ending == defeat)
+	{
+		printf("You lost!\n");
+	}
+	else
+	{
+		printf("Level finished!\n");
 	}
 }
 
@@ -136,17 +272,20 @@ void Level::RemoveLevelComponent(LevelComponent* ptr_my_component)
 
 void Level::PerformCyclicActions()
 {
-	//Actions on Level plane
-	for (std::function<void(Level*)> action : cyclic_actions)
+	if (TellIfPaused() == false)
 	{
-		action(this);
+		//Actions on Level plane
+		for (std::function<void(Level*)> action : cyclic_actions)
+		{
+			action(this);
+		}
+
+		//Actions on Level Components plane
+
+		//#TODO - zrobiæ to ³adniej
+		ptr_gui->ManageForCreature(Creature::ptr_current_main_charater);
+		MakeLevelComponentsPerformCyclicActions();
 	}
-
-	//Actions on Level Components plane
-
-	//#TODO - zrobiæ to ³adniej
-	ptr_gui->ManageForCreature(Creature::ptr_current_main_charater);
-	MakeLevelComponentsPerformCyclicActions();
 }
 
 void Level::MakeLevelComponentsPerformCyclicActions()

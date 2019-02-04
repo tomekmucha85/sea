@@ -52,10 +52,6 @@ class Creature
 		std::vector <Creature*> my_neighbors;
 		//How far do we seek for neighbors?
 		int default_neighbor_radius = 75;
-		// Distance travelled by the hero creature in x plane
-		static long long int main_character_shift_x;
-		// Distance travelled by the hero creature in y plane
-		static long long int main_character_shift_y;
 		//Should be rendered on screen?
 		bool is_visible = true;
 		//Object determining creatures behavior (AI)
@@ -141,6 +137,7 @@ class Creature
         bool Strafe(int sidestep_angle);
         bool StrafeLeft();
         bool StrafeRight();
+		void SetPosition(Coordinates new_center_position);
 		int TellCurrentAngleDegree();
 		Coordinates TellCenterPoint();
 		Coordinates TellNextStep();
@@ -151,18 +148,13 @@ class Creature
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
         bool DoICollideXPlane(double my_x, double my_w, double obs_x, double obs_w, int margin = 0);
         bool DoICollideYPlane(double my_y, double my_h, double obs_y, double obs_h, int margin = 0);
+		static void RemoveAllEntriesFromEnvironmentExceptMainHero();
         static void SetMainCharacterToNull();
         void MakeMeMainCharacter();
         bool AmIMainCharacter();
 		bool AmIVisible();
 		void SetVisibility(bool should_be_visible);
 		static Creature* WhoIsMainCharacter();
-		static long long int TellXMainCharacterShift();
-		static long long int TellYMainCharacterShift();
-		static void SetXMainCharacterShift(long long int my_shift);
-		static void SetYMainCharacterShift(long long int my_shift);
-		static void IncrementXMainCharacterShift(long long int my_shift);
-		static void IncrementYMainCharacterShift(long long int my_shift);
 		void PerformCyclicActions();
 		void AddCyclicAction(std::function<void(Creature*)> my_cyclic_action);
 		std::vector<CreatureSpawnRequest>* TellSpawnRequests();

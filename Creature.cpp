@@ -7,8 +7,6 @@
 std::vector <Creature*> Creature::current_environment;
 std::vector <CreatureType> Creature::walls = { cre_flying_box, cre_spell_open_doors };
 Creature* Creature::ptr_current_main_charater;
-long long int Creature::main_character_shift_x = 0;
-long long int Creature::main_character_shift_y = 0;
 //**************
 //STATIC METHODS
 //**************
@@ -72,17 +70,49 @@ Creature::~Creature()
 }
 
 //******************************************
-//SETTING MAIN CHARACTER AND RECORDING SHIFT
+//SETTING MAIN CHARACTER AND OPERATIONS ON MAIN INSTANCES ARRAY
 //******************************************
 
 void Creature::SetMainCharacterToNull()
 {
     Creature::ptr_current_main_charater = NULL;
 }
+
 void Creature::MakeMeMainCharacter()
 {
     SetMainCharacterToNull();
     Creature::ptr_current_main_charater = this;
+}
+
+void Creature::RemoveAllEntriesFromEnvironmentExceptMainHero()
+{
+	printf("Currently present creatures: %d.\n", static_cast<int>(current_environment.size()));
+	for (Creature* ptr_creature : current_environment)
+	{
+		printf("Creature present in environment: %p.\n", ptr_creature);
+	}
+	current_environment.erase(std::remove_if(current_environment.begin(),current_environment.end(),
+		[](Creature* ptr_creature) 
+	    {   
+		     if (ptr_creature->AmIMainCharacter())
+	         {
+				 printf("Not hero - %p.\n", ptr_creature);
+		         return false;
+	         }
+	         else
+	         {
+				 printf("Hero! %p.\n", ptr_creature);
+		         return true;
+	         } 
+	     }
+	),current_environment.end());
+
+	printf("And now: %d.\n", static_cast<int>(current_environment.size()));
+	printf("Hero is: %p\n", ptr_current_main_charater);
+	for (Creature* ptr_creature : current_environment)
+	{
+		printf("Creature present in environment: %p.\n", ptr_creature);
+	}
 }
 
 bool Creature::AmIMainCharacter()
@@ -102,35 +132,6 @@ Creature* Creature::WhoIsMainCharacter()
     return Creature::ptr_current_main_charater;
 }
 
-long long int Creature::TellXMainCharacterShift()
-{
-	return main_character_shift_x;
-}
-
-long long int Creature::TellYMainCharacterShift()
-{
-	return main_character_shift_y;
-}
-
-void Creature::SetXMainCharacterShift(long long int my_shift)
-{
-	main_character_shift_x = my_shift;
-}
-
-void Creature::SetYMainCharacterShift(long long int my_shift)
-{
-	main_character_shift_y = my_shift;
-}
-
-void Creature::IncrementXMainCharacterShift(long long int my_shift)
-{
-	main_character_shift_x += my_shift;
-}
-
-void Creature::IncrementYMainCharacterShift(long long int my_shift)
-{
-	main_character_shift_y += my_shift;
-}
 
 PreciseRect Creature::TellHitbox()
 {
@@ -520,6 +521,12 @@ bool Creature::StrafeRight()
 	bool did_i_move_successfully = true;
 	did_i_move_successfully = Strafe(90);
 	return did_i_move_successfully;
+}
+
+
+void Creature::SetPosition(Coordinates new_center_position)
+{
+	ptr_creature_visual_component->SetCenter(new_center_position);
 }
 
 int Creature::TellCurrentAngleDegree()

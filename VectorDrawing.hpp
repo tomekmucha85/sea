@@ -29,5 +29,6 @@ public:
 	VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_color = {255,255,255,0});
 	void SetColor(Color my_color);
 	void Render();
+	void Move(double step_x, double step_y);
 };
 #endif // VECTOR_DRAWING_HPP

@@ -103,4 +103,7 @@ struct CreatureSpawnRequest
 	InsertionMode insertion_mode = safe;
 };
 
+//Possible level endings - victory, defeat or some other state - e.g. going to another level without finishing the previous one
+enum LevelEnding {victory, defeat, other_ending_1, other_ending_2, other_ending_3};
+
 #endif

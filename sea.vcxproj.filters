@@ -317,9 +317,6 @@
     <ClCompile Include="GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelNineMazes.cpp">
-      <Filter>Source Files\Textures</Filter>
-    </ClCompile>
     <ClCompile Include="SpriteGuiManaBar.cpp">
       <Filter>Source Files\VisualComponents\Sprites</Filter>
     </ClCompile>
@@ -331,6 +328,9 @@
     </ClCompile>
     <ClCompile Include="Navigator.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelNineMazes.cpp">
+      <Filter>Source Files\Levels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

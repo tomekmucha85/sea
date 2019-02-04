@@ -36,13 +36,13 @@ public:
 	VisualComponent(Coordinates* ptr_my_center);
 	VisualComponentType TellMyType();
 	void SetMyType(VisualComponentType my_type);
-	void Move(double step_x, double step_y);
+	virtual void Move(double step_x, double step_y) = 0;
 	void SetPosition(PreciseRect my_position);
 	void SetPositionX(int new_x);
 	void SetPositionY(int new_y);
 	void SetPositionW(int new_w);
 	void SetPositionH(int new_h);
-	void SetCenter(Coordinates my_center);
+	virtual void SetCenter(Coordinates my_center);
 	void SetAngleDegrees(int my_angle);
 	void TurnByAngleDegrees(int my_angle);
 	virtual void Render() = 0;

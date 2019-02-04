@@ -18,6 +18,12 @@ VectorDrawing::VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_colo
 //FUNCTIONS
 //###############
 
+void VectorDrawing::Move(double step_x, double step_y)
+{
+	position.x += step_x;
+	position.y += step_y;
+}
+
 void VectorDrawing::Render()
 {
 	//printf("Will render vector.\n");

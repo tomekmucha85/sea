@@ -73,9 +73,10 @@ int main(int argc, char* args[])
 
 	//EMOTIV_END
 
+	Game::PrepareSingleLevel(level_test);
 	//Level* first_level = Game::ptr_levels_factory->SpawnLevel(level_ninemazes);
-	Level* test_level = Game::ptr_levels_factory->SpawnLevel(level_test);
-	Game::SetCurrentLevel(test_level);
+	//Level* test_level = Game::ptr_levels_factory->SpawnLevel(level_test);
+	//Game::SetCurrentLevel(test_level);
 
 	int looped_events = static_cast<int>(Game::ptr_current_level->cyclic_actions.size());
 	printf("There are %d actions present in current event loop.\n", looped_events);
@@ -154,65 +155,81 @@ int main(int argc, char* args[])
             {
                 quit = true;
             }
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_a && event_handler.key.repeat == 0)
+
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_p && event_handler.key.repeat == 0)
 			{
-				Creature::ptr_current_main_charater->TurnLeft();
+				Game::ptr_current_level->Pause();
 			}
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_d && event_handler.key.repeat == 0)
+			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_l && event_handler.key.repeat == 0)
 			{
-				Creature::ptr_current_main_charater->TurnRight();
+				Game::ptr_current_level->UnPause();
 			}
-			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_a && event_handler.key.repeat == 0)
+			if (Game::ptr_current_level->TellIfPaused() == false) //Actions possible to perform only if game is not paused
 			{
-				Creature::ptr_current_main_charater->TurnStop();
-			}
-			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_d && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->TurnStop();
-			}
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_w && event_handler.key.repeat == 0)
-			{
-		        Creature::ptr_current_main_charater->ThrustForward(200);
-			}
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_s && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->ThrustBackward(150);
-			}
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_UP && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->ThrustForward(200);
-			}
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_DOWN && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->ThrustBackward(150);
-			}
-			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_w && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->SetVelocity(0);
-			}
-			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_s && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->SetVelocity(0);
-			}
-			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_UP && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->SetVelocity(0);
-			}
-			else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_DOWN && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->SetVelocity(0);
-			}
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_q && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->CastSpell(spell_vortex);
-			}
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_e && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->CastSpell(spell_open_gate);
-			}
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_r && event_handler.key.repeat == 0)
-			{
-				Creature::ptr_current_main_charater->ThrustTowardsPoint(static_cast<LevelTest*>(test_level)->ptr_test_creature->TellCenterPoint());
+				if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_a && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->TurnLeft();
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_d && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->TurnRight();
+				}
+				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_a && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->TurnStop();
+				}
+				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_d && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->TurnStop();
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_w && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->ThrustForward(200);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_s && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->ThrustBackward(150);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_UP && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->ThrustForward(200);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_DOWN && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->ThrustBackward(150);
+				}
+				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_w && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->SetVelocity(0);
+				}
+				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_s && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->SetVelocity(0);
+				}
+				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_UP && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->SetVelocity(0);
+				}
+				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_DOWN && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->SetVelocity(0);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_q && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->CastSpell(spell_vortex);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_e && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->CastSpell(spell_open_gate);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_r && event_handler.key.repeat == 0)
+				{
+					Game::PrepareSingleLevel(level_ninemazes);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_t && event_handler.key.repeat == 0)
+				{
+					Game::PrepareSingleLevel(level_test);
+				}
 			}
         }
 

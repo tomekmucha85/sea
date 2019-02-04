@@ -44,7 +44,7 @@ class Sprite : public VisualComponent
         //Functions
         //###################
 		Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinates* ptr_my_center);
-
+		void Move(double step_x, double step_y);
         void Render();
         std::vector <SDL_Rect> CalculateAnimationClips( SDL_Rect area, int clip_w, int clip_h);
         void PlayAnimation(std::vector <SDL_Rect> animation_clips, int delay_between_frames);
@@ -66,5 +66,7 @@ class Sprite : public VisualComponent
 		static TextureBank* TellTextureBank();
         void SetTexture(SDL_Texture* ref_my_texture);
         void SetTextureClip(SDL_Rect my_texture_clip);
+		void SetCenter(Coordinates my_center);
+		PreciseRect CalculatePositionAroundCenter();
 };
 #endif // SPRITE_HPP

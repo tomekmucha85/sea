@@ -7,6 +7,12 @@
 TextureBank* Sprite::ptr_texture_bank = nullptr;
 
 
+/*SetPositionX(static_cast<int>(center.x - (current_texture_clip.w / 2)));
+SetPositionY(static_cast<int>(center.y - (current_texture_clip.h / 2)));
+SetPositionW(current_texture_clip.w);
+SetPositionH(current_texture_clip.h);*/
+
+
 //***********************************
 //CONSTRUCTOR
 //***********************************
@@ -28,13 +34,31 @@ Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinate
 	}
 	SetTextureClip(my_texture_clip);
 	//printf("Texture clip set.");
+	SetCenter(*ptr_my_center);
+}
+
+void Sprite::SetCenter(Coordinates my_center)
+{
+	VisualComponent::SetCenter(my_center);
+	position = CalculatePositionAroundCenter();
+}
+
+void Sprite::Move(double step_x, double step_y)
+{
+
+	center.x += step_x;
+	center.y += step_y;
+	position = CalculatePositionAroundCenter();
+}
+
+PreciseRect Sprite::CalculatePositionAroundCenter()
+{
 	SDL_Rect current_texture_clip = TellTextureClip();
-
-	SetPositionX(static_cast<int>(center.x - (current_texture_clip.w / 2)));
-	SetPositionY(static_cast<int>(center.y - (current_texture_clip.h / 2)));
-	SetPositionW(current_texture_clip.w);
-	SetPositionH(current_texture_clip.h);
-
+	double calculated_position_x = static_cast<int>(center.x - (current_texture_clip.w / 2));
+	double calculated_position_y = static_cast<int>(center.y - (current_texture_clip.h / 2));
+	double calculated_position_w = current_texture_clip.w;
+	double calculated_position_h = current_texture_clip.h;
+	return {calculated_position_x, calculated_position_y, calculated_position_w, calculated_position_h} ;
 }
 
 SDL_Rect Sprite::CheckTextureDimensions(SDL_Texture* ptr_my_texture)

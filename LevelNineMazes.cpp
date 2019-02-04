@@ -2,30 +2,16 @@
 
 LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 {
-
-	//Core part generation
-    // #TODO - uwspólniæ?
-	// #TODO - dorobiæ ³adowanie levela, jeœli kilka jest utworzonych naraz
-	PreciseRect core_area = { 0,0,0,0 };
-	LevelComponent* ptr_core = ptr_components_factory->SpawnLevelComponent(levco_core, core_area);
 	Coordinates test_spell_position = {390, 100};
-	Creature* ptr_test_spell = ptr_core->AddCreature(cre_spell_ball, &test_spell_position, merge, 1);
+	Creature* ptr_test_spell = ptr_initial_core->AddCreature(cre_spell_ball, &test_spell_position, merge, 1);
 	Coordinates guy_position = { 400,500 };
-	Creature* ptr_enemy = ptr_core->AddCreature(cre_clawy, &guy_position, force);
+	Creature* ptr_enemy = ptr_initial_core->AddCreature(cre_clawy, &guy_position, force);
 	ptr_enemy->SetBehaviorMode(beh_chase_hero);
-	Coordinates hero_position = {400,380};
-	Creature* ptr_hero = ptr_core->AddCreature(cre_clawy,&hero_position, force);
-	ptr_hero->MakeMeMainCharacter();
-	//character_offset_x = Creature::WhoIsMainCharacter()->TellHitbox().w;
-	//character_offset_y = Creature::WhoIsMainCharacter()->TellHitbox().h;
+
 
 	//Adding component for event triggers
 	ptr_border_triggers = ptr_components_factory->SpawnLevelComponent(levco_triggers);
 	printf("Triggers component address: %p.\n", ptr_border_triggers);
-
-
-	//Add action from common lambdas - firing all triggers currently being hit by hero
-	cyclic_actions.push_back(func_fire_triggers);
 
 	//How many map blocks will have a maze segment?
 	SetMazeRowsCount(my_rows_count);
@@ -82,6 +68,23 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	printf("Current mazes setup: 1: %p\n2: %p\n3: %p\n4: %p\n5: %p\n6: %p\n7: %p\n8: %p\n9: %p\n",
 		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);
 
+}
+
+void LevelNineMazes::FinishLevel(LevelEnding my_ending)
+{
+	Pause();
+	if (my_ending == victory)
+	{
+		printf("You've beaten nine mazes!\n");
+	}
+	else if (my_ending == defeat)
+	{
+		printf("You've been beaten.\n");
+	}
+	else
+	{
+		printf("Some other ending!\n");
+	}
 }
 
 void LevelNineMazes::SetMazeRowsCount(int rows_num)
@@ -648,3 +651,5 @@ void LevelNineMazes::DeleteTrigger(Directions my_direction)
 		throw "Unknown direction!\n";
 	}
 }
+
+
