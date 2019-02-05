@@ -36,23 +36,40 @@ void Navigator::SetNextWaypoint()
 			if (current_waypoint_index < waypoints_set.size()-1)
 			{
 				result = waypoints_set[current_waypoint_index];
+				result.x += anchor_point.x;
+				result.y += anchor_point.y;
 				printf("Setting new waypoint from list.\n");
+				current_waypoint = result;
 				current_waypoint_index++;
 			}
-			else if (run_in_loop == true)
+			else if (current_waypoint_index == waypoints_set.size() - 1 && run_in_loop == true)
 			{
 				result = waypoints_set[current_waypoint_index];
-				printf("Setting initial waypoint from list.\n");
+				result.x += anchor_point.x;
+				result.y += anchor_point.y;
+				current_waypoint = result;
+				printf("Resetting waypoint index.\n");
 				current_waypoint_index = 0;
+			}
+			else if (current_waypoint_index == waypoints_set.size() - 1 && run_in_loop == false)
+			{
+				result = waypoints_set[current_waypoint_index];
+				current_waypoint = result;
+				current_waypoint_index++;
 			}
 			else
 			{
-				result = waypoints_set[current_waypoint_index];
+				//#TODO - niezbyt bezpieczny pomys³ z wyjechaniem poza indeks
+				printf("Resetting waypoint index.\n");
+				current_waypoint_index = 0;
+				printf("Deactivating navigator.\n");
 				SetMyState(inactive);
 			}
 		}
-		printf("Next waypoint set: x: %f, y: %f.\n", result.x, result.y);
-		current_waypoint = result;
+	}
+	else
+	{
+		printf("Navigator is inactive!\n");
 	}
 }
 

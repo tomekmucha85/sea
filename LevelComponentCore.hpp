@@ -7,7 +7,6 @@ class LevelComponentCore : public LevelComponent
 private:
 
 public:
-	LevelComponentCore(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components, 
-		PreciseRect my_component_area = { 0,0,0,0 });
+	LevelComponentCore(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components);
 };
 #endif // LEVEL_COMPONENT_CORE_HPP

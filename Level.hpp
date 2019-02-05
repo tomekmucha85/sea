@@ -50,7 +50,9 @@ class Level
 		//Contains assignment of trigers to certain creatures
 		std::map<std::string, std::function<void()>> signals_vs_events = {};
 		//Core level component - always created
-		LevelComponent* ptr_initial_core = nullptr;
+		LevelComponent* ptr_initial_core_component = nullptr;
+		//Initial level component for triggers - always created
+		LevelComponent* ptr_initial_triggers_component = nullptr;
 		Level();
 		~Level();
 		//Level components factory
@@ -72,6 +74,7 @@ class Level
 		void RemoveLevelComponent(LevelComponent* ptr_my_component);
 		void RemoveAllLevelComponents();
 		//#TODO - dopisaæ metodê dodaj¹c¹ level component zamiast obecnych dzia³añ na wskaŸniku do fabryki
+		Creature* AddTriggerUsingDefaultComponent(PreciseRect my_trigger_area, std::string my_trigger_signal);
 		void PerformCyclicActions();
 		void MakeLevelComponentsPerformCyclicActions();
 		std::vector<Creature*> FindHeroColissionsInGivenComponent(LevelComponent* ptr_my_component, bool check_only_obstacles=true);

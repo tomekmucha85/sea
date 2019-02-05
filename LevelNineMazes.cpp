@@ -3,9 +3,9 @@
 LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 {
 	Coordinates test_spell_position = {390, 100};
-	Creature* ptr_test_spell = ptr_initial_core->AddCreature(cre_spell_ball, &test_spell_position, merge, 1);
+	Creature* ptr_test_spell = ptr_initial_core_component->AddCreature(cre_spell_ball, &test_spell_position, merge, 1);
 	Coordinates guy_position = { 400,500 };
-	Creature* ptr_enemy = ptr_initial_core->AddCreature(cre_clawy, &guy_position, force);
+	Creature* ptr_enemy = ptr_initial_core_component->AddCreature(cre_clawy, &guy_position, force);
 	ptr_enemy->SetBehaviorMode(beh_chase_hero);
 
 

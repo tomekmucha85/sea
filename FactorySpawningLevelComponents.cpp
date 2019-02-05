@@ -26,34 +26,17 @@ void FactorySpawningLevelComponents::InsertComponentIntoComponentsArray(LevelCom
 	ptr_to_proper_array->push_back(ptr_my_level_component);
 }
 
-LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelComponentType my_type, PreciseRect my_component_area)
+LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelComponentType my_type)
 {
 	LevelComponent* result = nullptr;
 
 	if (my_type == levco_core)
 	{
-		LevelComponent* ptr_my_component_core = new LevelComponentCore(ptr_level_components_array, my_component_area);
+		LevelComponent* ptr_my_component_core = new LevelComponentCore(ptr_level_components_array);
 		EnsureKeyExistsInComponentsArray(my_type);
 		InsertComponentIntoComponentsArray(my_type, ptr_my_component_core);
 		ptr_my_component_core->my_type = levco_core;
 		return ptr_my_component_core;
-	}
-	else if (my_type == levco_maze)
-	{
-		if (my_component_area.w == 0 && my_component_area.h == 0)
-		{
-			std::string exception_text = "No area specified for maze level component!\n";
-			throw std::invalid_argument(exception_text);
-		}
-		else
-		{
-			LevelComponent* ptr_my_component_maze = new LevelComponentMaze(ptr_level_components_array, my_component_area);
-			EnsureKeyExistsInComponentsArray(my_type);
-			InsertComponentIntoComponentsArray(my_type, ptr_my_component_maze);
-			ptr_my_component_maze->my_type = levco_maze;
-			printf("Spawned maze with address %p.\n", ptr_my_component_maze);
-			return ptr_my_component_maze;
-		}
 	}
 	else if (my_type == levco_powerups)
 	{
@@ -77,7 +60,36 @@ LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelCompone
 	}
 	else
 	{
-		throw "Unknown level component!\n";
+		throw "Unknown level component or not suitable argument list!\n";
+	}
+
+	return result;
+}
+
+LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelComponentType my_type, PreciseRect my_component_area)
+{
+	LevelComponent* result = nullptr;
+
+	if (my_type == levco_maze)
+	{
+		if (my_component_area.w == 0 && my_component_area.h == 0)
+		{
+			std::string exception_text = "No valid area specified for maze level component!\n";
+			throw std::invalid_argument(exception_text);
+		}
+		else
+		{
+			LevelComponent* ptr_my_component_maze = new LevelComponentMaze(ptr_level_components_array, my_component_area);
+			EnsureKeyExistsInComponentsArray(my_type);
+			InsertComponentIntoComponentsArray(my_type, ptr_my_component_maze);
+			ptr_my_component_maze->my_type = levco_maze;
+			printf("Spawned maze with address %p.\n", ptr_my_component_maze);
+			return ptr_my_component_maze;
+		}
+	}
+	else
+	{
+		throw "Unknown level component or not suitable argument list!\n";
 	}
 
 	return result;

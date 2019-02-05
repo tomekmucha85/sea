@@ -52,11 +52,18 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 					anchor, example_path, false);
 				ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
 			}
-			ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
-			if (ptr_navigator->WasCurrentWaypointReached(my_center))
+			if (ptr_navigator->TellMyState() == active)
 			{
-				ptr_navigator->SetNextWaypoint();
 				ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
+				if (ptr_navigator->WasCurrentWaypointReached(my_center))
+				{
+					ptr_navigator->SetNextWaypoint();
+					ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
+				}
+			}
+			else
+			{
+				ptr_my_creature->SetVelocity(0);
 			}
 		}
 		else if (mode == beh_run_in_circles)

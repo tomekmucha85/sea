@@ -6,8 +6,7 @@ class LevelComponentTriggers : public LevelComponent
 private:
 
 public:
-	LevelComponentTriggers(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components, 
-		PreciseRect my_component_area = { 0,0,0,0 });
+	LevelComponentTriggers(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components);
 	std::vector<std::string> RunTriggersHitByHero();
 };
 #endif // LEVEL_COMPONENT_TRIGGERS

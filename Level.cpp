@@ -8,11 +8,12 @@ Level::Level()
 {
 	CreateComponentsFactory();
 	//Core part generation
-	PreciseRect core_area = { 0,0,0,0 };
-	ptr_initial_core = ptr_components_factory->SpawnLevelComponent(levco_core, core_area);
+	ptr_initial_core_component = ptr_components_factory->SpawnLevelComponent(levco_core);
+	//Triggers part generation
+	ptr_initial_triggers_component = ptr_components_factory->SpawnLevelComponent(levco_triggers);
 	//Spawning hero if needed
 	Creature* ptr_hero = SpawnHero();
-	ptr_initial_core->AddExistingCreature(ptr_hero);
+	ptr_initial_core_component->AddExistingCreature(ptr_hero);
 	//Spawning GUI
 	ptr_gui = new GUI();
 	//Adding default cyclic actions
@@ -74,11 +75,11 @@ Creature* Level::SpawnHero(CreatureType hero_type, Coordinates* ptr_hero_positio
 		Creature* ptr_new_hero = nullptr;
 		if (ptr_hero_position != nullptr)
 		{
-			ptr_new_hero = ptr_initial_core->AddCreature(hero_type, ptr_hero_position, force);
+			ptr_new_hero = ptr_initial_core_component->AddCreature(hero_type, ptr_hero_position, force);
 		}
 		else
 		{
-			ptr_new_hero = ptr_initial_core->AddCreature(hero_type, &default_hero_start_position, force);
+			ptr_new_hero = ptr_initial_core_component->AddCreature(hero_type, &default_hero_start_position, force);
 		}
         ptr_new_hero->MakeMeMainCharacter();
 	}
@@ -197,6 +198,24 @@ void Level::RemoveAllLevelComponents()
 			RemoveLevelComponent(ptr_my_level_component);
 		}
 	}
+}
+
+//*****************
+//ADDING TRIGGERS
+//*****************
+
+Creature* Level::AddTriggerUsingDefaultComponent(PreciseRect my_trigger_area, std::string my_trigger_signal)
+{
+	Creature* result = nullptr;
+	if (ptr_initial_triggers_component == nullptr)
+	{
+		throw std::invalid_argument("Default trigger level component set to nullptr!\n");
+	}
+	else
+	{
+		result = ptr_initial_triggers_component->AddCreature(cre_event_trigger, &my_trigger_area, merge, my_trigger_signal);
+	}
+	return result;
 }
 
 //*******************************************

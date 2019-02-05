@@ -1,8 +1,7 @@
 #include <LevelComponentTriggers.hpp>
 
-LevelComponentTriggers::LevelComponentTriggers(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components,
-	PreciseRect my_component_area) :
-	LevelComponent(my_ptr_peer_level_components, my_component_area)
+LevelComponentTriggers::LevelComponentTriggers(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components) :
+	LevelComponent(my_ptr_peer_level_components)
 {
 	printf("Spawned component with triggers. Adddress: %p.\n", this);
 }
