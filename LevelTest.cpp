@@ -31,7 +31,34 @@ LevelTest::LevelTest()
 	Creature* ptr_winning_trigger = AddTriggerUsingDefaultComponent(event_area, signal_to_win);
 	signals_vs_events[signal_to_win] = ptr_func_win;
 	//Red
-	ptr_winning_trigger->ptr_creature_visual_component->SetColor({ 255,0,0,255 });
+	//#TODO - przeszukaæ wszystkie przypadki u¿ycia visual_components[0]
+	ptr_winning_trigger->visual_components[0]->SetColor({ 255,0,0,255 });
+
+	printf("Adding navgrid point!\n");
+	//Test navigation grid creature
+	Coordinates navgrid_point_center_1 = {300,400};
+	CreatureNavGridNode* ptr_test_navgrid_node_1 = dynamic_cast<CreatureNavGridNode*>(AddNavigationNodeUsingDefaultComponent(navgrid_point_center_1));
+
+	printf("Adding another navgrid point!\n");
+	//Test navigation grid creature
+	Coordinates navgrid_point_center_2 = { 100,400 };
+	CreatureNavGridNode* ptr_test_navgrid_node_2 = dynamic_cast<CreatureNavGridNode*>(AddNavigationNodeUsingDefaultComponent(navgrid_point_center_2));
+
+	printf("Adding third navgrid point!\n");
+	//Test navigation grid creature
+	Coordinates navgrid_point_center_3 = { 200,200 };
+	CreatureNavGridNode* ptr_test_navgrid_node_3 = dynamic_cast<CreatureNavGridNode*>(AddNavigationNodeUsingDefaultComponent(navgrid_point_center_3));
+
+	ptr_test_navgrid_node_1->AddTwoSidedConnection(ptr_test_navgrid_node_2);
+	ptr_test_navgrid_node_2->AddTwoSidedConnection(ptr_test_navgrid_node_3);
+	ptr_test_navgrid_node_1->AddTwoSidedConnection(ptr_test_navgrid_node_3);
+
+	//Coordinates line_start = {0,0};
+	//Coordinates line_end = {100,100};
+	//Line* ptr_my_line = new Line(&line_start, &line_end);
+	//ptr_my_line->SetColor({ 255,0,0,255 });
+
+	//ptr_test_navgrid_node->AddVisualComponent(ptr_my_line);
 }
 
 void LevelTest::FinishLevel(LevelEnding my_ending)

@@ -104,3 +104,20 @@ double Distance::CalculateDistanceBetweenPoints(Coordinates a, Coordinates b)
 	double distance = sqrt(pow(distance_x,2) + pow(distance_y,2));
 	return distance;
 }
+
+
+bool Collisions::DoTheseRectanglesOverlap(PreciseRect a, PreciseRect b)
+{
+	bool result = true;
+
+	if (a.x > b.x + b.w || a.x + a.w < b.x)
+	{
+		result = false;
+	}
+	else if (a.y > b.y + b.h || a.y + a.h < b.y)
+	{
+		result = false;
+	}
+
+	return result;
+}

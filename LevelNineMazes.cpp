@@ -572,7 +572,8 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		signals_vs_events[signal_for_regenerating_northern_row] = ptr_func_trigger_north;
 		printf("Added trigger NORTH %p x: %f, y: %f, w: %f, h: %f.\n", ptr_my_trigger_north, event_area.x, event_area.y, event_area.w, event_area.h);
 		//Red
-		ptr_my_trigger_north->ptr_creature_visual_component->SetColor({ 255,0,0,255 });
+		//#TODO - niebezpieczne za³o¿enie z castem
+		ptr_my_trigger_north->visual_components[0]->SetColor({ 255,0,0,255 });
 		ptr_trigger_north = ptr_my_trigger_north;
 	}
 	else if (my_direction == south)
@@ -586,7 +587,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		signals_vs_events[signal_for_regenerating_southern_row] = ptr_func_trigger_south;
 		printf("Added trigger SOUTH %p x: %f, y: %f, w: %f, h: %f.\n", ptr_my_trigger_south, event_area.x, event_area.y, event_area.w, event_area.h);
 		//Green
-		ptr_my_trigger_south->ptr_creature_visual_component->SetColor({ 0,255,0,255 });
+		ptr_my_trigger_south->visual_components[0]->SetColor({ 0,255,0,255 });
 		ptr_trigger_south = ptr_my_trigger_south;
 	}
 	else if (my_direction == east)
@@ -600,7 +601,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		Creature* ptr_my_trigger_east = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_eastern_column);
 		signals_vs_events[signal_for_regenerating_eastern_column] = ptr_func_trigger_east;
 		//Blue
-		ptr_my_trigger_east->ptr_creature_visual_component->SetColor({ 0,0,255,255 });
+		ptr_my_trigger_east->visual_components[0]->SetColor({ 0,0,255,255 });
 		ptr_trigger_east = ptr_my_trigger_east;
 	}
 	else if (my_direction == west)
@@ -614,7 +615,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		Creature* ptr_my_trigger_west = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_western_column);
 		signals_vs_events[signal_for_regenerating_western_column] = ptr_func_trigger_west;
 		//Black
-		ptr_my_trigger_west->ptr_creature_visual_component->SetColor({ 0,0,0,255 });
+		ptr_my_trigger_west->visual_components[0]->SetColor({ 0,0,0,255 });
 		ptr_trigger_west = ptr_my_trigger_west;
 	}
 	else

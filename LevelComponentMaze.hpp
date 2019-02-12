@@ -11,8 +11,8 @@ class LevelComponentMaze : public LevelComponent
 private:
 
 	//Expressed in map blocks (1 map block == 1 entry in blueprint)
-	int maze_block_width = 8;
-	int maze_block_height = 8;
+	const int maze_block_width = 8;
+	const int maze_block_height = 8;
 	int maze_rows_count = 0;
 	int maze_columns_count = 0;
 	//Expressed in maze blocks (1 maze block = (maze_block_width*maze_block_height) map blocks)
@@ -93,12 +93,14 @@ private:
 public:
 	LevelComponentMaze(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components,
 		PreciseRect my_component_area = { 0,0,0,0 });
+	~LevelComponentMaze();
 	int CalculateRowsNumber();
 	int CalculateColumnsNumber();
 	int CalculateBlocksCountVertically();
 	int CalculateBlocksCountHorizontally();
 	void ClearBlueprint();
 	void PrepareMazeGrid();
+	void PrepareNavigationGrid();
 	void PrintBlueprint();
 	void GenerateMaze();
 	void CreateEmptyVisitedCellsGrid();

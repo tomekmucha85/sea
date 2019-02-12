@@ -24,7 +24,7 @@ class TextureBank
 		Texture* purple_vortex = nullptr;
 		std::string path_image_purple_vortex = "images/vortex.png";
 		Texture* wall = nullptr;
-		std::string path_image_exit = "images/exit_lit.png";
+		std::string path_image_exit = "images/exit.png";
 		Texture* exit = nullptr;
 		std::string path_image_gui_mana_bar = "images/GUI_mana_bar.png";
 		Texture* gui_mana_bar = nullptr;

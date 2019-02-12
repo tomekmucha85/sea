@@ -32,7 +32,8 @@ bool CreatureSpellBall::Move(double x, double y)
 	bool was_move_successfull = Creature::Move(x,y);
 
 	//#TODO ucywilizowaæ
-	Sprite* ptr_sprite = static_cast<Sprite*>(ptr_creature_visual_component);
+	//#TODO - niebezpieczne za³o¿enie z castem
+	Sprite* ptr_sprite = static_cast<Sprite*>(visual_components[0]);
 	ptr_sprite->VortexAnimation();
 
 	if (!was_move_successfull)

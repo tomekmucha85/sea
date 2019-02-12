@@ -19,13 +19,7 @@ class Level
 		//###################
         //Types
         //###################
-
-		struct MapEntity
-		{
-			CreatureType type = cre_none;
-			Creature* ptr_creature = NULL;
-		};
-
+		
 		bool has_player_lost = false;
 		bool has_player_won = false;
 
@@ -49,12 +43,17 @@ class Level
 		std::vector<std::function<void(Level*)>> cyclic_actions = {};
 		//Contains assignment of trigers to certain creatures
 		std::map<std::string, std::function<void()>> signals_vs_events = {};
+
+		//#TODO - zabezpieczyæ domyœlne komponenty przed zniszczeniem
+
 		//Core level component - always created
 		LevelComponent* ptr_initial_core_component = nullptr;
 		//Initial level component for triggers - always created
 		LevelComponent* ptr_initial_triggers_component = nullptr;
+		//Initial level component for navigation grid - always created
+		LevelComponent* ptr_initial_navgrid_component = nullptr;
 		Level();
-		~Level();
+		virtual ~Level();
 		//Level components factory
 		Creature* SpawnHero(CreatureType hero_type = cre_clawy, Coordinates* ptr_hero_position = nullptr);
 		void LoadLevel();
@@ -63,6 +62,7 @@ class Level
 		void RenderCreatureVisualComponent(Creature* ptr_my_creature);
 		void RenderAllPresentCreatures();
 		void RenderGui();
+		GUI* TellMyGui();
 		CreatureType PickRandomObjectFromGiven(std::vector<CreatureType> my_creatures);
 		void SetMapOffsetX(int columns_count, float margin);
 		void SetMapOffsetY(int rows_count, float margin);
@@ -74,7 +74,11 @@ class Level
 		void RemoveLevelComponent(LevelComponent* ptr_my_component);
 		void RemoveAllLevelComponents();
 		//#TODO - dopisaæ metodê dodaj¹c¹ level component zamiast obecnych dzia³añ na wskaŸniku do fabryki
+
+		//Shortcut methods for adding Creatures using level components genereated by default.
 		Creature* AddTriggerUsingDefaultComponent(PreciseRect my_trigger_area, std::string my_trigger_signal);
+		Creature* AddNavigationNodeUsingDefaultComponent(Coordinates my_center);
+
 		void PerformCyclicActions();
 		void MakeLevelComponentsPerformCyclicActions();
 		std::vector<Creature*> FindHeroColissionsInGivenComponent(LevelComponent* ptr_my_component, bool check_only_obstacles=true);
@@ -119,6 +123,12 @@ class Level
 			{
 				ptr_level->FinishLevel(defeat);
 			}
+		};
+
+		//Cyclic action to manage GUI for main character
+		std::function<void(Level*)> func_manage_gui_for_main_character = [](Level* ptr_level)
+		{
+			ptr_level->TellMyGui()->ManageForCreature(Creature::ptr_current_main_charater);
 		};
 
 		//Lambda to win level. (Useful for triggers)

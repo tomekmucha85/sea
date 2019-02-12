@@ -21,7 +21,8 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 			if (ptr_my_creature->my_type == cre_spell_ball)
 			{
 				//#TODO - abstrakcja animacji wy¿ej?
-				Sprite* ptr_sprite = dynamic_cast<Sprite*>(ptr_my_creature->ptr_creature_visual_component);
+				//#TODO - niebezpieczne za³o¿enie z castem!
+				Sprite* ptr_sprite = dynamic_cast<Sprite*>(ptr_my_creature->visual_components[0]);
 				ptr_sprite->IdleAnimation();
 			}
 		}

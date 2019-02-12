@@ -22,9 +22,27 @@ LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<
 	maze_blocks_count_horizontal = CalculateBlocksCountHorizontally();
 	printf("Maze rows: %d, maze columns: %d, maze blocks vertically: %d, maze blocks horizontally: %d.\n",
 		maze_rows_count, maze_columns_count, maze_blocks_count_vertical, maze_blocks_count_horizontal);
-	std::vector<Creature*>* ptr_to_creatures = TellPtrToCreaturesArray();
-	//PrintBlueprint();
+	//std::vector<Creature*>* ptr_to_creatures = TellPtrToCreaturesArray();
 }
+
+LevelComponentMaze::~LevelComponentMaze()
+{
+	printf("Maze destructor called.\n");
+	//#TODO! - czy na pewno bezpieczne?
+	for (int row = 0; row < maze_blocks_count_vertical; row++)
+	{
+		delete[] visited_cells[row];
+	}
+	delete[] visited_cells;
+
+	//#TODO - za³atwiæ to ³adniej
+	CreatureDestructionInGivenAreaRequest navgrid_destruction_request;
+	navgrid_destruction_request.kind_to_be_destroyed = cre_navgrid_node;
+	navgrid_destruction_request.nukage_area = TellComponentArea();
+	LevelComponent* default_navgrid_component = TellPtrToPeerLevelComponentsArray()->operator[](levco_navgrid)[0];
+	SendDestructionRequestToPeerComponent(navgrid_destruction_request, default_navgrid_component);
+}
+
 
 int LevelComponentMaze::CalculateRowsNumber()
 {
@@ -70,6 +88,38 @@ bool LevelComponentMaze::ValidateMazeArea(PreciseRect maze_area)
 void LevelComponentMaze::ClearBlueprint()
 {
 	blueprint.clear();
+}
+
+void LevelComponentMaze::PrepareNavigationGrid()
+{
+	//#TODO - rozwi¹zaæ to ³adniej
+	LevelComponent* ptr_default_nav_grid = TellPtrToPeerLevelComponentsArray()->operator[](levco_navgrid)[0];
+	
+	double offset_from_cell_upper_left_corner_x = (maze_block_width*map_block_width)/2;
+	double offset_from_cell_upper_left_corner_y = (maze_block_height*map_block_height)/2;
+	double maze_block_pixel_width = map_block_width * (maze_block_width-1);
+	double maze_block_pixel_height = map_block_height * (maze_block_height-1);
+	
+	for (int maze_row = 0; maze_row < maze_blocks_count_vertical; maze_row++)
+	{
+		for (int maze_column = 0; maze_column < maze_blocks_count_horizontal; maze_column++)
+		{
+			double node_center_x = offset_from_cell_upper_left_corner_x + TellComponentArea().x +
+				maze_block_pixel_width*maze_column;
+			double node_center_y = offset_from_cell_upper_left_corner_y + TellComponentArea().y +
+				maze_block_pixel_height*maze_row;
+			Coordinates grid_node_coordinates = {node_center_x, node_center_y};
+			CreatureSpawnRequest grid_node_request;
+			grid_node_request.type = cre_navgrid_node;
+			grid_node_request.mode = center_coordinates;
+			grid_node_request.initial_center_cooridnates = grid_node_coordinates;
+			grid_node_request.insertion_mode = merge;
+			SendSpawnRequestToPeerComponent(grid_node_request, ptr_default_nav_grid);
+
+			printf("Spawned navgrid node at: x: %f y: %f.\n", grid_node_coordinates.x,
+				grid_node_coordinates.y);
+		}
+	}
 }
 
 void LevelComponentMaze::PrepareMazeGrid()
@@ -180,29 +230,30 @@ std::vector<std::vector<CreatureType>> LevelComponentMaze::GetBlueptrintElementC
 void LevelComponentMaze::SetAppropriateSpriteClips(std::vector<std::vector<CreatureType>>* ptr_my_blueprint, int column, int row, Creature* ptr_creature)
 {
 	std::vector<std::vector<CreatureType>> my_surrounding = GetBlueptrintElementContextInGivenRadius(ptr_my_blueprint, column, row, 1);
+	//#TODO - niebezpieczne za³o¿enie z castem
 	if (my_surrounding == pattern_upper_corner_left)
 	{
-		ptr_creature->ptr_creature_visual_component->SetClipAccordingToWallType(wall_corner_upper_left_inward);
+		ptr_creature->visual_components[0]->SetClipAccordingToWallType(wall_corner_upper_left_inward);
 		//printf("Upper left corner recognized!\n");
 	}
 	else if (my_surrounding == pattern_upper_corner_right)
 	{
-		ptr_creature->ptr_creature_visual_component->SetClipAccordingToWallType(wall_corner_upper_right_inward);
+		ptr_creature->visual_components[0]->SetClipAccordingToWallType(wall_corner_upper_right_inward);
 		//printf("Upper right corner recognized!\n");
 	}
 	else if (my_surrounding == pattern_bottom_corner_left)
 	{
-		ptr_creature->ptr_creature_visual_component->SetClipAccordingToWallType(wall_corner_bottom_left_inward);
+		ptr_creature->visual_components[0]->SetClipAccordingToWallType(wall_corner_bottom_left_inward);
 		//printf("Upper left corner recognized!\n");
 	}
 	else if (my_surrounding == pattern_bottom_corner_right)
 	{
-		ptr_creature->ptr_creature_visual_component->SetClipAccordingToWallType(wall_corner_bottom_right_inward);
+		ptr_creature->visual_components[0]->SetClipAccordingToWallType(wall_corner_bottom_right_inward);
 		//printf("Upper right corner recognized!\n");
 	}
 	else if (my_surrounding == pattern_bottom_vertical)
 	{
-		ptr_creature->ptr_creature_visual_component->SetClipAccordingToWallType(wall_left);
+		ptr_creature->visual_components[0]->SetClipAccordingToWallType(wall_left);
 		//printf("Upper right corner recognized!\n");
 	}
 	else
@@ -214,7 +265,7 @@ void LevelComponentMaze::SetAppropriateSpriteClips(std::vector<std::vector<Creat
 void LevelComponentMaze::VivifyMaze()
 //Method spawning creatures according to current maze blueprint.
 {
-	//PrintBlueprint();
+	PrintBlueprint();
 
 	/*std::vector<std::vector<CreatureType>>context = GetBlueptrintElementContextInGivenRadius(&blueprint,
 		maze_block_width-1,
@@ -238,7 +289,7 @@ void LevelComponentMaze::VivifyMaze()
 			if (my_type != cre_none)
 			{
 				Coordinates my_position = { TellComponentArea().x + (column*map_block_width), 
-					TellComponentArea().y +(row*map_block_width) };
+					TellComponentArea().y +(row*map_block_height) };
 				Creature* ptr_new_creature = AddCreature(my_type, &my_position, merge);
 				SetAppropriateSpriteClips(&blueprint, column, row, ptr_new_creature);
 			}
@@ -369,6 +420,7 @@ void LevelComponentMaze::GenerateMaze()
 	ManageBorders();
 	printf("Border state:\n N: %d, E: %d, W: %d, S: %d.\n", TellBorderState(north), TellBorderState(east), TellBorderState(west), TellBorderState(south));
 	printf("Maze columns count: %d, maze rows count: %d.\n", maze_columns_count, maze_rows_count);
+	PrepareNavigationGrid();
 	VivifyMaze();
 	printf("Maze generated.\n");
 }
@@ -376,7 +428,6 @@ void LevelComponentMaze::GenerateMaze()
 void LevelComponentMaze::CreateEmptyVisitedCellsGrid()
 {
 	//Creating a 2D dynamically sized array
-	//#TODO - destruct!
 	int** my_visited_cells = new int*[maze_blocks_count_vertical];
 	for (int row = 0; row < maze_blocks_count_vertical; row++)
 	{

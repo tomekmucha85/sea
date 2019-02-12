@@ -18,7 +18,9 @@ LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelCom
 	{
 		AddLevelComponentOutline(my_component_area);
 	}
-	cyclic_actions.push_back(func_spawn_creatures_on_demand);
+	cyclic_actions.push_back(func_spawn_creatures_on_other_creature_demand);
+	cyclic_actions.push_back(func_spawn_creatures_on_peer_component_demand);
+	cyclic_actions.push_back(func_destroy_creatures_on_peer_component_demand);
 	cyclic_actions.push_back(func_reaper);
 }
 
@@ -46,6 +48,11 @@ void LevelComponent::AddLevelComponentOutline(PreciseRect my_component_area)
 void LevelComponent::SetPointerToPeerComponentsIndex(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components)
 {
 	ptr_peer_level_components = my_ptr_peer_level_components;
+}
+
+std::map<LevelComponentType, std::vector<LevelComponent*>>* LevelComponent::TellPtrToPeerLevelComponentsArray()
+{
+	return ptr_peer_level_components;
 }
 
 std::vector<Creature*>* LevelComponent::TellPtrToCreaturesArray()
@@ -225,35 +232,6 @@ bool LevelComponent::DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature
 	}
 }
 
-void LevelComponent::ServeSpawnRequest(CreatureSpawnRequest my_request)
-{
-	Creature* ptr_spawned_creature = nullptr;
-
-	if (my_request.mode == area_coordinates)
-	{
-		ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_area, my_request.insertion_mode);
-	}
-	else if (my_request.mode == center_coordinates)
-	{
-		ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_center_cooridnates, my_request.insertion_mode);
-	}
-	else
-	{
-		printf("Trying to serve a spawn request, but positioning mode %d is not set correctly!\n", my_request.mode);
-		throw std::invalid_argument("Trying to serve a spawn request, but positioning mode is not set correctly!\n");
-	}
-
-	if (ptr_spawned_creature != nullptr)
-	{
-		ptr_spawned_creature->SetAngleDegree(my_request.initial_angle_degree);
-		ptr_spawned_creature->SetBehaviorMode(my_request.initial_behavior_mode);
-	}
-	else
-	{
-		"Did not spawn requested creature!\n";
-	}
-}
-
 void LevelComponent::RemoveCreature(Creature* ptr_my_creature)
 {
 	//Removing pointer from my creatures
@@ -296,12 +274,116 @@ void LevelComponent::RemoveAllCreaturesExceptHero()
 	}
 }
 
+
 std::vector<Creature*> LevelComponent::FindCollisionsWithMainCharacter(bool check_only_obstacles)
 {
 	Creature* ptr_main_character = Creature::ptr_current_main_charater;
 	std::vector<Creature*> colliding_creatures = {};
 	colliding_creatures = ptr_main_character->FindCollisionsInSet(&creatures, check_only_obstacles);
 	return colliding_creatures;
+}
+
+void LevelComponent::SetVisibilityForAllCreatures(bool should_be_visible)
+{
+	for (Creature* ptr_my_creature : creatures)
+	{
+		ptr_my_creature->SetVisibility(should_be_visible);
+	}
+}
+
+//##############################
+//Spawn and destruction requests
+//##############################
+
+void LevelComponent::ServeSpawnRequest(CreatureSpawnRequest my_request)
+{
+	Creature* ptr_spawned_creature = nullptr;
+
+	if (my_request.mode == area_coordinates)
+	{
+		ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_area, my_request.insertion_mode);
+	}
+	else if (my_request.mode == center_coordinates)
+	{
+		ptr_spawned_creature = AddCreature(my_request.type, &my_request.initial_center_cooridnates, my_request.insertion_mode);
+	}
+	else
+	{
+		printf("Trying to serve a spawn request, but positioning mode %d is not set correctly!\n", my_request.mode);
+		throw std::invalid_argument("Trying to serve a spawn request, but positioning mode is not set correctly!\n");
+	}
+
+	if (ptr_spawned_creature != nullptr)
+	{
+		ptr_spawned_creature->SetAngleDegree(my_request.initial_angle_degree);
+		ptr_spawned_creature->SetBehaviorMode(my_request.initial_behavior_mode);
+	}
+	else
+	{
+		"Did not spawn requested creature!\n";
+	}
+}
+
+void LevelComponent::ServeInternalSpawnRequest(CreatureSpawnRequest my_request)
+/*
+Serving internal spawn requests for creatures. Internal requests are placed by creatures belonging to 
+this level component.
+*/
+{
+	ServeSpawnRequest(my_request);
+}
+
+void LevelComponent::ServeExternalSpawnRequest(CreatureSpawnRequest my_request)
+/*
+Serving external spawn requests for creatures. Internal requests are placed by peer level components.
+*/
+{
+	ServeSpawnRequest(my_request);
+}
+
+void LevelComponent::ServeExternalDestructionRequest(CreatureDestructionInGivenAreaRequest my_request)
+{
+	printf("Destruction request to be served. Area: x: %f y: %f w: %f h: %f.\n",
+		my_request.nukage_area.x, my_request.nukage_area.y, my_request.nukage_area.w, my_request.nukage_area.h);
+	std::vector<Creature*> creatures_copy = creatures;
+	for (Creature* ptr_my_creature : creatures_copy)
+	{
+
+		if (Collisions::DoTheseRectanglesOverlap(ptr_my_creature->TellHitbox(), my_request.nukage_area) &&
+			(ptr_my_creature->my_type == my_request.kind_to_be_destroyed || 
+				my_request.kind_to_be_destroyed == cre_none))
+		{
+			printf("Will destruct!\n");
+			printf("Creature to be destructed (center): x: %f y: %f .\n", ptr_my_creature->TellCenterPoint().x, ptr_my_creature->TellCenterPoint().y);
+			RemoveCreature(ptr_my_creature);
+		}
+		else
+		{
+			printf("Will NOT destruct!\n");
+			printf("Creature to be spared (center): x: %f y: %f.\n", ptr_my_creature->TellCenterPoint().x, ptr_my_creature->TellCenterPoint().y);
+		}
+	}
+}
+
+void LevelComponent::PushIntoExternalSpawnRequests(CreatureSpawnRequest my_request)
+{
+	external_spawn_requests.push_back(my_request);
+}
+
+void LevelComponent::SendSpawnRequestToPeerComponent(CreatureSpawnRequest my_request, LevelComponent* ptr_peer_component)
+{
+	ptr_peer_component->PushIntoExternalSpawnRequests(my_request);
+}
+
+void LevelComponent::SendDestructionRequestToPeerComponent(CreatureDestructionInGivenAreaRequest my_request, LevelComponent* ptr_peer_component)
+{
+	printf("Destruction request pushed into external vector.\n");
+	ptr_peer_component->PushIntoExternalDestructionRequests(my_request);
+}
+
+void LevelComponent::PushIntoExternalDestructionRequests(CreatureDestructionInGivenAreaRequest my_request)
+{
+	external_destruction_requests.push_back(my_request);
 }
 
 //##############################

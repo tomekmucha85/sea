@@ -27,6 +27,10 @@ public:
 	//Functions
 	//###################
 	VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_color = {255,255,255,0});
+	//#TODO - uwzglêdniæ ten konstruktor w VisualComponent?
+	VectorDrawing(Coordinates* ptr_my_center, double my_width = 10, double my_height = 10, Color my_vector_fill_color = { 255,255,255,0 });
+	PreciseRect CalculatePositionAroundCenter();
+	Coordinates CalculateCenterOfCurrentPosition();
 	void SetColor(Color my_color);
 	void Render();
 	void Move(double step_x, double step_y);

@@ -11,6 +11,8 @@ Level::Level()
 	ptr_initial_core_component = ptr_components_factory->SpawnLevelComponent(levco_core);
 	//Triggers part generation
 	ptr_initial_triggers_component = ptr_components_factory->SpawnLevelComponent(levco_triggers);
+	//Navigation grid generation
+	ptr_initial_navgrid_component = ptr_components_factory->SpawnLevelComponent(levco_navgrid);
 	//Spawning hero if needed
 	Creature* ptr_hero = SpawnHero();
 	ptr_initial_core_component->AddExistingCreature(ptr_hero);
@@ -18,6 +20,7 @@ Level::Level()
 	ptr_gui = new GUI();
 	//Adding default cyclic actions
 	cyclic_actions.push_back(func_fire_triggers);
+	cyclic_actions.push_back(func_manage_gui_for_main_character);
 	cyclic_actions.push_back(func_check_and_react_if_player_won);
 	cyclic_actions.push_back(func_check_and_react_if_player_lost);
 }
@@ -32,6 +35,15 @@ Level::~Level()
 	RemoveAllLevelComponents();
 	delete ptr_gui;
 	delete ptr_components_factory;
+}
+
+//************
+//TELLERS
+//************
+
+GUI* Level::TellMyGui()
+{
+	return ptr_gui;
 }
 
 //************
@@ -200,9 +212,9 @@ void Level::RemoveAllLevelComponents()
 	}
 }
 
-//*****************
-//ADDING TRIGGERS
-//*****************
+//***********************************************************
+//ADDING CREATURES - SHORTCUTS USING DEFAULT LEVEL COMPONENTS
+//***********************************************************
 
 Creature* Level::AddTriggerUsingDefaultComponent(PreciseRect my_trigger_area, std::string my_trigger_signal)
 {
@@ -214,6 +226,21 @@ Creature* Level::AddTriggerUsingDefaultComponent(PreciseRect my_trigger_area, st
 	else
 	{
 		result = ptr_initial_triggers_component->AddCreature(cre_event_trigger, &my_trigger_area, merge, my_trigger_signal);
+	}
+	return result;
+}
+
+
+Creature* Level::AddNavigationNodeUsingDefaultComponent(Coordinates my_center)
+{
+	Creature* result = nullptr;
+	if (ptr_initial_navgrid_component == nullptr)
+	{
+		throw std::invalid_argument("Default trigger level component set to nullptr!\n");
+	}
+	else
+	{
+		result = ptr_initial_navgrid_component->AddCreature(cre_navgrid_node, &my_center, merge);
 	}
 	return result;
 }
@@ -300,9 +327,6 @@ void Level::PerformCyclicActions()
 		}
 
 		//Actions on Level Components plane
-
-		//#TODO - zrobiæ to ³adniej
-		ptr_gui->ManageForCreature(Creature::ptr_current_main_charater);
 		MakeLevelComponentsPerformCyclicActions();
 	}
 }
@@ -379,7 +403,10 @@ void Level::RenderCreatureVisualComponent(Creature* ptr_my_creature)
 		printf("Cannot render nullptr!\n");
 		throw std::invalid_argument("Cannot render nullptr!\n");
 	}
-	ptr_my_creature->ptr_creature_visual_component->Render();
+	for (VisualComponent* ptr_creature_visual_component : ptr_my_creature->visual_components)
+	{
+		ptr_creature_visual_component->Render();
+	}
 }
 
 void Level::RenderGui()

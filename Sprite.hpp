@@ -5,7 +5,6 @@
 #include <SDL_image.h>
 #include <vector>
 #include <stdexcept>
-#include <vector>
 #include <TextureBank.hpp>
 #include <Screen.hpp>
 #include <VisualComponent.hpp>

@@ -28,7 +28,7 @@ struct PreciseRect
 
 
 //Types of Visual Components
-enum VisualComponentType {visco_sprite, visco_vector, visco_undetermined};
+enum VisualComponentType {visco_sprite, visco_vector, visco_line, visco_undetermined};
 
 //Level names
 enum LevelType { level_ninemazes, level_base, level_test };
@@ -53,7 +53,7 @@ enum NavigationState {active, inactive};
 //Sprite names
 enum SpriteType { spr_clawy, spr_background, spr_box, spr_black_smoke, spr_vortex, spr_exit, spr_gui_mana_bar };
 
-//Wall blocks
+//Wall blocks - related to SpriteBlackBox.hpp
 enum WallType { 
 	wall_bottom ,
 	wall_corner_bottom_left_inward,
@@ -71,14 +71,21 @@ enum WallType {
 	wall_corner_upper_right_outward,
 };
 
+//Possible door states - related to SpriteExit.hpp
+enum DoorState 
+{
+	door_closed, door_open, door_open_lit
+};
+
 //cre_none means empty space/no creature present
-enum CreatureType { cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, cre_black_smoke, cre_npc, cre_spell, cre_spell_ball, cre_spell_open_doors, cre_blue_bground };
+enum CreatureType { cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, 
+	cre_black_smoke, cre_npc, cre_spell, cre_spell_ball, cre_spell_open_doors, cre_blue_bground, cre_navgrid_node };
 
 //Names of spells to be cast - spell is a Creature, offspring of CreatureSpell
 enum SpellName {spell_none, spell_vortex, spell_open_gate};
 
 //Types of possible level components
-enum LevelComponentType { levco_maze, levco_powerups, levco_test, levco_core, levco_triggers };
+enum LevelComponentType { levco_maze, levco_powerups, levco_test, levco_core, levco_triggers, levco_navgrid };
 //List of possible behaviours while inserting a Creature:
 //    force - add creature and destroy colliding ones
 //    merge - add creature and do not care if it collides with any other
@@ -103,7 +110,14 @@ struct CreatureSpawnRequest
 	InsertionMode insertion_mode = safe;
 };
 
+struct CreatureDestructionInGivenAreaRequest
+{
+	CreatureType kind_to_be_destroyed = cre_none; //None means that ALL kinds of creatures will be destroyed
+	PreciseRect nukage_area = { 0,0,0,0 };
+};
+
 //Possible level endings - victory, defeat or some other state - e.g. going to another level without finishing the previous one
 enum LevelEnding {victory, defeat, other_ending_1, other_ending_2, other_ending_3};
+
 
 #endif

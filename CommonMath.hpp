@@ -54,5 +54,13 @@ class Distance
 		static double CalculateDistanceBetweenPoints(Coordinates a, Coordinates b);
 };
 
+class Collisions
+{
+    private:
+
+    public:
+	    static bool DoTheseRectanglesOverlap(PreciseRect a, PreciseRect b);
+};
+
 #endif // COMMON_MATH_HPP
 

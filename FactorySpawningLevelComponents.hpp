@@ -10,6 +10,7 @@
 #include <LevelComponentCore.hpp>
 #include <LevelComponentMaze.hpp>
 #include <LevelComponentTriggers.hpp>
+#include <LevelComponentNavGrid.hpp>
 
 class FactorySpawningLevelComponents
 {

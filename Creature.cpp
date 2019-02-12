@@ -33,8 +33,21 @@ Creature::Creature(PreciseRect* ptr_area)
 	VectorDrawing* ptr_vector_drawing = new VectorDrawing(ptr_area);
 	SetMyVisualComponent(ptr_vector_drawing);
 	InitializeHitbox(*ptr_area, 0);
+	ptr_behavior = new Behavior();
 	printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 
+}
+
+Creature::Creature(Coordinates* ptr_my_center)
+{
+	printf("Invisible creature constructed.\n");
+	VectorDrawing* ptr_vector_drawing = new VectorDrawing(ptr_my_center);
+	SetMyVisualComponent(ptr_vector_drawing);
+	PreciseRect visua_component_center = ptr_vector_drawing->TellPosition();
+	//Hitbox == area occupied by vector drawing. No margin is set.
+	InitializeHitbox(visua_component_center, 0);
+	ptr_behavior = new Behavior();
+	printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 }
 
 //Constructor spawning a creature around CENTER coordinates given
@@ -61,12 +74,22 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 Creature::~Creature()
 {
 	//printf("Destructor called for Creature %p.\n", this);
-	delete ptr_creature_visual_component;
+	DeleteAllVisualComponents();
 	if (ptr_sprites_factory != nullptr)
 	{
 		delete ptr_sprites_factory;
 		delete ptr_behavior;
 	}
+}
+
+void Creature::DeleteAllVisualComponents()
+{
+	std::vector<VisualComponent*> visual_components_copy = visual_components;
+	for (VisualComponent* ptr_my_visual_component : visual_components_copy)
+	{
+		delete ptr_my_visual_component;
+	}
+	visual_components.clear();
 }
 
 //******************************************
@@ -144,12 +167,16 @@ PreciseRect Creature::TellHitbox()
 
 void Creature::SetMyVisualComponent(VisualComponent* ptr_my_visual_component)
 {
-	if (ptr_creature_visual_component != nullptr)
+	if (visual_components.size() > 0)
 	{
-		delete ptr_creature_visual_component;
-		printf("SetMyVisualComponent deleted current visual component.");
+		DeleteAllVisualComponents();
 	}
-	ptr_creature_visual_component = ptr_my_visual_component;
+	visual_components.push_back(ptr_my_visual_component);
+}
+
+void Creature::AddVisualComponent(VisualComponent* ptr_my_visual_component)
+{
+	visual_components.push_back(ptr_my_visual_component);
 }
 
 void Creature::SetMyRenderLayer(int layer_number)
@@ -210,10 +237,13 @@ void Creature::Turn(int turn_angle_degree)
 {
 	//printf("Current angle degree: %d.\n", current_angle_degree);
 	//printf("Turning by %d degrees.\n", turn_angle_degree);
-    // #TODO mno¿yæ przez prêdkoœæ jeszcze przed wywo³aniem funkcji.
+    // #TODO! mno¿yæ przez prêdkoœæ jeszcze przed wywo³aniem funkcji.
     current_angle_degree += static_cast<int>(turn_angle_degree * turn_speed);
 	current_angle_degree = Angle::NormalizeAngle(current_angle_degree);
-	ptr_creature_visual_component->TurnByAngleDegrees(static_cast<int>(turn_quant_degree * turn_direction * turn_speed));
+	for (VisualComponent* ptr_my_visual_component : visual_components)
+	{
+		ptr_my_visual_component->TurnByAngleDegrees(static_cast<int>(turn_quant_degree * turn_direction * turn_speed));
+	}
 	//printf("Current angle after normalization: %d.\n", current_angle_degree);
 }
 
@@ -366,9 +396,6 @@ bool Creature::Move(double x, double y)
         }
         else
         {
-			//#TODO - main character shift jest nieu¿ywany. Usun¹æ?
-			//IncrementXMainCharacterShift(-x);
-			//IncrementYMainCharacterShift(-y);
 			;
         }
     }
@@ -402,7 +429,10 @@ void Creature::MoveComponents(double x, double y)
 
 void Creature::MoveVisualComponent(double x, double y)
 {
-	ptr_creature_visual_component->Move(x,y);
+	for (VisualComponent* ptr_my_visual_component : visual_components)
+	{
+		ptr_my_visual_component->Move(x, y);
+	}
 }
 
 void Creature::MoveHitbox(double x, double y)
@@ -493,7 +523,7 @@ void Creature::SetVelocity(double my_velocity)
 	velocity = my_velocity;
 }
 
-//#TODO - naprawiæ strafe
+//#TODO! - naprawiæ strafe
 bool Creature::Strafe(int sidestep_angle)
 {
 	bool did_i_move_successfully = true;
@@ -526,7 +556,10 @@ bool Creature::StrafeRight()
 
 void Creature::SetPosition(Coordinates new_center_position)
 {
-	ptr_creature_visual_component->SetCenter(new_center_position);
+	for (VisualComponent* ptr_my_visual_component : visual_components)
+	{
+		ptr_my_visual_component->SetCenter(new_center_position);
+	}
 }
 
 int Creature::TellCurrentAngleDegree()
@@ -543,7 +576,10 @@ Coordinates Creature::TellCenterPoint()
 void Creature::SetAngleDegree(int my_degree)
 {
 	current_angle_degree = my_degree;
-	ptr_creature_visual_component->SetAngleDegrees(my_degree);
+	for (VisualComponent* ptr_my_visual_component : visual_components)
+	{
+		ptr_my_visual_component->SetAngleDegrees(my_degree);
+	}
 }
 
 Coordinates Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance)
@@ -587,10 +623,6 @@ bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_
 {
 	bool result = false;
 	//printf("DoICollideWithNeighbors called for %p.\n", this);
-	double my_x = hitbox.x;
-	double my_y = hitbox.y;
-	double my_w = hitbox.w;
-	double my_h = hitbox.h;
 
 	//Checking collisions with creatures.
 	//Depending on flag "check_only_obstacles":
@@ -600,16 +632,9 @@ bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_
 	if (ptr_my_creature != this /* Prevents checking collision with itself. */ && 
 		((ptr_my_creature->is_obstacle == true && check_only_obstacles==true)) || (check_only_obstacles == false))
 	{
-		double obs_x = ptr_my_creature->hitbox.x;
-		double obs_y = ptr_my_creature->hitbox.y;
-		double obs_w = ptr_my_creature->hitbox.w;
-		double obs_h = ptr_my_creature->hitbox.h;
 
-		if (DoICollideXPlane(my_x, my_w, obs_x, obs_w) && DoICollideYPlane(my_y, my_h, obs_y, obs_h))
+		if (Collisions::DoTheseRectanglesOverlap(hitbox, ptr_my_creature->TellHitbox()))
 		{
-			/*printf("Collision caught by DoICollideWithThisCreature!\n");
-			printf("My coordinates:       x: %f, y: %f, w: %f, h: %f.\n", my_x, my_y, my_w, my_h);
-			printf("Collider coordinates: x: %f, y: %f, w: %f, h: %f.\n", obs_x, obs_y, obs_w, obs_h);*/
 			result = true;
 		}
 	}
@@ -644,49 +669,6 @@ bool Creature::DoICollideWithNeighbors(int margin)
 		}
 	}
 	return result;
-}
-
-bool Creature::DoICollideXPlane(double my_x, double my_w, double obs_x, double obs_w, int margin)
-{
-	//Margin enables us to detect collision some pixels earlier/later
-	//Default margin is 0.
-	if ((my_x - margin) >= obs_x && (my_x - margin) <= obs_x + obs_w)
-	{
-		return true;
-	}
-	else if ((my_x + my_w + margin) >= obs_x && (my_x + my_w + margin) <= obs_x + obs_w)
-	{
-		return true;
-	}
-	else if ((my_x - margin) <= obs_x && (my_x + my_w + margin) >= obs_x + obs_w)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool Creature::DoICollideYPlane(double my_y, double my_h, double obs_y, double obs_h, int margin)
-{
-	//Margin enables us to detect collision some pixels earlier/later
-	if ((my_y - margin) >= obs_y && (my_y - margin) <= obs_y + obs_h)
-	{
-		return true;
-	}
-	else if ((my_y + my_h + margin) >= obs_y && (my_y + my_h + margin) <= obs_y + obs_h)
-	{
-		return true;
-	}
-	else if ((my_y - margin) <= obs_y && (my_y + my_h + margin) >= obs_y + obs_h)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }
 
 //**************

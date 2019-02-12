@@ -140,6 +140,7 @@
     <ClInclude Include="CreatureBlueBackground.hpp" />
     <ClInclude Include="CreatureClawy.hpp" />
     <ClInclude Include="CreatureEventTrigger.hpp" />
+    <ClInclude Include="CreatureNavGridNode.hpp" />
     <ClInclude Include="CreatureNPC.hpp" />
     <ClInclude Include="CreatureSpell.hpp" />
     <ClInclude Include="CreatureSpellBall.hpp" />
@@ -158,10 +159,12 @@
     <ClInclude Include="LevelComponent.hpp" />
     <ClInclude Include="LevelComponentCore.hpp" />
     <ClInclude Include="LevelComponentMaze.hpp" />
+    <ClInclude Include="LevelComponentNavGrid.hpp" />
     <ClInclude Include="LevelComponentTest.hpp" />
     <ClInclude Include="LevelComponentTriggers.hpp" />
     <ClInclude Include="LevelNineMazes.hpp" />
     <ClInclude Include="LevelTest.hpp" />
+    <ClInclude Include="Line.hpp" />
     <ClInclude Include="Navigator.hpp" />
     <ClInclude Include="SpriteExit.hpp" />
     <ClInclude Include="SpriteGuiManaBar.hpp" />
@@ -187,6 +190,7 @@
     <ClCompile Include="CreatureBlueBackground.cpp" />
     <ClCompile Include="CreatureClawy.cpp" />
     <ClCompile Include="CreatureEventTrigger.cpp" />
+    <ClCompile Include="CreatureNavGridNode.cpp" />
     <ClCompile Include="CreatureNPC.cpp" />
     <ClCompile Include="CreatureSpell.cpp" />
     <ClCompile Include="CreatureSpellBall.cpp" />
@@ -209,9 +213,11 @@
     <ClCompile Include="LevelComponentTriggers.cpp" />
     <ClCompile Include="LevelNineMazes.cpp" />
     <ClCompile Include="LevelTest.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="Navigator.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Magic.cpp" />
+    <ClCompile Include="LevelComponentNavGrid.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBackground.cpp" />
     <ClCompile Include="SpriteBlackBox.cpp" />

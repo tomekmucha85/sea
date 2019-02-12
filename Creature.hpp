@@ -14,6 +14,7 @@
 #include <Sprite.hpp>
 #include <FactorySpawningSprites.hpp>
 #include <VectorDrawing.hpp>
+#include <Line.hpp>
 #include <CustomDefinedTypes.hpp>
 #include <Timer.hpp>
 #include <Navigator.hpp>
@@ -77,7 +78,6 @@ class Creature
         //###################
         //Variables
         //###################
-		// #TODO - daæ inny typ?
 		CreatureType my_type = cre_none;
         double velocity = 0;
 		double default_velocity = 100;
@@ -85,7 +85,8 @@ class Creature
 		double turn_speed = 0.4; // How fast creature turns around
 		int turn_direction = 0; // -1 = left, 1 = right, 0 = no turning.
 
-		VisualComponent* ptr_creature_visual_component = nullptr;
+		std::vector<VisualComponent*> visual_components = {};
+		//VisualComponent* ptr_creature_visual_component = nullptr;
 
         //Sprite* ptr_creature_sprite = nullptr;
 		//VectorDrawing* ptr_creature_vector = nullptr;
@@ -105,9 +106,12 @@ class Creature
         //Functions
         //###################
 		Creature(PreciseRect* ptr_area);
+		Creature(Coordinates* ptr_my_center);
 		Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin = 10);
 		~Creature();
 		void SetMyVisualComponent(VisualComponent* ptr_my_visual_component);
+		void DeleteAllVisualComponents();
+		void AddVisualComponent(VisualComponent* ptr_my_visual_component);
 		void SetMyRenderLayer(int layer_number);
 		int TellRenderLayer();
 		void MakeMeObstacle();
@@ -146,8 +150,6 @@ class Creature
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors(int margin = 0);
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
-        bool DoICollideXPlane(double my_x, double my_w, double obs_x, double obs_w, int margin = 0);
-        bool DoICollideYPlane(double my_y, double my_h, double obs_y, double obs_h, int margin = 0);
 		static void RemoveAllEntriesFromEnvironmentExceptMainHero();
         static void SetMainCharacterToNull();
         void MakeMeMainCharacter();

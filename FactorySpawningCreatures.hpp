@@ -12,6 +12,7 @@
 #include <CreatureSpell.hpp>
 #include <CreatureSpellBall.hpp>
 #include <CreatureSpellOpenDoors.hpp>
+#include <CreatureNavgridNode.hpp>
 
 class FactorySpawningCreatures
 {

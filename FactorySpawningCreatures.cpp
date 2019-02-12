@@ -43,6 +43,10 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coo
 	{
 		result = new CreatureSpellOpenDoors(ptr_my_center);
 	}
+	else if (desired_type == cre_navgrid_node)
+	{
+		result = new CreatureNavGridNode(ptr_my_center);
+	}
 	else
 	{
 		printf("Trying to spawn invalid Creature type!\n");
@@ -79,7 +83,6 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Pre
 	{
 		result = new CreatureVectorMask(ptr_position);
 	}
-
 	else
 	{
 		printf("Trying to spawn invalid Creature type!\n");

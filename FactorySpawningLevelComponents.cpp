@@ -28,8 +28,6 @@ void FactorySpawningLevelComponents::InsertComponentIntoComponentsArray(LevelCom
 
 LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelComponentType my_type)
 {
-	LevelComponent* result = nullptr;
-
 	if (my_type == levco_core)
 	{
 		LevelComponent* ptr_my_component_core = new LevelComponentCore(ptr_level_components_array);
@@ -58,18 +56,22 @@ LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelCompone
 		ptr_my_component_triggers->my_type = levco_triggers;
 		return ptr_my_component_triggers;
 	}
+	else if (my_type == levco_navgrid)
+	{
+		LevelComponent* ptr_my_component_navgrid = new LevelComponentNavGrid(ptr_level_components_array);
+		EnsureKeyExistsInComponentsArray(my_type);
+		InsertComponentIntoComponentsArray(my_type, ptr_my_component_navgrid);
+		ptr_my_component_navgrid->my_type = levco_navgrid;
+		return ptr_my_component_navgrid;
+	}
 	else
 	{
 		throw "Unknown level component or not suitable argument list!\n";
 	}
-
-	return result;
 }
 
 LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelComponentType my_type, PreciseRect my_component_area)
 {
-	LevelComponent* result = nullptr;
-
 	if (my_type == levco_maze)
 	{
 		if (my_component_area.w == 0 && my_component_area.h == 0)
@@ -91,6 +93,4 @@ LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelCompone
 	{
 		throw "Unknown level component or not suitable argument list!\n";
 	}
-
-	return result;
 }

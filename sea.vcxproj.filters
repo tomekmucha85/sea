@@ -58,6 +58,12 @@
     <Filter Include="Resource Files\images">
       <UniqueIdentifier>{b3a14c0f-68ca-4d2c-9cb4-0feb756d603c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\VisualComponents\Lines">
+      <UniqueIdentifier>{17f2e004-3e4e-49e7-a56c-297d9be0f6a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VisualComponents\Lines">
+      <UniqueIdentifier>{80b59978-1ad8-44f2-b36b-128232e5f6eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp">
@@ -191,6 +197,15 @@
     </ClInclude>
     <ClInclude Include="FactorySpawningNavigators.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelComponentNavGrid.hpp">
+      <Filter>Header Files\LevelComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatureNavGridNode.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.hpp">
+      <Filter>Header Files\VisualComponents\Lines</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -331,6 +346,15 @@
     </ClCompile>
     <ClCompile Include="LevelNineMazes.cpp">
       <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelComponentNavGrid.cpp">
+      <Filter>Source Files\LevelComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureNavGridNode.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Source Files\VisualComponents\Lines</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

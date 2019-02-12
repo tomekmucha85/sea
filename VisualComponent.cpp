@@ -20,6 +20,22 @@ VisualComponent::VisualComponent(Coordinates* ptr_my_center)
 	SetCenter(*ptr_my_center);
 }
 
+VisualComponent::VisualComponent(Coordinates* ptr_my_start, Coordinates* ptr_my_end)
+{
+	SetStart(*ptr_my_start);
+	SetEnd(*ptr_my_end);
+}
+
+//##########################
+// DESTRUCTOR
+//##########################
+
+VisualComponent::~VisualComponent()
+{
+	//Virtual destructor.
+	;
+}
+
 //##########################
 // SETTING & TELLING PARAMS
 //##########################
@@ -69,9 +85,29 @@ void VisualComponent::SetPositionH(int new_h)
 	position.h = new_h;
 }
 
+void VisualComponent::SetStart(Coordinates my_start)
+{
+	start = my_start;
+}
+
+void VisualComponent::SetEnd(Coordinates my_end)
+{
+	end = my_end;
+}
+
 void VisualComponent::SetCenter(Coordinates my_center)
 {
 	center = my_center;
+}
+
+PreciseRect VisualComponent::TellPosition()
+{
+	return position;
+}
+
+Coordinates VisualComponent::TellCenter()
+{
+	return center;
 }
 
 void VisualComponent::SetAngleDegrees(int my_angle)

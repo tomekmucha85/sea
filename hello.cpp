@@ -32,6 +32,7 @@ int test = 0;
 
 int main(int argc, char* args[])
 {
+
     //Main loop flag
     bool quit = false;
 
@@ -230,6 +231,19 @@ int main(int argc, char* args[])
 				{
 					Game::PrepareSingleLevel(level_test);
 				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_v && event_handler.key.repeat == 0)
+				{
+					Game::ptr_current_level->ptr_initial_navgrid_component->SetVisibilityForAllCreatures(true);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_b && event_handler.key.repeat == 0)
+				{
+					Game::ptr_current_level->ptr_initial_navgrid_component->SetVisibilityForAllCreatures(false);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_x && event_handler.key.repeat == 0)
+				{
+					LevelNineMazes* ptr_nine_mazes = dynamic_cast<LevelNineMazes*>(Game::ptr_current_level);
+					ptr_nine_mazes->DeleteMazeNumber(5);
+				}
 			}
         }
 
@@ -239,7 +253,7 @@ int main(int argc, char* args[])
         //Clear screen
         SDL_RenderClear(Game::ptr_screen->renderer);
 
-		//#TODO zrobiæ generator Creature, zadbac o destruktor i konstruktor kopiujacy
+		//#TODO zadbac o destruktor i konstruktor kopiujacy
 		Game::ptr_current_level->RenderAllPresentCreatures();
 		Game::ptr_current_level->RenderGui();
         //Update screen

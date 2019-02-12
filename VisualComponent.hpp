@@ -25,6 +25,8 @@ public:
 
     //Where the component is rendered on screen
     ////#TODO Move to private!
+	Coordinates start = {0,0};
+	Coordinates end = {0, 0};
 	PreciseRect position = { 0,0,0,0 };
 	Coordinates center = {0,0};
 	int angle = 0;
@@ -32,8 +34,15 @@ public:
 	//###################
 	//Functions
 	//###################
+
+	//#TODO - przeorganizowaæ po dodaniu linii!
+
 	VisualComponent(PreciseRect* ptr_my_position);
 	VisualComponent(Coordinates* ptr_my_center);
+	VisualComponent(Coordinates* ptr_my_start, Coordinates* ptr_my_end);
+
+	virtual ~VisualComponent();
+
 	VisualComponentType TellMyType();
 	void SetMyType(VisualComponentType my_type);
 	virtual void Move(double step_x, double step_y) = 0;
@@ -42,7 +51,11 @@ public:
 	void SetPositionY(int new_y);
 	void SetPositionW(int new_w);
 	void SetPositionH(int new_h);
+	void SetStart(Coordinates my_start);
+	void SetEnd(Coordinates my_end);
 	virtual void SetCenter(Coordinates my_center);
+	PreciseRect TellPosition();
+	Coordinates TellCenter();
 	void SetAngleDegrees(int my_angle);
 	void TurnByAngleDegrees(int my_angle);
 	virtual void Render() = 0;
