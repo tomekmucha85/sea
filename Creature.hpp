@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <functional>
+#include <algorithm>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdio.h>
@@ -126,6 +127,7 @@ class Creature
 		//void MovePixelPerfect(int x, int y);
 		void AddToNeighbors(std::vector<Creature*> new_neighbors);
 		std::vector<Creature*> FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set, int radius = NULL);
+		std::vector<Creature*> FindNeighborsInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area);
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
 		void SetVelocity(double my_velocity);
@@ -149,6 +151,7 @@ class Creature
 		Coordinates CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance);
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors(int margin = 0);
+		bool IsThisCreatureWithinSight(Creature* ptr_other_creature, double distance_limit = 0);
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
 		static void RemoveAllEntriesFromEnvironmentExceptMainHero();
         static void SetMainCharacterToNull();
@@ -212,12 +215,15 @@ class Behavior
 		//Object generating waypoints
 		Navigator* ptr_navigator = nullptr;
 
+
+
     public:
 		Behavior();
 		~Behavior();
 		void WhatToDo(Creature* my_creature);
 		void SetMode(BehaviorMode mode_to_be_set);
 		void Move(Coordinates movement);
+		Creature* FindAGridNodeInSight(Creature* ptr_my_creature);
 
 };
 

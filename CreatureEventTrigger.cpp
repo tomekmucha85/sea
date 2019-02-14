@@ -3,13 +3,13 @@
 CreatureEventTrigger::CreatureEventTrigger(PreciseRect* ptr_area, std::string my_trigger_signal) :
 	Creature(ptr_area)
 {
-	printf("Spawned an event trigger.\n");
+	//printf("Spawned an event trigger.\n");
 	trigger_signal = my_trigger_signal;
-	printf("Assigned event.\n");
+	//printf("Assigned event.\n");
 	my_type = cre_event_trigger;
-	printf("Assigned type.\n");
+	//printf("Assigned type.\n");
 	MakeMeNotObstacle();
-	printf("No obstacle set.\n");
+	//printf("No obstacle set.\n");
 }
 
 std::string CreatureEventTrigger::GiveSignal()

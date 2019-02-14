@@ -116,7 +116,7 @@ void LevelComponentMaze::PrepareNavigationGrid()
 			grid_node_request.insertion_mode = merge;
 			SendSpawnRequestToPeerComponent(grid_node_request, ptr_default_nav_grid);
 
-			printf("Spawned navgrid node at: x: %f y: %f.\n", grid_node_coordinates.x,
+			printf("Level component - %p. Spawned navgrid node at: x: %f y: %f.\n", ptr_default_nav_grid, grid_node_coordinates.x,
 				grid_node_coordinates.y);
 		}
 	}
@@ -265,7 +265,7 @@ void LevelComponentMaze::SetAppropriateSpriteClips(std::vector<std::vector<Creat
 void LevelComponentMaze::VivifyMaze()
 //Method spawning creatures according to current maze blueprint.
 {
-	PrintBlueprint();
+	//PrintBlueprint();
 
 	/*std::vector<std::vector<CreatureType>>context = GetBlueptrintElementContextInGivenRadius(&blueprint,
 		maze_block_width-1,

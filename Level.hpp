@@ -52,6 +52,10 @@ class Level
 		LevelComponent* ptr_initial_triggers_component = nullptr;
 		//Initial level component for navigation grid - always created
 		LevelComponent* ptr_initial_navgrid_component = nullptr;
+
+		//#TODO - czy nie usun¹æ?
+		bool should_nodes_be_reconnected = false;
+
 		Level();
 		virtual ~Level();
 		//Level components factory
@@ -136,6 +140,18 @@ class Level
 		{
 			printf("TRIGGER!\n");
 			this->Win();
+		};
+
+		//Lambda to connect navigation nodes.
+		std::function<void(Level*)> func_connect_nodes = [](Level* ptr_level)
+		{
+			if (ptr_level->should_nodes_be_reconnected == true)
+			{
+				printf("WILL CONNECT NODES!\n");
+				dynamic_cast<LevelComponentNavGrid*>(ptr_level->ptr_initial_navgrid_component)->ConnectNodes(400);
+				ptr_level->should_nodes_be_reconnected = false;
+			}
+
 		};
 };
 

@@ -2,7 +2,7 @@
 
 Line::Line(Coordinates* ptr_my_line_start, Coordinates* ptr_my_line_end) : VisualComponent(ptr_my_line_start, ptr_my_line_end)
 {
-	printf("Spawned a line!\n");
+	//printf("Spawned a line!\n");
 }
 
 void Line::Move(double step_x, double step_y)

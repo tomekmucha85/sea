@@ -58,7 +58,8 @@ class LevelComponent
 		bool DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature, InsertionMode my_mode);
 		void ServeSpawnRequest(CreatureSpawnRequest my_request);
 		void ServeInternalSpawnRequest(CreatureSpawnRequest my_request);
-		void ServeExternalSpawnRequest(CreatureSpawnRequest my_request);
+		virtual void ServeAllExternalSpawnRequests();
+		virtual void ServeExternalSpawnRequest(CreatureSpawnRequest my_request);
 		virtual void ServeExternalDestructionRequest(CreatureDestructionInGivenAreaRequest my_request);
 		void SendSpawnRequestToPeerComponent(CreatureSpawnRequest my_request, LevelComponent* ptr_peer_component);
 		void PushIntoExternalSpawnRequests(CreatureSpawnRequest my_request);
@@ -117,11 +118,7 @@ class LevelComponent
 		//Cyclic action to serve creature spawn requests placed by peer level components
 		std::function<void(LevelComponent*)> func_spawn_creatures_on_peer_component_demand = [](LevelComponent* ptr_level_component)
 		{
-			for (CreatureSpawnRequest request_to_serve : ptr_level_component->external_spawn_requests)
-			{
-				ptr_level_component->ServeExternalSpawnRequest(request_to_serve);
-			}
-			ptr_level_component->external_spawn_requests.clear();
+			ptr_level_component->ServeAllExternalSpawnRequests();
 		};
 
 		//Cyclic action to serve creature spawn requests placed by creatures
@@ -154,7 +151,7 @@ class LevelComponent
 		{
 			for (CreatureDestructionInGivenAreaRequest my_request : ptr_level_component->external_destruction_requests)
 			{
-				printf("Received destruction request!\n");
+				//printf("Received destruction request!\n");
 				ptr_level_component->ServeExternalDestructionRequest(my_request);
 			}
 			ptr_level_component->external_destruction_requests.clear();

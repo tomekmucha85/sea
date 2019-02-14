@@ -9,8 +9,7 @@
 VectorDrawing::VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_color) : VisualComponent(ptr_my_area)
 {
 	SetMyType(visco_vector);
-	printf("Entered VectorDrawing constructor.\n");
-	printf("Constructed VectorDrawing.\n");
+	//printf("Entered VectorDrawing constructor.\n");
 	vector_fill_color = my_vector_fill_color;
 	SetCenter(CalculateCenterOfCurrentPosition());
 }
@@ -18,8 +17,7 @@ VectorDrawing::VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_colo
 VectorDrawing::VectorDrawing(Coordinates* ptr_my_center, double my_height, double my_width, Color my_vector_fill_color) : VisualComponent(ptr_my_center)
 {
 	SetMyType(visco_vector);
-	printf("Entered VectorDrawing constructor.\n");
-	printf("Constructed VectorDrawing.\n");
+	//printf("Entered VectorDrawing constructor.\n");
 	vector_fill_color = my_vector_fill_color;
 	SetPositionW(static_cast<int>(my_width));
 	SetPositionH(static_cast<int>(my_height));

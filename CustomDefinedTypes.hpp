@@ -41,11 +41,12 @@ enum BehaviorMode {
 	beh_projectile,
 	beh_run_in_circles,
 	beh_run_along_predefined_path,
+	beh_wander_on_navmesh,
 	beh_test_movement
 };
 
 //Navigator modes of opearation
-enum NavigatorMode {navig_undetermined, navig_circle, navig_coordinates_list};
+enum NavigatorMode {navig_undetermined, navig_circle, navig_coordinates_list, navig_wander_on_navmesh};
 
 //Navigation states
 enum NavigationState {active, inactive};

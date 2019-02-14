@@ -23,6 +23,7 @@ Level::Level()
 	cyclic_actions.push_back(func_manage_gui_for_main_character);
 	cyclic_actions.push_back(func_check_and_react_if_player_won);
 	cyclic_actions.push_back(func_check_and_react_if_player_lost);
+	cyclic_actions.push_back(func_connect_nodes);
 }
 
 //************
@@ -364,6 +365,7 @@ void Level::PerformActionsForTriggersHitByHero(LevelComponent* ptr_component_wit
 
 void Level::RenderAllPresentCreatures()
 {
+	//#TODO - zoptymalizowaæ!
 	// Such map should be automatically ordered by ascending key values
 	std::map<int, std::vector<Creature*>> render_layers_vs_creatures = {};
 
@@ -386,14 +388,16 @@ void Level::RenderAllPresentCreatures()
 	//printf("%d creatures to render.\n", static_cast<int>(render_layers_vs_creatures.size()));
 
 	//Render ordered creatures
+
 	for (std::pair<int, std::vector<Creature*>> element : render_layers_vs_creatures)
 	{
 		std::vector<Creature*> creatures_to_render = element.second;
 		for (Creature* ptr_creature_to_render : creatures_to_render)
 		{
-			RenderCreatureVisualComponent(ptr_creature_to_render);
+				RenderCreatureVisualComponent(ptr_creature_to_render);
 		}
 	}
+
 }
 
 void Level::RenderCreatureVisualComponent(Creature* ptr_my_creature)

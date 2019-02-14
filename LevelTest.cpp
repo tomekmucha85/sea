@@ -12,11 +12,10 @@ LevelTest::LevelTest()
 	Coordinates other_guy_position = { 50,300 };
 	Creature* ptr_other_guy = ptr_initial_core_component->AddCreature(cre_clawy, &other_guy_position, force);
 	ptr_other_guy->SetBehaviorMode(beh_run_along_predefined_path);
-	//Coordinates other_guy2_position = { 500,300 };
-	//Creature* ptr_other_guy2 = ptr_initial_core_component->AddCreature(cre_clawy, &other_guy2_position, force);
+	Coordinates other_guy2_position = { 500,300 };
+	Creature* ptr_other_guy2 = ptr_initial_core_component->AddCreature(cre_clawy, &other_guy2_position, force);
 
-    //ptr_other_guy2->SetBehaviorMode(beh_test_movement);
-	//ptr_other_guy2->SetBehaviorMode(beh_run_in_circles);
+	ptr_other_guy2->SetBehaviorMode(beh_wander_on_navmesh);
 	ptr_test_creature = ptr_wall_1;
 
 	/*																			
@@ -49,14 +48,11 @@ LevelTest::LevelTest()
 	Coordinates navgrid_point_center_3 = { 200,200 };
 	CreatureNavGridNode* ptr_test_navgrid_node_3 = dynamic_cast<CreatureNavGridNode*>(AddNavigationNodeUsingDefaultComponent(navgrid_point_center_3));
 
-	ptr_test_navgrid_node_1->AddTwoSidedConnection(ptr_test_navgrid_node_2);
-	ptr_test_navgrid_node_2->AddTwoSidedConnection(ptr_test_navgrid_node_3);
-	ptr_test_navgrid_node_1->AddTwoSidedConnection(ptr_test_navgrid_node_3);
+	//ptr_test_navgrid_node_1->AddTwoSidedConnection(ptr_test_navgrid_node_2);
+	//ptr_test_navgrid_node_2->AddTwoSidedConnection(ptr_test_navgrid_node_3);
+	//ptr_test_navgrid_node_1->AddTwoSidedConnection(ptr_test_navgrid_node_3);
 
-	//Coordinates line_start = {0,0};
-	//Coordinates line_end = {100,100};
-	//Line* ptr_my_line = new Line(&line_start, &line_end);
-	//ptr_my_line->SetColor({ 255,0,0,255 });
+	//dynamic_cast<LevelComponentNavGrid*>(ptr_initial_navgrid_component)->ConnectNodes();
 
 	//ptr_test_navgrid_node->AddVisualComponent(ptr_my_line);
 }

@@ -40,6 +40,18 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 				ptr_my_creature->SetVelocity(0);
 			}
 		}
+		else if (mode == beh_wander_on_navmesh)
+		{
+			static Creature* ptr_currently_followed_navgrid = nullptr;
+			if (ptr_currently_followed_navgrid == nullptr)
+			{
+				ptr_currently_followed_navgrid = FindAGridNodeInSight(ptr_my_creature);
+			}
+			else
+			{
+				ptr_my_creature->ThrustTowardsPoint(ptr_currently_followed_navgrid->TellCenterPoint());
+			}
+		}
 		else if (mode == beh_run_along_predefined_path)
 		{
 			Coordinates my_center = ptr_my_creature->TellCenterPoint();
@@ -99,6 +111,10 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 			i++;
 
 		}
+		else if (mode == beh_wander_on_navmesh)
+		{
+			;
+		}
 	}
 }
 
@@ -108,10 +124,32 @@ void Behavior::SetMode(BehaviorMode mode_to_be_set)
 	delete ptr_navigator;
 }
 
+//#TODO - ucywilizowaæ
 void Behavior::Move(Coordinates movement)
 {
 	if (ptr_navigator != nullptr)
 	{
 		ptr_navigator->Move(movement);
 	}
+}
+
+
+Creature* Behavior::FindAGridNodeInSight(Creature* ptr_my_creature)
+{
+	Creature* result = nullptr;
+	std::vector<Creature*> neighbors = ptr_my_creature->FindNeighborsInSet(&Creature::current_environment, 500);
+	for (Creature* ptr_candidate : neighbors)
+	{
+		if (ptr_candidate->my_type == cre_navgrid_node)
+		{
+			printf("Found candidate.\n");
+			if (ptr_my_creature->IsThisCreatureWithinSight(ptr_candidate, 500))
+			{
+				result = ptr_candidate;
+				return result;
+			}
+			printf("Candidate to far!\n.");
+		}
+	}
+	return result;
 }

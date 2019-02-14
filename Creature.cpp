@@ -28,26 +28,26 @@ void Creature::PrintStupidThings(Creature* ptr_to_creature)
 
 Creature::Creature(PreciseRect* ptr_area)
 {
-	printf("Invisible creature constructed.\n");
+	//printf("Invisible creature constructed.\n");
 	//Hitbox == ptr_area. No margin is set.
 	VectorDrawing* ptr_vector_drawing = new VectorDrawing(ptr_area);
 	SetMyVisualComponent(ptr_vector_drawing);
 	InitializeHitbox(*ptr_area, 0);
 	ptr_behavior = new Behavior();
-	printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+	//printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 
 }
 
 Creature::Creature(Coordinates* ptr_my_center)
 {
-	printf("Invisible creature constructed.\n");
+	//printf("Invisible creature constructed.\n");
 	VectorDrawing* ptr_vector_drawing = new VectorDrawing(ptr_my_center);
 	SetMyVisualComponent(ptr_vector_drawing);
 	PreciseRect visua_component_center = ptr_vector_drawing->TellPosition();
 	//Hitbox == area occupied by vector drawing. No margin is set.
 	InitializeHitbox(visua_component_center, 0);
 	ptr_behavior = new Behavior();
-	printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+	//printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 }
 
 //Constructor spawning a creature around CENTER coordinates given
@@ -319,6 +319,29 @@ Only objects with hitboxes within default_neighbor_radius will be checked.*/
 	return result;
 }
 
+std::vector<Creature*> Creature::FindNeighborsInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area)
+{
+	/*This function finds Creatures existing in given set in given area.
+	Useful for collissions finding.*/
+	{
+		std::vector<Creature*> result;
+
+		//printf("Set to be examined is sized %d.\n", ptr_my_creatures_set->size());
+		Coordinates my_center = TellCenterPoint();
+		for (Creature* ptr_creature : *ptr_my_creatures_set)
+		{
+			Coordinates creatures_center = ptr_creature->TellCenterPoint();
+
+			if (Collisions::IsThisPointInsideRectangle(creatures_center, my_area))
+			{
+				result.push_back(ptr_creature);
+			}
+			//printf("Number of neighbours found: %d.\n", result.size());
+		}
+		return result;
+	}
+}
+
 std::vector<Creature*> Creature::FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles)
 {
 	std::vector<Creature*> result = {};
@@ -327,7 +350,7 @@ std::vector<Creature*> Creature::FindCollisionsInSet(std::vector<Creature*>* ptr
 	{
 		if (DoICollideWithThisCreature(ptr_creature, check_only_obstacles))
 		{
-			printf("Found collision in set!\n");
+			//printf("Found collision in set!\n");
 			result.push_back(ptr_creature);
 		}
 	}
@@ -383,7 +406,7 @@ bool Creature::Move(double x, double y)
         //printf("Checking main character collision.\n");
         if (DoICollideWithNeighbors())
         {
-            //printf("Collision of main character detected\n");
+           //printf("Collision of main character detected\n");
             for (Creature* ptr_creature : current_environment)
             {
                 if (ptr_creature != this) /* Prevents moving the main character. */
@@ -669,6 +692,47 @@ bool Creature::DoICollideWithNeighbors(int margin)
 		}
 	}
 	return result;
+}
+
+bool Creature::IsThisCreatureWithinSight(Creature* ptr_other_creature, double distance_limit)
+{
+	Coordinates other_creature_center = ptr_other_creature->TellCenterPoint();
+	Coordinates my_center = TellCenterPoint();
+	double distance_between_creatures = Distance::CalculateDistanceBetweenPoints(my_center, other_creature_center);
+	RemoveNeighbors();
+	std::vector<Creature*>current_neighbors = {};
+	if (distance_limit == 0)
+	{
+		current_neighbors = FindNeighborsInSet(&current_environment, static_cast<int>(distance_between_creatures));
+	}
+	else
+	{
+		PreciseRect area_to_check = 
+		{
+			std::min(my_center.x, other_creature_center.x),
+			std::min(my_center.y, other_creature_center.y),
+			abs(my_center.x - other_creature_center.x),
+			abs(my_center.y - other_creature_center.y)
+		};
+		if (distance_limit < distance_between_creatures)
+		{
+			return false;
+		}
+		current_neighbors = FindNeighborsInAreaInSet(&current_environment, area_to_check);
+	}
+
+	for (Creature* ptr_neighbor : current_neighbors)
+	{
+		if (ptr_neighbor != ptr_other_creature && ptr_neighbor->is_obstacle == true)
+		{
+			if (Collisions::DoesSegmentIntersectRectangle(my_center, other_creature_center, ptr_neighbor->TellHitbox()))
+			{
+				return false;
+			}
+		}
+
+	}
+	return true;
 }
 
 //**************

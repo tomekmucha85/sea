@@ -27,14 +27,14 @@ LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelCom
 LevelComponent::~LevelComponent()
 {
 	delete ptr_creatures_factory;
-	printf("Removing level component with address %p.\n", this);
+	//printf("Removing level component with address %p.\n", this);
 	if (ptr_component_outline != nullptr)
 	{
-		printf("Coordinates of deleted component: x:%f y:%f w:%f h:%f.\n", 
+		/*printf("Coordinates of deleted component: x:%f y:%f w:%f h:%f.\n", 
 			ptr_component_outline->TellHitbox().x,
 			ptr_component_outline->TellHitbox().y,
 			ptr_component_outline->TellHitbox().w,
-			ptr_component_outline->TellHitbox().h);
+			ptr_component_outline->TellHitbox().h);*/
 	}
 	RemoveAllCreaturesExceptHero();
 }
@@ -341,10 +341,19 @@ Serving external spawn requests for creatures. Internal requests are placed by p
 	ServeSpawnRequest(my_request);
 }
 
+void LevelComponent::ServeAllExternalSpawnRequests()
+{
+	for (CreatureSpawnRequest request_to_serve : external_spawn_requests)
+	{
+		ServeExternalSpawnRequest(request_to_serve);
+	}
+	external_spawn_requests.clear();
+}
+
 void LevelComponent::ServeExternalDestructionRequest(CreatureDestructionInGivenAreaRequest my_request)
 {
-	printf("Destruction request to be served. Area: x: %f y: %f w: %f h: %f.\n",
-		my_request.nukage_area.x, my_request.nukage_area.y, my_request.nukage_area.w, my_request.nukage_area.h);
+	//printf("Destruction request to be served. Area: x: %f y: %f w: %f h: %f.\n",
+	//	my_request.nukage_area.x, my_request.nukage_area.y, my_request.nukage_area.w, my_request.nukage_area.h);
 	std::vector<Creature*> creatures_copy = creatures;
 	for (Creature* ptr_my_creature : creatures_copy)
 	{
@@ -353,14 +362,14 @@ void LevelComponent::ServeExternalDestructionRequest(CreatureDestructionInGivenA
 			(ptr_my_creature->my_type == my_request.kind_to_be_destroyed || 
 				my_request.kind_to_be_destroyed == cre_none))
 		{
-			printf("Will destruct!\n");
-			printf("Creature to be destructed (center): x: %f y: %f .\n", ptr_my_creature->TellCenterPoint().x, ptr_my_creature->TellCenterPoint().y);
+			//printf("Will destruct!\n");
+			//printf("Creature to be destructed (center): x: %f y: %f .\n", ptr_my_creature->TellCenterPoint().x, ptr_my_creature->TellCenterPoint().y);
 			RemoveCreature(ptr_my_creature);
 		}
 		else
 		{
-			printf("Will NOT destruct!\n");
-			printf("Creature to be spared (center): x: %f y: %f.\n", ptr_my_creature->TellCenterPoint().x, ptr_my_creature->TellCenterPoint().y);
+			//printf("Will NOT destruct!\n");
+			//printf("Creature to be spared (center): x: %f y: %f.\n", ptr_my_creature->TellCenterPoint().x, ptr_my_creature->TellCenterPoint().y);
 		}
 	}
 }
@@ -377,7 +386,7 @@ void LevelComponent::SendSpawnRequestToPeerComponent(CreatureSpawnRequest my_req
 
 void LevelComponent::SendDestructionRequestToPeerComponent(CreatureDestructionInGivenAreaRequest my_request, LevelComponent* ptr_peer_component)
 {
-	printf("Destruction request pushed into external vector.\n");
+	//printf("Destruction request pushed into external vector.\n");
 	ptr_peer_component->PushIntoExternalDestructionRequests(my_request);
 }
 

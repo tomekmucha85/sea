@@ -3,11 +3,11 @@
 CreatureNavGridNode::CreatureNavGridNode(Coordinates* ptr_my_coordinates) :
 	Creature(ptr_my_coordinates)
 {
-	printf("Spawned a navigation grid node.\n");
+	//printf("Spawned a navigation grid node.\n");
 	my_type = cre_navgrid_node;
-	printf("Assigned type.\n");
+	//printf("Assigned type.\n");
 	MakeMeNotObstacle();
-	printf("No obstacle set.\n");
+	//printf("No obstacle set.\n");
 	//By default this creature should not be rendered on screen.
 	SetVisibility(true);
 	visual_components[0]->SetColor({ 255,0,0,255 });

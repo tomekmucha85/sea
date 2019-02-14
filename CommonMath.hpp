@@ -2,6 +2,7 @@
 #define COMMON_MATH_HPP
 #include <stdio.h>
 #include <iostream>
+#include <algorithm>
 #include <math.h>
 #include <CustomDefinedTypes.hpp>
 
@@ -32,6 +33,7 @@ class MathVector
 		//MathVector operator* (const MathVector a);
 		//MathVector operator+ (const MathVector a);
 		static double ScalarProduct(MathVector a, MathVector b);
+		static double CrossProductValue(MathVector a, MathVector b);
 		static double TellRadianAngleBetweenVectors(MathVector a, MathVector b);
 };
 
@@ -54,12 +56,25 @@ class Distance
 		static double CalculateDistanceBetweenPoints(Coordinates a, Coordinates b);
 };
 
+class Segment
+{
+    private:
+
+    public:
+		static bool CheckIfEndOfOneSegmentIsPlacedOnAnotherSegment(Coordinates a, Coordinates b, Coordinates c);
+		static double CalculateDetFromMatrix(Coordinates a, Coordinates b, Coordinates c);
+		static bool DoSegmentsIntersect(Coordinates a, Coordinates b, Coordinates c, Coordinates d);
+
+};
+
 class Collisions
 {
     private:
 
     public:
-	    static bool DoTheseRectanglesOverlap(PreciseRect a, PreciseRect b);
+	   static bool IsThisPointInsideRectangle(Coordinates point, PreciseRect rectangle);
+	   static bool DoTheseRectanglesOverlap(PreciseRect a, PreciseRect b);
+	   static bool DoesSegmentIntersectRectangle(Coordinates segment_start, Coordinates segment_end, PreciseRect rectanlge);
 };
 
 #endif // COMMON_MATH_HPP

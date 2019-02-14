@@ -191,27 +191,11 @@ int main(int argc, char* args[])
 				{
 					Creature::ptr_current_main_charater->ThrustBackward(150);
 				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_UP && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->ThrustForward(200);
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_DOWN && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->ThrustBackward(150);
-				}
 				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_w && event_handler.key.repeat == 0)
 				{
 					Creature::ptr_current_main_charater->SetVelocity(0);
 				}
 				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_s && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->SetVelocity(0);
-				}
-				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_UP && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->SetVelocity(0);
-				}
-				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_DOWN && event_handler.key.repeat == 0)
 				{
 					Creature::ptr_current_main_charater->SetVelocity(0);
 				}
@@ -243,6 +227,10 @@ int main(int argc, char* args[])
 				{
 					LevelNineMazes* ptr_nine_mazes = dynamic_cast<LevelNineMazes*>(Game::ptr_current_level);
 					ptr_nine_mazes->DeleteMazeNumber(5);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_n && event_handler.key.repeat == 0)
+				{
+					Game::ptr_current_level->should_nodes_be_reconnected = true;
 				}
 			}
         }
