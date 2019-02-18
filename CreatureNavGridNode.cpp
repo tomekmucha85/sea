@@ -64,3 +64,8 @@ void CreatureNavGridNode::RemoveTwoSidedConnection(CreatureNavGridNode* ptr_neig
 	RemoveOneSidedConnection(ptr_neighbor_node);
 	ptr_neighbor_node->RemoveOneSidedConnection(this);
 }
+
+std::vector<CreatureNavGridNode*> CreatureNavGridNode::TellConnectedNodes()
+{
+	return connected_nodes;
+}

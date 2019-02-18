@@ -24,6 +24,7 @@ Level::Level()
 	cyclic_actions.push_back(func_check_and_react_if_player_won);
 	cyclic_actions.push_back(func_check_and_react_if_player_lost);
 	cyclic_actions.push_back(func_connect_nodes);
+	cyclic_actions.push_back(func_serve_path_requests);
 }
 
 //************
@@ -357,6 +358,45 @@ void Level::PerformActionsForTriggersHitByHero(LevelComponent* ptr_component_wit
 	{
 		signals_vs_events[received_signal]();
 	}
+}
+
+void Level::ProcessAllPathRequests()
+{
+	//printf("Level will process incoming path requests.\n");
+	std::vector<RandomPathRequestEncalpsulated> path_requests_to_process = {};
+	//Collecting path requests from components
+	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_component_types_vs_level_components)
+	{
+		std::vector<LevelComponent*> my_level_components = element.second;
+		for (LevelComponent* ptr_my_level_component : my_level_components)
+		{
+
+			std::vector<RandomPathRequestEncalpsulated> component_requests = ptr_my_level_component->path_requests_encapsulated;
+			for (RandomPathRequestEncalpsulated request : component_requests)
+			{
+				path_requests_to_process.push_back(request);
+			}
+			ptr_my_level_component->path_requests_encapsulated.clear();
+		}
+	}
+	if (path_requests_to_process.size() > 0)
+	{
+		printf("Level caught at least one path request (%d).\n", path_requests_to_process.size());
+	}
+	//Getting answer from navigation mesh
+	//#TODO - czy rzutowanie potrzebne?
+	//printf("Level will send path responses.\n");
+	LevelComponentNavGrid* default_nav_grid = dynamic_cast<LevelComponentNavGrid*>(ptr_initial_navgrid_component);
+	for (RandomPathRequestEncalpsulated request : path_requests_to_process)
+	{
+		printf("Level will obtain path from nav grid component.\n");
+	    RandomPathResponseEncapsulated response =  default_nav_grid->GiveResponseForRandomPathRequest(request);
+		
+		//#TODO - czy nie ma niebezpieczeñstwa, ¿e wskaŸnik pokazuje w nicoœæ? Nie powinno byæ.
+		LevelComponent* ptr_receiver_component = response.source_component;
+		ptr_receiver_component->DeliverPathResponse(response);
+	}
+
 }
 
 //************

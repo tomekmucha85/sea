@@ -22,11 +22,26 @@
 #include <FactorySpawningNavigators.hpp>
 #include <CommonMath.hpp>
 
+class Creature;
+
+struct RandomPathResponse
+{
+	Creature* requestor_id = nullptr;
+	std::vector<Coordinates> navigation_path = {};
+};
+
+//Request for generating random path along navigation grid
+struct RandomPathRequest
+{
+	Creature* requestor_id = nullptr;
+	unsigned int requested_hops_length = 0;
+};
 
 class Behavior;
 
 class Creature
 {
+
 	friend class Behavior;
 	friend class Magic;
 	
@@ -87,14 +102,14 @@ class Creature
 		int turn_direction = 0; // -1 = left, 1 = right, 0 = no turning.
 
 		std::vector<VisualComponent*> visual_components = {};
-		//VisualComponent* ptr_creature_visual_component = nullptr;
 
-        //Sprite* ptr_creature_sprite = nullptr;
-		//VectorDrawing* ptr_creature_vector = nullptr;
         //Vector holding pointers to all creatures currently present in game
         static std::vector <Creature*> current_environment;
         //Holds address of Creature acting as current main character
         static Creature* ptr_current_main_charater;
+
+		//Request to assign navigation path
+		std::vector<RandomPathRequest> path_requests = {};
 
 		//###################
 		//Arrays&vectors
@@ -152,6 +167,7 @@ class Creature
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors(int margin = 0);
 		bool IsThisCreatureWithinSight(Creature* ptr_other_creature, double distance_limit = 0);
+		bool DoesThisCreatureBelongToWalls();
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
 		static void RemoveAllEntriesFromEnvironmentExceptMainHero();
         static void SetMainCharacterToNull();
@@ -160,11 +176,22 @@ class Creature
 		bool AmIVisible();
 		void SetVisibility(bool should_be_visible);
 		static Creature* WhoIsMainCharacter();
+		static bool IsThisCreaturePresentInEnvironment(Creature* ptr_my_creature);
 		void PerformCyclicActions();
 		void AddCyclicAction(std::function<void(Creature*)> my_cyclic_action);
-		std::vector<CreatureSpawnRequest>* TellSpawnRequests();
 		//#TODO - napisaæ funkcjê do usuwania akcji cyklicznych
+
+	    //###################
+		//Requests processing
+		//###################
+
 		void PushIntoSpawnRequests(CreatureSpawnRequest my_request);
+		void PlaceRandomPathRequest(unsigned int path_length);
+		std::vector<CreatureSpawnRequest>* TellSpawnRequests();
+		void MakeUseOfPathResponse(RandomPathResponse my_response);
+
+
+
 		void FollowPhysics();
 		void FollowBehavior();
 		void SetBehaviorMode(BehaviorMode behavior_to_be_set);
@@ -184,9 +211,6 @@ class Creature
 		virtual void ArmTrigger();
 		virtual void DisarmTrigger();
 		virtual bool AmIArmed();
-		/*virtual void MakeDisposable();
-		virtual void MakePermanent();
-		virtual bool AmIDisposable();*/
 
 		//###################
 		//COMMON LAMBDAS
@@ -223,8 +247,7 @@ class Behavior
 		void WhatToDo(Creature* my_creature);
 		void SetMode(BehaviorMode mode_to_be_set);
 		void Move(Coordinates movement);
-		Creature* FindAGridNodeInSight(Creature* ptr_my_creature);
-
+		void MakeUseOfPathResponse(RandomPathResponse my_response);
 };
 
 class Magic

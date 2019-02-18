@@ -42,14 +42,26 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 		}
 		else if (mode == beh_wander_on_navmesh)
 		{
-			static Creature* ptr_currently_followed_navgrid = nullptr;
-			if (ptr_currently_followed_navgrid == nullptr)
+			Coordinates my_center = ptr_my_creature->TellCenterPoint();
+			if (ptr_navigator == nullptr)
 			{
-				ptr_currently_followed_navgrid = FindAGridNodeInSight(ptr_my_creature);
+				ptr_my_creature->PlaceRandomPathRequest(10);
 			}
 			else
 			{
-				ptr_my_creature->ThrustTowardsPoint(ptr_currently_followed_navgrid->TellCenterPoint());
+				if (ptr_navigator->TellMyState() == active)
+				{
+					ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
+					if (ptr_navigator->WasCurrentWaypointReached(my_center))
+					{
+						ptr_navigator->SetNextWaypoint();
+						ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
+					}
+				}
+				else
+				{
+					ptr_my_creature->SetVelocity(0);
+				}
 			}
 		}
 		else if (mode == beh_run_along_predefined_path)
@@ -134,22 +146,24 @@ void Behavior::Move(Coordinates movement)
 }
 
 
-Creature* Behavior::FindAGridNodeInSight(Creature* ptr_my_creature)
+void Behavior::MakeUseOfPathResponse(RandomPathResponse my_response)
 {
-	Creature* result = nullptr;
-	std::vector<Creature*> neighbors = ptr_my_creature->FindNeighborsInSet(&Creature::current_environment, 500);
-	for (Creature* ptr_candidate : neighbors)
+	//#TODO! Ogarn¹æ kasowanie nawigatorów!
+	delete ptr_navigator;
+	//#TODO - czy towrzenie anchora potrzebne?
+	Coordinates anchor = { 0, 0 };
+	printf("Received plan from nav grid. Plan:\n");
+	for (Coordinates point : my_response.navigation_path)
 	{
-		if (ptr_candidate->my_type == cre_navgrid_node)
-		{
-			printf("Found candidate.\n");
-			if (ptr_my_creature->IsThisCreatureWithinSight(ptr_candidate, 500))
-			{
-				result = ptr_candidate;
-				return result;
-			}
-			printf("Candidate to far!\n.");
-		}
+		printf("x: %f y: %f\n", point.x, point.y);
 	}
-	return result;
+	if (my_response.navigation_path.size() != 0)
+	{
+		ptr_navigator = ptr_navigators_factory->SpawnNavigator(navig_coordinates_list,
+			anchor, my_response.navigation_path, false);
+	}
+	else
+	{
+		printf("Received empty path!\n");
+	}
 }

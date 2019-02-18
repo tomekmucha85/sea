@@ -13,21 +13,21 @@ LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<
 	}
 	else
 	{
-		printf("Maze component area passed to constructor is x: %f, y: %f, w: %f, h: %f.\n",
-			my_component_area.x, my_component_area.y, my_component_area.w, my_component_area.h);
+		/*printf("Maze component area passed to constructor is x: %f, y: %f, w: %f, h: %f.\n",
+			my_component_area.x, my_component_area.y, my_component_area.w, my_component_area.h);*/
 	}
 	maze_rows_count = CalculateRowsNumber();
 	maze_columns_count = CalculateColumnsNumber();
 	maze_blocks_count_vertical = CalculateBlocksCountVertically();
 	maze_blocks_count_horizontal = CalculateBlocksCountHorizontally();
-	printf("Maze rows: %d, maze columns: %d, maze blocks vertically: %d, maze blocks horizontally: %d.\n",
-		maze_rows_count, maze_columns_count, maze_blocks_count_vertical, maze_blocks_count_horizontal);
+	/*printf("Maze rows: %d, maze columns: %d, maze blocks vertically: %d, maze blocks horizontally: %d.\n",
+		maze_rows_count, maze_columns_count, maze_blocks_count_vertical, maze_blocks_count_horizontal);*/
 	//std::vector<Creature*>* ptr_to_creatures = TellPtrToCreaturesArray();
 }
 
 LevelComponentMaze::~LevelComponentMaze()
 {
-	printf("Maze destructor called.\n");
+	//printf("Maze destructor called.\n");
 	//#TODO! - czy na pewno bezpieczne?
 	for (int row = 0; row < maze_blocks_count_vertical; row++)
 	{
@@ -116,8 +116,8 @@ void LevelComponentMaze::PrepareNavigationGrid()
 			grid_node_request.insertion_mode = merge;
 			SendSpawnRequestToPeerComponent(grid_node_request, ptr_default_nav_grid);
 
-			printf("Level component - %p. Spawned navgrid node at: x: %f y: %f.\n", ptr_default_nav_grid, grid_node_coordinates.x,
-				grid_node_coordinates.y);
+			/*printf("Level component - %p. Spawned navgrid node at: x: %f y: %f.\n", ptr_default_nav_grid, grid_node_coordinates.x,
+				grid_node_coordinates.y);*/
 		}
 	}
 }
@@ -291,7 +291,7 @@ void LevelComponentMaze::VivifyMaze()
 				Coordinates my_position = { TellComponentArea().x + (column*map_block_width), 
 					TellComponentArea().y +(row*map_block_height) };
 				Creature* ptr_new_creature = AddCreature(my_type, &my_position, merge);
-				SetAppropriateSpriteClips(&blueprint, column, row, ptr_new_creature);
+				//SetAppropriateSpriteClips(&blueprint, column, row, ptr_new_creature);
 			}
 		}
 	}
@@ -418,11 +418,11 @@ void LevelComponentMaze::GenerateMaze()
 	}
 	CarveExitsFromMaze();
 	ManageBorders();
-	printf("Border state:\n N: %d, E: %d, W: %d, S: %d.\n", TellBorderState(north), TellBorderState(east), TellBorderState(west), TellBorderState(south));
-	printf("Maze columns count: %d, maze rows count: %d.\n", maze_columns_count, maze_rows_count);
+	//printf("Border state:\n N: %d, E: %d, W: %d, S: %d.\n", TellBorderState(north), TellBorderState(east), TellBorderState(west), TellBorderState(south));
+	//printf("Maze columns count: %d, maze rows count: %d.\n", maze_columns_count, maze_rows_count);
 	PrepareNavigationGrid();
 	VivifyMaze();
-	printf("Maze generated.\n");
+	//printf("Maze generated.\n");
 }
 
 void LevelComponentMaze::CreateEmptyVisitedCellsGrid()

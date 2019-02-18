@@ -83,6 +83,7 @@ void Sprite::SetTextureClip(SDL_Rect my_texture_clip)
 void Sprite::Render()
 {
 	SDL_Rect position_int = ConvertPreciseRectToSdlRect(position);
+	//printf("Position int: x: %d y: %d w: %d h: %d.\n", position_int.x, position_int.y, position_int.w, position_int.h);
 	if (texture_clip.w != 0 && texture_clip.h != 0)
 	{
 		SDL_Point relative_center = {static_cast<int>(position.w)/2, static_cast<int>(position.h)/2};

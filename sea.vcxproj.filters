@@ -28,9 +28,6 @@
     <Filter Include="Header Files\Levels">
       <UniqueIdentifier>{8b3a5283-753f-45b2-9674-72240891d8b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Levels">
-      <UniqueIdentifier>{06902961-88c7-48d0-b4c6-bbb6b3c10ff3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Textures">
       <UniqueIdentifier>{ce54fb02-426a-4555-9b33-f46cf6dfa0a1}</UniqueIdentifier>
     </Filter>
@@ -63,6 +60,9 @@
     </Filter>
     <Filter Include="Source Files\VisualComponents\Lines">
       <UniqueIdentifier>{80b59978-1ad8-44f2-b36b-128232e5f6eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Levels">
+      <UniqueIdentifier>{06902961-88c7-48d0-b4c6-bbb6b3c10ff3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

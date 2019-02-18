@@ -22,6 +22,7 @@ LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelCom
 	cyclic_actions.push_back(func_spawn_creatures_on_peer_component_demand);
 	cyclic_actions.push_back(func_destroy_creatures_on_peer_component_demand);
 	cyclic_actions.push_back(func_reaper);
+	cyclic_actions.push_back(func_send_through_path_requests);
 }
 
 LevelComponent::~LevelComponent()
@@ -394,6 +395,64 @@ void LevelComponent::PushIntoExternalDestructionRequests(CreatureDestructionInGi
 {
 	external_destruction_requests.push_back(my_request);
 }
+
+//##############################
+//Path requests
+//##############################
+void LevelComponent::SendPathRequest(RandomPathRequest my_request)
+{
+	RandomPathRequestEncalpsulated encapsulated_request = EncapsulatePathRequest(my_request);
+	path_requests_encapsulated.push_back(encapsulated_request);
+	printf("Level component will send a path request.\n");
+}
+
+
+RandomPathRequestEncalpsulated LevelComponent::EncapsulatePathRequest(RandomPathRequest my_request)
+{
+	RandomPathRequestEncalpsulated result;
+	result.source_component = this;
+	result.requestor_id = my_request.requestor_id;
+	result.requested_hops_length = my_request.requested_hops_length;
+	return result;
+}
+
+RandomPathResponse LevelComponent::DecapsulatePathResponse(RandomPathResponseEncapsulated my_response)
+{
+	RandomPathResponse result;
+	result.navigation_path = my_response.navigation_path;
+	result.requestor_id = my_response.requestor_id;
+	return result;
+}
+
+void LevelComponent::SendAllPathRequests()
+{
+	//printf("Level component will send all path requests.\n");
+	for (Creature* ptr_my_creature : creatures)
+	{
+		if (ptr_my_creature->path_requests.size() > 0)
+		{
+			for (RandomPathRequest my_request : ptr_my_creature->path_requests)
+			{
+				SendPathRequest(my_request);
+			}
+			ptr_my_creature->path_requests.clear();
+		}
+	}
+}
+
+
+void LevelComponent::DeliverPathResponse(RandomPathResponseEncapsulated my_response)
+{
+	printf("Level component will deliver path response.\n");
+	RandomPathResponse response_decapsulated = DecapsulatePathResponse(my_response);
+	Creature* receiving_creature = response_decapsulated.requestor_id;
+	if (std::find(creatures.begin(), creatures.end(), receiving_creature) != creatures.end())
+	{
+		receiving_creature->MakeUseOfPathResponse(response_decapsulated);
+	}
+}
+
+
 
 //##############################
 //Cyclic actions

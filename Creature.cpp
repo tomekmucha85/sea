@@ -156,6 +156,17 @@ Creature* Creature::WhoIsMainCharacter()
 }
 
 
+bool Creature::IsThisCreaturePresentInEnvironment(Creature* ptr_my_creature)
+{
+	bool result = false;
+
+	if (std::find(current_environment.begin(), current_environment.end(), ptr_my_creature) != current_environment.end())
+	{
+		result = true;
+	}
+	return result;
+}
+
 PreciseRect Creature::TellHitbox()
 {
 	return hitbox;
@@ -211,6 +222,16 @@ void Creature::MakeMeObstacle()
 void Creature::MakeMeNotObstacle()
 {
 	is_obstacle = false;
+}
+
+bool Creature::DoesThisCreatureBelongToWalls()
+{
+	bool result = false;
+	if (std::find(Creature::walls.begin(), Creature::walls.end(), my_type) != Creature::walls.end())
+	{
+		result = true;
+	}
+	return result;
 }
 
 void Creature::InitializeHitbox(PreciseRect sprite_position, int margin_percent)
@@ -723,7 +744,7 @@ bool Creature::IsThisCreatureWithinSight(Creature* ptr_other_creature, double di
 
 	for (Creature* ptr_neighbor : current_neighbors)
 	{
-		if (ptr_neighbor != ptr_other_creature && ptr_neighbor->is_obstacle == true)
+		if (ptr_neighbor != ptr_other_creature && ptr_neighbor->DoesThisCreatureBelongToWalls())
 		{
 			if (Collisions::DoesSegmentIntersectRectangle(my_center, other_creature_center, ptr_neighbor->TellHitbox()))
 			{
@@ -733,6 +754,25 @@ bool Creature::IsThisCreatureWithinSight(Creature* ptr_other_creature, double di
 
 	}
 	return true;
+}
+
+//**************
+//PATH REQUESTS
+//**************
+
+void Creature::PlaceRandomPathRequest(unsigned int path_length)
+{
+	RandomPathRequest my_request;
+	my_request.requestor_id = this;
+	my_request.requested_hops_length = path_length;
+	path_requests.push_back(my_request);
+	printf("%p placed a random path request.\n", this);
+}
+
+void Creature::MakeUseOfPathResponse(RandomPathResponse my_response)
+{
+	printf("Will make use of received path response!\n");
+	ptr_behavior->MakeUseOfPathResponse(my_response);
 }
 
 //**************

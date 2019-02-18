@@ -41,7 +41,7 @@ class Level
 		Coordinates default_hero_start_position = {400,380};
 		//Contains actions associated to specific level which will be performed during every game loop.
 		std::vector<std::function<void(Level*)>> cyclic_actions = {};
-		//Contains assignment of trigers to certain creatures
+		//Contains assignment of triggers to certain events
 		std::map<std::string, std::function<void()>> signals_vs_events = {};
 
 		//#TODO - zabezpieczyæ domyœlne komponenty przed zniszczeniem
@@ -96,6 +96,8 @@ class Level
 		void Pause();
 		void UnPause();
 		bool TellIfPaused();
+
+		void ProcessAllPathRequests();
 
 		//###################
 		// COMMON LAMBDAS
@@ -152,6 +154,12 @@ class Level
 				ptr_level->should_nodes_be_reconnected = false;
 			}
 
+		};
+
+		//Lambda to process path requests.
+		std::function<void(Level*)> func_serve_path_requests = [](Level* ptr_level)
+		{
+			ptr_level->ProcessAllPathRequests();
 		};
 };
 

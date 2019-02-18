@@ -10,10 +10,25 @@
 #include <Creature.hpp>
 #include <FactorySpawningCreatures.hpp>
 
+class LevelComponent;
 
+struct RandomPathRequestEncalpsulated
+{
+	LevelComponent* source_component = nullptr;
+	Creature* requestor_id = nullptr;
+	unsigned int requested_hops_length = 0;
+};
+
+struct RandomPathResponseEncapsulated
+{
+	LevelComponent* source_component = nullptr;
+	Creature* requestor_id = nullptr;
+	std::vector<Coordinates> navigation_path = {};
+};
 
 class LevelComponent
 {
+
     private:
 		//###################
 		//Variables
@@ -41,7 +56,7 @@ class LevelComponent
 		//Expressed in pixels
 		static int map_block_width;
 		static int map_block_height;
-
+		std::vector<RandomPathRequestEncalpsulated> path_requests_encapsulated = {};
 		//###################
 		//Functions
 		//###################
@@ -56,15 +71,32 @@ class LevelComponent
 		Creature* AddCreature(CreatureType my_type, Coordinates* ptr_my_center, InsertionMode my_mode, int my_render_layer = 0);
 		void AddExistingCreature(Creature* ptr_my_creature);
 		bool DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature, InsertionMode my_mode);
+
+		//###################
+        //Requests processing
+        //###################
+
 		void ServeSpawnRequest(CreatureSpawnRequest my_request);
 		void ServeInternalSpawnRequest(CreatureSpawnRequest my_request);
 		virtual void ServeAllExternalSpawnRequests();
 		virtual void ServeExternalSpawnRequest(CreatureSpawnRequest my_request);
 		virtual void ServeExternalDestructionRequest(CreatureDestructionInGivenAreaRequest my_request);
+
+		RandomPathRequestEncalpsulated EncapsulatePathRequest(RandomPathRequest my_request);
+		RandomPathResponse DecapsulatePathResponse(RandomPathResponseEncapsulated my_response);
+		virtual void SendAllPathRequests();
+		virtual void SendPathRequest(RandomPathRequest my_request);
+		void DeliverPathResponse(RandomPathResponseEncapsulated my_response);
+
 		void SendSpawnRequestToPeerComponent(CreatureSpawnRequest my_request, LevelComponent* ptr_peer_component);
 		void PushIntoExternalSpawnRequests(CreatureSpawnRequest my_request);
 		void SendDestructionRequestToPeerComponent(CreatureDestructionInGivenAreaRequest my_request, LevelComponent* ptr_peer_component);
 		void PushIntoExternalDestructionRequests(CreatureDestructionInGivenAreaRequest my_request);
+		
+		//###################
+		//Creatures operations
+		//###################	
+
 		void RemoveCreature(Creature* ptr_my_creature);
 		void RemoveAllCreatures();
 		void RemoveAllCreaturesExceptHero();
@@ -155,6 +187,12 @@ class LevelComponent
 				ptr_level_component->ServeExternalDestructionRequest(my_request);
 			}
 			ptr_level_component->external_destruction_requests.clear();
+		};
+
+		//Cyclic action to send through destruction requests
+		std::function<void(LevelComponent*)> func_send_through_path_requests = [](LevelComponent* ptr_level_component)
+		{
+			ptr_level_component->SendAllPathRequests();
 		};
 
 };

@@ -74,10 +74,7 @@ int main(int argc, char* args[])
 
 	//EMOTIV_END
 
-	Game::PrepareSingleLevel(level_test);
-	//Level* first_level = Game::ptr_levels_factory->SpawnLevel(level_ninemazes);
-	//Level* test_level = Game::ptr_levels_factory->SpawnLevel(level_test);
-	//Game::SetCurrentLevel(test_level);
+	Game::PrepareSingleLevel(level_ninemazes);
 
 	int looped_events = static_cast<int>(Game::ptr_current_level->cyclic_actions.size());
 	printf("There are %d actions present in current event loop.\n", looped_events);
@@ -232,6 +229,10 @@ int main(int argc, char* args[])
 				{
 					Game::ptr_current_level->should_nodes_be_reconnected = true;
 				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_z && event_handler.key.repeat == 0)
+				{
+					dynamic_cast<LevelTest*>(Game::ptr_current_level)->ptr_test_creature->PlaceRandomPathRequest(10);
+				}
 			}
         }
 
@@ -260,5 +261,6 @@ int main(int argc, char* args[])
 		IEE_EmoStateFree(eState);
 		IEE_EmoEngineEventFree(eEvent);
 	}
+
     return 0;
 }

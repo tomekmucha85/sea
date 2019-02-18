@@ -64,7 +64,7 @@ bool Screen::Init()
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
 				//Set renderer resolution
-				SDL_RenderSetLogicalSize(renderer, RESOLUTION_W, RESOLUTION_H);
+				//SDL_RenderSetLogicalSize(renderer, RESOLUTION_W, RESOLUTION_H);
 
 				//Initialize PNG loading
 				int imgFlags = IMG_INIT_PNG;
