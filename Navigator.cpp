@@ -6,6 +6,7 @@ Navigator::Navigator(Coordinates my_anchor, std::vector<Coordinates> my_waypoint
 	anchor_point = my_anchor;
 	waypoints_set = my_waypoints_set;
 	run_in_loop = should_run_in_loop;
+	current_waypoint = my_waypoints_set[0];
 }
 
 Navigator::Navigator(Coordinates my_circle_center, int my_radius, int my_angle_step_degrees)
@@ -32,34 +33,43 @@ void Navigator::SetNextWaypoint()
 		}
 		else if (mode == navig_coordinates_list)
 		{
+			/*printf("Currently set waypoints:\n");
+			for (Coordinates waypoint : waypoints_set)
+			{
+				printf("x: %f y: %f\n", waypoint.x , waypoint.y);
+			}*/
 			//printf("Entered waypoints list navigation mode.\n");
 			if (current_waypoint_index < waypoints_set.size()-1)
 			{
+				current_waypoint_index++;
 				result = waypoints_set[current_waypoint_index];
 				result.x += anchor_point.x;
 				result.y += anchor_point.y;
-				printf("Setting new waypoint from list.\n");
+				printf("At least one waypoint more left.\n");
+				printf("Setting new waypoint from list: x: %f y: %f.\n", result.x, result.y);
 				current_waypoint = result;
-				current_waypoint_index++;
 			}
-			else if (current_waypoint_index == waypoints_set.size() - 1 && run_in_loop == true)
+			else if (current_waypoint_index == waypoints_set.size() - 2 && run_in_loop == true)
 			{
 				result = waypoints_set[current_waypoint_index];
 				result.x += anchor_point.x;
 				result.y += anchor_point.y;
 				current_waypoint = result;
 				printf("Resetting waypoint index.\n");
+				printf("Last waypoint reached.\n");
+				printf("Setting new waypoint from list: x: %f y: %f.\n", result.x, result.y);
 				current_waypoint_index = 0;
 			}
-			else if (current_waypoint_index == waypoints_set.size() - 1 && run_in_loop == false)
+			else if (current_waypoint_index == waypoints_set.size() - 2 && run_in_loop == false)
 			{
 				result = waypoints_set[current_waypoint_index];
 				current_waypoint = result;
+				printf("Last waypoint reached - cycle stops now.\n");
+				printf("Setting new waypoint from list: x: %f y: %f.\n", result.x, result.y);
 				current_waypoint_index++;
 			}
 			else
 			{
-				//#TODO - niezbyt bezpieczny pomys³ z wyjechaniem poza indeks
 				printf("Resetting waypoint index.\n");
 				current_waypoint_index = 0;
 				printf("Deactivating navigator.\n");

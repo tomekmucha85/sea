@@ -58,31 +58,70 @@ RandomPathResponseEncapsulated LevelComponentNavGrid::GiveResponseForRandomPathR
 	return response;
 }
 
+CreatureNavGridNode* LevelComponentNavGrid::FindAGridNodeAccessibleFromPoint(Coordinates point)
+{
+	//#TODO - duplikacja kodu z FindAGridNodeInSight. Do ogarniêcia.
+	const double seek_range = MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE;
+	CreatureNavGridNode* result = nullptr;
+
+	std::vector<Creature*> neighboring_nodes = FindCreaturesInRadius(point, seek_range);
+	if (neighboring_nodes.size() == 0)
+	{
+		printf("No navgrid nodes found in given range!\n");
+	}
+	else
+	{
+		for (Creature* ptr_candidate : neighboring_nodes)
+		{
+			printf("Found candidate x: %f y: %f.\n",
+				ptr_candidate->TellCenterPoint().x,
+				ptr_candidate->TellCenterPoint().y);
+
+			if (Creature::IsThereLineOfSightBetweenThesePoints(point, ptr_candidate->TellCenterPoint()))
+			{
+				result = dynamic_cast<CreatureNavGridNode*>(ptr_candidate);
+				printf("Candidate %p suitable.\n", result);
+				return result;
+			}
+			printf("Candidate behind wall!\n");
+		}
+	}
+
+	printf("No node found in given range!.\n");
+	return result;
+}
+
 CreatureNavGridNode* LevelComponentNavGrid::FindAGridNodeInSight(Creature* ptr_my_creature)
 {
-	const unsigned int seek_range = 500;
+	const double seek_range = MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE;
 	CreatureNavGridNode* result = nullptr;
 	if (Creature::IsThisCreaturePresentInEnvironment(ptr_my_creature)) //Checking if pointer shows a valid creature present in current game environment
 	{
-		std::vector<Creature*> neighbors = ptr_my_creature->FindNeighborsInSet(&Creature::current_environment, seek_range);
-		if (neighbors.size() == 0)
+		std::vector<Creature*> neighboring_nodes = FindCreaturesInRadius(ptr_my_creature->TellCenterPoint(), seek_range);
+		if (neighboring_nodes.size() == 0)
 		{
-			printf("No creature found in given range!\n");
+			printf("No navgrid nodes found in given range!\n");
+			//throw("Gotcha!\n");
 		}
 		else
 		{
-			for (Creature* ptr_candidate : neighbors)
+			for (Creature* ptr_candidate : neighboring_nodes)
 			{
-				if (ptr_candidate->my_type == cre_navgrid_node)
+				printf("Found candidate x: %f y: %f.\n", 
+					ptr_candidate->TellCenterPoint().x,
+					ptr_candidate->TellCenterPoint().y);
+				if (ptr_my_creature->IsThisCreatureWithinSight(ptr_candidate, seek_range))
 				{
-					printf("Found candidate.\n");
-					if (ptr_my_creature->IsThisCreatureWithinSight(ptr_candidate, 500))
+					result = dynamic_cast<CreatureNavGridNode*>(ptr_candidate);
+					printf("Candidate %p suitable.\n", result);
+					printf("Number of connected nodes: %d.\n", result->TellConnectedNodes().size());
+					for (Creature* ptr_connected_node : result->TellConnectedNodes())
 					{
-						result = dynamic_cast<CreatureNavGridNode*>(ptr_candidate);
-						return result;
+						printf("%p\n", ptr_connected_node);
 					}
-					printf("Candidate to far!\n.");
+					return result;
 				}
+				printf("Candidate to far or behind wall!\n");
 			}
 		}
 	}
@@ -97,12 +136,14 @@ std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(Creat
 	std::vector<Coordinates> result = {};
 	for (unsigned int i = 1; i <= number_of_hops; i++)
 	{
+		//printf("Generating path. Run number %d.\n", i);
 		result.push_back(ptr_current_node->TellCenterPoint());
 		std::vector<CreatureNavGridNode*> my_connected_nodes = ptr_current_node->TellConnectedNodes();
 		unsigned int neighbor_nodes_count = my_connected_nodes.size();
 		if (neighbor_nodes_count > 1)
 		{
 			unsigned int chosen_node_number = rand() % neighbor_nodes_count;
+			//#TODO - niezbyt bezpieczne
 			while (my_connected_nodes[chosen_node_number] == ptr_previous_node)
 			{
 				chosen_node_number = rand() % neighbor_nodes_count;
@@ -112,13 +153,11 @@ std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(Creat
 		}
 		else if (neighbor_nodes_count == 1)
 		{
-			result.push_back(ptr_current_node->TellCenterPoint());
 			ptr_previous_node = ptr_current_node;
 			ptr_current_node = my_connected_nodes[0];
 		}
 		else
 		{
-			result.push_back(ptr_current_node->TellCenterPoint());
 			printf("Connection chain broken!\n");
 			break;
 		}
@@ -129,5 +168,28 @@ std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(Creat
 	{
 		printf("x: %f, y: %f\n", my_coordinate.x, my_coordinate.y);
 	}
+	return result;
+}
+
+std::vector<Coordinates> LevelComponentNavGrid::GeneratePathToChosenPoint(Creature* ptr_wanderer, Coordinates end_point)
+{
+	CreatureNavGridNode* ptr_start_node =  FindAGridNodeInSight(ptr_wanderer);
+	CreatureNavGridNode* ptr_end_node = FindAGridNodeAccessibleFromPoint(end_point);
+	std::vector<Coordinates> result = {};
+	if (ptr_start_node == nullptr || ptr_end_node == nullptr)
+	{
+		printf("Could not find suitable start/end node for path between points.\n");
+		return result;
+	}
+	else
+	{
+		result = GeneratePathBetweenNodes(ptr_start_node, ptr_end_node);
+		return result;
+	}
+}
+
+std::vector<Coordinates> LevelComponentNavGrid::GeneratePathBetweenNodes(CreatureNavGridNode* ptr_my_start_node, CreatureNavGridNode* ptr_my_end_node)
+{
+	std::vector<Coordinates> result = {};
 	return result;
 }

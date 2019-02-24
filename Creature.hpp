@@ -50,6 +50,10 @@ class Creature
         //###################
         //Variables & const
         //###################
+
+
+		static const double MARGIN_FOR_LINE_OF_SIGHT_CHECKS;
+
 		// Pointer to sprites factory
 		FactorySpawningSprites* ptr_sprites_factory = nullptr;
         //Is creature an obstacle?
@@ -142,7 +146,7 @@ class Creature
 		//void MovePixelPerfect(int x, int y);
 		void AddToNeighbors(std::vector<Creature*> new_neighbors);
 		std::vector<Creature*> FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set, int radius = NULL);
-		std::vector<Creature*> FindNeighborsInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area);
+		static std::vector<Creature*> FindCreaturesInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area);
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
 		void SetVelocity(double my_velocity);
@@ -167,6 +171,7 @@ class Creature
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors(int margin = 0);
 		bool IsThisCreatureWithinSight(Creature* ptr_other_creature, double distance_limit = 0);
+		static bool IsThereLineOfSightBetweenThesePoints(Coordinates point_a, Coordinates point_b);
 		bool DoesThisCreatureBelongToWalls();
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
 		static void RemoveAllEntriesFromEnvironmentExceptMainHero();

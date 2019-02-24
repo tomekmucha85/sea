@@ -145,16 +145,16 @@ class Level
 		};
 
 		//Lambda to connect navigation nodes.
-		std::function<void(Level*)> func_connect_nodes = [](Level* ptr_level)
+		/*std::function<void(Level*)> func_connect_nodes = [](Level* ptr_level)
 		{
 			if (ptr_level->should_nodes_be_reconnected == true)
 			{
 				printf("WILL CONNECT NODES!\n");
-				dynamic_cast<LevelComponentNavGrid*>(ptr_level->ptr_initial_navgrid_component)->ConnectNodes(400);
+				dynamic_cast<LevelComponentNavGrid*>(ptr_level->ptr_initial_navgrid_component)->ConnectNodes(800);
 				ptr_level->should_nodes_be_reconnected = false;
 			}
 
-		};
+		};*/
 
 		//Lambda to process path requests.
 		std::function<void(Level*)> func_serve_path_requests = [](Level* ptr_level)

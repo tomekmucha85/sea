@@ -109,6 +109,8 @@ struct CreatureSpawnRequest
 	int initial_angle_degree = 0;
 	BehaviorMode initial_behavior_mode = beh_none;
 	InsertionMode insertion_mode = safe;
+	//RED
+	Color color = { 255,0,0,255 };
 };
 
 struct CreatureDestructionInGivenAreaRequest

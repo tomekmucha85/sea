@@ -6,6 +6,6 @@ class CreatureFlyingBox : public Creature
 private:
 	static const SpriteType my_initial_type = spr_box;
 public:
-	CreatureFlyingBox(Coordinates* ptr_my_center, int hitbox_margin = 10);
+	CreatureFlyingBox(Coordinates* ptr_my_center, int hitbox_margin = 0);
 };
 #endif // CREATURE_FBOX_HPP

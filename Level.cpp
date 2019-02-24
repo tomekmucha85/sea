@@ -23,7 +23,7 @@ Level::Level()
 	cyclic_actions.push_back(func_manage_gui_for_main_character);
 	cyclic_actions.push_back(func_check_and_react_if_player_won);
 	cyclic_actions.push_back(func_check_and_react_if_player_lost);
-	cyclic_actions.push_back(func_connect_nodes);
+	//cyclic_actions.push_back(func_connect_nodes);
 	cyclic_actions.push_back(func_serve_path_requests);
 }
 

@@ -7,6 +7,7 @@
 std::vector <Creature*> Creature::current_environment;
 std::vector <CreatureType> Creature::walls = { cre_flying_box, cre_spell_open_doors };
 Creature* Creature::ptr_current_main_charater;
+const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
 //**************
 //STATIC METHODS
 //**************
@@ -43,9 +44,9 @@ Creature::Creature(Coordinates* ptr_my_center)
 	//printf("Invisible creature constructed.\n");
 	VectorDrawing* ptr_vector_drawing = new VectorDrawing(ptr_my_center);
 	SetMyVisualComponent(ptr_vector_drawing);
-	PreciseRect visua_component_center = ptr_vector_drawing->TellPosition();
+	PreciseRect visual_component_center = ptr_vector_drawing->TellPosition();
 	//Hitbox == area occupied by vector drawing. No margin is set.
-	InitializeHitbox(visua_component_center, 0);
+	InitializeHitbox(visual_component_center, 0);
 	ptr_behavior = new Behavior();
 	//printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 }
@@ -55,8 +56,8 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 {
 	ptr_sprites_factory = new FactorySpawningSprites();
 	ptr_behavior = new Behavior();
-	cyclic_actions.push_back(func_follow_behavior);
 	cyclic_actions.push_back(func_follow_physics);
+	cyclic_actions.push_back(func_follow_behavior);
 	Sprite* ptr_sprite = ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center);
 	SetMyVisualComponent(ptr_sprite);
 	//Set the initial value to move upwards by (velocity * pixels)
@@ -340,15 +341,15 @@ Only objects with hitboxes within default_neighbor_radius will be checked.*/
 	return result;
 }
 
-std::vector<Creature*> Creature::FindNeighborsInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area)
+std::vector<Creature*> Creature::FindCreaturesInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area)
 {
 	/*This function finds Creatures existing in given set in given area.
 	Useful for collissions finding.*/
 	{
+		//printf("Area to check: x: %f y: %f w: %f h: %f.\n", my_area.x, my_area.y, my_area.w, my_area.h);
 		std::vector<Creature*> result;
 
 		//printf("Set to be examined is sized %d.\n", ptr_my_creatures_set->size());
-		Coordinates my_center = TellCenterPoint();
 		for (Creature* ptr_creature : *ptr_my_creatures_set)
 		{
 			Coordinates creatures_center = ptr_creature->TellCenterPoint();
@@ -356,6 +357,10 @@ std::vector<Creature*> Creature::FindNeighborsInAreaInSet(std::vector<Creature*>
 			if (Collisions::IsThisPointInsideRectangle(creatures_center, my_area))
 			{
 				result.push_back(ptr_creature);
+			}
+			else
+			{
+				//printf("Point outside rectangle x: %f y: %f.\n", creatures_center.x, creatures_center.y);
 			}
 			//printf("Number of neighbours found: %d.\n", result.size());
 		}
@@ -434,7 +439,8 @@ bool Creature::Move(double x, double y)
                 {
                     //#TODO - consider snapshot approach so less calculations will be needed.
                     ptr_creature->ShiftPositionAndRevertIfCollisionOccured(x,y,false); /* Reverting changes made in last step.*/
-                }
+					ptr_creature->MoveBehaviorComponent(x, y);
+				}
             }
 			did_i_move_successfully = false;
         }
@@ -454,7 +460,6 @@ bool Creature::Move(double x, double y)
 bool Creature::ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool check_collisions)
 //Returns true is no collision occurred, or false in case of a collision.
 {
-	//#TODO - dorobiæ dzielenie ruchu na standardowe jednostki
 	bool did_i_move_successfully = true;
     MoveComponents(x,y);
     if (DoICollideWithNeighbors() && check_collisions)
@@ -704,6 +709,7 @@ bool Creature::DoICollideWithNeighbors(int margin)
     //printf("DoICollideWithNeighbors called for %p.\n", this);
 	for (Creature* ptr_creature : this->my_neighbors)
 	{
+		//#TODO! tutaj polecia³ wyj¹tek read access violation podczas ShiftPosition!
 		if (ptr_creature != this /* Prevents checking collision with itself. */ && ptr_creature->is_obstacle == true)
 		{
 			if (DoICollideWithThisCreature(ptr_creature))
@@ -715,40 +721,90 @@ bool Creature::DoICollideWithNeighbors(int margin)
 	return result;
 }
 
+bool Creature::IsThereLineOfSightBetweenThesePoints(Coordinates point_a, Coordinates point_b)
+{
+	//#TODO - duplikacja kodu z funkcj¹ IsThisCreatureWithinSight. Do ogarniêcia.
+
+	/*Function checks if in current environment two points can be connected without intersecting any
+	Creature's hitbox.*/
+	double distance_between_points = Distance::CalculateDistanceBetweenPoints(point_a, point_b);
+	std::vector<Creature*> potential_colliding_creatures = {};
+	PreciseRect area_to_check =
+	{
+		std::min(point_a.x, point_b.x) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+		std::min(point_a.y, point_b.y) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+		abs(point_a.x - point_b.x) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+		abs(point_a.y - point_b.y) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+	};
+
+	//printf("Current environment holds %d creatures.\n", current_environment.size());
+	potential_colliding_creatures = FindCreaturesInAreaInSet(&current_environment, area_to_check);
+
+	for (Creature* ptr_neighbor : potential_colliding_creatures)
+	{
+		//#TODO - daæ jakiœ prze³¹cznik, czy sprawdzaæ tylko œciany
+		if (ptr_neighbor->DoesThisCreatureBelongToWalls())
+		{
+			if (Collisions::DoesSegmentIntersectRectangle(point_a, point_b, ptr_neighbor->TellHitbox()))
+			{
+				return false;
+			}
+			else
+			{
+				;
+			}
+		}
+	}
+	return true;
+}
+
 bool Creature::IsThisCreatureWithinSight(Creature* ptr_other_creature, double distance_limit)
 {
 	Coordinates other_creature_center = ptr_other_creature->TellCenterPoint();
 	Coordinates my_center = TellCenterPoint();
 	double distance_between_creatures = Distance::CalculateDistanceBetweenPoints(my_center, other_creature_center);
-	RemoveNeighbors();
-	std::vector<Creature*>current_neighbors = {};
+	std::vector<Creature*> potential_colliding_creatures = {};
 	if (distance_limit == 0)
 	{
-		current_neighbors = FindNeighborsInSet(&current_environment, static_cast<int>(distance_between_creatures));
+		potential_colliding_creatures = FindNeighborsInSet(&current_environment, static_cast<int>(distance_between_creatures));
 	}
 	else
 	{
-		PreciseRect area_to_check = 
-		{
-			std::min(my_center.x, other_creature_center.x),
-			std::min(my_center.y, other_creature_center.y),
-			abs(my_center.x - other_creature_center.x),
-			abs(my_center.y - other_creature_center.y)
-		};
+		//Isn't the creature outside limit?
 		if (distance_limit < distance_between_creatures)
 		{
 			return false;
 		}
-		current_neighbors = FindNeighborsInAreaInSet(&current_environment, area_to_check);
-	}
 
-	for (Creature* ptr_neighbor : current_neighbors)
+		PreciseRect area_to_check = 
+		{
+			std::min(my_center.x, other_creature_center.x) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+			std::min(my_center.y, other_creature_center.y) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+			abs(my_center.x - other_creature_center.x) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+			abs(my_center.y - other_creature_center.y) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+		};
+		/*printf("Area to check x:%f y:%f w:%f h:%f.\n", 
+			area_to_check.x,
+			area_to_check.y,
+			area_to_check.w,
+			area_to_check.h);
+		printf("My center: x: %f, y: %f.\n", my_center.x, my_center.y);*/
+		
+		//printf("Current environment holds %d creatures.\n", current_environment.size());
+		potential_colliding_creatures = FindCreaturesInAreaInSet(&current_environment, area_to_check);
+	}
+	//printf("Found %d potential colliding creatures.\n", potential_colliding_creatures.size());
+	for (Creature* ptr_neighbor : potential_colliding_creatures)
 	{
 		if (ptr_neighbor != ptr_other_creature && ptr_neighbor->DoesThisCreatureBelongToWalls())
 		{
 			if (Collisions::DoesSegmentIntersectRectangle(my_center, other_creature_center, ptr_neighbor->TellHitbox()))
 			{
 				return false;
+			}
+			else
+			{
+				;
 			}
 		}
 
@@ -772,6 +828,18 @@ void Creature::PlaceRandomPathRequest(unsigned int path_length)
 void Creature::MakeUseOfPathResponse(RandomPathResponse my_response)
 {
 	printf("Will make use of received path response!\n");
+	for (Coordinates coordinate : my_response.navigation_path)
+	{
+		CreatureSpawnRequest my_request;
+		my_request.initial_center_cooridnates = coordinate;
+		my_request.insertion_mode = merge;
+		my_request.type = cre_navgrid_node;
+		//#TODO - czy potrzebne to pole?
+		my_request.mode = center_coordinates;
+		//Green
+		my_request.color = { 0,255,0,255 };
+		PushIntoSpawnRequests(my_request);
+	}
 	ptr_behavior->MakeUseOfPathResponse(my_response);
 }
 

@@ -118,8 +118,8 @@ bool Collisions::IsThisPointInsideRectangle(Coordinates point, PreciseRect recta
 {
     bool result = false;
 
-	if (point.x > rectangle.x && point.x < rectangle.x + rectangle.w
-		&& point.y > rectangle.h && point.y < rectangle.h + rectangle.y)
+	if (point.x >= rectangle.x && point.x <= rectangle.x + rectangle.w
+		&& point.y >= rectangle.y && point.y <= rectangle.h + rectangle.y)
 	{
 		result = true;
 	}

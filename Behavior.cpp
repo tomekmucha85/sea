@@ -45,18 +45,27 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 			Coordinates my_center = ptr_my_creature->TellCenterPoint();
 			if (ptr_navigator == nullptr)
 			{
-				ptr_my_creature->PlaceRandomPathRequest(10);
+				static bool was_request_placed = false;
+				if (was_request_placed == false)
+				{
+					ptr_my_creature->PlaceRandomPathRequest(5);
+					was_request_placed = true;
+				}
+				else
+				{
+					was_request_placed = false;
+				}
+
 			}
 			else
 			{
 				if (ptr_navigator->TellMyState() == active)
 				{
-					ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
-					if (ptr_navigator->WasCurrentWaypointReached(my_center))
+					if (ptr_navigator->WasCurrentWaypointReached(my_center,10))
 					{
 						ptr_navigator->SetNextWaypoint();
-						ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
 					}
+					ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
 				}
 				else
 				{
@@ -122,10 +131,6 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 			}
 			i++;
 
-		}
-		else if (mode == beh_wander_on_navmesh)
-		{
-			;
 		}
 	}
 }

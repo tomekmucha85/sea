@@ -115,6 +115,23 @@ northern_border == {0,0,800,1}
 	return result;
 }
 
+std::vector<Creature*> LevelComponent::FindCreaturesInRadius(Coordinates center_point, double radius)
+{
+	std::vector<Creature*> result = {};
+	for (Creature* ptr_my_creature : creatures)
+	{
+		double distance_to_creature = Distance::CalculateDistanceBetweenPoints(
+		ptr_my_creature->TellCenterPoint(),
+			center_point);
+		if (distance_to_creature <= radius)
+		{
+			result.push_back(ptr_my_creature);
+		}
+	}
+	//printf("Found %d creatures in given radius.\n", result.size());
+	return result;
+}
+
 std::map<Creature*, LevelComponent*> LevelComponent::FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature)
 {
 	std::map<Creature*, LevelComponent*> result = {};
@@ -318,6 +335,10 @@ void LevelComponent::ServeSpawnRequest(CreatureSpawnRequest my_request)
 	{
 		ptr_spawned_creature->SetAngleDegree(my_request.initial_angle_degree);
 		ptr_spawned_creature->SetBehaviorMode(my_request.initial_behavior_mode);
+		if (ptr_spawned_creature->visual_components[0]->TellMyType() == visco_vector)
+		{
+			ptr_spawned_creature->visual_components[0]->SetColor(my_request.color);
+		}
 	}
 	else
 	{

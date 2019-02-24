@@ -67,6 +67,7 @@ class LevelComponent
 		void SetPointerToPeerComponentsIndex(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components);
 		std::map<LevelComponentType, std::vector<LevelComponent*>>* TellPtrToPeerLevelComponentsArray();
 		std::map<Creature*, LevelComponent*> FindCreatureNeighborsInAllLevelComponents(Creature* ptr_my_creature);
+		std::vector<Creature*>FindCreaturesInRadius(Coordinates center_point, double radius);
 		Creature* AddCreature(CreatureType my_type, PreciseRect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal="");
 		Creature* AddCreature(CreatureType my_type, Coordinates* ptr_my_center, InsertionMode my_mode, int my_render_layer = 0);
 		void AddExistingCreature(Creature* ptr_my_creature);

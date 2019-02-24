@@ -17,6 +17,7 @@ bool CreatureNavGridNode::CheckIfConnectionAlrreadyExists(CreatureNavGridNode* p
 {
 	if (find(connected_nodes.begin(), connected_nodes.end(), ptr_neighbor_node) != connected_nodes.end())
 	{
+		//printf("Connection exists!\n");
 		return true;
 	}
 	else
@@ -43,9 +44,18 @@ void CreatureNavGridNode::RemoveLineTowardsNode(Creature* ptr_neighbor_node)
 void CreatureNavGridNode::AddOneSidedConnection(CreatureNavGridNode* ptr_neighbor_node)
 {
 	//Insert key if not existing yet.
-	CheckIfConnectionAlrreadyExists(ptr_neighbor_node);
-	connected_nodes.push_back(ptr_neighbor_node);
-	CreateLineTowardsNode(ptr_neighbor_node);
+	//printf("Will attempt to add one-sided node connection.\n");
+	//Connection should not exist yet and not point to myself
+	if (CheckIfConnectionAlrreadyExists(ptr_neighbor_node) == false && ptr_neighbor_node != this)
+	{
+		connected_nodes.push_back(ptr_neighbor_node);
+		CreateLineTowardsNode(ptr_neighbor_node);
+		//printf("Added connection between %p and %p.\n", this, ptr_neighbor_node);
+	}
+	else
+	{
+		//printf("Rejected connection between %p and %p.\n", this, ptr_neighbor_node);
+	}
 }
 
 void CreatureNavGridNode::AddTwoSidedConnection(CreatureNavGridNode* ptr_neighbor_node)

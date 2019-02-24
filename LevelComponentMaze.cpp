@@ -22,7 +22,6 @@ LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<
 	maze_blocks_count_horizontal = CalculateBlocksCountHorizontally();
 	/*printf("Maze rows: %d, maze columns: %d, maze blocks vertically: %d, maze blocks horizontally: %d.\n",
 		maze_rows_count, maze_columns_count, maze_blocks_count_vertical, maze_blocks_count_horizontal);*/
-	//std::vector<Creature*>* ptr_to_creatures = TellPtrToCreaturesArray();
 }
 
 LevelComponentMaze::~LevelComponentMaze()
