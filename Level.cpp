@@ -363,7 +363,8 @@ void Level::PerformActionsForTriggersHitByHero(LevelComponent* ptr_component_wit
 void Level::ProcessAllPathRequests()
 {
 	//printf("Level will process incoming path requests.\n");
-	std::vector<RandomPathRequestEncalpsulated> path_requests_to_process = {};
+	std::vector<RandomPathRequestEncalpsulated> random_path_requests_to_process = {};
+	std::vector<PointToPointPathRequestEncalpsulated> point_to_point_path_requests_to_process = {};
 	//Collecting path requests from components
 	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_component_types_vs_level_components)
 	{
@@ -371,27 +372,44 @@ void Level::ProcessAllPathRequests()
 		for (LevelComponent* ptr_my_level_component : my_level_components)
 		{
 
-			std::vector<RandomPathRequestEncalpsulated> component_requests = ptr_my_level_component->path_requests_encapsulated;
-			for (RandomPathRequestEncalpsulated request : component_requests)
+			std::vector<RandomPathRequestEncalpsulated> component_random_path_requests = ptr_my_level_component->random_path_requests_encapsulated;
+			std::vector<PointToPointPathRequestEncalpsulated> component_point_to_point_path_requests = ptr_my_level_component->point_to_point_path_requests_encapsulated;
+			for (RandomPathRequestEncalpsulated request : component_random_path_requests)
 			{
-				path_requests_to_process.push_back(request);
+				random_path_requests_to_process.push_back(request);
 			}
-			ptr_my_level_component->path_requests_encapsulated.clear();
+			ptr_my_level_component->random_path_requests_encapsulated.clear();
+			for (PointToPointPathRequestEncalpsulated request : component_point_to_point_path_requests)
+			{
+				point_to_point_path_requests_to_process.push_back(request);
+			}
+			ptr_my_level_component->point_to_point_path_requests_encapsulated.clear();
 		}
 	}
-	if (path_requests_to_process.size() > 0)
+	if (random_path_requests_to_process.size() > 0 || point_to_point_path_requests_to_process.size() > 0)
 	{
-		printf("Level caught at least one path request (%d).\n", path_requests_to_process.size());
+		printf("Level caught at least one path request (random: %d  point to point: %d).\n",
+			random_path_requests_to_process.size(),
+			point_to_point_path_requests_to_process.size());
 	}
 	//Getting answer from navigation mesh
 	//#TODO - czy rzutowanie potrzebne?
 	//printf("Level will send path responses.\n");
 	LevelComponentNavGrid* default_nav_grid = dynamic_cast<LevelComponentNavGrid*>(ptr_initial_navgrid_component);
-	for (RandomPathRequestEncalpsulated request : path_requests_to_process)
+	for (RandomPathRequestEncalpsulated request : random_path_requests_to_process)
 	{
 		printf("Level will obtain path from nav grid component.\n");
 	    RandomPathResponseEncapsulated response =  default_nav_grid->GiveResponseForRandomPathRequest(request);
 		
+		//#TODO - czy nie ma niebezpieczeñstwa, ¿e wskaŸnik pokazuje w nicoœæ? Nie powinno byæ.
+		LevelComponent* ptr_receiver_component = response.source_component;
+		ptr_receiver_component->DeliverPathResponse(response);
+	}
+	for (PointToPointPathRequestEncalpsulated request : point_to_point_path_requests_to_process)
+	{
+		printf("Level will obtain path from nav grid component.\n");
+		PointToPointPathResponseEncapsulated response = default_nav_grid->GiveResponseForPointToPointPathRequest(request);
+
 		//#TODO - czy nie ma niebezpieczeñstwa, ¿e wskaŸnik pokazuje w nicoœæ? Nie powinno byæ.
 		LevelComponent* ptr_receiver_component = response.source_component;
 		ptr_receiver_component->DeliverPathResponse(response);

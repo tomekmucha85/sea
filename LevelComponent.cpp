@@ -420,13 +420,22 @@ void LevelComponent::PushIntoExternalDestructionRequests(CreatureDestructionInGi
 //##############################
 //Path requests
 //##############################
+
+//#TODO - ograniczyæ duplikacjê!
+
 void LevelComponent::SendPathRequest(RandomPathRequest my_request)
 {
 	RandomPathRequestEncalpsulated encapsulated_request = EncapsulatePathRequest(my_request);
-	path_requests_encapsulated.push_back(encapsulated_request);
+	random_path_requests_encapsulated.push_back(encapsulated_request);
 	printf("Level component will send a path request.\n");
 }
 
+void LevelComponent::SendPathRequest(PointToPointPathRequest my_request)
+{
+	PointToPointPathRequestEncalpsulated encapsulated_request = EncapsulatePathRequest(my_request);
+	point_to_point_path_requests_encapsulated.push_back(encapsulated_request);
+	printf("Level component will send a path request.\n");
+}
 
 RandomPathRequestEncalpsulated LevelComponent::EncapsulatePathRequest(RandomPathRequest my_request)
 {
@@ -434,6 +443,16 @@ RandomPathRequestEncalpsulated LevelComponent::EncapsulatePathRequest(RandomPath
 	result.source_component = this;
 	result.requestor_id = my_request.requestor_id;
 	result.requested_hops_length = my_request.requested_hops_length;
+	return result;
+}
+
+PointToPointPathRequestEncalpsulated LevelComponent::EncapsulatePathRequest(PointToPointPathRequest my_request)
+{
+	PointToPointPathRequestEncalpsulated result;
+	result.source_component = this;
+	result.requestor_id = my_request.requestor_id;
+	result.my_position = my_request.my_position;
+	result.destination = my_request.destination;
 	return result;
 }
 
@@ -445,18 +464,34 @@ RandomPathResponse LevelComponent::DecapsulatePathResponse(RandomPathResponseEnc
 	return result;
 }
 
+PointToPointPathResponse LevelComponent::DecapsulatePathResponse(PointToPointPathResponseEncapsulated my_response)
+{
+	PointToPointPathResponse result;
+	result.navigation_path = my_response.navigation_path;
+	result.requestor_id = my_response.requestor_id;
+	return result;
+}
+
 void LevelComponent::SendAllPathRequests()
 {
 	//printf("Level component will send all path requests.\n");
 	for (Creature* ptr_my_creature : creatures)
 	{
-		if (ptr_my_creature->path_requests.size() > 0)
+		if (ptr_my_creature->random_path_requests.size() > 0)
 		{
-			for (RandomPathRequest my_request : ptr_my_creature->path_requests)
+			for (RandomPathRequest my_request : ptr_my_creature->random_path_requests)
 			{
 				SendPathRequest(my_request);
 			}
-			ptr_my_creature->path_requests.clear();
+			ptr_my_creature->random_path_requests.clear();
+		}
+		if (ptr_my_creature->point_to_point_path_requests.size() > 0)
+		{
+			for (PointToPointPathRequest my_request : ptr_my_creature->point_to_point_path_requests)
+			{
+				SendPathRequest(my_request);
+			}
+			ptr_my_creature->point_to_point_path_requests.clear();
 		}
 	}
 }
@@ -466,6 +501,17 @@ void LevelComponent::DeliverPathResponse(RandomPathResponseEncapsulated my_respo
 {
 	printf("Level component will deliver path response.\n");
 	RandomPathResponse response_decapsulated = DecapsulatePathResponse(my_response);
+	Creature* receiving_creature = response_decapsulated.requestor_id;
+	if (std::find(creatures.begin(), creatures.end(), receiving_creature) != creatures.end())
+	{
+		receiving_creature->MakeUseOfPathResponse(response_decapsulated);
+	}
+}
+
+void LevelComponent::DeliverPathResponse(PointToPointPathResponseEncapsulated my_response)
+{
+	printf("Level component will deliver path response.\n");
+	PointToPointPathResponse response_decapsulated = DecapsulatePathResponse(my_response);
 	Creature* receiving_creature = response_decapsulated.requestor_id;
 	if (std::find(creatures.begin(), creatures.end(), receiving_creature) != creatures.end())
 	{

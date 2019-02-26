@@ -73,6 +73,39 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 				}
 			}
 		}
+		else if (mode == beh_go_towards_fixed_point)
+		{
+			Coordinates my_center = ptr_my_creature->TellCenterPoint();
+			if (ptr_navigator == nullptr)
+			{
+				static bool was_request_placed = false;
+				if (was_request_placed == false)
+				{
+					ptr_my_creature->PlacePointToPointPathRequest({-1000,-1000});
+					was_request_placed = true;
+				}
+				else
+				{
+					was_request_placed = false;
+				}
+
+			}
+			else
+			{
+				if (ptr_navigator->TellMyState() == active)
+				{
+					if (ptr_navigator->WasCurrentWaypointReached(my_center, 10))
+					{
+						ptr_navigator->SetNextWaypoint();
+					}
+					ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
+				}
+				else
+				{
+					ptr_my_creature->SetVelocity(0);
+				}
+			}
+		}
 		else if (mode == beh_run_along_predefined_path)
 		{
 			Coordinates my_center = ptr_my_creature->TellCenterPoint();
@@ -154,6 +187,29 @@ void Behavior::Move(Coordinates movement)
 void Behavior::MakeUseOfPathResponse(RandomPathResponse my_response)
 {
 	//#TODO! Ogarn¹æ kasowanie nawigatorów!
+	delete ptr_navigator;
+	//#TODO - czy towrzenie anchora potrzebne?
+	Coordinates anchor = { 0, 0 };
+	printf("Received plan from nav grid. Plan:\n");
+	for (Coordinates point : my_response.navigation_path)
+	{
+		printf("x: %f y: %f\n", point.x, point.y);
+	}
+	if (my_response.navigation_path.size() != 0)
+	{
+		ptr_navigator = ptr_navigators_factory->SpawnNavigator(navig_coordinates_list,
+			anchor, my_response.navigation_path, false);
+	}
+	else
+	{
+		printf("Received empty path!\n");
+	}
+}
+
+void Behavior::MakeUseOfPathResponse(PointToPointPathResponse my_response)
+{
+	//#TODO! Ogarn¹æ kasowanie nawigatorów!
+	//#TODO - duplikacja kodu wzglêdem poprzedniej funkcji. Ogarn¹æ.
 	delete ptr_navigator;
 	//#TODO - czy towrzenie anchora potrzebne?
 	Coordinates anchor = { 0, 0 };

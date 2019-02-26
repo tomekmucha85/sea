@@ -24,6 +24,7 @@
 
 class Creature;
 
+//Response containing random path
 struct RandomPathResponse
 {
 	Creature* requestor_id = nullptr;
@@ -35,6 +36,21 @@ struct RandomPathRequest
 {
 	Creature* requestor_id = nullptr;
 	unsigned int requested_hops_length = 0;
+};
+
+//Response containing path from point to point
+struct PointToPointPathResponse
+{
+	Creature* requestor_id = nullptr;
+	std::vector<Coordinates> navigation_path = {};
+};
+
+//Request for generating point-to-point path along navigation grid
+struct PointToPointPathRequest
+{
+	Creature* requestor_id = nullptr;
+	Coordinates my_position = { 0,0 };
+	Coordinates destination = { 0,0 };
 };
 
 class Behavior;
@@ -113,7 +129,9 @@ class Creature
         static Creature* ptr_current_main_charater;
 
 		//Request to assign navigation path
-		std::vector<RandomPathRequest> path_requests = {};
+		//#TODO - spokojnie mo¿na zast¹piæ zwyk³¹ tablic¹
+		std::vector<RandomPathRequest> random_path_requests = {};
+		std::vector<PointToPointPathRequest> point_to_point_path_requests = {};
 
 		//###################
 		//Arrays&vectors
@@ -143,7 +161,6 @@ class Creature
 		void TurnStop();
 		void DetermineNextStep(double time_passed);
         virtual bool Move(double x, double y);
-		//void MovePixelPerfect(int x, int y);
 		void AddToNeighbors(std::vector<Creature*> new_neighbors);
 		std::vector<Creature*> FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set, int radius = NULL);
 		static std::vector<Creature*> FindCreaturesInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area);
@@ -159,9 +176,6 @@ class Creature
         void ThrustBackward(double velocity=NULL);
 		void TurnTowardsPoint(Coordinates point);
 		void ThrustTowardsPoint(Coordinates destination);
-        bool Strafe(int sidestep_angle);
-        bool StrafeLeft();
-        bool StrafeRight();
 		void SetPosition(Coordinates new_center_position);
 		int TellCurrentAngleDegree();
 		Coordinates TellCenterPoint();
@@ -170,8 +184,8 @@ class Creature
 		Coordinates CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance);
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors(int margin = 0);
-		bool IsThisCreatureWithinSight(Creature* ptr_other_creature, double distance_limit = 0);
-		static bool IsThereLineOfSightBetweenThesePoints(Coordinates point_a, Coordinates point_b);
+		bool IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other_creature, double distance_limit = 0);
+		static bool IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double max_line_length=0);
 		bool DoesThisCreatureBelongToWalls();
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
 		static void RemoveAllEntriesFromEnvironmentExceptMainHero();
@@ -192,8 +206,10 @@ class Creature
 
 		void PushIntoSpawnRequests(CreatureSpawnRequest my_request);
 		void PlaceRandomPathRequest(unsigned int path_length);
+		void PlacePointToPointPathRequest(Coordinates destination_point);
 		std::vector<CreatureSpawnRequest>* TellSpawnRequests();
 		void MakeUseOfPathResponse(RandomPathResponse my_response);
+		void MakeUseOfPathResponse(PointToPointPathResponse my_response);
 
 
 
@@ -253,6 +269,7 @@ class Behavior
 		void SetMode(BehaviorMode mode_to_be_set);
 		void Move(Coordinates movement);
 		void MakeUseOfPathResponse(RandomPathResponse my_response);
+		void MakeUseOfPathResponse(PointToPointPathResponse my_response);
 };
 
 class Magic

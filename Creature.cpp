@@ -572,37 +572,6 @@ void Creature::SetVelocity(double my_velocity)
 	velocity = my_velocity;
 }
 
-//#TODO! - naprawiæ strafe
-bool Creature::Strafe(int sidestep_angle)
-{
-	bool did_i_move_successfully = true;
-    Coordinates next_step_cache = next_step;
-    double strafing_angle = Angle::DegreeToRadian(current_angle_degree+sidestep_angle);
-    double x_shift_dbl = sin(strafing_angle) * velocity * Timer::loop_duration;
-    double y_shift_dbl = cos(strafing_angle) * velocity * Timer::loop_duration;
-    next_step.x = (int) x_shift_dbl;
-    //Multiplied by -1 because negative value means moving upward the screen
-    next_step.y = (int) y_shift_dbl * -1;
-    did_i_move_successfully = Move(next_step.x, next_step.y);
-    next_step = next_step_cache;
-	return did_i_move_successfully;
-}
-
-bool Creature::StrafeLeft()
-{
-	bool did_i_move_successfully = true;
-    did_i_move_successfully = Strafe(-90);
-	return did_i_move_successfully;
-}
-
-bool Creature::StrafeRight()
-{
-	bool did_i_move_successfully = true;
-	did_i_move_successfully = Strafe(90);
-	return did_i_move_successfully;
-}
-
-
 void Creature::SetPosition(Coordinates new_center_position)
 {
 	for (VisualComponent* ptr_my_visual_component : visual_components)
@@ -721,24 +690,41 @@ bool Creature::DoICollideWithNeighbors(int margin)
 	return result;
 }
 
-bool Creature::IsThereLineOfSightBetweenThesePoints(Coordinates point_a, Coordinates point_b)
+bool Creature::IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double max_line_length)
 {
-	//#TODO - duplikacja kodu z funkcj¹ IsThisCreatureWithinSight. Do ogarniêcia.
-
 	/*Function checks if in current environment two points can be connected without intersecting any
 	Creature's hitbox.*/
 	double distance_between_points = Distance::CalculateDistanceBetweenPoints(point_a, point_b);
 	std::vector<Creature*> potential_colliding_creatures = {};
-	PreciseRect area_to_check =
-	{
-		std::min(point_a.x, point_b.x) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-		std::min(point_a.y, point_b.y) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-		abs(point_a.x - point_b.x) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-		abs(point_a.y - point_b.y) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-	};
 
-	//printf("Current environment holds %d creatures.\n", current_environment.size());
-	potential_colliding_creatures = FindCreaturesInAreaInSet(&current_environment, area_to_check);
+	//Finding potential colliding creatures. - //#TODO - wyci¹gn¹æ do osobnej funkcji
+
+	if (max_line_length == 0)
+	{
+		//#TODO - nieekonomiczne! Poprawiæ ten przypadek
+		potential_colliding_creatures = current_environment;
+	}
+	else
+	{
+		//Isn't the potential line of sight too long?
+		if (max_line_length < distance_between_points)
+		{
+			return false;
+		}
+
+		PreciseRect area_to_check =
+		{
+			std::min(point_a.x, point_b.x) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+			std::min(point_a.y, point_b.y) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+			abs(point_a.x - point_b.x) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+			abs(point_a.y - point_b.y) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+		};
+
+		//printf("Current environment holds %d creatures.\n", current_environment.size());
+		potential_colliding_creatures = FindCreaturesInAreaInSet(&current_environment, area_to_check);
+	}
+
+	//Checking for collisions
 
 	for (Creature* ptr_neighbor : potential_colliding_creatures)
 	{
@@ -755,10 +741,12 @@ bool Creature::IsThereLineOfSightBetweenThesePoints(Coordinates point_a, Coordin
 			}
 		}
 	}
+	printf("There is a line of sight between x:%f, y:%f, x: %f y: %f.\n",
+		point_a.x, point_a.y, point_b.x, point_b.y);
 	return true;
 }
 
-bool Creature::IsThisCreatureWithinSight(Creature* ptr_other_creature, double distance_limit)
+bool Creature::IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other_creature, double distance_limit)
 {
 	Coordinates other_creature_center = ptr_other_creature->TellCenterPoint();
 	Coordinates my_center = TellCenterPoint();
@@ -783,12 +771,6 @@ bool Creature::IsThisCreatureWithinSight(Creature* ptr_other_creature, double di
 			abs(my_center.x - other_creature_center.x) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
 			abs(my_center.y - other_creature_center.y) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
 		};
-		/*printf("Area to check x:%f y:%f w:%f h:%f.\n", 
-			area_to_check.x,
-			area_to_check.y,
-			area_to_check.w,
-			area_to_check.h);
-		printf("My center: x: %f, y: %f.\n", my_center.x, my_center.y);*/
 		
 		//printf("Current environment holds %d creatures.\n", current_environment.size());
 		potential_colliding_creatures = FindCreaturesInAreaInSet(&current_environment, area_to_check);
@@ -821,13 +803,41 @@ void Creature::PlaceRandomPathRequest(unsigned int path_length)
 	RandomPathRequest my_request;
 	my_request.requestor_id = this;
 	my_request.requested_hops_length = path_length;
-	path_requests.push_back(my_request);
+	random_path_requests.push_back(my_request);
 	printf("%p placed a random path request.\n", this);
+}
+
+void Creature::PlacePointToPointPathRequest(Coordinates destination_point)
+{
+	PointToPointPathRequest my_request;
+	my_request.requestor_id = this;
+	my_request.my_position = TellCenterPoint();
+	my_request.destination = destination_point;
+	point_to_point_path_requests.push_back(my_request);
+	printf("%p placed a point to point path request.\n", this);
 }
 
 void Creature::MakeUseOfPathResponse(RandomPathResponse my_response)
 {
 	printf("Will make use of received path response!\n");
+	for (Coordinates coordinate : my_response.navigation_path)
+	{
+		CreatureSpawnRequest my_request;
+		my_request.initial_center_cooridnates = coordinate;
+		my_request.insertion_mode = merge;
+		my_request.type = cre_navgrid_node;
+		//#TODO - czy potrzebne to pole?
+		my_request.mode = center_coordinates;
+		//Green
+		my_request.color = { 0,255,0,255 };
+		PushIntoSpawnRequests(my_request);
+	}
+	ptr_behavior->MakeUseOfPathResponse(my_response);
+}
+
+void Creature::MakeUseOfPathResponse(PointToPointPathResponse my_response)
+{
+	printf("Will make use of received point to point path response!\n");
 	for (Coordinates coordinate : my_response.navigation_path)
 	{
 		CreatureSpawnRequest my_request;

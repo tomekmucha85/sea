@@ -26,6 +26,22 @@ struct RandomPathResponseEncapsulated
 	std::vector<Coordinates> navigation_path = {};
 };
 
+
+struct PointToPointPathRequestEncalpsulated
+{
+	LevelComponent* source_component = nullptr;
+	Creature* requestor_id = nullptr;
+	Coordinates my_position = { 0,0 };
+	Coordinates destination = { 0,0 };
+};
+
+struct PointToPointPathResponseEncapsulated
+{
+	LevelComponent* source_component = nullptr;
+	Creature* requestor_id = nullptr;
+	std::vector<Coordinates> navigation_path = {};
+};
+
 class LevelComponent
 {
 
@@ -39,7 +55,6 @@ class LevelComponent
 		Creature* ptr_component_outline = nullptr;
 		//Contains actions associated to specific creature which will be performed during every game loop / every n game loops.
 		std::vector<std::function<void(LevelComponent*)>> cyclic_actions = {};
-		//std::vector<CreatureSpawnRequest> external_spawn_requests = {};
 		//#TODO - powróciæ do jednoargumentowego spawn requestu
 		std::vector<CreatureSpawnRequest> external_spawn_requests= {};
 		std::vector<CreatureDestructionInGivenAreaRequest> external_destruction_requests = {};
@@ -56,7 +71,8 @@ class LevelComponent
 		//Expressed in pixels
 		static int map_block_width;
 		static int map_block_height;
-		std::vector<RandomPathRequestEncalpsulated> path_requests_encapsulated = {};
+		std::vector<RandomPathRequestEncalpsulated> random_path_requests_encapsulated = {};
+		std::vector<PointToPointPathRequestEncalpsulated> point_to_point_path_requests_encapsulated = {};
 		//###################
 		//Functions
 		//###################
@@ -84,10 +100,14 @@ class LevelComponent
 		virtual void ServeExternalDestructionRequest(CreatureDestructionInGivenAreaRequest my_request);
 
 		RandomPathRequestEncalpsulated EncapsulatePathRequest(RandomPathRequest my_request);
+		PointToPointPathRequestEncalpsulated EncapsulatePathRequest(PointToPointPathRequest my_request);
+		PointToPointPathResponse DecapsulatePathResponse(PointToPointPathResponseEncapsulated my_response);
 		RandomPathResponse DecapsulatePathResponse(RandomPathResponseEncapsulated my_response);
 		virtual void SendAllPathRequests();
 		virtual void SendPathRequest(RandomPathRequest my_request);
+		virtual void SendPathRequest(PointToPointPathRequest my_request);
 		void DeliverPathResponse(RandomPathResponseEncapsulated my_response);
+		void DeliverPathResponse(PointToPointPathResponseEncapsulated my_response);
 
 		void SendSpawnRequestToPeerComponent(CreatureSpawnRequest my_request, LevelComponent* ptr_peer_component);
 		void PushIntoExternalSpawnRequests(CreatureSpawnRequest my_request);
