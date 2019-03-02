@@ -113,6 +113,33 @@ CreatureNavGridNode* LevelComponentNavGrid::FindAGridNodeInSight(Creature* ptr_m
 	return result;
 }
 
+CreatureNavGridNode* LevelComponentNavGrid::FindAGridNodeNearestToPoint(Coordinates my_point, double search_radius)
+{
+	CreatureNavGridNode* result = nullptr;
+
+	std::vector<Creature*> neighboring_nodes = FindCreaturesInRadius(my_point, search_radius);
+	if (neighboring_nodes.size() == 0)
+	{
+		printf("No navgrid nodes found in given range!\n");
+	}
+	else
+	{
+		std::map<int, CreatureNavGridNode*> distance_vs_node = {};
+		for (Creature* ptr_candidate : neighboring_nodes)
+		{
+			printf("Found candidate x: %f y: %f.\n",
+				ptr_candidate->TellCenterPoint().x,
+				ptr_candidate->TellCenterPoint().y);
+			int distance = static_cast<int>(Distance::CalculateDistanceBetweenPoints(ptr_candidate->TellCenterPoint(), my_point));
+			distance_vs_node[distance] = dynamic_cast<CreatureNavGridNode*>(ptr_candidate);
+		}
+		//std::map should be ordered by ascending int key value
+		result = distance_vs_node.begin()->second;
+	}
+	printf("No node found in given range!.\n");
+	return result;
+}
+
 std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(CreatureNavGridNode* ptr_starting_node, unsigned int number_of_hops)
 {
 	CreatureNavGridNode* ptr_previous_node = nullptr;
@@ -160,7 +187,7 @@ std::vector<Coordinates> LevelComponentNavGrid::GeneratePathToChosenPoint(Coordi
 	printf("Start: x: %f, y: %f.\n", start_point.x, start_point.y);
 	printf("Destination: x: %f, y: %f.\n", end_point.x, end_point.y);
 	CreatureNavGridNode* ptr_start_node = FindAGridNodeAccessibleFromPoint(start_point);
-	CreatureNavGridNode* ptr_end_node = FindAGridNodeAccessibleFromPoint(end_point);
+	CreatureNavGridNode* ptr_end_node = FindAGridNodeNearestToPoint(end_point);
 	std::vector<Coordinates> result = {};
 	if (ptr_start_node == nullptr || ptr_end_node == nullptr)
 	{
@@ -175,6 +202,7 @@ std::vector<Coordinates> LevelComponentNavGrid::GeneratePathToChosenPoint(Coordi
 		printf("End node at: x: %f, y: %f.\n", ptr_end_node->TellCenterPoint().x,
 			ptr_end_node->TellCenterPoint().y);
 		result = GeneratePathBetweenNodes(ptr_start_node, ptr_end_node);
+		result.push_back(end_point);
 		return result;
 	}
 }
@@ -214,9 +242,9 @@ std::vector<Coordinates> LevelComponentNavGrid::GeneratePathBetweenNodes(Creatur
 	CreatureNavGridNode* ptr_currently_evaluated_node = ptr_my_end_node;
 	while (ptr_currently_evaluated_node != ptr_my_start_node)
 	{
-		printf("Inserting: x: %f y: %f.\n", 
+		/*printf("Inserting: x: %f y: %f.\n", 
 			reached_node_vs_where_did_I_come_from[ptr_currently_evaluated_node]->TellCenterPoint().x,
-			reached_node_vs_where_did_I_come_from[ptr_currently_evaluated_node]->TellCenterPoint().y);
+			reached_node_vs_where_did_I_come_from[ptr_currently_evaluated_node]->TellCenterPoint().y);*/
 		result.insert(result.begin(), reached_node_vs_where_did_I_come_from[ptr_currently_evaluated_node]->TellCenterPoint());
 		ptr_currently_evaluated_node = reached_node_vs_where_did_I_come_from[ptr_currently_evaluated_node];
 	}

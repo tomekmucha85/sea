@@ -43,7 +43,6 @@ enum BehaviorMode {
 	beh_run_along_predefined_path,
 	beh_wander_on_navmesh,
 	beh_go_towards_fixed_point,
-	beh_test_movement
 };
 
 //Navigator modes of opearation

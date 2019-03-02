@@ -341,6 +341,23 @@ Only objects with hitboxes within default_neighbor_radius will be checked.*/
 	return result;
 }
 
+std::vector<Creature*> Creature::FindCreaturesInRadiusInSet(std::vector<Creature*>* ptr_my_creatures_set, Coordinates center_point, int radius)
+{
+	std::vector<Creature*> result;
+	for (Creature* ptr_creature : *ptr_my_creatures_set)
+	{
+		Coordinates creatures_center = ptr_creature->TellCenterPoint();
+		double distance = Distance::CalculateDistanceBetweenPoints(center_point, creatures_center);
+
+		if (static_cast<int>(distance) <= radius)
+		{
+			result.push_back(ptr_creature);
+		}
+		//printf("Number of neighbours found: %d.\n", result.size());
+	}
+	return result;
+}
+
 std::vector<Creature*> Creature::FindCreaturesInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area)
 {
 	/*This function finds Creatures existing in given set in given area.
@@ -428,6 +445,8 @@ bool Creature::Move(double x, double y)
 				ptr_creature->MoveBehaviorComponent(-x, -y);
             }
         }
+		//Moving behavior component for main character.
+		MoveBehaviorComponent(-x, -y);
 		//printf("Moving all map entities by x: %f, y: %f.\n", -x, -y);
         //printf("Checking main character collision.\n");
         if (DoICollideWithNeighbors())
@@ -437,11 +456,12 @@ bool Creature::Move(double x, double y)
             {
                 if (ptr_creature != this) /* Prevents moving the main character. */
                 {
-                    //#TODO - consider snapshot approach so less calculations will be needed.
                     ptr_creature->ShiftPositionAndRevertIfCollisionOccured(x,y,false); /* Reverting changes made in last step.*/
 					ptr_creature->MoveBehaviorComponent(x, y);
 				}
             }
+			//Moving behavior component for main character.
+			MoveBehaviorComponent(x, y);
 			did_i_move_successfully = false;
         }
         else
@@ -690,46 +710,44 @@ bool Creature::DoICollideWithNeighbors(int margin)
 	return result;
 }
 
-bool Creature::IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double max_line_length)
+bool Creature::IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, 
+	double max_line_length, 
+	std::vector<Creature*> exceptions)
 {
 	/*Function checks if in current environment two points can be connected without intersecting any
-	Creature's hitbox.*/
+	Creature's hitbox.
+	
+	max_line_length - what is the maximal distance between points to consider them as "in sight"
+	exceptions - which creatures will be excluded from collisions check
+	*/
 	double distance_between_points = Distance::CalculateDistanceBetweenPoints(point_a, point_b);
 	std::vector<Creature*> potential_colliding_creatures = {};
 
-	//Finding potential colliding creatures. - //#TODO - wyci¹gn¹æ do osobnej funkcji
+	//Finding potential colliding creatures.
 
-	if (max_line_length == 0)
+	//Isn't the potential line of sight too long?
+	if (max_line_length != 0 && max_line_length < distance_between_points)
 	{
-		//#TODO - nieekonomiczne! Poprawiæ ten przypadek
-		potential_colliding_creatures = current_environment;
+		return false;
 	}
-	else
+
+	PreciseRect area_to_check =
 	{
-		//Isn't the potential line of sight too long?
-		if (max_line_length < distance_between_points)
-		{
-			return false;
-		}
+		std::min(point_a.x, point_b.x) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+		std::min(point_a.y, point_b.y) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
+		abs(point_a.x - point_b.x) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS*2,
+		abs(point_a.y - point_b.y) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS*2,
+	};
 
-		PreciseRect area_to_check =
-		{
-			std::min(point_a.x, point_b.x) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-			std::min(point_a.y, point_b.y) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-			abs(point_a.x - point_b.x) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-			abs(point_a.y - point_b.y) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-		};
-
-		//printf("Current environment holds %d creatures.\n", current_environment.size());
-		potential_colliding_creatures = FindCreaturesInAreaInSet(&current_environment, area_to_check);
-	}
+	//printf("Current environment holds %d creatures.\n", current_environment.size());
+	potential_colliding_creatures = FindCreaturesInAreaInSet(&current_environment, area_to_check);
 
 	//Checking for collisions
 
 	for (Creature* ptr_neighbor : potential_colliding_creatures)
 	{
-		//#TODO - daæ jakiœ prze³¹cznik, czy sprawdzaæ tylko œciany
 		if (ptr_neighbor->DoesThisCreatureBelongToWalls())
+			//&& std::find(exceptions.begin(), exceptions.end(), ptr_neighbor) == exceptions.end()) //If creature wasn't listed in exceptions.
 		{
 			if (Collisions::DoesSegmentIntersectRectangle(point_a, point_b, ptr_neighbor->TellHitbox()))
 			{
@@ -741,8 +759,8 @@ bool Creature::IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordina
 			}
 		}
 	}
-	printf("There is a line of sight between x:%f, y:%f, x: %f y: %f.\n",
-		point_a.x, point_a.y, point_b.x, point_b.y);
+	/*printf("There is a line of sight between x:%f, y:%f, x: %f y: %f.\n",
+		point_a.x, point_a.y, point_b.x, point_b.y);*/
 	return true;
 }
 
@@ -750,48 +768,10 @@ bool Creature::IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other
 {
 	Coordinates other_creature_center = ptr_other_creature->TellCenterPoint();
 	Coordinates my_center = TellCenterPoint();
-	double distance_between_creatures = Distance::CalculateDistanceBetweenPoints(my_center, other_creature_center);
-	std::vector<Creature*> potential_colliding_creatures = {};
-	if (distance_limit == 0)
-	{
-		potential_colliding_creatures = FindNeighborsInSet(&current_environment, static_cast<int>(distance_between_creatures));
-	}
-	else
-	{
-		//Isn't the creature outside limit?
-		if (distance_limit < distance_between_creatures)
-		{
-			return false;
-		}
 
-		PreciseRect area_to_check = 
-		{
-			std::min(my_center.x, other_creature_center.x) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-			std::min(my_center.y, other_creature_center.y) - MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-			abs(my_center.x - other_creature_center.x) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-			abs(my_center.y - other_creature_center.y) + MARGIN_FOR_LINE_OF_SIGHT_CHECKS,
-		};
-		
-		//printf("Current environment holds %d creatures.\n", current_environment.size());
-		potential_colliding_creatures = FindCreaturesInAreaInSet(&current_environment, area_to_check);
-	}
-	//printf("Found %d potential colliding creatures.\n", potential_colliding_creatures.size());
-	for (Creature* ptr_neighbor : potential_colliding_creatures)
-	{
-		if (ptr_neighbor != ptr_other_creature && ptr_neighbor->DoesThisCreatureBelongToWalls())
-		{
-			if (Collisions::DoesSegmentIntersectRectangle(my_center, other_creature_center, ptr_neighbor->TellHitbox()))
-			{
-				return false;
-			}
-			else
-			{
-				;
-			}
-		}
-
-	}
-	return true;
+	std::vector<Creature*> exceptions_for_collisions_check = {ptr_other_creature, this};
+	bool result = IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(my_center, other_creature_center, distance_limit ,exceptions_for_collisions_check);
+	return result;
 }
 
 //**************
@@ -934,9 +914,16 @@ void Creature::FollowPhysics()
 //********************************************
 
 
-void Creature::SetBehaviorMode(BehaviorMode behavior_to_be_set)
+void Creature::SetBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination)
 {
-	ptr_behavior->SetMode(behavior_to_be_set);
+	if (ptr_my_destination == nullptr)
+	{
+		ptr_behavior->SetMode(behavior_to_be_set);
+	}
+	else
+	{
+		ptr_behavior->SetMode(behavior_to_be_set, *ptr_my_destination);
+	}
 }
 
 void Creature::FollowBehavior()

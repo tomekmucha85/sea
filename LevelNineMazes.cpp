@@ -6,7 +6,8 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	Creature* ptr_test_spell = ptr_initial_core_component->AddCreature(cre_spell_ball, &test_spell_position, merge, 1);
 	Coordinates guy_position = { 400,250 };
 	Creature* ptr_enemy = ptr_initial_core_component->AddCreature(cre_clawy, &guy_position, force);
-	ptr_enemy->SetBehaviorMode(beh_go_towards_fixed_point);
+	Coordinates my_coordinates = {-1000,-1000};
+	//ptr_enemy->SetBehaviorMode(beh_go_towards_fixed_point, &my_coordinates);
 
 
 	//Adding component for event triggers

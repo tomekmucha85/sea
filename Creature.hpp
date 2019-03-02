@@ -164,6 +164,7 @@ class Creature
 		void AddToNeighbors(std::vector<Creature*> new_neighbors);
 		std::vector<Creature*> FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set, int radius = NULL);
 		static std::vector<Creature*> FindCreaturesInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area);
+		static std::vector<Creature*> FindCreaturesInRadiusInSet(std::vector<Creature*>* ptr_my_creatures_set, Coordinates center_point, int radius);
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
 		void SetVelocity(double my_velocity);
@@ -185,7 +186,8 @@ class Creature
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors(int margin = 0);
 		bool IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other_creature, double distance_limit = 0);
-		static bool IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double max_line_length=0);
+		static bool IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double max_line_length = 0,
+			std::vector<Creature*> exceptions = {});
 		bool DoesThisCreatureBelongToWalls();
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
 		static void RemoveAllEntriesFromEnvironmentExceptMainHero();
@@ -215,7 +217,7 @@ class Creature
 
 		void FollowPhysics();
 		void FollowBehavior();
-		void SetBehaviorMode(BehaviorMode behavior_to_be_set);
+		void SetBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination=nullptr);
 		void Kill();
 		void Resurrect();
 		bool AmIAlive();
@@ -259,14 +261,16 @@ class Behavior
 		FactorySpawningNavigators* ptr_navigators_factory = nullptr;
 		//Object generating waypoints
 		Navigator* ptr_navigator = nullptr;
+		Coordinates destination_point = {0,0};
 
-
+		bool was_mode_changed = false;
 
     public:
 		Behavior();
 		~Behavior();
 		void WhatToDo(Creature* my_creature);
 		void SetMode(BehaviorMode mode_to_be_set);
+		void SetMode(BehaviorMode mode_to_be_set, Coordinates my_destination_point);
 		void Move(Coordinates movement);
 		void MakeUseOfPathResponse(RandomPathResponse my_response);
 		void MakeUseOfPathResponse(PointToPointPathResponse my_response);

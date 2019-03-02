@@ -220,18 +220,18 @@ int main(int argc, char* args[])
 				{
 					Game::ptr_current_level->ptr_initial_navgrid_component->SetVisibilityForAllCreatures(false);
 				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_x && event_handler.key.repeat == 0)
-				{
-					LevelNineMazes* ptr_nine_mazes = dynamic_cast<LevelNineMazes*>(Game::ptr_current_level);
-					ptr_nine_mazes->DeleteMazeNumber(5);
-				}
 				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_n && event_handler.key.repeat == 0)
 				{
 					Game::ptr_current_level->should_nodes_be_reconnected = true;
 				}
 				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_z && event_handler.key.repeat == 0)
 				{
-					dynamic_cast<LevelTest*>(Game::ptr_current_level)->ptr_test_creature->PlaceRandomPathRequest(10);
+					Coordinates test_point = {-1000, -1000};
+					Creature::ptr_current_main_charater->SetBehaviorMode(beh_go_towards_fixed_point, &test_point);
+				}
+				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_x && event_handler.key.repeat == 0)
+				{
+					Creature::ptr_current_main_charater->SetBehaviorMode(beh_idle);
 				}
 			}
         }
