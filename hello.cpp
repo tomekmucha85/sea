@@ -18,6 +18,7 @@
 #include <LevelComponent.hpp>
 #include <Timer.hpp>
 #include <TimerInterval.hpp>
+#include <Interface.hpp>
 
 //###################
 //Function prototypes
@@ -40,6 +41,8 @@ int main(int argc, char* args[])
     SDL_Event event_handler;
 
     Game::InitializeGame();
+	Interface* ptr_game_interface = new Interface();
+	ptr_game_interface->SetInterfaceMode(interf_free);
 
 	//EMOTIV
 
@@ -47,7 +50,6 @@ int main(int argc, char* args[])
 	EmoStateHandle eState = IEE_EmoStateCreate();
 	unsigned int userID = 0;
 	const unsigned short composerPort = 1726;
-	//int option = 0;
 	int state = 0;
 	std::string  address = "127.0.0.1";
 
@@ -97,6 +99,10 @@ int main(int argc, char* args[])
 		//Timer
 		Timer::CalculateLoopDuration();
 		//printf("Loop duration: %f.\n", Timer::loop_duration);
+
+		//Perform cyclic actions from current level
+		Game::ptr_current_level->PerformCyclicActions();
+
         //EMOTIV
 		if (is_connected_to_emo)
 		{
@@ -148,12 +154,12 @@ int main(int argc, char* args[])
         //Handle events on queue
         while(SDL_PollEvent(&event_handler) != 0)
         {
+			ptr_game_interface->UseInterface(&event_handler);
             //User requests quit
             if(event_handler.type == SDL_QUIT)
             {
                 quit = true;
             }
-
 			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_p && event_handler.key.repeat == 0)
 			{
 				Game::ptr_current_level->Pause();
@@ -235,9 +241,6 @@ int main(int argc, char* args[])
 				}
 			}
         }
-
-		//Perform cyclic actions from current level
-		Game::ptr_current_level->PerformCyclicActions();
 
         //Clear screen
         SDL_RenderClear(Game::ptr_screen->renderer);

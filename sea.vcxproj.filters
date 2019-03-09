@@ -207,6 +207,9 @@
     <ClInclude Include="Line.hpp">
       <Filter>Header Files\VisualComponents\Lines</Filter>
     </ClInclude>
+    <ClInclude Include="Interface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -355,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="Line.cpp">
       <Filter>Source Files\VisualComponents\Lines</Filter>
+    </ClCompile>
+    <ClCompile Include="Interface.cpp">
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
