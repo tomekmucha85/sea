@@ -243,16 +243,46 @@ bool Segment::DoSegmentsIntersect(Coordinates a, Coordinates b, Coordinates c, C
 		result = true;
 	}
 
-	if (result == true)
-	{
-		//printf("Intersection detected!\nFirst segment: x1: %f y1: %f x2: %f y2: %f.\n", a.x, a.y, b.x, b.y );
-		//printf("Second segment: x1: %f y1: %f x2: %f y2: %f.\n", c.x, c.y, d.x, d.y);
-	}
-	else
-	{
-		//printf("NO intersection detected!\nFirst segment: x1: %f y1: %f x2: %f y2: %f.\n", a.x, a.y, b.x, b.y);
-		//printf("Second segment: x1: %f y1: %f x2: %f y2: %f.\n", c.x, c.y, d.x, d.y);
-	}
-
 	return result;
+}
+
+double  MathLine::CalculateSlope(Coordinates a, Coordinates b)
+{
+	double result = (b.y - a.y) / (b.x - a.x);
+	return result;
+}
+
+double MathLine::CalculateIntercept(Coordinates a, Coordinates b)
+{
+	double intercept = CalculateSlope(a, b);
+	return (a.y - intercept * a.x);
+}
+
+MathLineParams MathLine::CalculateLineParams(Coordinates point_a, Coordinates point_b)
+{
+	MathLineParams result = { 0,0 };
+	result.slope = CalculateSlope(point_a, point_b);
+	result.intercept = CalculateIntercept(point_a, point_b);
+	return result;
+}
+
+MathLineParams MathLine::CalculateParamsForOrthogonalLineCrossingGivenPoint(MathLineParams base_line, Coordinates point)
+{
+	MathLineParams result = { 0 , 0 };
+	double slope = 1 / (base_line.slope*-1);
+	double intercept = point.y - slope*point.x;
+	result = { slope, intercept };
+	return result;
+}
+
+std::pair<double, double> MathLine::CalculateXesForPointLyingOnGivenLineInGivenDistanceFromGivenX(MathLineParams line, double distance, double starting_x)
+{
+	double first_value = sqrt(pow(distance, 2) / (pow(line.slope, 2) + 1)) + starting_x;
+	double second_value = -sqrt(pow(distance, 2) / (pow(line.slope, 2) + 1)) + starting_x;
+	return { first_value, second_value };
+}
+
+double MathLine::CalculateYForGivenX(MathLineParams my_params, double my_x)
+{
+	return (my_params.slope*my_x + my_params.intercept);
 }

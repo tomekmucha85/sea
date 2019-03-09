@@ -87,8 +87,9 @@ CreatureNavGridNode* LevelComponentNavGrid::FindAGridNodeAccessibleFromPoint(Coo
 				ptr_candidate->TellCenterPoint().x,
 				ptr_candidate->TellCenterPoint().y);
 
-			if (Creature::IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(point, ptr_candidate->TellCenterPoint(), 
-				MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE))
+			/*if (Creature::IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(point, ptr_candidate->TellCenterPoint(), 
+				MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE))*/
+			if (Creature::IsThereCorridorBetweenThesePointsInCurrentEnvironment(point, ptr_candidate->TellCenterPoint(),60, MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE))
 			{
 				result = dynamic_cast<CreatureNavGridNode*>(ptr_candidate);
 				printf("Candidate %p suitable as declared by FindAGridNodeAccessibleFromPoint.\n", result);

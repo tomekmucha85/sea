@@ -611,6 +611,15 @@ Coordinates Creature::TellCenterPoint()
 	return result;
 }
 
+std::vector<Coordinates> Creature::TellHitboxCorners()
+{
+	Coordinates corner_a = { hitbox.x, hitbox.y };
+	Coordinates corner_b = { hitbox.x + hitbox.w, hitbox.y };
+	Coordinates corner_c = { hitbox.x, hitbox.y + hitbox.h};
+	Coordinates corner_d = { hitbox.x + hitbox.w, hitbox.y + hitbox.h};
+	return {corner_a, corner_b, corner_c, corner_d};
+}
+
 void Creature::SetAngleDegree(int my_degree)
 {
 	current_angle_degree = my_degree;
@@ -746,8 +755,8 @@ bool Creature::IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordina
 
 	for (Creature* ptr_neighbor : potential_colliding_creatures)
 	{
-		if (ptr_neighbor->DoesThisCreatureBelongToWalls())
-			//&& std::find(exceptions.begin(), exceptions.end(), ptr_neighbor) == exceptions.end()) //If creature wasn't listed in exceptions.
+		if (ptr_neighbor->DoesThisCreatureBelongToWalls()
+			&& std::find(exceptions.begin(), exceptions.end(), ptr_neighbor) == exceptions.end()) //If creature wasn't listed in exceptions.
 		{
 			if (Collisions::DoesSegmentIntersectRectangle(point_a, point_b, ptr_neighbor->TellHitbox()))
 			{
@@ -764,8 +773,70 @@ bool Creature::IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordina
 	return true;
 }
 
+bool Creature::IsThereCorridorBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double corridor_width, double max_corridor_length)
+{
+	/*
+
+orthogonal line crossing point A          orthogonal line crossing point B
+             |                                    |
+point a prim | -----------------------------------| point b prim \
+			 |	                                  |               \
+     point A *------------LINE_OF_SIGHT-----------* point B        } CORRIDOR WIDTH
+	         |                                    |               /
+point a bis  |------------------------------------| point b bis  /
+			 |                                    |
+	*/
+	if (IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(point_a, point_b, max_corridor_length) == false)
+	{
+		return false;
+	}
+	MathLineParams params_for_line_of_sight = MathLine::CalculateLineParams(point_a, point_b);
+	printf("Params for line of sight: a: %f b: %f.\n", params_for_line_of_sight.slope, params_for_line_of_sight.intercept);
+	MathLineParams params_for_orthogonal_line_crossing_point_a =
+		MathLine::CalculateParamsForOrthogonalLineCrossingGivenPoint(params_for_line_of_sight, point_a);
+	printf("Params for orthogonal line crossing a: a: %f b: %f.\n", params_for_orthogonal_line_crossing_point_a.slope, params_for_orthogonal_line_crossing_point_a.intercept);
+	MathLineParams params_for_orthogonal_line_crossing_point_b =
+		MathLine::CalculateParamsForOrthogonalLineCrossingGivenPoint(params_for_line_of_sight, point_b);
+	printf("Params for orthogonal line crossing b: a: %f b: %f.\n", params_for_orthogonal_line_crossing_point_b.slope, params_for_orthogonal_line_crossing_point_b.intercept);
+	std::pair<double, double> satellite_xes_for_point_a = MathLine::CalculateXesForPointLyingOnGivenLineInGivenDistanceFromGivenX(
+		params_for_orthogonal_line_crossing_point_a, corridor_width/2, point_a.x);
+	std::pair<double, double> satellite_xes_for_point_b = MathLine::CalculateXesForPointLyingOnGivenLineInGivenDistanceFromGivenX(
+		params_for_orthogonal_line_crossing_point_b, corridor_width / 2, point_b.x);
+	Coordinates point_a_prim = {satellite_xes_for_point_a.first, MathLine::CalculateYForGivenX(params_for_orthogonal_line_crossing_point_a, satellite_xes_for_point_a.first)};
+	Coordinates point_a_bis = { satellite_xes_for_point_a.second, MathLine::CalculateYForGivenX(params_for_orthogonal_line_crossing_point_a, satellite_xes_for_point_a.second)};
+	Coordinates point_b_prim = { satellite_xes_for_point_b.first, MathLine::CalculateYForGivenX(params_for_orthogonal_line_crossing_point_b, satellite_xes_for_point_b.first) };
+	Coordinates point_b_bis = { satellite_xes_for_point_b.second, MathLine::CalculateYForGivenX(params_for_orthogonal_line_crossing_point_b, satellite_xes_for_point_b.second) };
+	
+	printf("Point a: x: %f y: %f, point b: x: %f y: %f\n", point_a.x, point_a.y, point_b.x, point_b.y);
+	printf("Point a prim: x: %f, y: %f\n", point_a_prim.x, point_a_prim.y);
+	printf("Point a bis: x: %f, y: %f\n", point_a_bis.x, point_a_bis.y);
+	printf("Point b prim: x: %f, y: %f\n", point_b_prim.x, point_b_prim.y);
+	printf("Point b bis: x: %f, y: %f\n", point_b_bis.x, point_b_bis.y);
+
+	//Checks
+	if (IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(point_a_prim, point_b_prim, max_corridor_length) == false)
+	{
+		return false;
+	}
+	if (IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(point_a_prim, point_b_bis, max_corridor_length) == false)
+	{
+		return false;
+	}
+	if (IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(point_a_bis, point_b_prim, max_corridor_length) == false)
+	{
+		return false;
+	}
+	if (IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(point_a_bis, point_b_bis, max_corridor_length) == false)
+	{
+		return false;
+	}
+	printf("There is a corridor!\n");
+	return true;
+}
+
 bool Creature::IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other_creature, double distance_limit)
 {
+	/*Checking if there is a line of sight connecting two Creature's center points.*/
 	Coordinates other_creature_center = ptr_other_creature->TellCenterPoint();
 	Coordinates my_center = TellCenterPoint();
 

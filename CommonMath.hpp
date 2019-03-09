@@ -67,6 +67,19 @@ class Segment
 
 };
 
+class MathLine
+{
+    private:
+
+    public:
+		static double  CalculateSlope(Coordinates a, Coordinates b);
+		static double CalculateIntercept(Coordinates a, Coordinates b);
+		static MathLineParams CalculateLineParams(Coordinates point_a, Coordinates point_b);
+		static MathLineParams CalculateParamsForOrthogonalLineCrossingGivenPoint(MathLineParams base_line, Coordinates point);
+		static std::pair<double,double> CalculateXesForPointLyingOnGivenLineInGivenDistanceFromGivenX(MathLineParams line, double distance, double starting_x);
+		static double CalculateYForGivenX(MathLineParams my_params, double my_x);
+};
+
 class Collisions
 {
     private:

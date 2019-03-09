@@ -10,6 +10,12 @@ struct Coordinates
 	double y = 0;
 };
 
+struct MathLineParams 
+{ 
+	double slope = 0; 
+	double intercept = 0; 
+};
+
 struct Color
 {
 	int red = 255;

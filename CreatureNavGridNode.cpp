@@ -37,7 +37,7 @@ void CreatureNavGridNode::CreateLineTowardsNode(Creature* ptr_neighbor_node)
 
 void CreatureNavGridNode::RemoveLineTowardsNode(Creature* ptr_neighbor_node)
 {
-	printf("Will attempt to remove lines towards node.\n");
+	/*printf("Will attempt to remove lines towards node.\n");
 	Coordinates line_end = ptr_neighbor_node->TellCenterPoint();
 	std::vector<VisualComponent*> lines_to_remove = {};
 	for (VisualComponent* ptr_visual_component : visual_components)
@@ -52,7 +52,8 @@ void CreatureNavGridNode::RemoveLineTowardsNode(Creature* ptr_neighbor_node)
 		visual_components.erase(std::remove(visual_components.begin(), visual_components.end(), ptr_line_to_remove), visual_components.end());
 		delete ptr_line_to_remove;
 		printf("Removed a line towards node.\n");
-	}
+	}*/
+	throw "Not implemented yet - removing lines.\n";
 }
 
 void CreatureNavGridNode::AddOneSidedConnection(CreatureNavGridNode* ptr_neighbor_node)
@@ -80,7 +81,7 @@ void CreatureNavGridNode::AddTwoSidedConnection(CreatureNavGridNode* ptr_neighbo
 
 void CreatureNavGridNode::RemoveOneSidedConnection(CreatureNavGridNode* ptr_neighbor_node)
 {
-	RemoveLineTowardsNode(ptr_neighbor_node);
+	//RemoveLineTowardsNode(ptr_neighbor_node);
 	connected_nodes.erase(std::remove(connected_nodes.begin(), connected_nodes.end(), ptr_neighbor_node), connected_nodes.end());
 }
 

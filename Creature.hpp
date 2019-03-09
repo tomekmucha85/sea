@@ -180,6 +180,7 @@ class Creature
 		void SetPosition(Coordinates new_center_position);
 		int TellCurrentAngleDegree();
 		Coordinates TellCenterPoint();
+		std::vector<Coordinates> TellHitboxCorners();
 		Coordinates TellNextStep();
 		void SetAngleDegree(int my_degree);
 		Coordinates CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance);
@@ -188,6 +189,7 @@ class Creature
 		bool IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other_creature, double distance_limit = 0);
 		static bool IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double max_line_length = 0,
 			std::vector<Creature*> exceptions = {});
+		static bool IsThereCorridorBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double corridor_width, double max_corridor_length = 0);
 		bool DoesThisCreatureBelongToWalls();
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
 		static void RemoveAllEntriesFromEnvironmentExceptMainHero();
