@@ -122,6 +122,7 @@ void LevelComponentMaze::PrepareNavigationGrid()
 }
 
 void LevelComponentMaze::PrepareMazeGrid()
+//#TODO - do optymalizacji.
 //Method preparing grid on the blueprint - set of square rooms, which walls will be carved afterwards.
 {
 	//Insert all possible maze walls into blueprint

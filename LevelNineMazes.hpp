@@ -125,6 +125,9 @@ class LevelNineMazes : public Level
 		std::string signal_for_regenerating_eastern_column = "generate mazes east";
 		std::string signal_for_regenerating_western_column = "generate mazes west";
 
+		//Carriers - guiding creatures
+		unsigned int number_of_carriers_to_maintain = 6;
+
     public:
 	    LevelNineMazes(int my_cols_count, int my_rows_count);
 		void FinishLevel(LevelEnding my_ending);
@@ -143,6 +146,8 @@ class LevelNineMazes : public Level
 		void MoveWorldWest();
 		void GenerateTrigger(Directions my_direction, PreciseRect offset_from_component_border = {0,0,0,0});
 		void DeleteTrigger(Directions my_direction);
+		std::pair<Coordinates, Coordinates> CalculateLevelConstraints();
+		void SpawnCarriers(unsigned int carriers_number = 1);
 
 		//###################
 		// COMMON LAMBDAS

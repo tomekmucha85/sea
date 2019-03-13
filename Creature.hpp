@@ -74,6 +74,8 @@ class Creature
 		FactorySpawningSprites* ptr_sprites_factory = nullptr;
         //Is creature an obstacle?
         bool is_obstacle = true;
+		//Are any creature types excluded from collision checks?
+		std::vector<CreatureType> collision_check_exceptions = {};
         //How many degrees will the creature turn in a single turn function call
         int turn_quant_degree = 10;
         //What direction does the creature face? Angle in degrees, where 0 degrees points upwards and 180 downwards
@@ -154,11 +156,16 @@ class Creature
 		int TellRenderLayer();
 		void MakeMeObstacle();
 		void MakeMeNotObstacle();
+		void AddCreatureTypeToCollisionExceptions(CreatureType my_type);
+		void RemoveCreatureTypeFromCollisionExceptions(CreatureType my_type);
+		std::vector<CreatureType> TellCollisionExceptions();
+		bool IsThisCreatureTypeAColliderForMe(CreatureType queried_type);
 		PreciseRect TellHitbox();
         void Turn(int turn_angle_degree);
         void TurnRight();
         void TurnLeft();
 		void TurnStop();
+		double TellTurnVelocity();
 		void DetermineNextStep(double time_passed);
         virtual bool Move(double x, double y);
 		void AddToNeighbors(std::vector<Creature*> new_neighbors);
@@ -168,6 +175,7 @@ class Creature
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
 		void SetVelocity(double my_velocity);
+		double TellVelocity();
         bool ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool check_collisions = true);
         void MoveComponents(double x, double y);
 		void MoveVisualComponent(double x, double y);

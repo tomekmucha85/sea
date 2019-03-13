@@ -3,7 +3,7 @@
 TimerInterval::TimerInterval(Uint32 my_interval)
 {
 	start_time = SDL_GetTicks();
-	interval = my_interval;
+	interval = my_interval; //miliseconds
 }
 
 

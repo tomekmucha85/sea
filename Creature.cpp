@@ -225,6 +225,45 @@ void Creature::MakeMeNotObstacle()
 	is_obstacle = false;
 }
 
+void Creature::AddCreatureTypeToCollisionExceptions(CreatureType my_type)
+{
+	if (std::find(collision_check_exceptions.begin(), 
+		collision_check_exceptions.end(), 
+		my_type) == collision_check_exceptions.end())
+	{
+		collision_check_exceptions.push_back(my_type);
+	}
+}
+
+void Creature::RemoveCreatureTypeFromCollisionExceptions(CreatureType my_type)
+{
+	collision_check_exceptions.erase(
+		std::remove(collision_check_exceptions.begin(), 
+		collision_check_exceptions.end(),
+		my_type), 
+		collision_check_exceptions.end()
+	);
+}
+
+std::vector<CreatureType> Creature::TellCollisionExceptions()
+{
+	return collision_check_exceptions;
+}
+
+bool Creature::IsThisCreatureTypeAColliderForMe(CreatureType queried_type)
+{
+	if (std::find(collision_check_exceptions.begin(), 
+		collision_check_exceptions.end(), 
+		queried_type) != collision_check_exceptions.end())
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
 bool Creature::DoesThisCreatureBelongToWalls()
 {
 	bool result = false;
@@ -303,6 +342,11 @@ void Creature::TurnLeft()
 void Creature::TurnStop() 
 {
 	turn_direction = 0;
+}
+
+double Creature::TellTurnVelocity()
+{
+	return turn_speed;
 }
 
 void Creature::RemoveNeighbors()
@@ -592,6 +636,11 @@ void Creature::SetVelocity(double my_velocity)
 	velocity = my_velocity;
 }
 
+double Creature::TellVelocity()
+{
+	return velocity;
+}
+
 void Creature::SetPosition(Coordinates new_center_position)
 {
 	for (VisualComponent* ptr_my_visual_component : visual_components)
@@ -676,8 +725,13 @@ bool Creature::DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_
 	//    - collisions are checked only with Creature entities with "is_obstacle" flag set to true 
 	//    - or with all Creature beings.
 
+	//Apart from the flag, creature may have its own exceptions preventing collision checks with certain types.
+	//See attribute collision_check_exceptions in Creature definition.
+
+	
 	if (ptr_my_creature != this /* Prevents checking collision with itself. */ && 
-		((ptr_my_creature->is_obstacle == true && check_only_obstacles==true)) || (check_only_obstacles == false))
+		((ptr_my_creature->is_obstacle == true && check_only_obstacles==true) || (check_only_obstacles == false)) &&
+		IsThisCreatureTypeAColliderForMe(ptr_my_creature->my_type) )
 	{
 
 		if (Collisions::DoTheseRectanglesOverlap(hitbox, ptr_my_creature->TellHitbox()))

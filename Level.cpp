@@ -253,7 +253,14 @@ Creature* Level::AddNavigationNodeUsingDefaultComponent(Coordinates my_center)
 
 void Level::Pause()
 {
-	is_paused = true;
+	if (is_paused == false)
+	{
+		is_paused = true;
+	}
+	else
+	{
+		UnPause();
+	}
 }
 
 void Level::UnPause()

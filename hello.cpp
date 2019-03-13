@@ -48,23 +48,24 @@ int main(int argc, char* args[])
 
 	EmoEngineEventHandle eEvent = IEE_EmoEngineEventCreate();
 	EmoStateHandle eState = IEE_EmoStateCreate();
+
 	unsigned int userID = 0;
-	const unsigned short composerPort = 1726;
+	//const unsigned short composerPort = 1726;
 	int state = 0;
 	std::string  address = "127.0.0.1";
 
 	bool is_connected_to_emo = false;
 
-	/*if (IEE_EngineConnect() == EDK_OK)
+	if (IEE_EngineConnect() == EDK_OK)
 	{
 		is_connected_to_emo = true;
 		printf("Successfully connected to Emotiv device!\n");
 	}
-	else*/ if (IEE_EngineRemoteConnect(address.c_str(), composerPort) == EDK_OK) 
+	/*else if (IEE_EngineRemoteConnect(address.c_str(), composerPort) == EDK_OK) 
 	{
 		is_connected_to_emo = true;
 		printf("Connected to EmoComposer!\n");
-	}
+	}*/
 	else
 	{
 		std::string errMsg = "Cannot connect neither to Emotiv device nor to EmoComposer on [" +
@@ -73,6 +74,9 @@ int main(int argc, char* args[])
 		//throw std::runtime_error(errMsg.c_str());
 		printf("WARNING!\nDID NOT CONNECT TO EMO ENGINE.\n WARNING!\n");
 	}
+	//IEE_FacialExpressionGetTrainedSignatureAvailable()
+
+	
 
 	//EMOTIV_END
 
@@ -88,14 +92,14 @@ int main(int argc, char* args[])
     while (!quit)
     {
 		//Cooldown decreasing
-		if (cooldown > 0)
+		/*if (cooldown > 0)
 		{
 			if (cooldown == 1)
 			{
 				printf("COOLDOWN PASSED!\n");
 			}
 			cooldown--;
-		}
+		}*/
 		//Timer
 		Timer::CalculateLoopDuration();
 		//printf("Loop duration: %f.\n", Timer::loop_duration);
@@ -106,8 +110,84 @@ int main(int argc, char* args[])
         //EMOTIV
 		if (is_connected_to_emo)
 		{
+			//printf("Connected to emo.\n");
 			state = IEE_EngineGetNextEvent(eEvent);
+			if (state != EDK_NO_EVENT)
+			{
+				if (state == EDK_OK)
+				{
+					IEE_Event_t eventType = IEE_EmoEngineEventGetType(eEvent);
+					//printf("Got event!\n");
+					//IEE_EmoEngineEventGetUserId(eEvent, &userID);
+					if (eventType == IEE_EmoStateUpdated)
+					{
+						IEE_EmoEngineEventGetEmoState(eEvent, eState);
+						float upperFaceAmp = IS_FacialExpressionGetUpperFaceActionPower(eState);
+						float lowerFaceAmp = IS_FacialExpressionGetLowerFaceActionPower(eState);
+						//printf("State updated.\n");
+						IEE_FacialExpressionAlgo_t upperFaceType =
+							IS_FacialExpressionGetUpperFaceAction(eState);
+						IEE_FacialExpressionAlgo_t lowerFaceType =
+							IS_FacialExpressionGetLowerFaceAction(eState);
 
+						if (lowerFaceAmp > 0)
+						{
+							if (lowerFaceType == FE_SMIRK_LEFT)
+							{
+								printf("Left smirk!\n");
+							}
+							else if (lowerFaceType == FE_SMIRK_RIGHT)
+							{
+								printf("Right smirk!\n");
+							}
+							else if (lowerFaceType == FE_SMILE)
+							{
+								printf("Smile\n");
+							}
+						}
+
+					}
+					//
+					else if (eventType == IEE_UserAdded || eventType == IEE_UserRemoved)
+					{
+						printf("Got user related event.\n");
+					}
+					else if (eventType == IEE_InternalStateChanged)
+					{
+						printf("Internal state change.\n");
+					}
+					else if (eventType == IEE_ProfileEvent)
+					{
+						printf("Profile event.\n");
+					}
+					else if (eventType == IEE_MentalCommandEvent)
+					{
+						printf("Mental command.\n");
+					}
+					else if (eventType == IEE_FacialExpressionEvent)
+					{
+						printf("Facial expression event.\n");
+					}
+					else
+					{
+						printf("Some other event.\n");
+					}
+				}
+				else
+				{
+					printf("Unexpected EmoEngineBehavior!\n");
+				}
+
+				//state = IEE_EngineGetNextEvent(eEvent);
+			}
+			else
+			{
+				//printf("No event!\n");
+			}
+		}
+			
+		/*if (is_connected_to_emo)
+		{
 			// New event needs to be handled
 			if (state == EDK_OK)
 			{
@@ -121,12 +201,21 @@ int main(int argc, char* args[])
 					//printf("Got update at %f!\n", timestamp);
 					if (IS_FacialExpressionIsLeftWink(eState) == 1)
 					{
+						printf("Wink!\n");
 						if (cooldown == 0)
 						{
 							printf("Wink!\n");
 							Creature::ptr_current_main_charater->CastSpell(spell_vortex);
 							cooldown = 200;
 						}
+					}
+					else if (IS_FacialExpressionIsLookingLeft(eState) == 1)
+					{
+						printf("Looking left.\n");
+					}
+					else if (IS_FacialExpressionIsEyesOpen(eState) == 0)
+					{
+						printf("Eyes closed.\n");
 					}
 				}
 			}
@@ -145,10 +234,12 @@ int main(int argc, char* args[])
 			{
 				IEE_GetAverageBandPowers(userID, IED_AF3, &theta, &alpha, &low_beta, &high_beta, &gamma);
 
-				/*printf("Current band values: THETA: %f\n ALPHA: %f\n, LOW BETA: %f\n, HIGH_BETA: %f\n, GAMMA: %f\n.",
-					theta, alpha, low_beta, high_beta, gamma);*/
+				printf("Current band values: THETA: %f\n ALPHA: %f\n, LOW BETA: %f\n, HIGH_BETA: %f\n, GAMMA: %f\n.",
+					theta, alpha, low_beta, high_beta, gamma);
+
 			}
-		}
+		}*/
+		
 		//EMOTIV_END
 
         //Handle events on queue
@@ -160,14 +251,6 @@ int main(int argc, char* args[])
             {
                 quit = true;
             }
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_p && event_handler.key.repeat == 0)
-			{
-				Game::ptr_current_level->Pause();
-			}
-			else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_l && event_handler.key.repeat == 0)
-			{
-				Game::ptr_current_level->UnPause();
-			}
 			if (Game::ptr_current_level->TellIfPaused() == false) //Actions possible to perform only if game is not paused
 			{
 				if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_a && event_handler.key.repeat == 0)
@@ -230,7 +313,7 @@ int main(int argc, char* args[])
 				{
 					Game::ptr_current_level->should_nodes_be_reconnected = true;
 				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_z && event_handler.key.repeat == 0)
+				/*else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_z && event_handler.key.repeat == 0)
 				{
 					Coordinates test_point = {-1000, -1000};
 					Creature::ptr_current_main_charater->SetBehaviorMode(beh_go_towards_fixed_point, &test_point);
@@ -238,7 +321,7 @@ int main(int argc, char* args[])
 				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_x && event_handler.key.repeat == 0)
 				{
 					Creature::ptr_current_main_charater->SetBehaviorMode(beh_idle);
-				}
+				}*/
 			}
         }
 

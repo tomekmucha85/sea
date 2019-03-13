@@ -1,5 +1,5 @@
 #ifndef TIMER_PERSONAL_HPP
-#define IMER_PERSONAL_HPP
+#define TIMER_PERSONAL_HPP
 #include <stdio.h>
 #include <SDL.h>
 #include <Timer.hpp>

@@ -2,13 +2,16 @@
 
 LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 {
-	Coordinates test_spell_position = {390, 100};
-	Creature* ptr_test_spell = ptr_initial_core_component->AddCreature(cre_spell_ball, &test_spell_position, merge, 1);
-	Coordinates guy_position = { 400,250 };
-	Creature* ptr_enemy = ptr_initial_core_component->AddCreature(cre_clawy, &guy_position, force);
-	Coordinates my_coordinates = {-1000,-1000};
-	//ptr_enemy->SetBehaviorMode(beh_go_towards_fixed_point, &my_coordinates);
 
+	Coordinates carrier_one_start_position = { 400,250 };
+	Creature* ptr_carrier_one = ptr_initial_core_component->AddCreature(cre_clawy, &carrier_one_start_position, force);
+	Coordinates carrier_one_destination = {1000,1000};
+	ptr_carrier_one->SetBehaviorMode(beh_go_towards_fixed_point, &carrier_one_destination);
+
+	Coordinates carrier_two_start_position = { 400,600 };
+	Creature* ptr_carrier_two = ptr_initial_core_component->AddCreature(cre_clawy, &carrier_two_start_position, merge);
+	Coordinates carrier_two_destination = { -1000,-1000 };
+	ptr_carrier_two->SetBehaviorMode(beh_go_towards_fixed_point, &carrier_two_destination);
 
 	//Adding component for event triggers
 	ptr_border_triggers = ptr_components_factory->SpawnLevelComponent(levco_triggers);
@@ -68,6 +71,71 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	GenerateTrigger(west);
 	/*printf("Current mazes setup: 1: %p\n2: %p\n3: %p\n4: %p\n5: %p\n6: %p\n7: %p\n8: %p\n9: %p\n",
 		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);*/
+
+	SpawnCarriers(50);
+
+}
+
+std::pair<Coordinates, Coordinates> LevelNineMazes::CalculateLevelConstraints()
+{
+	//Returns coordinates of top-left and bottom-right level corners.
+	//(Respective corners of maze 1 and 9)
+	std::pair<Coordinates, Coordinates> result;
+	if (ptr_maze1 == nullptr || ptr_maze9 == nullptr)
+	{
+		printf("Could not calculate constraints.\n");
+		throw std::runtime_error("Could not calculate constraints!\n");
+	}
+	else
+	{
+		PreciseRect maze_1_area = ptr_maze1->TellComponentArea();
+		result.first = { maze_1_area.x, maze_1_area.y };
+		PreciseRect maze_9_area = ptr_maze9->TellComponentArea();
+		result.second = {maze_9_area.x+maze_9_area.w, maze_9_area.y+maze_9_area.h};
+	}
+	printf("Calculated following level constraints: TOP-LEFT: x: %f y: %f BOTTOM-RIGHT: x: %f y: %f\n",
+		result.first.x, result.first.y, result.second.x, result.second.y);
+	return result;
+}
+
+void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
+{
+	std::pair<Coordinates, Coordinates> level_constraints = CalculateLevelConstraints();
+	int min_carrier_start_point_x = level_constraints.first.x;
+	int min_carrier_start_point_y = level_constraints.first.y;
+	int max_carrier_start_point_x = level_constraints.second.x;
+	int max_carrier_start_point_y = level_constraints.second.y;
+
+	for (unsigned int i = 0; i < carriers_number; i++)
+	{
+		bool was_carrier_created = false;
+		while (was_carrier_created == false)
+		{
+			//RANDOM NUMBER IN RANGE:
+			//output = min + (rand() % (int)(max - min + 1))
+
+			Coordinates carrier_start_point = 
+			{ 
+				min_carrier_start_point_x + rand() % (max_carrier_start_point_x - min_carrier_start_point_x + 1),
+				min_carrier_start_point_y + rand() % (max_carrier_start_point_y - min_carrier_start_point_y + 1)
+			};
+			//#TODO - rozwi¹zaæ to ³adniej.
+			Coordinates carrier_destination = { 
+				carrier_start_point.x + 1000 + rand() % (2000 - 1000 + 1),
+				carrier_start_point.y + 1000 + rand() % (2000 - 1000 + 1) 
+			};
+			Creature* ptr_carrier = ptr_initial_core_component->AddCreature(cre_clawy, &carrier_start_point, safe);
+			if (ptr_carrier != nullptr)
+			{
+				was_carrier_created = true;
+				ptr_carrier->SetBehaviorMode(beh_go_towards_fixed_point, &carrier_destination);
+			}
+			else
+			{
+				printf("Carrier reroll.\n");
+			}
+		}
+	}
 }
 
 void LevelNineMazes::FinishLevel(LevelEnding my_ending)

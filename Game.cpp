@@ -41,6 +41,7 @@ void Game::PrepareSingleLevel(LevelType my_type)
 	}
 	Level* ptr_prepared_level = Game::InitializeLevel(my_type);
 	SetCurrentLevel(ptr_prepared_level);
+	printf("Number of existing levels: %d.\n", currently_existing_levels.size());
 }
 
 void Game::DestroyLevel(Level* ptr_destroyed_level)
