@@ -29,7 +29,7 @@ void Navigator::SetNextWaypoint()
 			result.y = cos(Angle::DegreeToRadian(current_angle_degrees))*radius + anchor_point.y;
 			current_angle_degrees += angle_step_degrees;
 			current_angle_degrees = Angle::NormalizeAngle(current_angle_degrees);
-			printf("Current angle in circle navigation: %d.\n", current_angle_degrees);
+			//printf("Current angle in circle navigation: %d.\n", current_angle_degrees);
 		}
 		else if (mode == navig_coordinates_list)
 		{
@@ -45,8 +45,8 @@ void Navigator::SetNextWaypoint()
 				result = waypoints_set[current_waypoint_index];
 				result.x += anchor_point.x;
 				result.y += anchor_point.y;
-				printf("At least one waypoint more left.\n");
-				printf("Setting new waypoint from list: x: %f y: %f.\n", result.x, result.y);
+				//printf("At least one waypoint more left.\n");
+				//printf("Setting new waypoint from list: x: %f y: %f.\n", result.x, result.y);
 				current_waypoint = result;
 			}
 			else if (current_waypoint_index == waypoints_set.size() - 2 && run_in_loop == true)
@@ -55,24 +55,24 @@ void Navigator::SetNextWaypoint()
 				result.x += anchor_point.x;
 				result.y += anchor_point.y;
 				current_waypoint = result;
-				printf("Resetting waypoint index.\n");
-				printf("Last waypoint reached.\n");
-				printf("Setting new waypoint from list: x: %f y: %f.\n", result.x, result.y);
+				//printf("Resetting waypoint index.\n");
+				//printf("Last waypoint reached.\n");
+				//printf("Setting new waypoint from list: x: %f y: %f.\n", result.x, result.y);
 				current_waypoint_index = 0;
 			}
 			else if (current_waypoint_index == waypoints_set.size() - 2 && run_in_loop == false)
 			{
 				result = waypoints_set[current_waypoint_index];
 				current_waypoint = result;
-				printf("Last waypoint reached - cycle stops now.\n");
-				printf("Setting new waypoint from list: x: %f y: %f.\n", result.x, result.y);
+				//printf("Last waypoint reached - cycle stops now.\n");
+				//printf("Setting new waypoint from list: x: %f y: %f.\n", result.x, result.y);
 				current_waypoint_index++;
 			}
 			else
 			{
-				printf("Resetting waypoint index.\n");
+				//printf("Resetting waypoint index.\n");
 				current_waypoint_index = 0;
-				printf("Deactivating navigator.\n");
+				//printf("Deactivating navigator.\n");
 				SetMyState(inactive);
 			}
 		}
@@ -105,7 +105,7 @@ bool Navigator::WasCurrentWaypointReached(Coordinates user_position, int radius)
 	double distance_between_user_and_waypoint = Distance::CalculateDistanceBetweenPoints(user_position,current_waypoint);
 	if (static_cast<int>(distance_between_user_and_waypoint) <= radius)
 	{
-		printf("Waypoint x: %f y: %f reached!.\n", current_waypoint.x, current_waypoint.y);
+		//printf("Waypoint x: %f y: %f reached!.\n", current_waypoint.x, current_waypoint.y);
 		return true;
 	}
 	else

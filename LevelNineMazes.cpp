@@ -72,7 +72,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	/*printf("Current mazes setup: 1: %p\n2: %p\n3: %p\n4: %p\n5: %p\n6: %p\n7: %p\n8: %p\n9: %p\n",
 		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);*/
 
-	SpawnCarriers(50);
+	SpawnCarriers(10);
 
 }
 
@@ -119,10 +119,35 @@ void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 				min_carrier_start_point_x + rand() % (max_carrier_start_point_x - min_carrier_start_point_x + 1),
 				min_carrier_start_point_y + rand() % (max_carrier_start_point_y - min_carrier_start_point_y + 1)
 			};
-			//#TODO - rozwi¹zaæ to ³adniej.
-			Coordinates carrier_destination = { 
-				carrier_start_point.x + 1000 + rand() % (2000 - 1000 + 1),
-				carrier_start_point.y + 1000 + rand() % (2000 - 1000 + 1) 
+
+			double carrier_destination_x = 0;
+			double carrier_destination_y = 0;
+			int min_offset = 1000;
+			int max_offset = 2000;
+			if (carrier_start_point.x >= 0)
+			{
+				carrier_destination_x = 
+					carrier_start_point.x + (min_offset*-1 + rand() % (max_offset - min_offset + 1))*-1;
+			}
+			else
+			{
+				carrier_destination_x = 
+					carrier_start_point.x + min_offset + rand() % (max_offset - min_offset + 1);
+			}
+
+			if (carrier_start_point.y >= 0)
+			{
+				carrier_destination_y = 
+					carrier_start_point.y + (min_offset*-1 + rand() % (max_offset - min_offset + 1))*-1;
+			}
+			else
+			{
+				carrier_destination_y =
+					carrier_start_point.y + min_offset + rand() % (max_offset - min_offset + 1);
+			}
+			Coordinates carrier_destination = 
+			{ 
+				carrier_destination_x, carrier_destination_y
 			};
 			Creature* ptr_carrier = ptr_initial_core_component->AddCreature(cre_clawy, &carrier_start_point, safe);
 			if (ptr_carrier != nullptr)

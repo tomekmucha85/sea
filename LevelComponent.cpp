@@ -159,9 +159,7 @@ Creature* LevelComponent::AddCreature(CreatureType my_type, PreciseRect* ptr_my_
 {
 	//Spawning creature and then checking if it can be left on map.
 	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_position, my_trigger_signal);
-	creatures.push_back(ptr_my_creature);
-	Creature::current_environment.push_back(ptr_my_creature);
-	if (DetermineIfCreatureCanBeLeftOnMap(ptr_my_creature, my_mode))
+	if (LeaveCreatureOnMapIfPossible(ptr_my_creature, my_mode))
 	{
 		return ptr_my_creature;
 	}
@@ -175,15 +173,29 @@ Creature* LevelComponent::AddCreature(CreatureType my_type, Coordinates* ptr_my_
 {
 	//Spawning creature and then checking if it can be left on map.
 	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_center, my_render_layer);
-	creatures.push_back(ptr_my_creature);
-	Creature::current_environment.push_back(ptr_my_creature);
-	if (DetermineIfCreatureCanBeLeftOnMap(ptr_my_creature, my_mode))
+	if (LeaveCreatureOnMapIfPossible(ptr_my_creature, my_mode))
 	{
 		return ptr_my_creature;
 	}
 	else
 	{
 		return nullptr;
+	}
+
+}
+
+bool LevelComponent::LeaveCreatureOnMapIfPossible(Creature* ptr_my_creature, InsertionMode my_mode)
+{
+	creatures.push_back(ptr_my_creature);
+	Creature::current_environment.push_back(ptr_my_creature);
+	if (DetermineIfCreatureCanBeLeftOnMap(ptr_my_creature, my_mode))
+	{
+		return true;
+	}
+	else
+	{
+		RemoveCreature(ptr_my_creature);
+		return false;
 	}
 }
 
@@ -230,8 +242,7 @@ bool LevelComponent::DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature
 				LevelComponent* ptr_my_neighbor_level_component = neighbor.second;
 				if (ptr_my_creature->DoICollideWithThisCreature(ptr_my_neighbor_creature))
 				{
-					printf("Not inserting object, because safe mode is on and collision(s) were detected.\n");
-					RemoveCreature(ptr_my_creature);
+					printf("Should not insert creature, because safe mode is on and collision(s) were detected.\n");
 					return false;
 				}
 			}
@@ -280,11 +291,9 @@ void LevelComponent::RemoveAllCreatures()
 
 void LevelComponent::RemoveAllCreaturesExceptHero()
 {
-	int i = 1;
 	std::vector<Creature*> creatures_to_remove = creatures;
 	for (Creature* ptr_my_creature : creatures_to_remove)
 	{
-		i++;
 		if (ptr_my_creature != Creature::ptr_current_main_charater)
 		{
 			RemoveCreature(ptr_my_creature);

@@ -1,5 +1,7 @@
 #include <Creature.hpp>
 
+double Behavior::MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE = 400;
+
 Behavior::Behavior()
 {
 	ptr_navigators_factory = new FactorySpawningNavigators();
@@ -45,6 +47,31 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 		{
 			ptr_my_creature->SetVelocity(0);
 		}
+	}
+	else if (mode == beh_follow_closest_carrier)
+	{
+		static Creature* followed_carrier = nullptr;
+		if (was_mode_changed == true)
+		{
+			Creature* closest_carrier = ptr_my_creature->FindClosestAccessibleCreatureOfGivenType(cre_clawy, MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE);
+			followed_carrier = closest_carrier;
+			was_mode_changed = false;
+		}
+		else
+		{
+			//#TODO - dodaæ zabezpieczenie w razie znikniêcia followed carrier
+			if (followed_carrier != nullptr)
+			{
+				ptr_my_creature->ThrustTowardsPoint(followed_carrier->TellCenterPoint());
+			}
+			else
+			{
+				printf("No one to follow.\n");
+				mode = beh_idle;
+			}
+		}
+
+
 	}
 	else if (mode == beh_wander_on_navmesh)
 	{

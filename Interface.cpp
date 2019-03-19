@@ -15,9 +15,108 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 			ptr_my_event_handler->key.keysym.sym == SDLK_p &&
 			ptr_my_event_handler->key.repeat == 0)
 		{
+			//#TODO implement pause
 			Game::ptr_current_level->Pause();
 		}
-		else if (current_mode == interf_guided)
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_a && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Creature::ptr_current_main_charater->TurnLeft();
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_d && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Creature::ptr_current_main_charater->TurnRight();
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYUP && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_a && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Creature::ptr_current_main_charater->TurnStop();
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYUP && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_d && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Creature::ptr_current_main_charater->TurnStop();
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_w && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Creature::ptr_current_main_charater->ThrustForward(200);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_s && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Creature::ptr_current_main_charater->ThrustBackward(150);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYUP && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_w && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Creature::ptr_current_main_charater->SetVelocity(0);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYUP && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_s && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Creature::ptr_current_main_charater->SetVelocity(0);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_q && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Creature::ptr_current_main_charater->CastSpell(spell_vortex);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_r && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Game::PrepareSingleLevel(level_ninemazes);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_t && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Game::PrepareSingleLevel(level_test);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_v && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Game::ptr_current_level->ptr_initial_navgrid_component->SetVisibilityForAllCreatures(true);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_b && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Game::ptr_current_level->ptr_initial_navgrid_component->SetVisibilityForAllCreatures(false);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_n && 
+			     ptr_my_event_handler->key.repeat == 0)
+		{
+			Game::ptr_current_level->should_nodes_be_reconnected = true;
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_f &&
+			     ptr_my_event_handler->key.repeat == 0)
+        {
+	        Creature::ptr_current_main_charater->SetBehaviorMode(beh_follow_closest_carrier);
+        }
+        else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+			     ptr_my_event_handler->key.keysym.sym == SDLK_x && 
+			     ptr_my_event_handler->key.repeat == 0)
+        {
+		    Creature::ptr_current_main_charater->SetBehaviorMode(beh_idle);
+        }
+
+		//FOR SPECIFIC MODES INSIDE GAME
+		if (current_mode == interf_guided)
 		{
 			if (ptr_my_event_handler->type == SDL_KEYDOWN &&
 				ptr_my_event_handler->key.keysym.sym == SDLK_g &&
@@ -30,13 +129,6 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 				ptr_my_event_handler->key.repeat == 0)
 			{
 				printf("Mode change.\n");
-				SetInterfaceMode(interf_free);
-			}
-			else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
-				ptr_my_event_handler->key.keysym.sym == SDLK_z &&
-				ptr_my_event_handler->key.repeat == 0)
-			{
-				printf("Wink - going to free mode.\n");
 				SetInterfaceMode(interf_free);
 			}
 		}
@@ -54,59 +146,6 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 				ptr_my_event_handler->key.repeat == 0)
 			{
 				printf("Mode change.\n");
-				SetInterfaceMode(interf_guided);
-			}
-			else if (ptr_my_event_handler->key.keysym.sym == SDLK_z &&
-				ptr_my_event_handler->key.repeat == 0)
-			{
-			    printf("Wink.\n");
-				if (ptr_my_event_handler->type == SDL_KEYDOWN)
-				{
-					if (ptr_double_wink_timer != nullptr)
-					{
-						if (ptr_double_wink_timer->CheckIfIntervalPassed())
-						{
-							printf("Too late for double wink!\n");
-							if (Creature::ptr_current_main_charater->TellVelocity() != 0)
-							{
-								Creature::ptr_current_main_charater->SetVelocity(0);
-							}
-							else
-							{
-								Creature::ptr_current_main_charater->ThrustForward();
-							}
-						}
-						else
-						{
-							printf("Caught double wink!\n");
-							Creature::ptr_current_main_charater->TurnLeft();
-						}
-						delete ptr_double_wink_timer;
-						ptr_double_wink_timer = nullptr;
-					}
-					else
-					{
-						printf("Double wink timer ptr is nullptr.\n");
-						ptr_double_wink_timer = new TimerInterval(double_wink_timeout);
-					}
-				}
-				else if (ptr_my_event_handler->type == SDL_KEYUP)
-				{
-					if (Creature::ptr_current_main_charater->TellTurnVelocity() != 0)
-					{
-						Creature::ptr_current_main_charater->TurnStop();
-					}
-				}
-				else
-				{
-					printf("What the hell has just happened?\n");
-				}
-			}
-			else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
-				ptr_my_event_handler->key.keysym.sym == SDLK_x &&
-				ptr_my_event_handler->key.repeat == 0)
-			{
-				printf("Eyes closed - going to guided mode.\n");
 				SetInterfaceMode(interf_guided);
 			}
 		}

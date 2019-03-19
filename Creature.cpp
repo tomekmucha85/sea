@@ -108,37 +108,6 @@ void Creature::MakeMeMainCharacter()
     Creature::ptr_current_main_charater = this;
 }
 
-void Creature::RemoveAllEntriesFromEnvironmentExceptMainHero()
-{
-	printf("Currently present creatures: %d.\n", static_cast<int>(current_environment.size()));
-	for (Creature* ptr_creature : current_environment)
-	{
-		printf("Creature present in environment: %p.\n", ptr_creature);
-	}
-	current_environment.erase(std::remove_if(current_environment.begin(),current_environment.end(),
-		[](Creature* ptr_creature) 
-	    {   
-		     if (ptr_creature->AmIMainCharacter())
-	         {
-				 printf("Not hero - %p.\n", ptr_creature);
-		         return false;
-	         }
-	         else
-	         {
-				 printf("Hero! %p.\n", ptr_creature);
-		         return true;
-	         } 
-	     }
-	),current_environment.end());
-
-	printf("And now: %d.\n", static_cast<int>(current_environment.size()));
-	printf("Hero is: %p\n", ptr_current_main_charater);
-	for (Creature* ptr_creature : current_environment)
-	{
-		printf("Creature present in environment: %p.\n", ptr_creature);
-	}
-}
-
 bool Creature::AmIMainCharacter()
 {
     if (Creature::ptr_current_main_charater == this)
@@ -456,6 +425,12 @@ void Creature::DetermineNextStep(double time_passed)
 	next_step.x = x_shift_dbl;
 	//Multiplied by -1 because negative value means moving upward the screen
 	next_step.y = y_shift_dbl * -1;
+
+	if (this == Creature::ptr_current_main_charater)
+	{
+		printf("Hero movement: velocity: %f x: %f, y: %f, time passed: %f \n", velocity, x_shift_dbl, y_shift_dbl, time_passed);
+	}
+
 	//    printf ("Turn degree is %d which equals %f radians\n", current_angle_degree, current_angle_radian);
 	//    printf("Next step coordinates:\n");
 	//    printf("X shift is %f\n", next_step.x);
@@ -470,13 +445,6 @@ bool Creature::Move(double x, double y)
     //printf("========[Move called by %p.]=============\n", this);
 
 	bool did_i_move_successfully = true;
-	//Determining environment - what neighbors do I have?
-	RemoveNeighbors();
-	std::vector<Creature*>current_neighbors = FindNeighborsInSet(&current_environment);
-	//printf("Number of neighbors found in environment: %d.\n", current_neighbors.size());
-	//printf("Environment size: %d.\n", current_environment.size());
-	AddToNeighbors(current_neighbors);
-
 	//If Main Character Creature is moved, in fact it stays in place and all the other Creatures on given level are moved.
     if (AmIMainCharacter())
     {
@@ -526,7 +494,7 @@ bool Creature::ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool
 {
 	bool did_i_move_successfully = true;
     MoveComponents(x,y);
-    if (DoICollideWithNeighbors() && check_collisions)
+    if (check_collisions && DoICollideWithNeighbors())
     {
         MoveComponents(-x,-y);
 		did_i_move_successfully = false;
@@ -755,13 +723,17 @@ std::vector<Creature*> Creature::WhichNeighborsDoICollideWith()
 	return result;
 }
 
-bool Creature::DoICollideWithNeighbors(int margin)
+bool Creature::DoICollideWithNeighbors()
 {
+	//Determining environment - what neighbors do I have?
+    RemoveNeighbors();
+    my_neighbors = FindNeighborsInSet(&current_environment);
+    //printf("Number of neighbors found in environment: %d.\n", my_neighbors.size());
+    //printf("Environment size: %d.\n", current_environment.size());
     bool result = false;
     //printf("DoICollideWithNeighbors called for %p.\n", this);
 	for (Creature* ptr_creature : this->my_neighbors)
 	{
-		//#TODO! tutaj polecia³ wyj¹tek read access violation podczas ShiftPosition!
 		if (ptr_creature != this /* Prevents checking collision with itself. */ && ptr_creature->is_obstacle == true)
 		{
 			if (DoICollideWithThisCreature(ptr_creature))
@@ -845,13 +817,13 @@ point a bis  |------------------------------------| point b bis  /
 		return false;
 	}
 	MathLineParams params_for_line_of_sight = MathLine::CalculateLineParams(point_a, point_b);
-	printf("Params for line of sight: a: %f b: %f.\n", params_for_line_of_sight.slope, params_for_line_of_sight.intercept);
+	//printf("Params for line of sight: a: %f b: %f.\n", params_for_line_of_sight.slope, params_for_line_of_sight.intercept);
 	MathLineParams params_for_orthogonal_line_crossing_point_a =
 		MathLine::CalculateParamsForOrthogonalLineCrossingGivenPoint(params_for_line_of_sight, point_a);
-	printf("Params for orthogonal line crossing a: a: %f b: %f.\n", params_for_orthogonal_line_crossing_point_a.slope, params_for_orthogonal_line_crossing_point_a.intercept);
+	//printf("Params for orthogonal line crossing a: a: %f b: %f.\n", params_for_orthogonal_line_crossing_point_a.slope, params_for_orthogonal_line_crossing_point_a.intercept);
 	MathLineParams params_for_orthogonal_line_crossing_point_b =
 		MathLine::CalculateParamsForOrthogonalLineCrossingGivenPoint(params_for_line_of_sight, point_b);
-	printf("Params for orthogonal line crossing b: a: %f b: %f.\n", params_for_orthogonal_line_crossing_point_b.slope, params_for_orthogonal_line_crossing_point_b.intercept);
+	//printf("Params for orthogonal line crossing b: a: %f b: %f.\n", params_for_orthogonal_line_crossing_point_b.slope, params_for_orthogonal_line_crossing_point_b.intercept);
 	std::pair<double, double> satellite_xes_for_point_a = MathLine::CalculateXesForPointLyingOnGivenLineInGivenDistanceFromGivenX(
 		params_for_orthogonal_line_crossing_point_a, corridor_width/2, point_a.x);
 	std::pair<double, double> satellite_xes_for_point_b = MathLine::CalculateXesForPointLyingOnGivenLineInGivenDistanceFromGivenX(
@@ -861,11 +833,11 @@ point a bis  |------------------------------------| point b bis  /
 	Coordinates point_b_prim = { satellite_xes_for_point_b.first, MathLine::CalculateYForGivenX(params_for_orthogonal_line_crossing_point_b, satellite_xes_for_point_b.first) };
 	Coordinates point_b_bis = { satellite_xes_for_point_b.second, MathLine::CalculateYForGivenX(params_for_orthogonal_line_crossing_point_b, satellite_xes_for_point_b.second) };
 	
-	printf("Point a: x: %f y: %f, point b: x: %f y: %f\n", point_a.x, point_a.y, point_b.x, point_b.y);
+	/*printf("Point a: x: %f y: %f, point b: x: %f y: %f\n", point_a.x, point_a.y, point_b.x, point_b.y);
 	printf("Point a prim: x: %f, y: %f\n", point_a_prim.x, point_a_prim.y);
 	printf("Point a bis: x: %f, y: %f\n", point_a_bis.x, point_a_bis.y);
 	printf("Point b prim: x: %f, y: %f\n", point_b_prim.x, point_b_prim.y);
-	printf("Point b bis: x: %f, y: %f\n", point_b_bis.x, point_b_bis.y);
+	printf("Point b bis: x: %f, y: %f\n", point_b_bis.x, point_b_bis.y);*/
 
 	//Checks
 	if (IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(point_a_prim, point_b_prim, max_corridor_length) == false)
@@ -884,7 +856,7 @@ point a bis  |------------------------------------| point b bis  /
 	{
 		return false;
 	}
-	printf("There is a corridor!\n");
+	//printf("There is a corridor!\n");
 	return true;
 }
 
@@ -896,6 +868,44 @@ bool Creature::IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other
 
 	std::vector<Creature*> exceptions_for_collisions_check = {ptr_other_creature, this};
 	bool result = IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(my_center, other_creature_center, distance_limit ,exceptions_for_collisions_check);
+	return result;
+}
+
+Creature* Creature::FindClosestAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit)
+{
+	Creature* result = nullptr;
+	double shortest_distance = 0;
+	printf("Distance limit for finding carrier: %f.\n", distance_limit);
+	std::vector<Creature*> neighboring_creatures = FindNeighborsInSet(&current_environment, static_cast<int>(distance_limit));
+	for (Creature* ptr_neighboring_creature : neighboring_creatures)
+	{
+		if (ptr_neighboring_creature->my_type == desired_type && ptr_neighboring_creature != this)
+		{
+			Coordinates my_center = TellCenterPoint();
+			Coordinates other_creature_center = ptr_neighboring_creature->TellCenterPoint();
+			printf("Found neighboring creature of desired type %p.\n", ptr_neighboring_creature);
+			printf("X: %f, Y: %f\n", ptr_neighboring_creature->TellCenterPoint().x, ptr_neighboring_creature->TellCenterPoint().y);
+			printf("My center: X: %f, Y:%f\n", TellCenterPoint().x, TellCenterPoint().y);
+			if (IsThereCorridorBetweenThesePointsInCurrentEnvironment(my_center, other_creature_center, TellHitbox().w, distance_limit))
+			{
+				double distance = Distance::CalculateDistanceBetweenPoints(my_center, other_creature_center);
+				if (shortest_distance == 0)
+				{
+					shortest_distance = distance;
+					result = ptr_neighboring_creature;
+				}
+				else if (distance < shortest_distance)
+				{
+					shortest_distance = distance;
+					result = ptr_neighboring_creature;
+				}
+				else
+				{
+					;
+				}
+			}
+		}
+	}
 	return result;
 }
 

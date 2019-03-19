@@ -38,7 +38,7 @@ LevelComponent* FactorySpawningLevelComponents::SpawnLevelComponent(LevelCompone
 	}
 	else if (my_type == levco_powerups)
 	{
-		;
+		throw "Not implemented yet.\n";
 	}
 	else if (my_type == levco_test)
 	{

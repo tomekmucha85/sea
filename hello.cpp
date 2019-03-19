@@ -56,16 +56,16 @@ int main(int argc, char* args[])
 
 	bool is_connected_to_emo = false;
 
-	if (IEE_EngineConnect() == EDK_OK)
+	/*if (IEE_EngineConnect() == EDK_OK)
 	{
 		is_connected_to_emo = true;
 		printf("Successfully connected to Emotiv device!\n");
-	}
+	}*/
 	/*else if (IEE_EngineRemoteConnect(address.c_str(), composerPort) == EDK_OK) 
 	{
 		is_connected_to_emo = true;
 		printf("Connected to EmoComposer!\n");
-	}*/
+	}
 	else
 	{
 		std::string errMsg = "Cannot connect neither to Emotiv device nor to EmoComposer on [" +
@@ -73,7 +73,7 @@ int main(int argc, char* args[])
 		printf("Cannot connect to EmoComposer!\n");
 		//throw std::runtime_error(errMsg.c_str());
 		printf("WARNING!\nDID NOT CONNECT TO EMO ENGINE.\n WARNING!\n");
-	}
+	}*/
 	//IEE_FacialExpressionGetTrainedSignatureAvailable()
 
 	
@@ -84,7 +84,7 @@ int main(int argc, char* args[])
 
 	int looped_events = static_cast<int>(Game::ptr_current_level->cyclic_actions.size());
 	printf("There are %d actions present in current event loop.\n", looped_events);
-
+	printf("Main hero: %p.\n", Creature::ptr_current_main_charater);
 	TimerInterval* ptr_emotiv_bands_check = new TimerInterval(2000);
 
 	int cooldown = 0;
@@ -245,90 +245,17 @@ int main(int argc, char* args[])
         //Handle events on queue
         while(SDL_PollEvent(&event_handler) != 0)
         {
-			ptr_game_interface->UseInterface(&event_handler);
             //User requests quit
             if(event_handler.type == SDL_QUIT)
             {
                 quit = true;
             }
-			if (Game::ptr_current_level->TellIfPaused() == false) //Actions possible to perform only if game is not paused
-			{
-				if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_a && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->TurnLeft();
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_d && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->TurnRight();
-				}
-				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_a && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->TurnStop();
-				}
-				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_d && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->TurnStop();
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_w && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->ThrustForward(200);
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_s && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->ThrustBackward(150);
-				}
-				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_w && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->SetVelocity(0);
-				}
-				else if (event_handler.type == SDL_KEYUP && event_handler.key.keysym.sym == SDLK_s && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->SetVelocity(0);
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_q && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->CastSpell(spell_vortex);
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_e && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->CastSpell(spell_open_gate);
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_r && event_handler.key.repeat == 0)
-				{
-					Game::PrepareSingleLevel(level_ninemazes);
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_t && event_handler.key.repeat == 0)
-				{
-					Game::PrepareSingleLevel(level_test);
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_v && event_handler.key.repeat == 0)
-				{
-					Game::ptr_current_level->ptr_initial_navgrid_component->SetVisibilityForAllCreatures(true);
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_b && event_handler.key.repeat == 0)
-				{
-					Game::ptr_current_level->ptr_initial_navgrid_component->SetVisibilityForAllCreatures(false);
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_n && event_handler.key.repeat == 0)
-				{
-					Game::ptr_current_level->should_nodes_be_reconnected = true;
-				}
-				/*else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_z && event_handler.key.repeat == 0)
-				{
-					Coordinates test_point = {-1000, -1000};
-					Creature::ptr_current_main_charater->SetBehaviorMode(beh_go_towards_fixed_point, &test_point);
-				}
-				else if (event_handler.type == SDL_KEYDOWN && event_handler.key.keysym.sym == SDLK_x && event_handler.key.repeat == 0)
-				{
-					Creature::ptr_current_main_charater->SetBehaviorMode(beh_idle);
-				}*/
-			}
+			ptr_game_interface->UseInterface(&event_handler);
         }
 
         //Clear screen
         SDL_RenderClear(Game::ptr_screen->renderer);
 
-		//#TODO zadbac o destruktor i konstruktor kopiujacy
 		Game::ptr_current_level->RenderAllPresentCreatures();
 		Game::ptr_current_level->RenderGui();
         //Update screen

@@ -193,14 +193,14 @@ class Creature
 		void SetAngleDegree(int my_degree);
 		Coordinates CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance);
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
-        bool DoICollideWithNeighbors(int margin = 0);
+        bool DoICollideWithNeighbors();
 		bool IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other_creature, double distance_limit = 0);
 		static bool IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double max_line_length = 0,
 			std::vector<Creature*> exceptions = {});
 		static bool IsThereCorridorBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double corridor_width, double max_corridor_length = 0);
+		Creature* FindClosestAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit = 0);
 		bool DoesThisCreatureBelongToWalls();
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
-		static void RemoveAllEntriesFromEnvironmentExceptMainHero();
         static void SetMainCharacterToNull();
         void MakeMeMainCharacter();
         bool AmIMainCharacter();
@@ -266,6 +266,7 @@ class Behavior
 	friend class Creature;
 
     private:
+		static double MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE;
 		BehaviorMode mode = beh_idle;
 		//Object generating navigators
 		FactorySpawningNavigators* ptr_navigators_factory = nullptr;
