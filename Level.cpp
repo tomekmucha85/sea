@@ -15,7 +15,6 @@ Level::Level()
 	ptr_initial_navgrid_component = ptr_components_factory->SpawnLevelComponent(levco_navgrid);
 	//Spawning hero if needed
 	Creature* ptr_hero = SpawnHero();
-	ptr_initial_core_component->AddExistingCreature(ptr_hero);
 	//Spawning GUI
 	ptr_gui = new GUI();
 	//Adding default cyclic actions
@@ -71,15 +70,20 @@ void Level::LoadLevelCreaturesIntoEnvironment()
 
 Creature* Level::SpawnHero(CreatureType hero_type, Coordinates* ptr_hero_position)
 {
+	printf("Spawning hero.\n");
 	if (Creature::ptr_current_main_charater != nullptr)
 	{
 		printf("There is an existing main hero Creature. Will not spawn a new one.\n");
 		if (ptr_hero_position != nullptr)
 		{
+			printf("Will set predefined hero position: x: %f y: %f.\n", ptr_hero_position->x, ptr_hero_position->y);
+			ptr_initial_core_component->AddExistingCreature(Creature::ptr_current_main_charater);
 			Creature::ptr_current_main_charater->SetPosition(*ptr_hero_position);
 		}
 		else
 		{
+			printf("Will set hero position: x: %f y: %f.\n", default_hero_start_position.x, default_hero_start_position.y);
+			ptr_initial_core_component->AddExistingCreature(Creature::ptr_current_main_charater);
 			Creature::ptr_current_main_charater->SetPosition(default_hero_start_position);
 		}
 	}

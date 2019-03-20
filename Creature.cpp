@@ -426,10 +426,10 @@ void Creature::DetermineNextStep(double time_passed)
 	//Multiplied by -1 because negative value means moving upward the screen
 	next_step.y = y_shift_dbl * -1;
 
-	if (this == Creature::ptr_current_main_charater)
+	/*if (this == Creature::ptr_current_main_charater)
 	{
 		printf("Hero movement: velocity: %f x: %f, y: %f, time passed: %f \n", velocity, x_shift_dbl, y_shift_dbl, time_passed);
-	}
+	}*/
 
 	//    printf ("Turn degree is %d which equals %f radians\n", current_angle_degree, current_angle_radian);
 	//    printf("Next step coordinates:\n");
@@ -463,7 +463,7 @@ bool Creature::Move(double x, double y)
         //printf("Checking main character collision.\n");
         if (DoICollideWithNeighbors())
         {
-           //printf("Collision of main character detected\n");
+            //printf("Collision of main character detected\n");
             for (Creature* ptr_creature : current_environment)
             {
                 if (ptr_creature != this) /* Prevents moving the main character. */

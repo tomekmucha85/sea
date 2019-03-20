@@ -21,15 +21,8 @@
 #include <Interface.hpp>
 
 //###################
-//Function prototypes
-//###################
-
-
-//###################
 //Variables
 //###################
-int test = 0;
-
 
 int main(int argc, char* args[])
 {
@@ -81,6 +74,7 @@ int main(int argc, char* args[])
 	//EMOTIV_END
 
 	Game::PrepareSingleLevel(level_ninemazes);
+	//Game::PrepareSingleLevel(level_ninemazes);
 
 	int looped_events = static_cast<int>(Game::ptr_current_level->cyclic_actions.size());
 	printf("There are %d actions present in current event loop.\n", looped_events);

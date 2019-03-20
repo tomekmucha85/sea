@@ -46,7 +46,7 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 			     ptr_my_event_handler->key.keysym.sym == SDLK_w && 
 			     ptr_my_event_handler->key.repeat == 0)
 		{
-			Creature::ptr_current_main_charater->ThrustForward(200);
+			Creature::ptr_current_main_charater->ThrustForward(400);
 		}
 		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
 			     ptr_my_event_handler->key.keysym.sym == SDLK_s && 
