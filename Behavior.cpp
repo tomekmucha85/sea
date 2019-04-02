@@ -1,6 +1,7 @@
 #include <Creature.hpp>
 
 double Behavior::MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE = 400;
+double Behavior::DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CARRIER = 30;
 
 Behavior::Behavior()
 {
@@ -50,19 +51,33 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 	}
 	else if (mode == beh_follow_closest_carrier)
 	{
-		static Creature* followed_carrier = nullptr;
+		static Creature* ptr_followed_carrier = nullptr;
 		if (was_mode_changed == true)
 		{
-			Creature* closest_carrier = ptr_my_creature->FindClosestAccessibleCreatureOfGivenType(cre_clawy, MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE);
-			followed_carrier = closest_carrier;
+			//When this behavior is initialized, find closest creature that can serve as character's "carrier" guiding through the maze.
+			Creature* ptr_closest_carrier = ptr_my_creature->FindClosestAccessibleCreatureOfGivenType(cre_clawy, MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE);
+			ptr_followed_carrier = ptr_closest_carrier;
 			was_mode_changed = false;
 		}
 		else
 		{
 			//#TODO - dodaæ zabezpieczenie w razie znikniêcia followed carrier
-			if (followed_carrier != nullptr)
+			if (ptr_followed_carrier != nullptr)
 			{
-				ptr_my_creature->ThrustTowardsPoint(followed_carrier->TellCenterPoint());
+				Coordinates followed_carriers_center = ptr_followed_carrier->TellCenterPoint();
+				double distance_to_carrier = Distance::CalculateDistanceBetweenPoints(ptr_my_creature->TellCenterPoint(),
+					followed_carriers_center);
+				if (distance_to_carrier < DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CARRIER)
+				{
+					//Moving with carrier's velocity if getting close to carrier.
+					double carriers_velocity = ptr_followed_carrier->TellVelocity();
+					ptr_my_creature->ThrustTowardsPoint(followed_carriers_center, carriers_velocity);
+				}
+				else
+				{
+					//Moving with default velocity
+					ptr_my_creature->ThrustTowardsPoint(followed_carriers_center,200);
+				}
 			}
 			else
 			{

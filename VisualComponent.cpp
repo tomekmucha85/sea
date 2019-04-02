@@ -121,7 +121,10 @@ void VisualComponent::TurnByAngleDegrees(int my_angle)
 	angle = Angle::NormalizeAngle(angle);
 }
 
-
+double VisualComponent::TellAngleDegrees()
+{
+	return angle;
+}
 //#####################
 // UTILITIES
 //#####################
@@ -163,6 +166,17 @@ PreciseRect VisualComponent::ConvertSdlRectToPreciseRect(SDL_Rect my_rect)
 //#####################
 // VIRTUAL METHODS
 //#####################
+
+void VisualComponent::PlayCurrentAnimation()
+{
+	//printf("Default implementation of PlayCurrentAnimation called!\n");
+	;
+}
+
+void VisualComponent::SetCurrentAnimation(AnimationType my_animation_type)
+{
+	printf("Default implementation of SetCurrentAnimation called!\n");
+}
 
 void VisualComponent::SetColor(Color my_color)
 {

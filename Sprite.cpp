@@ -45,11 +45,80 @@ void Sprite::SetCenter(Coordinates my_center)
 
 void Sprite::Move(double step_x, double step_y)
 {
-
 	center.x += step_x;
 	center.y += step_y;
 	position = CalculatePositionAroundCenter();
 }
+
+void Sprite::SetAngleDegrees(int my_angle)
+{
+	VisualComponent::SetAngleDegrees(my_angle);
+	SetDirectionFromEightPossibilities(TellAngleDegrees());
+}
+
+void Sprite::TurnByAngleDegrees(int my_angle)
+{
+	VisualComponent::TurnByAngleDegrees(my_angle);
+	SetDirectionFromEightPossibilities(TellAngleDegrees());
+}
+
+void Sprite::SetDirectionFromEightPossibilities(double angle_degrees)
+{
+	double quant_degrees = 45;
+	double half_quant_degrees = quant_degrees / 2;
+	double full_circle_degrees = 360;
+	//printf("Will select direction from 8 possibilities.\n");
+
+	if (angle_degrees >= 0 && angle_degrees < half_quant_degrees * 1)
+	{
+		current_direction = north;
+	}
+	else if (angle_degrees >= half_quant_degrees * 1 &&
+		angle_degrees < half_quant_degrees + quant_degrees * 1)
+	{
+		current_direction = north_east;
+	}
+	else if (angle_degrees >= half_quant_degrees + quant_degrees * 1 &&
+		angle_degrees < half_quant_degrees + quant_degrees * 2)
+	{
+		current_direction = east;
+	}
+	else if (angle_degrees >= half_quant_degrees + quant_degrees * 2 &&
+		angle_degrees < half_quant_degrees + quant_degrees * 3)
+	{
+		current_direction = south_east;
+	}
+	else if (angle_degrees >= half_quant_degrees + quant_degrees * 3 &&
+		angle_degrees < half_quant_degrees + quant_degrees * 4)
+	{
+		current_direction = south;
+	}
+	else if (angle_degrees >= half_quant_degrees + quant_degrees * 4 &&
+		angle_degrees < half_quant_degrees + quant_degrees * 5)
+	{
+		current_direction = south_west;
+	}
+	else if (angle_degrees >= half_quant_degrees + quant_degrees * 5 &&
+		angle_degrees < half_quant_degrees + quant_degrees * 6)
+	{
+		current_direction = west;
+	}
+	else if (angle_degrees >= half_quant_degrees + quant_degrees * 6 &&
+		angle_degrees < half_quant_degrees + quant_degrees * 7)
+	{
+		current_direction = north_west;
+	}
+	else if (angle_degrees >= half_quant_degrees + quant_degrees * 7 &&
+		angle_degrees <= full_circle_degrees)
+	{
+		current_direction = north;
+	}
+	else
+	{
+		printf("Unexpected angle: %f.\n", angle_degrees);
+	}
+}
+
 
 PreciseRect Sprite::CalculatePositionAroundCenter()
 {
@@ -86,6 +155,8 @@ void Sprite::Render()
 	//printf("Position int: x: %d y: %d w: %d h: %d.\n", position_int.x, position_int.y, position_int.w, position_int.h);
 	if (texture_clip.w != 0 && texture_clip.h != 0)
 	{
+		//Angle is always 0, because sprite should not be rotated. Only sprite clips may change when angle changes.
+		int angle = 0;
 		SDL_Point relative_center = {static_cast<int>(position.w)/2, static_cast<int>(position.h)/2};
 		SDL_RenderCopyEx(TellScreen()->renderer, texture, &texture_clip, &position_int, angle, &relative_center, flip);
 		//printf("RENDER: Sprite center: x: %d, y: %d.\n", center.x, center.y);
@@ -107,8 +178,10 @@ std::vector <SDL_Rect> Sprite::CalculateAnimationClips( SDL_Rect area, int clip_
     {
         throw std::invalid_argument("Incorrect arguments passed to Sprite::CalculateAnimationClips(). 0 clips would be generated.");
     }
+	//printf("Passed arguments: x: %d, y: %d, w: %d, h: %d, clip w: %d, clip h: %d\n",
+	//	area.x, area.y, area.w, area.h, clip_w, clip_h);
     //How many elements will array hold?
-    int elem_count = ((area.w - area.x) / clip_w) * ((area.h - area.y) / clip_h);
+    int elem_count = (area.w / clip_w) * (area.h / clip_h);
     //printf("Animation element count is: %d\n", elem_count);
 
     //Declare the array. Vector is used for getting size in an easy way later on.
@@ -136,14 +209,44 @@ std::vector <SDL_Rect> Sprite::CalculateAnimationClips( SDL_Rect area, int clip_
 
 void Sprite::PlayAnimation(std::vector <SDL_Rect> animation_clips, int delay_between_frames)
 {
+	//printf("Play animation called for sprite!\n");
     int animation_frames_count = static_cast<int>(animation_clips.size());
     texture_clip = animation_clips[animation_frame/delay_between_frames];
-    Sprite::Render();
     animation_frame++;
-    if( (animation_frame / delay_between_frames) >= animation_frames_count )
+    if( (animation_frame / delay_between_frames) >= animation_frames_count)
     {
-        animation_frame = 0;
+        ResetAnimationFrame();
     }
+}
+
+void Sprite::SetCurrentAnimation(AnimationType my_animation_type)
+{
+	ResetAnimationFrame();
+	current_animation = my_animation_type;
+}
+
+void Sprite::PlayCurrentAnimation()
+{
+	if (current_animation == anim_none)
+	{
+		//DO NOTHING;
+	}
+	else if (current_animation == anim_idle)
+	{
+		IdleAnimation();
+	}
+	else if (current_animation == anim_walk)
+	{
+		WalkAnimation();
+	}
+	else if (current_animation == anim_vortex)
+	{
+		VortexAnimation();
+	}
+	else
+	{
+		printf("Unknown animation type!\n");
+	}
 }
 
 void Sprite::ResetAnimationFrame()
@@ -163,6 +266,11 @@ PreciseRect Sprite::TellSpritePosition()
 SDL_Rect Sprite::TellTextureClip()
 {
     return texture_clip;
+}
+
+Directions Sprite::TellCurrentDirection()
+{
+	return current_direction;
 }
 
 //###############

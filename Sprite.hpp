@@ -21,11 +21,12 @@ class Sprite : public VisualComponent
         //Variables
         //###################
         int animation_frame = 0;
+		Directions current_direction = north;
 
         //What part of the texture is used
         SDL_Rect texture_clip = {0,0,0,0};
-
 		static TextureBank* ptr_texture_bank;
+		AnimationType current_animation = anim_none;
 
         //###################
         //Functions
@@ -44,12 +45,17 @@ class Sprite : public VisualComponent
         //###################
 		Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinates* ptr_my_center);
 		void Move(double step_x, double step_y);
+		void SetAngleDegrees(int my_angle);
+		void TurnByAngleDegrees(int my_angle);
+		void SetDirectionFromEightPossibilities(double angle_degrees);
+		Directions TellCurrentDirection();
         void Render();
-        std::vector <SDL_Rect> CalculateAnimationClips( SDL_Rect area, int clip_w, int clip_h);
-        void PlayAnimation(std::vector <SDL_Rect> animation_clips, int delay_between_frames);
+        void PlayAnimation(std::vector <SDL_Rect> animation_clips, int delay_between_frames=3);
         void ResetAnimationFrame();
 
-        //Animations (dummy virtual methods)
+        //Animations (including dummy virtual methods)
+		void PlayCurrentAnimation();
+		void SetCurrentAnimation(AnimationType my_animation_type);
 		virtual void IdleAnimation();
         virtual void WalkAnimation();
 		virtual void SmokeAnimation();
@@ -63,6 +69,7 @@ class Sprite : public VisualComponent
         SDL_Rect TellTextureClip();
 		static void SetTextureBank(TextureBank* ptr_my_texture_bank);
 		static TextureBank* TellTextureBank();
+		static std::vector <SDL_Rect> CalculateAnimationClips(SDL_Rect area, int clip_w, int clip_h);
         void SetTexture(SDL_Texture* ref_my_texture);
         void SetTextureClip(SDL_Rect my_texture_clip);
 		void SetCenter(Coordinates my_center);

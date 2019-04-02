@@ -77,7 +77,7 @@ class Creature
 		//Are any creature types excluded from collision checks?
 		std::vector<CreatureType> collision_check_exceptions = {};
         //How many degrees will the creature turn in a single turn function call
-        int turn_quant_degree = 10;
+        int turn_quant_degree = 20;
         //What direction does the creature face? Angle in degrees, where 0 degrees points upwards and 180 downwards
         int current_angle_degree = 0;
         //Coordinates of next step.
@@ -170,11 +170,9 @@ class Creature
         virtual bool Move(double x, double y);
 		void AddToNeighbors(std::vector<Creature*> new_neighbors);
 		std::vector<Creature*> FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set, int radius = NULL);
-		static std::vector<Creature*> FindCreaturesInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area);
-		static std::vector<Creature*> FindCreaturesInRadiusInSet(std::vector<Creature*>* ptr_my_creatures_set, Coordinates center_point, int radius);
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
-		void SetVelocity(double my_velocity);
+		virtual void SetVelocity(double my_velocity);
 		double TellVelocity();
         bool ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool check_collisions = true);
         void MoveComponents(double x, double y);
@@ -184,7 +182,7 @@ class Creature
         void ThrustForward(double velocity=NULL);
         void ThrustBackward(double velocity=NULL);
 		void TurnTowardsPoint(Coordinates point);
-		void ThrustTowardsPoint(Coordinates destination);
+		void ThrustTowardsPoint(Coordinates destination, double velocity = NULL);
 		void SetPosition(Coordinates new_center_position);
 		int TellCurrentAngleDegree();
 		Coordinates TellCenterPoint();
@@ -195,22 +193,35 @@ class Creature
 		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
         bool DoICollideWithNeighbors();
 		bool IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other_creature, double distance_limit = 0);
-		static bool IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double max_line_length = 0,
-			std::vector<Creature*> exceptions = {});
-		static bool IsThereCorridorBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double corridor_width, double max_corridor_length = 0);
 		Creature* FindClosestAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit = 0);
 		bool DoesThisCreatureBelongToWalls();
 		std::vector<Creature*> WhichNeighborsDoICollideWith();
-        static void SetMainCharacterToNull();
         void MakeMeMainCharacter();
         bool AmIMainCharacter();
 		bool AmIVisible();
 		void SetVisibility(bool should_be_visible);
-		static Creature* WhoIsMainCharacter();
-		static bool IsThisCreaturePresentInEnvironment(Creature* ptr_my_creature);
 		void PerformCyclicActions();
 		void AddCyclicAction(std::function<void(Creature*)> my_cyclic_action);
 		//#TODO - napisaæ funkcjê do usuwania akcji cyklicznych
+
+		//################################
+		//Animation for visual components
+		//################################
+
+		void PlayCurrentAnimationsForVisualComponents();
+
+	    //###################
+		//Static helpers
+		//###################
+
+		static Creature* WhoIsMainCharacter();
+		static void SetMainCharacterToNull();
+		static bool IsThisCreaturePresentInEnvironment(Creature* ptr_my_creature);
+		static bool IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double max_line_length = 0,
+			std::vector<Creature*> exceptions = {});
+		static bool IsThereCorridorBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double corridor_width, double max_corridor_length = 0);
+		static std::vector<Creature*> FindCreaturesInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area);
+		static std::vector<Creature*> FindCreaturesInRadiusInSet(std::vector<Creature*>* ptr_my_creatures_set, Coordinates center_point, int radius);
 
 	    //###################
 		//Requests processing
@@ -223,7 +234,9 @@ class Creature
 		void MakeUseOfPathResponse(RandomPathResponse my_response);
 		void MakeUseOfPathResponse(PointToPointPathResponse my_response);
 
-
+		//###################
+		//Events
+		//###################
 
 		void FollowPhysics();
 		void FollowBehavior();
@@ -259,6 +272,11 @@ class Creature
 			ptr_creature->FollowPhysics();
 		};
 
+		std::function<void(Creature*)> func_play_current_animation_for_visual_components = [](Creature* ptr_creature)
+		{
+			ptr_creature->PlayCurrentAnimationsForVisualComponents();
+		};
+
 };
 
 class Behavior
@@ -267,6 +285,7 @@ class Behavior
 
     private:
 		static double MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE;
+		static double DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CARRIER;
 		BehaviorMode mode = beh_idle;
 		//Object generating navigators
 		FactorySpawningNavigators* ptr_navigators_factory = nullptr;

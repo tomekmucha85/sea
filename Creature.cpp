@@ -58,6 +58,7 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 	ptr_behavior = new Behavior();
 	cyclic_actions.push_back(func_follow_physics);
 	cyclic_actions.push_back(func_follow_behavior);
+	cyclic_actions.push_back(func_play_current_animation_for_visual_components);
 	Sprite* ptr_sprite = ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center);
 	SetMyVisualComponent(ptr_sprite);
 	//Set the initial value to move upwards by (velocity * pixels)
@@ -593,10 +594,10 @@ void Creature::TurnTowardsPoint(Coordinates point)
 	delete ptr_vector_pointing_towards_given_point;
 }
 
-void Creature::ThrustTowardsPoint(Coordinates destination)
+void Creature::ThrustTowardsPoint(Coordinates destination, double velocity)
 {
 	TurnTowardsPoint(destination);
-	ThrustForward();
+	ThrustForward(velocity);
 }
 
 void Creature::SetVelocity(double my_velocity)
@@ -907,6 +908,18 @@ Creature* Creature::FindClosestAccessibleCreatureOfGivenType(CreatureType desire
 		}
 	}
 	return result;
+}
+
+//**************
+// ANIMATIONS
+//**************
+
+void Creature::PlayCurrentAnimationsForVisualComponents()
+{
+	for (VisualComponent* ptr_my_visual_component : visual_components)
+	{
+		ptr_my_visual_component->PlayCurrentAnimation();
+	}
 }
 
 //**************

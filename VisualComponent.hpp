@@ -56,14 +56,17 @@ public:
 	virtual void SetCenter(Coordinates my_center);
 	PreciseRect TellPosition();
 	Coordinates TellCenter();
-	void SetAngleDegrees(int my_angle);
-	void TurnByAngleDegrees(int my_angle);
+	virtual void SetAngleDegrees(int my_angle);
+	virtual void TurnByAngleDegrees(int my_angle);
+	double TellAngleDegrees();
 	virtual void Render() = 0;
 	static void SetScreen(Screen* ptr_my_screen);
 
 	//VIRTUAL FUNCTIONS
 	virtual void SetColor(Color my_color);
 	virtual void SetClipAccordingToWallType(WallType my_type);
+	virtual void PlayCurrentAnimation();
+	virtual void SetCurrentAnimation(AnimationType my_animation_type);
 
 	//STATIC HELPERS
 	static Screen* TellScreen();

@@ -12,6 +12,7 @@ private:
 	//Variables
 	//###################
 	static SDL_Rect initial_texture_clip_vortex;
+	static std::vector<SDL_Rect> vortex_animation_clips;
 
 public:
 

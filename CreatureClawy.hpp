@@ -6,6 +6,7 @@ class CreatureClawy : public Creature
 private:
 	static const SpriteType my_initial_type = spr_clawy;
 public:
-	CreatureClawy(Coordinates* ptr_my_center, int hitbox_margin = 10);
+	CreatureClawy(Coordinates* ptr_my_center, int hitbox_margin = 30);
+	void SetVelocity(double my_velocity);
 };
 #endif // CREATURE_CLAWY_HPP

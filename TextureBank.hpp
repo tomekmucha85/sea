@@ -14,7 +14,8 @@ class TextureBank
         //###################
         std::string path_image_bground = "images/bground.png";
         Texture* background = nullptr;
-        std::string path_image_clawy = "images/guy.png";
+        //std::string path_image_clawy = "images/guy.png";
+		std::string path_image_clawy = "images/wolfy.png";
         Texture* clawy = nullptr;
         std::string path_image_black_box = "images/black_box.png";
         Texture* black_box = nullptr;

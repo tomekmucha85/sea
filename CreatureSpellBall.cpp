@@ -6,6 +6,8 @@ CreatureSpellBall::CreatureSpellBall(Coordinates* ptr_my_center, int hitbox_marg
 	printf("Spawned CreatureSpellBall.\n");
 	my_type = cre_spell_ball;
 	AddCyclicAction(func_destroy_hit_object);
+	VisualComponent* ptr_main_visual_component = visual_components[0];
+	ptr_main_visual_component->SetCurrentAnimation(anim_idle);
 }
 
 void CreatureSpellBall::DealDamageInRadius(int radius)
@@ -24,17 +26,10 @@ void CreatureSpellBall::DealDamageInRadius(int radius)
 	}
 }
 
-// #TODO - dodaæ pole animacji w Creature! Oderwaæ animacjê od logiki
-
 bool CreatureSpellBall::Move(double x, double y)
 {
 	//Overload of Creature::Move causing object to be killed after first collision and damage all object in given radius
 	bool was_move_successfull = Creature::Move(x,y);
-
-	//#TODO ucywilizowaæ
-	//#TODO - niebezpieczne za³o¿enie z castem
-	Sprite* ptr_sprite = static_cast<Sprite*>(visual_components[0]);
-	ptr_sprite->VortexAnimation();
 
 	if (!was_move_successfull)
 	{

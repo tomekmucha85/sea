@@ -61,6 +61,9 @@ enum NavigationState {active, inactive};
 //Sprite names
 enum SpriteType { spr_clawy, spr_background, spr_box, spr_black_smoke, spr_vortex, spr_exit, spr_gui_mana_bar };
 
+//Animation types
+enum AnimationType {anim_none, anim_idle, anim_walk, anim_vortex};
+
 //Wall blocks - related to SpriteBlackBox.hpp
 enum WallType { 
 	wall_bottom ,
@@ -101,7 +104,9 @@ enum LevelComponentType { levco_maze, levco_powerups, levco_test, levco_core, le
 
 enum InsertionMode { force, merge, safe };
 
-enum Directions { north, east, south, west };
+enum Directions { north, north_east, east, south_east, south, south_west, west, north_west };
+
+//enum SpriteDirections {north, north_east, east, south_east, south, south_west, west, north_west };
 
 //Decide if Creature should be spawned with coordinates describing its center point or area occupied by creature.
 enum PositioningMode {center_coordinates, area_coordinates, undefined};

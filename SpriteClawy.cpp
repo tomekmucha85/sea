@@ -4,7 +4,41 @@
 //DEFINITIONS OF STATIC CLASS MEMBERS
 //***********************************
 
-SDL_Rect SpriteClawy::initial_texture_clip_clawy = {0,0,45,45};
+SDL_Rect SpriteClawy::initial_texture_clip_clawy = {0,0,100,100};
+
+std::vector<SDL_Rect> SpriteClawy::idle_animation_clips_north = Sprite::CalculateAnimationClips({0,500,900,100}, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::idle_animation_clips_north_east = Sprite::CalculateAnimationClips({ 0,700,900,100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::idle_animation_clips_east = Sprite::CalculateAnimationClips({ 0,400,900,100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::idle_animation_clips_south_east = Sprite::CalculateAnimationClips({ 0,200,900,100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::idle_animation_clips_south = Sprite::CalculateAnimationClips({ 0,0,900,100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::idle_animation_clips_south_west = Sprite::CalculateAnimationClips({ 0,100,900,100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::idle_animation_clips_west = Sprite::CalculateAnimationClips({ 0,300,900,100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::idle_animation_clips_north_west = Sprite::CalculateAnimationClips({ 0,600,900,100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+
+std::vector<SDL_Rect> SpriteClawy::walk_animation_clips_north = Sprite::CalculateAnimationClips({ 0, 1300, 1000, 100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::walk_animation_clips_north_east = Sprite::CalculateAnimationClips({ 0, 1500, 1000, 100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::walk_animation_clips_east = Sprite::CalculateAnimationClips({ 0, 1200, 1000, 100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::walk_animation_clips_south_east = Sprite::CalculateAnimationClips({ 0, 1000, 1000, 100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::walk_animation_clips_south = Sprite::CalculateAnimationClips({0, 800, 1000, 100}, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::walk_animation_clips_south_west = Sprite::CalculateAnimationClips({ 0, 900, 1000, 100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::walk_animation_clips_west = Sprite::CalculateAnimationClips({ 0, 1100, 1000, 100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
+std::vector<SDL_Rect> SpriteClawy::walk_animation_clips_north_west = Sprite::CalculateAnimationClips({ 0, 1400, 1000, 100 }, SpriteClawy::initial_texture_clip_clawy.w,
+	SpriteClawy::initial_texture_clip_clawy.h);
 
 //***********************************
 //CONSTRUCTORS
@@ -20,17 +54,85 @@ SpriteClawy::SpriteClawy(Coordinates* ptr_my_center)
 //OVERLOADED VIRTUAL METHODS
 //***********************************
 
+void SpriteClawy::IdleAnimation()
+{
+	Directions direction = TellCurrentDirection();
+	if (direction == north)
+	{
+		Sprite::PlayAnimation(idle_animation_clips_north);
+	}
+	else if (direction == north_east)
+	{
+		Sprite::PlayAnimation(idle_animation_clips_north_east);
+	}
+	else if (direction == east)
+	{
+		Sprite::PlayAnimation(idle_animation_clips_east);
+	}
+	else if (direction == south_east)
+	{
+		Sprite::PlayAnimation(idle_animation_clips_south_east);
+	}
+	else if (direction == south)
+	{
+		Sprite::PlayAnimation(idle_animation_clips_south);
+	}
+	else if (direction == south_west)
+	{
+		Sprite::PlayAnimation(idle_animation_clips_south_west);
+	}
+	else if (direction == west)
+	{
+		Sprite::PlayAnimation(idle_animation_clips_west);
+	}
+	else if (direction == north_west)
+	{
+		Sprite::PlayAnimation(idle_animation_clips_north_west);
+	}
+	else
+	{
+		printf("Unexpected direction in animation idle for clawy.\n");
+	}
+}
+
 void SpriteClawy::WalkAnimation()
 {
-    SDL_Rect walk_animation_area = {0,0,90,45};
-    SDL_Rect current_texture_clip = TellTextureClip();
-    int timeout_between_frames = 10;
-    int clip_w = current_texture_clip.w;
-    int clip_h = current_texture_clip.h;
-    std::vector <SDL_Rect> walk_clips = Sprite::CalculateAnimationClips(walk_animation_area, clip_w, clip_h);
-    Sprite::PlayAnimation(walk_clips, timeout_between_frames);
-//    printf("Walk_clip 0: x: %d y:%d w:%d h:%d\n", walk_clips[0].x, walk_clips[0].y, walk_clips[0].w, walk_clips[0].h);
-//    printf("Walk_clip 1: x: %d y:%d w:%d h:%d\n", walk_clips[1].x, walk_clips[1].y, walk_clips[1].w, walk_clips[1].h);
-//    printf("Current clip: x: %d y:%d w:%d h:%d\n", texture_clip.x, texture_clip.y, texture_clip.w, texture_clip.h);
-//    printf("Animation frame is: %d\n", animation_frame);
+	Directions direction = TellCurrentDirection();
+	if (direction == north)
+	{
+		Sprite::PlayAnimation(walk_animation_clips_north);
+	}
+	else if (direction == north_east)
+	{
+		Sprite::PlayAnimation(walk_animation_clips_north_east);
+	}
+	else if (direction == east)
+	{
+		Sprite::PlayAnimation(walk_animation_clips_east);
+	}
+	else if (direction == south_east)
+	{
+		Sprite::PlayAnimation(walk_animation_clips_south_east);
+	}
+	else if (direction == south)
+	{
+		Sprite::PlayAnimation(walk_animation_clips_south);
+	}
+	else if (direction == south_west)
+	{
+		Sprite::PlayAnimation(walk_animation_clips_south_west);
+	}
+	else if (direction == west)
+	{
+		Sprite::PlayAnimation(walk_animation_clips_west);
+	}
+	else if (direction == north_west)
+	{
+		Sprite::PlayAnimation(walk_animation_clips_north_west);
+	}
+	else
+	{
+		printf("Unexpected direction in animation walk for clawy.\n");
+	}
 }
+
