@@ -3,19 +3,33 @@
 LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 {
 
-	Coordinates carrier_one_start_position = { 400,250 };
-	Creature* ptr_carrier_one = ptr_initial_core_component->AddCreature(cre_clawy, &carrier_one_start_position, force);
-	Coordinates carrier_one_destination = {1000,1000};
-	ptr_carrier_one->SetBehaviorMode(beh_go_towards_fixed_point, &carrier_one_destination);
-
-	Coordinates carrier_two_start_position = { 400,600 };
-	Creature* ptr_carrier_two = ptr_initial_core_component->AddCreature(cre_clawy, &carrier_two_start_position, merge);
-	Coordinates carrier_two_destination = { -1000,-1000 };
-	ptr_carrier_two->SetBehaviorMode(beh_go_towards_fixed_point, &carrier_two_destination);
-
 	//Adding component for event triggers
 	ptr_border_triggers = ptr_components_factory->SpawnLevelComponent(levco_triggers);
 	printf("Triggers component address: %p.\n", ptr_border_triggers);
+
+	//Trigger to win level
+    std::string signal_to_win = "winning";
+    PreciseRect event_win_area = {1000,1000,100,100};
+    Creature* ptr_winning_trigger = AddTriggerUsingDefaultComponent(event_win_area, signal_to_win);
+    signals_vs_events[signal_to_win] = ptr_func_win;
+    //Blue
+    //#TODO - przeszukaæ wszystkie przypadki u¿ycia visual_components[0]
+    ptr_winning_trigger->visual_components[0]->SetColor({ 0,0,255,255 });
+	Coordinates win_center = ptr_winning_trigger->visual_components[0]->TellCenter();
+
+	//Trigger to loose level
+	std::string signal_to_lose = "losing";
+	PreciseRect event_lose_area = { 700,1000,100,100 };
+	Creature* ptr_losing_trigger = AddTriggerUsingDefaultComponent(event_lose_area, signal_to_lose);
+	signals_vs_events[signal_to_lose] = ptr_func_lose;
+	//Red
+	//#TODO - przeszukaæ wszystkie przypadki u¿ycia visual_components[0]
+	ptr_losing_trigger->visual_components[0]->SetColor({ 255,0,0,255 });
+	Coordinates loose_center = ptr_losing_trigger->visual_components[0]->TellCenter();
+
+	//MAIN CHARACTER BEHAVIOR
+    //Creature::ptr_current_main_charater->SetBehaviorMode(beh_go_towards_fixed_point, &win_center);
+	Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_death_magnetic, ptr_losing_trigger);
 
 	//How many map blocks will have a maze segment?
 	SetMazeRowsCount(my_rows_count);
@@ -72,7 +86,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	/*printf("Current mazes setup: 1: %p\n2: %p\n3: %p\n4: %p\n5: %p\n6: %p\n7: %p\n8: %p\n9: %p\n",
 		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);*/
 
-	SpawnCarriers(10);
+	//SpawnCarriers(20);
 
 }
 
@@ -149,7 +163,7 @@ void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 			{ 
 				carrier_destination_x, carrier_destination_y
 			};
-			Creature* ptr_carrier = ptr_initial_core_component->AddCreature(cre_clawy, &carrier_start_point, safe);
+			Creature* ptr_carrier = ptr_initial_core_component->AddCreature(cre_carrier_a, &carrier_start_point, safe);
 			if (ptr_carrier != nullptr)
 			{
 				was_carrier_created = true;

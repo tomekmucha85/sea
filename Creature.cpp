@@ -1074,6 +1074,30 @@ void Creature::SetBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr
 	}
 }
 
+void Creature::SetBehaviorPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny)
+{
+	if (ptr_my_destiny == nullptr)
+	{
+		ptr_behavior->SetPattern(pattern_to_be_set);
+	}
+	else
+	{
+		ptr_behavior->SetPattern(pattern_to_be_set, ptr_my_destiny);
+	}
+}
+
+void Creature::RequestBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination)
+{
+    if (ptr_my_destination == nullptr)
+    {
+	    ptr_behavior->RequestMode(behavior_to_be_set);
+    }
+    else
+    {
+	    ptr_behavior->RequestMode(behavior_to_be_set, *ptr_my_destination);
+    }
+}
+
 void Creature::FollowBehavior()
 {
 	ptr_behavior->WhatToDo(this);

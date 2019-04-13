@@ -211,9 +211,11 @@ void Sprite::PlayAnimation(std::vector <SDL_Rect> animation_clips, int delay_bet
 {
 	//printf("Play animation called for sprite!\n");
     int animation_frames_count = static_cast<int>(animation_clips.size());
-    texture_clip = animation_clips[animation_frame/delay_between_frames];
+	//#TODO! - leci wyj¹tek subscript out of range dla snailmage (29)
+    texture_clip = animation_clips[static_cast<int>(animation_frame/delay_between_frames)];
+	//printf("Animation frames count: %d, animation frame: %d, texture clip: %d.\n", animation_frames_count, animation_frame, static_cast<int>(animation_frame / delay_between_frames));
     animation_frame++;
-    if( (animation_frame / delay_between_frames) >= animation_frames_count)
+    if( (static_cast<int>(animation_frame / delay_between_frames)) >= animation_frames_count)
     {
         ResetAnimationFrame();
     }

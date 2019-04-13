@@ -7,7 +7,7 @@ LevelTest::LevelTest()
 	ptr_bground->MakeMeNotObstacle();*/
 
 	Coordinates other_guy_position = { 50,300 };
-	Creature* ptr_other_guy = ptr_initial_core_component->AddCreature(cre_clawy, &other_guy_position, force);
+	Creature* ptr_other_guy = ptr_initial_core_component->AddCreature(cre_carrier_a, &other_guy_position, force);
 	ptr_other_guy->SetBehaviorMode(beh_wander_on_navmesh);
 
 	//Coordinates other_guy2_position = { 500,300 };
@@ -34,17 +34,17 @@ LevelTest::LevelTest()
 	
 	printf("Adding navgrid point!\n");
 	//Test navigation grid creature
-	Coordinates navgrid_point_center_1 = {300,400};
+	Coordinates navgrid_point_center_1 = {600,700};
 	CreatureNavGridNode* ptr_test_navgrid_node_1 = dynamic_cast<CreatureNavGridNode*>(AddNavigationNodeUsingDefaultComponent(navgrid_point_center_1));
 
 	printf("Adding another navgrid point!\n");
 	//Test navigation grid creature
-	Coordinates navgrid_point_center_2 = { 100,400 };
+	Coordinates navgrid_point_center_2 = { 100,700 };
 	CreatureNavGridNode* ptr_test_navgrid_node_2 = dynamic_cast<CreatureNavGridNode*>(AddNavigationNodeUsingDefaultComponent(navgrid_point_center_2));
 
 	printf("Adding third navgrid point!\n");
 	//Test navigation grid creature
-	Coordinates navgrid_point_center_3 = { 200,200 };
+	Coordinates navgrid_point_center_3 = { 200,600 };
 	CreatureNavGridNode* ptr_test_navgrid_node_3 = dynamic_cast<CreatureNavGridNode*>(AddNavigationNodeUsingDefaultComponent(navgrid_point_center_3));
 	
 	dynamic_cast<LevelComponentNavGrid*>(ptr_initial_navgrid_component)->ConnectNodes(400);

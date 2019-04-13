@@ -13,6 +13,7 @@ public:
 	RandomPathResponseEncapsulated GiveResponseForRandomPathRequest(RandomPathRequestEncalpsulated my_request);
 	PointToPointPathResponseEncapsulated GiveResponseForPointToPointPathRequest(PointToPointPathRequestEncalpsulated my_request);
 	CreatureNavGridNode* FindAGridNodeInSight(Creature* ptr_my_creature, double search_radius = MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE);
+	Creature* SelectNodeClosestToPointFromNodesSet(Coordinates point, std::vector<Creature*> nodes_set);
 	CreatureNavGridNode* FindAGridNodeNearestToPoint(Coordinates my_point, double search_radius = MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE);
 	CreatureNavGridNode* FindAGridNodeAccessibleFromPoint(Coordinates point, double search_radius = MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE);
 	std::vector<Coordinates> GenerateRandomPathFromNode(CreatureNavGridNode* ptr_starting_node, unsigned int number_of_hops);

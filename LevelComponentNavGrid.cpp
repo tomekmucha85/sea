@@ -70,8 +70,23 @@ PointToPointPathResponseEncapsulated LevelComponentNavGrid::GiveResponseForPoint
 	return response;
 }
 
+Creature* LevelComponentNavGrid::SelectNodeClosestToPointFromNodesSet(Coordinates point, std::vector<Creature*> nodes_set)
+{
+	std::map<int, Creature*> distance_vs_node = {};
+	for (Creature* ptr_candidate : nodes_set)
+	{
+		ptr_candidate->TellCenterPoint().x,
+		ptr_candidate->TellCenterPoint().y;
+		int distance = static_cast<int>(Distance::CalculateDistanceBetweenPoints(ptr_candidate->TellCenterPoint(), point));
+		distance_vs_node[distance] = ptr_candidate;
+	}
+	//std::map should be ordered by ascending int key value
+	return distance_vs_node.begin()->second;
+}
+
 CreatureNavGridNode* LevelComponentNavGrid::FindAGridNodeAccessibleFromPoint(Coordinates point, double search_radius)
 {
+	std::vector<Creature*> accessible_nodes = {};
 	CreatureNavGridNode* result = nullptr;
 
 	std::vector<Creature*> neighboring_nodes = FindCreaturesInRadius(point, search_radius);
@@ -86,20 +101,22 @@ CreatureNavGridNode* LevelComponentNavGrid::FindAGridNodeAccessibleFromPoint(Coo
 			printf("Found candidate x: %f y: %f.\n",
 				ptr_candidate->TellCenterPoint().x,
 				ptr_candidate->TellCenterPoint().y);
-
-			/*if (Creature::IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(point, ptr_candidate->TellCenterPoint(), 
-				MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE))*/
 			if (Creature::IsThereCorridorBetweenThesePointsInCurrentEnvironment(point, ptr_candidate->TellCenterPoint(),60, MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE))
 			{
-				result = dynamic_cast<CreatureNavGridNode*>(ptr_candidate);
+				accessible_nodes.push_back(ptr_candidate);
 				printf("Candidate %p suitable as declared by FindAGridNodeAccessibleFromPoint.\n", result);
-				return result;
 			}
 			printf("Candidate behind wall!\n");
 		}
+		if (accessible_nodes.size() > 0)
+		{
+			result = dynamic_cast<CreatureNavGridNode*>(SelectNodeClosestToPointFromNodesSet(point, accessible_nodes));
+		}
+		else
+		{
+			printf("No accessible node found.\n");
+		}
 	}
-
-	printf("No node found in given range!.\n");
 	return result;
 }
 
@@ -118,26 +135,15 @@ CreatureNavGridNode* LevelComponentNavGrid::FindAGridNodeNearestToPoint(Coordina
 {
 	CreatureNavGridNode* result = nullptr;
 
-	std::vector<Creature*> neighboring_nodes = FindCreaturesInRadius(my_point, search_radius);
+	std::vector<Creature*> neighboring_nodes = FindCreaturesInRadius(my_point, search_radius, cre_navgrid_node);
 	if (neighboring_nodes.size() == 0)
 	{
 		printf("No navgrid nodes found in given range!\n");
 	}
 	else
 	{
-		std::map<int, CreatureNavGridNode*> distance_vs_node = {};
-		for (Creature* ptr_candidate : neighboring_nodes)
-		{
-			printf("Found candidate x: %f y: %f.\n",
-				ptr_candidate->TellCenterPoint().x,
-				ptr_candidate->TellCenterPoint().y);
-			int distance = static_cast<int>(Distance::CalculateDistanceBetweenPoints(ptr_candidate->TellCenterPoint(), my_point));
-			distance_vs_node[distance] = dynamic_cast<CreatureNavGridNode*>(ptr_candidate);
-		}
-		//std::map should be ordered by ascending int key value
-		result = distance_vs_node.begin()->second;
+		result = dynamic_cast<CreatureNavGridNode*>(SelectNodeClosestToPointFromNodesSet(my_point, neighboring_nodes));
 	}
-	printf("No node found in given range!.\n");
 	return result;
 }
 

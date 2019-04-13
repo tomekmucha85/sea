@@ -241,6 +241,8 @@ class Creature
 		void FollowPhysics();
 		void FollowBehavior();
 		void SetBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination=nullptr);
+		void SetBehaviorPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny = nullptr);
+		void RequestBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination = nullptr);
 		void Kill();
 		void Resurrect();
 		bool AmIAlive();
@@ -287,6 +289,7 @@ class Behavior
 		static double MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE;
 		static double DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CARRIER;
 		BehaviorMode mode = beh_idle;
+		BehaviorPattern pattern = beh_pat_none;
 		//Object generating navigators
 		FactorySpawningNavigators* ptr_navigators_factory = nullptr;
 		//Object generating waypoints
@@ -294,13 +297,38 @@ class Behavior
 		Coordinates destination_point = {0,0};
 
 		bool was_mode_changed = false;
+		bool was_pattern_changed = false;
+
+		//###################################################################
+        //# Mode that was requested and will be processed by behavior pattern
+        //###################################################################
+		BehaviorMode current_requested_mode = beh_none;
+		Coordinates current_requested_mode_destination = {0,0};
+
+		//#TODO - czy na pewno tak powinno byæ? Mo¿e lepiej zrobiæ kilka klas dziedzicz¹cych po Behavior.
+		//###################################
+		//# VARIABLES FOR SPECIFIC PATTERNS
+		//###################################
+		//pattern death magnetic
+		Creature* beh_pat_death_magnetic_destination = nullptr;
+
+		//###################################
+        //# VARIABLES FOR SPECIFIC MODES
+        //###################################
+		//mode follow closest carrier
+		Creature* ptr_followed_carrier = nullptr;
 
     public:
 		Behavior();
 		~Behavior();
-		void WhatToDo(Creature* my_creature);
+		void WhatToDo(Creature* ptr_my_creature);
+		BehaviorActionResult PerformActionDefinedByMode(Creature* ptr_my_creature);
+		void RequestMode(BehaviorMode mode_to_be_requested);
+		void RequestMode(BehaviorMode mode_to_be_requested, Coordinates my_destination_point);
 		void SetMode(BehaviorMode mode_to_be_set);
 		void SetMode(BehaviorMode mode_to_be_set, Coordinates my_destination_point);
+		void SetPattern(BehaviorPattern pattern_to_be_set);
+		void SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny);
 		void Move(Coordinates movement);
 		void MakeUseOfPathResponse(RandomPathResponse my_response);
 		void MakeUseOfPathResponse(PointToPointPathResponse my_response);

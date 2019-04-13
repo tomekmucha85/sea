@@ -1,12 +1,13 @@
-#include <CreatureClawy.hpp>
+#include <CreatureCarrierA.hpp>
 
-CreatureClawy::CreatureClawy(Coordinates* ptr_my_center, int hitbox_margin) :
-	Creature(CreatureClawy::my_initial_type, ptr_my_center, hitbox_margin)
+CreatureCarrierA::CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin) :
+	Creature(CreatureCarrierA::my_initial_type, ptr_my_center, hitbox_margin)
 {
-	printf("Spawned CreatureClawy.\n");
-	my_type = cre_clawy;
+	printf("Spawned CreatureSnailmage.\n");
+	my_type = cre_carrier_a;
 	//Cre_clawy does not collide with another cre_clawy
 	//#TODO - czy nie statyczne?
+	//#TODO - przerobiæ dla snailmage
 	AddCreatureTypeToCollisionExceptions(cre_clawy);
 	AddCreatureTypeToCollisionExceptions(cre_carrier_a);
 	VisualComponent* ptr_main_visual_component = visual_components[0];
@@ -14,7 +15,7 @@ CreatureClawy::CreatureClawy(Coordinates* ptr_my_center, int hitbox_margin) :
 
 }
 
-void CreatureClawy::SetVelocity(double my_velocity)
+void CreatureCarrierA::SetVelocity(double my_velocity)
 {
 	double current_velocity = TellVelocity();
 	VisualComponent* ptr_main_visual_component = visual_components[0];

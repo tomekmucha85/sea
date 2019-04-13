@@ -9,6 +9,7 @@
 #include <SpriteVortex.hpp>
 #include <SpriteExit.hpp>
 #include <SpriteGuiManaBar.hpp>
+#include <SpriteSnailmage.hpp>
 
 class FactorySpawningSprites
 {

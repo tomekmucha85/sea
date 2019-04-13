@@ -39,7 +39,7 @@ enum VisualComponentType {visco_sprite, visco_vector, visco_line, visco_undeterm
 //Level names
 enum LevelType { level_ninemazes, level_base, level_test };
 
-//Behavior patterns
+//Behavior
 enum BehaviorMode {
 	beh_none,
 	beh_chase_hero,
@@ -52,6 +52,22 @@ enum BehaviorMode {
 	beh_follow_closest_carrier
 };
 
+//Outcome of actions derived from behavior
+
+enum BehaviorActionResult {
+	beh_result_action_succedeed,
+	beh_result_action_failed,
+	beh_result_objective_complete,
+	beh_result_objective_failed
+};
+
+//Behavior patterns (rules of switching between modes)
+enum BehaviorPattern {
+	beh_pat_none,
+	beh_pat_death_magnetic,
+};
+
+
 //Navigator modes of opearation
 enum NavigatorMode {navig_undetermined, navig_circle, navig_coordinates_list, navig_wander_on_navmesh};
 
@@ -59,7 +75,7 @@ enum NavigatorMode {navig_undetermined, navig_circle, navig_coordinates_list, na
 enum NavigationState {active, inactive};
 
 //Sprite names
-enum SpriteType { spr_clawy, spr_background, spr_box, spr_black_smoke, spr_vortex, spr_exit, spr_gui_mana_bar };
+enum SpriteType { spr_clawy, spr_snailmage, spr_background, spr_box, spr_black_smoke, spr_vortex, spr_exit, spr_gui_mana_bar };
 
 //Animation types
 enum AnimationType {anim_none, anim_idle, anim_walk, anim_vortex};
@@ -89,8 +105,19 @@ enum DoorState
 };
 
 //cre_none means empty space/no creature present
-enum CreatureType { cre_none, cre_event_trigger, cre_vector_mask, cre_clawy, cre_flying_box, 
-	cre_black_smoke, cre_npc, cre_spell, cre_spell_ball, cre_spell_open_doors, cre_blue_bground, cre_navgrid_node };
+enum CreatureType { cre_none, 
+	cre_event_trigger, 
+	cre_vector_mask, 
+	cre_clawy,
+	cre_carrier_a,
+	cre_flying_box, 
+	cre_black_smoke,
+	cre_npc,
+	cre_spell,
+	cre_spell_ball,
+	cre_spell_open_doors,
+	cre_blue_bground,
+	cre_navgrid_node };
 
 //Names of spells to be cast - spell is a Creature, offspring of CreatureSpell
 enum SpellName {spell_none, spell_vortex, spell_open_gate};

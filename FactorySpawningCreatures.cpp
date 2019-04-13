@@ -8,6 +8,11 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coo
 		//printf("Requested hero creature.\n");
 		result = new CreatureClawy(ptr_my_center);
 	}
+	else if (desired_type == cre_carrier_a)
+	{
+		//printf("Requested carrier_a creature. \n");
+		result = new CreatureCarrierA(ptr_my_center);
+	}
 	else if (desired_type == cre_blue_bground)
 	{
 		//printf("Requested blue spr_background creature. \n");

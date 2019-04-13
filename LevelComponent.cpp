@@ -115,7 +115,7 @@ northern_border == {0,0,800,1}
 	return result;
 }
 
-std::vector<Creature*> LevelComponent::FindCreaturesInRadius(Coordinates center_point, double radius)
+std::vector<Creature*> LevelComponent::FindCreaturesInRadius(Coordinates center_point, double radius, CreatureType desired_type)
 {
 	std::vector<Creature*> result = {};
 	for (Creature* ptr_my_creature : creatures)
@@ -125,7 +125,11 @@ std::vector<Creature*> LevelComponent::FindCreaturesInRadius(Coordinates center_
 			center_point);
 		if (distance_to_creature <= radius)
 		{
-			result.push_back(ptr_my_creature);
+			if (desired_type == cre_none || desired_type == ptr_my_creature->my_type)
+			//Desired type equal to none means all types all desired
+			{
+				result.push_back(ptr_my_creature);
+			}
 		}
 	}
 	//printf("Found %d creatures in given radius.\n", result.size());

@@ -144,6 +144,13 @@ class Level
 			this->Win();
 		};
 
+		//Lambda to lose level. (Useful for triggers)
+		std::function<void()> ptr_func_lose = [this]()
+		{
+			printf("TRIGGER!\n");
+			this->Loose();
+		};
+
 		//Lambda to connect navigation nodes.
 		/*std::function<void(Level*)> func_connect_nodes = [](Level* ptr_level)
 		{

@@ -210,6 +210,12 @@
     <ClInclude Include="Interface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CreatureCarrierA.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteSnailmage.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -361,6 +367,12 @@
     </ClCompile>
     <ClCompile Include="Interface.cpp">
       <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureCarrierA.cpp">
+      <Filter>Source Files\Creatures</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteSnailmage.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

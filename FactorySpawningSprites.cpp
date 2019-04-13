@@ -14,6 +14,12 @@ Sprite* FactorySpawningSprites::SpawnSprite(SpriteType desired_type, Coordinates
 		result = new SpriteClawy(ptr_center);
 		return result;
 	}
+	else if (desired_type == spr_snailmage)
+	{
+		//printf("Requested spr_snailmage object.\n");
+		result = new SpriteSnailmage(ptr_center);
+		return result;
+	}
 	else if (desired_type == spr_box)
 	{
 		//printf("Requested spr_box object.\n");
