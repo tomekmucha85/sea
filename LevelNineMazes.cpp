@@ -86,7 +86,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	/*printf("Current mazes setup: 1: %p\n2: %p\n3: %p\n4: %p\n5: %p\n6: %p\n7: %p\n8: %p\n9: %p\n",
 		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);*/
 
-	//SpawnCarriers(20);
+	SpawnCarriers(20);
 
 }
 
@@ -168,6 +168,8 @@ void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 			{
 				was_carrier_created = true;
 				ptr_carrier->SetBehaviorMode(beh_go_towards_fixed_point, &carrier_destination);
+				//DEBUG!!!//
+				ptr_carrier->SetTimeToLive(5);
 			}
 			else
 			{

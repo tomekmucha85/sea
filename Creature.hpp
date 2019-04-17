@@ -18,6 +18,7 @@
 #include <Line.hpp>
 #include <CustomDefinedTypes.hpp>
 #include <Timer.hpp>
+#include <TimerInterval.hpp>
 #include <Navigator.hpp>
 #include <FactorySpawningNavigators.hpp>
 #include <CommonMath.hpp>
@@ -97,6 +98,8 @@ class Creature
 		Behavior* ptr_behavior = nullptr;
 		//Contains actions associated to specific creature which will be performed during every game loop / every n game loops.
 		std::vector<std::function<void(Creature*)>> cyclic_actions = {};
+		//Timer
+		TimerInterval* ptr_time_left_to_live = nullptr;
 		//Is the creature living? Dead creatures should be deleted in LevelComponent plane
 		bool am_i_alive = true;
 		//How much mana do I have?
@@ -246,6 +249,10 @@ class Creature
 		void Kill();
 		void Resurrect();
 		bool AmIAlive();
+		void SetTimeToLive(unsigned int seconds);
+		void ResetTimeToLive();
+		void SetTimeToLiveToInfinity();
+		bool HasMyTimePassedOnThisWorld();
 		void CastSpell(SpellName my_spell_name);
 		int TellManaLevel();
 		void SetManaLevel(int new_level);
@@ -277,6 +284,15 @@ class Creature
 		std::function<void(Creature*)> func_play_current_animation_for_visual_components = [](Creature* ptr_creature)
 		{
 			ptr_creature->PlayCurrentAnimationsForVisualComponents();
+		};
+
+		std::function<void(Creature*)> func_kill_creature_if_its_time_expired = [](Creature* ptr_creature)
+		{
+			if (ptr_creature->HasMyTimePassedOnThisWorld())
+			{
+				printf("Killed 'cause time expired!\n");
+				ptr_creature->Kill();
+			}
 		};
 
 };

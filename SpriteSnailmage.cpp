@@ -29,7 +29,7 @@ std::vector<SDL_Rect> SpriteSnailmage::walk_animation_clips_north_east = Sprite:
 	SpriteSnailmage::initial_texture_clip_snailmage.h);
 std::vector<SDL_Rect> SpriteSnailmage::walk_animation_clips_east = Sprite::CalculateAnimationClips({ 0, 1200, 900, 100 }, SpriteSnailmage::initial_texture_clip_snailmage.w,
 	SpriteSnailmage::initial_texture_clip_snailmage.h);
-std::vector<SDL_Rect> SpriteSnailmage::walk_animation_clips_south_east = Sprite::CalculateAnimationClips({ 0, 900, 1000, 100 }, SpriteSnailmage::initial_texture_clip_snailmage.w,
+std::vector<SDL_Rect> SpriteSnailmage::walk_animation_clips_south_east = Sprite::CalculateAnimationClips({ 0, 900, 900, 100 }, SpriteSnailmage::initial_texture_clip_snailmage.w,
 	SpriteSnailmage::initial_texture_clip_snailmage.h);
 std::vector<SDL_Rect> SpriteSnailmage::walk_animation_clips_south = Sprite::CalculateAnimationClips({ 0, 800, 900, 100 }, SpriteSnailmage::initial_texture_clip_snailmage.w,
 	SpriteSnailmage::initial_texture_clip_snailmage.h);

@@ -56,11 +56,12 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 {
 	ptr_sprites_factory = new FactorySpawningSprites();
 	ptr_behavior = new Behavior();
+	Sprite* ptr_sprite = ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center);
+	SetMyVisualComponent(ptr_sprite);
 	cyclic_actions.push_back(func_follow_physics);
 	cyclic_actions.push_back(func_follow_behavior);
 	cyclic_actions.push_back(func_play_current_animation_for_visual_components);
-	Sprite* ptr_sprite = ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center);
-	SetMyVisualComponent(ptr_sprite);
+	cyclic_actions.push_back(func_kill_creature_if_its_time_expired);
 	//Set the initial value to move upwards by (velocity * pixels)
 	next_step.y = velocity * -1;
 	//Initialize hitbox
@@ -77,11 +78,9 @@ Creature::~Creature()
 {
 	//printf("Destructor called for Creature %p.\n", this);
 	DeleteAllVisualComponents();
-	if (ptr_sprites_factory != nullptr)
-	{
-		delete ptr_sprites_factory;
-		delete ptr_behavior;
-	}
+	delete ptr_sprites_factory;
+	delete ptr_behavior;
+	delete ptr_time_left_to_live;
 }
 
 void Creature::DeleteAllVisualComponents()
@@ -1032,6 +1031,36 @@ bool Creature::AmIAlive()
 	return am_i_alive;
 }
 
+bool Creature::HasMyTimePassedOnThisWorld()
+{
+	if (ptr_time_left_to_live != nullptr)
+	{
+		if (ptr_time_left_to_live->CheckIfIntervalPassed())
+		{
+			printf("This guy's time on this world has passed - %p\n", this);
+			return true;
+		}
+	}
+	return false;
+}
+
+void Creature::SetTimeToLive(unsigned int seconds)
+{
+	unsigned int miliseconds = seconds * 1000;
+	ptr_time_left_to_live = new TimerInterval(miliseconds);
+}
+
+void Creature::ResetTimeToLive()
+{
+	//#TODO - implement!;
+}
+
+void Creature::SetTimeToLiveToInfinity()
+{
+	delete ptr_time_left_to_live;
+	ptr_time_left_to_live = nullptr;
+}
+
 //********************************************
 //PHYSICS
 //********************************************
@@ -1152,20 +1181,3 @@ bool Creature::AmIArmed()
 	printf("Default implementation of AmIArmed called!\n");
 	return true;
 }
-/*
-void Creature::MakeDisposable()
-{
-	printf("Default implementation of MakeDisposable called!\n");;
-}
-
-void Creature::MakePermanent()
-{
-	printf("Default implementation of MakePermanent called!\n");
-}
-
-bool Creature::AmIDisposable()
-{
-	printf("Default implementation of AmIDisposable called!\n");
-	return true;
-}
-*/
