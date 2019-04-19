@@ -58,10 +58,7 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 	ptr_behavior = new Behavior();
 	Sprite* ptr_sprite = ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center);
 	SetMainVisualComponent(ptr_sprite);
-	cyclic_actions.push_back(func_follow_physics);
-	cyclic_actions.push_back(func_follow_behavior);
-	cyclic_actions.push_back(func_play_current_animation_for_visual_components);
-	cyclic_actions.push_back(func_kill_creature_if_its_time_expired);
+	AddCommonCyclicActions();
 	//Set the initial value to move upwards by (velocity * pixels)
 	next_step.y = velocity * -1;
 	//Initialize hitbox
@@ -198,6 +195,22 @@ void Creature::AddVisualComponent(VisualComponent* ptr_my_visual_component, std:
 	}
 	visual_components[component_name] = ptr_my_visual_component;
 }
+
+void Creature::RemoveVisualComponent(std::string component_name)
+{
+	std::map<std::string, VisualComponent*>::iterator place = visual_components.find(component_name);
+	if (place != visual_components.end())
+	{
+		delete place->second;
+		visual_components.erase(place);
+	}
+	else
+	{
+		printf("No visual component of given name found to delete!\n");
+	}
+
+}
+
 
 void Creature::SetMyRenderLayer(int layer_number)
 {
@@ -1061,6 +1074,14 @@ void Creature::AddCyclicAction(std::function<void(Creature*)> my_cyclic_action)
 	cyclic_actions.push_back(my_cyclic_action);
 }
 
+void Creature::AddCommonCyclicActions()
+{
+	AddCyclicAction(func_follow_physics);
+	AddCyclicAction(func_follow_behavior);
+	AddCyclicAction(func_play_current_animation_for_visual_components);
+	AddCyclicAction(func_kill_creature_if_its_time_expired);
+}
+
 std::vector<CreatureSpawnRequest>* Creature::TellSpawnRequests()
 {
 	return &spawn_requests;
@@ -1083,6 +1104,19 @@ void Creature::Resurrect()
 bool Creature::AmIAlive()
 {
 	return am_i_alive;
+}
+
+Uint32 Creature::HowMuchTimeLeftForMe()
+{
+	Uint32 infinity = UINT32_MAX;
+	if (ptr_time_left_to_live != nullptr)
+	{
+		return ptr_time_left_to_live->HowManyMilisecondsLeftTillEnd();
+	}
+	else
+	{
+		return infinity;
+	}
 }
 
 bool Creature::HasMyTimePassedOnThisWorld()
@@ -1113,6 +1147,11 @@ void Creature::SetTimeToLiveToInfinity()
 {
 	delete ptr_time_left_to_live;
 	ptr_time_left_to_live = nullptr;
+}
+
+void Creature::PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint32 threshold_miliseconds)
+{
+	printf("PlayWarningAnimationIfTimeToLiveDropsBelowThreshold not implemented in this scope.\n");
 }
 
 //********************************************

@@ -158,6 +158,7 @@ class Creature
 		VisualComponent* TellMainVisualComponent();
 		void DeleteAllVisualComponents();
 		void AddVisualComponent(VisualComponent* ptr_my_visual_component, std::string component_name);
+		void RemoveVisualComponent(std::string component_name);
 		Sprite* SpawnSpriteUsingFactory(SpriteType desired_type);
 		void SetMyRenderLayer(int layer_number);
 		int TellRenderLayer();
@@ -209,6 +210,7 @@ class Creature
 		void SetVisibility(bool should_be_visible);
 		void PerformCyclicActions();
 		void AddCyclicAction(std::function<void(Creature*)> my_cyclic_action);
+		void AddCommonCyclicActions();
 		//#TODO - napisaæ funkcjê do usuwania akcji cyklicznych
 
 		//################################
@@ -257,6 +259,8 @@ class Creature
 		void ResetTimeToLive();
 		void SetTimeToLiveToInfinity();
 		bool HasMyTimePassedOnThisWorld();
+		Uint32 HowMuchTimeLeftForMe();
+		virtual void PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint32 threshold_miliseconds);
 		void CastSpell(SpellName my_spell_name);
 		int TellManaLevel();
 		void SetManaLevel(int new_level);
@@ -297,6 +301,11 @@ class Creature
 				printf("Killed 'cause time expired!\n");
 				ptr_creature->Kill();
 			}
+		};
+
+		std::function<void(Creature*)> func_warn_if_time_to_live_gets_short = [](Creature* ptr_creature)
+		{
+			ptr_creature->PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(3000);
 		};
 
 };

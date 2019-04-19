@@ -5,7 +5,8 @@
 //***********************************
 
 SDL_Rect SpriteImplosion::initial_texture_clip_implosion = { 0,0,50,50 };
-std::vector<SDL_Rect> SpriteImplosion::implosion_animation_clips = Sprite::CalculateAnimationClips({ 0,0,6000,50 }, SpriteImplosion::initial_texture_clip_implosion.w,
+std::vector<SDL_Rect> SpriteImplosion::implosion_animation_clips = Sprite::CalculateAnimationClips({ 0,0,6000,50 }, 
+	SpriteImplosion::initial_texture_clip_implosion.w,
 	SpriteImplosion::initial_texture_clip_implosion.h);
 
 //***********************************
@@ -13,7 +14,9 @@ std::vector<SDL_Rect> SpriteImplosion::implosion_animation_clips = Sprite::Calcu
 //***********************************
 
 SpriteImplosion::SpriteImplosion(Coordinates* ptr_my_center)
-	: Sprite(TellTextureBank()->ptr_tex_implosion, SpriteImplosion::initial_texture_clip_implosion, ptr_my_center)
+	: Sprite(TellTextureBank()->ptr_tex_implosion, 
+		SpriteImplosion::initial_texture_clip_implosion, 
+		ptr_my_center)
 {
 	;
 }
