@@ -32,7 +32,7 @@ Creature::Creature(PreciseRect* ptr_area)
 	//printf("Invisible creature constructed.\n");
 	//Hitbox == ptr_area. No margin is set.
 	VectorDrawing* ptr_vector_drawing = new VectorDrawing(ptr_area);
-	SetMyVisualComponent(ptr_vector_drawing);
+	SetMainVisualComponent(ptr_vector_drawing);
 	InitializeHitbox(*ptr_area, 0);
 	ptr_behavior = new Behavior();
 	//printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
@@ -43,7 +43,7 @@ Creature::Creature(Coordinates* ptr_my_center)
 {
 	//printf("Invisible creature constructed.\n");
 	VectorDrawing* ptr_vector_drawing = new VectorDrawing(ptr_my_center);
-	SetMyVisualComponent(ptr_vector_drawing);
+	SetMainVisualComponent(ptr_vector_drawing);
 	PreciseRect visual_component_center = ptr_vector_drawing->TellPosition();
 	//Hitbox == area occupied by vector drawing. No margin is set.
 	InitializeHitbox(visual_component_center, 0);
@@ -57,7 +57,7 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 	ptr_sprites_factory = new FactorySpawningSprites();
 	ptr_behavior = new Behavior();
 	Sprite* ptr_sprite = ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center);
-	SetMyVisualComponent(ptr_sprite);
+	SetMainVisualComponent(ptr_sprite);
 	cyclic_actions.push_back(func_follow_physics);
 	cyclic_actions.push_back(func_follow_behavior);
 	cyclic_actions.push_back(func_play_current_animation_for_visual_components);
@@ -85,10 +85,13 @@ Creature::~Creature()
 
 void Creature::DeleteAllVisualComponents()
 {
-	std::vector<VisualComponent*> visual_components_copy = visual_components;
-	for (VisualComponent* ptr_my_visual_component : visual_components_copy)
+	for (std::map<std::string, VisualComponent*>::iterator iter = visual_components.begin(); 
+		iter != visual_components.end(); 
+		++iter)
 	{
-		delete ptr_my_visual_component;
+		VisualComponent* ptr_component = iter->second;
+		delete ptr_component;
+		ptr_component = nullptr;
 	}
 	visual_components.clear();
 }
@@ -160,18 +163,40 @@ PreciseRect Creature::TellHitbox()
 //SETTING AND TELLING PARAMS
 //**************
 
-void Creature::SetMyVisualComponent(VisualComponent* ptr_my_visual_component)
+void Creature::SetMainVisualComponent(VisualComponent* ptr_my_visual_component)
+{
+	visual_components["main"] = ptr_my_visual_component;
+}
+
+void Creature::ResetMainVisualComponent(VisualComponent* ptr_my_visual_component)
 {
 	if (visual_components.size() > 0)
 	{
 		DeleteAllVisualComponents();
 	}
-	visual_components.push_back(ptr_my_visual_component);
+	SetMainVisualComponent(ptr_my_visual_component);
 }
 
-void Creature::AddVisualComponent(VisualComponent* ptr_my_visual_component)
+VisualComponent* Creature::TellMainVisualComponent()
 {
-	visual_components.push_back(ptr_my_visual_component);
+	if (visual_components.find("main") != visual_components.end())
+	{
+		return visual_components["main"];
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+void Creature::AddVisualComponent(VisualComponent* ptr_my_visual_component, std::string component_name)
+{
+	if (component_name == "main")
+	{
+		printf("Component main should not be set via AddVisualComponent!\n");
+		throw std::invalid_argument("Component main should not be set via AddVisualComponent!\n");
+	}
+	visual_components[component_name] = ptr_my_visual_component;
 }
 
 void Creature::SetMyRenderLayer(int layer_number)
@@ -284,8 +309,11 @@ void Creature::Turn(int turn_angle_degree)
     // #TODO! mno¿yæ przez prêdkoœæ jeszcze przed wywo³aniem funkcji.
     current_angle_degree += static_cast<int>(turn_angle_degree * turn_speed);
 	current_angle_degree = Angle::NormalizeAngle(current_angle_degree);
-	for (VisualComponent* ptr_my_visual_component : visual_components)
+	for (std::map<std::string, VisualComponent*>::iterator iter = visual_components.begin();
+		iter != visual_components.end();
+		++iter)
 	{
+		VisualComponent* ptr_my_visual_component = iter->second;
 		ptr_my_visual_component->TurnByAngleDegrees(static_cast<int>(turn_quant_degree * turn_direction * turn_speed));
 	}
 	//printf("Current angle after normalization: %d.\n", current_angle_degree);
@@ -524,8 +552,11 @@ void Creature::MoveComponents(double x, double y)
 
 void Creature::MoveVisualComponent(double x, double y)
 {
-	for (VisualComponent* ptr_my_visual_component : visual_components)
+	for (std::map<std::string, VisualComponent*>::iterator iter = visual_components.begin();
+		iter != visual_components.end();
+		++iter)
 	{
+		VisualComponent* ptr_my_visual_component = iter->second;
 		ptr_my_visual_component->Move(x, y);
 	}
 }
@@ -625,8 +656,11 @@ double Creature::TellVelocity()
 
 void Creature::SetPosition(Coordinates new_center_position)
 {
-	for (VisualComponent* ptr_my_visual_component : visual_components)
+	for (std::map<std::string, VisualComponent*>::iterator iter = visual_components.begin();
+		iter != visual_components.end();
+		++iter)
 	{
+		VisualComponent* ptr_my_visual_component = iter->second;
 		ptr_my_visual_component->SetCenter(new_center_position);
 	}
 }
@@ -654,8 +688,11 @@ std::vector<Coordinates> Creature::TellHitboxCorners()
 void Creature::SetAngleDegree(int my_degree)
 {
 	current_angle_degree = my_degree;
-	for (VisualComponent* ptr_my_visual_component : visual_components)
+	for (std::map<std::string, VisualComponent*>::iterator iter = visual_components.begin();
+		iter != visual_components.end();
+		++iter)
 	{
+		VisualComponent* ptr_my_visual_component = iter->second;
 		ptr_my_visual_component->SetAngleDegrees(my_degree);
 	}
 }
@@ -929,8 +966,11 @@ Creature* Creature::FindClosestAccessibleCreatureOfGivenType(CreatureType desire
 
 void Creature::PlayCurrentAnimationsForVisualComponents()
 {
-	for (VisualComponent* ptr_my_visual_component : visual_components)
+	for (std::map<std::string, VisualComponent*>::iterator iter = visual_components.begin();
+		iter != visual_components.end();
+		++iter)
 	{
+		VisualComponent* ptr_my_visual_component = iter->second;
 		ptr_my_visual_component->PlayCurrentAnimation();
 	}
 }

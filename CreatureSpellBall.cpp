@@ -6,8 +6,7 @@ CreatureSpellBall::CreatureSpellBall(Coordinates* ptr_my_center, int hitbox_marg
 	printf("Spawned CreatureSpellBall.\n");
 	my_type = cre_spell_ball;
 	AddCyclicAction(func_destroy_hit_object);
-	VisualComponent* ptr_main_visual_component = visual_components[0];
-	ptr_main_visual_component->SetCurrentAnimation(anim_idle);
+	TellMainVisualComponent()->SetCurrentAnimation(anim_idle);
 }
 
 void CreatureSpellBall::DealDamageInRadius(int radius)

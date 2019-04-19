@@ -476,9 +476,12 @@ void Level::RenderCreatureVisualComponent(Creature* ptr_my_creature)
 		printf("Cannot render nullptr!\n");
 		throw std::invalid_argument("Cannot render nullptr!\n");
 	}
-	for (VisualComponent* ptr_creature_visual_component : ptr_my_creature->visual_components)
+	for (std::map<std::string, VisualComponent*>::iterator iter = ptr_my_creature->visual_components.begin();
+		iter != ptr_my_creature->visual_components.end();
+		++iter)
 	{
-		ptr_creature_visual_component->Render();
+		VisualComponent* ptr_creatures_visual_component = iter->second;
+        ptr_creatures_visual_component->Render();
 	}
 }
 

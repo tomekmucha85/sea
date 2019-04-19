@@ -230,30 +230,29 @@ std::vector<std::vector<CreatureType>> LevelComponentMaze::GetBlueptrintElementC
 void LevelComponentMaze::SetAppropriateSpriteClips(std::vector<std::vector<CreatureType>>* ptr_my_blueprint, int column, int row, Creature* ptr_creature)
 {
 	std::vector<std::vector<CreatureType>> my_surrounding = GetBlueptrintElementContextInGivenRadius(ptr_my_blueprint, column, row, 1);
-	//#TODO - niebezpieczne za³o¿enie z castem
 	if (my_surrounding == pattern_upper_corner_left)
 	{
-		ptr_creature->visual_components[0]->SetClipAccordingToWallType(wall_corner_upper_left_inward);
+		ptr_creature->TellMainVisualComponent()->SetClipAccordingToWallType(wall_corner_upper_left_inward);
 		//printf("Upper left corner recognized!\n");
 	}
 	else if (my_surrounding == pattern_upper_corner_right)
 	{
-		ptr_creature->visual_components[0]->SetClipAccordingToWallType(wall_corner_upper_right_inward);
+		ptr_creature->TellMainVisualComponent()->SetClipAccordingToWallType(wall_corner_upper_right_inward);
 		//printf("Upper right corner recognized!\n");
 	}
 	else if (my_surrounding == pattern_bottom_corner_left)
 	{
-		ptr_creature->visual_components[0]->SetClipAccordingToWallType(wall_corner_bottom_left_inward);
+		ptr_creature->TellMainVisualComponent()->SetClipAccordingToWallType(wall_corner_bottom_left_inward);
 		//printf("Upper left corner recognized!\n");
 	}
 	else if (my_surrounding == pattern_bottom_corner_right)
 	{
-		ptr_creature->visual_components[0]->SetClipAccordingToWallType(wall_corner_bottom_right_inward);
+		ptr_creature->TellMainVisualComponent()->SetClipAccordingToWallType(wall_corner_bottom_right_inward);
 		//printf("Upper right corner recognized!\n");
 	}
 	else if (my_surrounding == pattern_bottom_vertical)
 	{
-		ptr_creature->visual_components[0]->SetClipAccordingToWallType(wall_left);
+		ptr_creature->TellMainVisualComponent()->SetClipAccordingToWallType(wall_left);
 		//printf("Upper right corner recognized!\n");
 	}
 	else

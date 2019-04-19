@@ -21,8 +21,7 @@ LevelTest::LevelTest()
 	Creature* ptr_winning_trigger = AddTriggerUsingDefaultComponent(event_area, signal_to_win);
 	signals_vs_events[signal_to_win] = ptr_func_win;*/
 	//Red
-	//#TODO - przeszukaæ wszystkie przypadki u¿ycia visual_components[0]
-	//ptr_winning_trigger->visual_components[0]->SetColor({ 255,0,0,255 });
+	//ptr_winning_trigger->TellMainVisualComponent()->SetColor({ 255,0,0,255 });
 
 
 	/*Coordinates wall_1_position = { 100,100 };

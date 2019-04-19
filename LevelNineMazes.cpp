@@ -13,9 +13,8 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
     Creature* ptr_winning_trigger = AddTriggerUsingDefaultComponent(event_win_area, signal_to_win);
     signals_vs_events[signal_to_win] = ptr_func_win;
     //Blue
-    //#TODO - przeszukaæ wszystkie przypadki u¿ycia visual_components[0]
-    ptr_winning_trigger->visual_components[0]->SetColor({ 0,0,255,255 });
-	Coordinates win_center = ptr_winning_trigger->visual_components[0]->TellCenter();
+    ptr_winning_trigger->TellMainVisualComponent()->SetColor({ 0,0,255,255 });
+	Coordinates win_center = ptr_winning_trigger->TellMainVisualComponent()->TellCenter();
 
 	//Trigger to loose level
 	std::string signal_to_lose = "losing";
@@ -23,9 +22,8 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	Creature* ptr_losing_trigger = AddTriggerUsingDefaultComponent(event_lose_area, signal_to_lose);
 	signals_vs_events[signal_to_lose] = ptr_func_lose;
 	//Red
-	//#TODO - przeszukaæ wszystkie przypadki u¿ycia visual_components[0]
-	ptr_losing_trigger->visual_components[0]->SetColor({ 255,0,0,255 });
-	Coordinates loose_center = ptr_losing_trigger->visual_components[0]->TellCenter();
+	ptr_losing_trigger->TellMainVisualComponent()->SetColor({ 255,0,0,255 });
+	Coordinates loose_center = ptr_losing_trigger->TellMainVisualComponent()->TellCenter();
 
 	//MAIN CHARACTER BEHAVIOR
     //Creature::ptr_current_main_charater->SetBehaviorMode(beh_go_towards_fixed_point, &win_center);
@@ -681,8 +679,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		signals_vs_events[signal_for_regenerating_northern_row] = ptr_func_trigger_north;
 		//printf("Added trigger NORTH %p x: %f, y: %f, w: %f, h: %f.\n", ptr_my_trigger_north, event_area.x, event_area.y, event_area.w, event_area.h);
 		//Red
-		//#TODO - niebezpieczne za³o¿enie z castem
-		ptr_my_trigger_north->visual_components[0]->SetColor({ 255,0,0,255 });
+		ptr_my_trigger_north->TellMainVisualComponent()->SetColor({ 255,0,0,255 });
 		ptr_trigger_north = ptr_my_trigger_north;
 	}
 	else if (my_direction == south)
@@ -696,7 +693,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		signals_vs_events[signal_for_regenerating_southern_row] = ptr_func_trigger_south;
 		//printf("Added trigger SOUTH %p x: %f, y: %f, w: %f, h: %f.\n", ptr_my_trigger_south, event_area.x, event_area.y, event_area.w, event_area.h);
 		//Green
-		ptr_my_trigger_south->visual_components[0]->SetColor({ 0,255,0,255 });
+		ptr_my_trigger_south->TellMainVisualComponent()->SetColor({ 0,255,0,255 });
 		ptr_trigger_south = ptr_my_trigger_south;
 	}
 	else if (my_direction == east)
@@ -710,7 +707,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		Creature* ptr_my_trigger_east = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_eastern_column);
 		signals_vs_events[signal_for_regenerating_eastern_column] = ptr_func_trigger_east;
 		//Blue
-		ptr_my_trigger_east->visual_components[0]->SetColor({ 0,0,255,255 });
+		ptr_my_trigger_east->TellMainVisualComponent()->SetColor({ 0,0,255,255 });
 		ptr_trigger_east = ptr_my_trigger_east;
 	}
 	else if (my_direction == west)
@@ -724,7 +721,7 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		Creature* ptr_my_trigger_west = ptr_border_triggers->AddCreature(cre_event_trigger, ptr_event_area, merge, signal_for_regenerating_western_column);
 		signals_vs_events[signal_for_regenerating_western_column] = ptr_func_trigger_west;
 		//Black
-		ptr_my_trigger_west->visual_components[0]->SetColor({ 0,0,0,255 });
+		ptr_my_trigger_west->TellMainVisualComponent()->SetColor({ 0,0,0,255 });
 		ptr_trigger_west = ptr_my_trigger_west;
 	}
 	else

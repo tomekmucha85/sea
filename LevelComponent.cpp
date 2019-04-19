@@ -348,9 +348,9 @@ void LevelComponent::ServeSpawnRequest(CreatureSpawnRequest my_request)
 	{
 		ptr_spawned_creature->SetAngleDegree(my_request.initial_angle_degree);
 		ptr_spawned_creature->SetBehaviorMode(my_request.initial_behavior_mode);
-		if (ptr_spawned_creature->visual_components[0]->TellMyType() == visco_vector)
+		if (ptr_spawned_creature->TellMainVisualComponent()->TellMyType() == visco_vector)
 		{
-			ptr_spawned_creature->visual_components[0]->SetColor(my_request.color);
+			ptr_spawned_creature->TellMainVisualComponent()->SetColor(my_request.color);
 		}
 	}
 	else

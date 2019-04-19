@@ -127,7 +127,7 @@ class Creature
 		double turn_speed = 0.4; // How fast creature turns around
 		int turn_direction = 0; // -1 = left, 1 = right, 0 = no turning.
 
-		std::vector<VisualComponent*> visual_components = {};
+		std::map<std::string, VisualComponent*> visual_components = {};
 
         //Vector holding pointers to all creatures currently present in game
         static std::vector <Creature*> current_environment;
@@ -153,9 +153,11 @@ class Creature
 		Creature(Coordinates* ptr_my_center);
 		Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin = 10);
 		~Creature();
-		void SetMyVisualComponent(VisualComponent* ptr_my_visual_component);
+		void SetMainVisualComponent(VisualComponent* ptr_my_visual_component);
+		void ResetMainVisualComponent(VisualComponent* ptr_my_visual_component);
+		VisualComponent* TellMainVisualComponent();
 		void DeleteAllVisualComponents();
-		void AddVisualComponent(VisualComponent* ptr_my_visual_component);
+		void AddVisualComponent(VisualComponent* ptr_my_visual_component, std::string component_name);
 		Sprite* SpawnSpriteUsingFactory(SpriteType desired_type);
 		void SetMyRenderLayer(int layer_number);
 		int TellRenderLayer();
