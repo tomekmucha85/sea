@@ -56,6 +56,12 @@ Sprite* FactorySpawningSprites::SpawnSprite(SpriteType desired_type, Coordinates
 		result = new SpriteGuiManaBar(ptr_center);
 		return result;
 	}
+	else if (desired_type == spr_implosion)
+	{
+		//printf("Requested spr_implosion object.\n");
+		result = new SpriteImplosion(ptr_center);
+		return result;
+	}
 	else
 	{
 		//printf("Requested some other object.\n");

@@ -31,6 +31,8 @@ class TextureBank
 		Texture* gui_mana_bar = nullptr;
 		std::string path_image_snailmage = "images/snailmage.png";
 		Texture* snailmage = nullptr;
+		std::string path_image_implosion = "images/implosion.png";
+		Texture* implosion = nullptr;
 
     public:
         //###################
@@ -45,6 +47,7 @@ class TextureBank
 		SDL_Texture* ptr_tex_exit = nullptr;
 		SDL_Texture* ptr_tex_gui_mana_bar = nullptr;
 		SDL_Texture* ptr_tex_snailmage = nullptr;
+		SDL_Texture* ptr_tex_implosion = nullptr;
         //###################
         //Functions
         //###################

@@ -10,6 +10,7 @@
 #include <SpriteExit.hpp>
 #include <SpriteGuiManaBar.hpp>
 #include <SpriteSnailmage.hpp>
+#include <SpriteImplosion.hpp>
 
 class FactorySpawningSprites
 {

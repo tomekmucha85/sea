@@ -170,7 +170,10 @@
     <ClInclude Include="Navigator.hpp" />
     <ClInclude Include="SpriteExit.hpp" />
     <ClInclude Include="SpriteGuiManaBar.hpp" />
+    <ClInclude Include="SpriteImplosion.hpp" />
     <ClInclude Include="SpriteSnailmage.hpp" />
+    <ClInclude Include="TimerCountdown.hpp" />
+    <ClInclude Include="TimerGeneral.hpp" />
     <ClInclude Include="TimerInterval.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="Sprite.hpp" />
@@ -230,11 +233,14 @@
     <ClCompile Include="SpriteClawy.cpp" />
     <ClCompile Include="SpriteExit.cpp" />
     <ClCompile Include="SpriteGuiManaBar.cpp" />
+    <ClCompile Include="SpriteImplosion.cpp" />
     <ClCompile Include="SpriteSnailmage.cpp" />
     <ClCompile Include="SpriteVortex.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="TextureBank.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerCountdown.cpp" />
+    <ClCompile Include="TimerGeneral.cpp" />
     <ClCompile Include="TimerInterval.cpp" />
     <ClCompile Include="VectorDrawing.cpp" />
     <ClCompile Include="VisualComponent.cpp" />

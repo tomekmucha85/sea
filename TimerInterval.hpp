@@ -1,24 +1,22 @@
-#ifndef TIMER_PERSONAL_HPP
-#define TIMER_PERSONAL_HPP
-#include <stdio.h>
-#include <SDL.h>
-#include <Timer.hpp>
+#ifndef TIMER_INTERVAL_HPP
+#define TIMER_INTERVAL_HPP
+#include <TimerGeneral.hpp>
 
-class TimerInterval
+class TimerInterval : public TimerGeneral
 {
 private:
 
 public:
 	//VARIABLES
-	Uint32 start_time = 0;
 	Uint32 interval = 0;
 	Uint32 intervals_passed_during_last_check = 0;
 
 	//FUNCTIONS
 	TimerInterval(Uint32 my_interval);
-	Uint32 HowMuchTimePassedFromStart();
+	int HowManyIntervalsPassedFromStart();
 	bool CheckIfIntervalPassed();
+	Uint32 HowManyMilisecondsLeftTillNextIntervalHit();
 };
 
 
-#endif //TIMER_HPP
+#endif //TIMER_INTERVAL_HPP

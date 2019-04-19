@@ -216,6 +216,15 @@
     <ClInclude Include="SpriteSnailmage.hpp">
       <Filter>Header Files\VisualComponents\Sprites</Filter>
     </ClInclude>
+    <ClInclude Include="TimerCountdown.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerGeneral.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteImplosion.hpp">
+      <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -372,6 +381,15 @@
       <Filter>Source Files\Creatures</Filter>
     </ClCompile>
     <ClCompile Include="SpriteSnailmage.cpp">
+      <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerGeneral.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerCountdown.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteImplosion.cpp">
       <Filter>Source Files\VisualComponents\Sprites</Filter>
     </ClCompile>
   </ItemGroup>

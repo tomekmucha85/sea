@@ -50,7 +50,9 @@ class Sprite : public VisualComponent
 		void SetDirectionFromEightPossibilities(double angle_degrees);
 		Directions TellCurrentDirection();
         void Render();
-        void PlayAnimation(std::vector <SDL_Rect> animation_clips, int delay_between_frames=3);
+        void PlayAnimation(std::vector <SDL_Rect> animation_clips, 
+			int delay_between_frames=3,
+			bool* ptr_has_animation_reached_last_frame=nullptr);
         void ResetAnimationFrame();
 
         //Animations (including dummy virtual methods)

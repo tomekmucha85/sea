@@ -207,7 +207,9 @@ std::vector <SDL_Rect> Sprite::CalculateAnimationClips( SDL_Rect area, int clip_
     return clips;
 }
 
-void Sprite::PlayAnimation(std::vector <SDL_Rect> animation_clips, int delay_between_frames)
+void Sprite::PlayAnimation(std::vector <SDL_Rect> animation_clips, 
+	int delay_between_frames,
+    bool* ptr_has_animation_reached_last_frame)
 {
 	//printf("Play animation called for sprite!\n");
     int animation_frames_count = static_cast<int>(animation_clips.size());
@@ -217,7 +219,18 @@ void Sprite::PlayAnimation(std::vector <SDL_Rect> animation_clips, int delay_bet
     if( (static_cast<int>(animation_frame / delay_between_frames)) >= animation_frames_count)
     {
         ResetAnimationFrame();
+		if (ptr_has_animation_reached_last_frame != nullptr)
+		{
+			*ptr_has_animation_reached_last_frame = true;
+		}
     }
+	else
+	{
+		if (ptr_has_animation_reached_last_frame != nullptr)
+		{
+			*ptr_has_animation_reached_last_frame = false;
+		}
+	}
 }
 
 void Sprite::SetCurrentAnimation(AnimationType my_animation_type)

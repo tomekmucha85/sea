@@ -93,6 +93,20 @@ void Creature::DeleteAllVisualComponents()
 	visual_components.clear();
 }
 
+Sprite* Creature::SpawnSpriteUsingFactory(SpriteType desired_type)
+{
+	//#TODO - na razie spawnuje tylko w centrum Creature
+	if (ptr_sprites_factory != nullptr)
+	{
+		ptr_sprites_factory->SpawnSprite(desired_type, &(TellCenterPoint()));
+	}
+	else
+	{
+		printf("No sprites factory defined for creature %p!\n", this);
+		return nullptr;
+	}
+}
+
 //******************************************
 //SETTING MAIN CHARACTER AND OPERATIONS ON MAIN INSTANCES ARRAY
 //******************************************
@@ -1035,7 +1049,7 @@ bool Creature::HasMyTimePassedOnThisWorld()
 {
 	if (ptr_time_left_to_live != nullptr)
 	{
-		if (ptr_time_left_to_live->CheckIfIntervalPassed())
+		if (ptr_time_left_to_live->CheckIfCountdownFinished())
 		{
 			printf("This guy's time on this world has passed - %p\n", this);
 			return true;
@@ -1047,7 +1061,7 @@ bool Creature::HasMyTimePassedOnThisWorld()
 void Creature::SetTimeToLive(unsigned int seconds)
 {
 	unsigned int miliseconds = seconds * 1000;
-	ptr_time_left_to_live = new TimerInterval(miliseconds);
+	ptr_time_left_to_live = new TimerCountdown(miliseconds);
 }
 
 void Creature::ResetTimeToLive()

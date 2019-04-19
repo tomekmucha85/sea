@@ -8,5 +8,6 @@ private:
 public:
 	CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin = 30);
 	void SetVelocity(double my_velocity);
+	void PlayAnimationIfTimeToLiveDropsBelowThreshold(int threshold_miliseconds=3000);
 };
 #endif // CREATURE_CARRIER_A_HPP

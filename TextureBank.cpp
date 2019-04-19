@@ -21,6 +21,8 @@ TextureBank::TextureBank(SDL_Renderer* renderer)
 	ptr_tex_gui_mana_bar = gui_mana_bar->texture;
 	Texture* snailmage = new Texture(path_image_snailmage, renderer);
 	ptr_tex_snailmage = snailmage->texture;
+	Texture* implosion = new Texture(path_image_implosion, renderer);
+	ptr_tex_implosion = implosion->texture;
     printf("Finished loading textures\n");
 }
 
@@ -35,4 +37,5 @@ TextureBank::~TextureBank()
 	delete exit;
 	delete gui_mana_bar;
 	delete snailmage;
+	delete implosion;
 }

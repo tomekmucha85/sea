@@ -75,7 +75,17 @@ enum NavigatorMode {navig_undetermined, navig_circle, navig_coordinates_list, na
 enum NavigationState {active, inactive};
 
 //Sprite names
-enum SpriteType { spr_clawy, spr_snailmage, spr_background, spr_box, spr_black_smoke, spr_vortex, spr_exit, spr_gui_mana_bar };
+enum SpriteType { 
+	spr_clawy, 
+	spr_snailmage, 
+	spr_background, 
+	spr_box, 
+	spr_black_smoke, 
+	spr_vortex, 
+	spr_exit, 
+	spr_gui_mana_bar,
+	spr_implosion,
+};
 
 //Animation types
 enum AnimationType {anim_none, anim_idle, anim_walk, anim_vortex};

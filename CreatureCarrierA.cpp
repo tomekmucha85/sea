@@ -7,7 +7,6 @@ CreatureCarrierA::CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin
 	my_type = cre_carrier_a;
 	//Cre_clawy does not collide with another cre_clawy
 	//#TODO - czy nie statyczne?
-	//#TODO - przerobiæ dla snailmage
 	AddCreatureTypeToCollisionExceptions(cre_clawy);
 	AddCreatureTypeToCollisionExceptions(cre_carrier_a);
 	VisualComponent* ptr_main_visual_component = visual_components[0];
@@ -30,3 +29,8 @@ void CreatureCarrierA::SetVelocity(double my_velocity)
 	Creature::SetVelocity(my_velocity);
 }
 
+void CreatureCarrierA::PlayAnimationIfTimeToLiveDropsBelowThreshold(int threshold_miliseconds)
+{
+	VisualComponent* ptr_warning_animation = SpawnSpriteUsingFactory(spr_implosion);
+	AddVisualComponent(ptr_warning_animation);
+}

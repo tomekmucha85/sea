@@ -19,6 +19,7 @@
 #include <CustomDefinedTypes.hpp>
 #include <Timer.hpp>
 #include <TimerInterval.hpp>
+#include <TimerCountdown.hpp>
 #include <Navigator.hpp>
 #include <FactorySpawningNavigators.hpp>
 #include <CommonMath.hpp>
@@ -99,7 +100,7 @@ class Creature
 		//Contains actions associated to specific creature which will be performed during every game loop / every n game loops.
 		std::vector<std::function<void(Creature*)>> cyclic_actions = {};
 		//Timer
-		TimerInterval* ptr_time_left_to_live = nullptr;
+		TimerCountdown* ptr_time_left_to_live = nullptr;
 		//Is the creature living? Dead creatures should be deleted in LevelComponent plane
 		bool am_i_alive = true;
 		//How much mana do I have?
@@ -155,6 +156,7 @@ class Creature
 		void SetMyVisualComponent(VisualComponent* ptr_my_visual_component);
 		void DeleteAllVisualComponents();
 		void AddVisualComponent(VisualComponent* ptr_my_visual_component);
+		Sprite* SpawnSpriteUsingFactory(SpriteType desired_type);
 		void SetMyRenderLayer(int layer_number);
 		int TellRenderLayer();
 		void MakeMeObstacle();
