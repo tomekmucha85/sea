@@ -265,7 +265,6 @@ class Creature
 		int TellManaLevel();
 		void SetManaLevel(int new_level);
 		void ChangeManaLevel(int change_amount);
-        void PrintStupidThings(Creature* ptr_to_creature);
 
 		//###################
 		//Virtual functions

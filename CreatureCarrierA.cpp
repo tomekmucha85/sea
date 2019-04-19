@@ -11,6 +11,7 @@ CreatureCarrierA::CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin
 	AddCreatureTypeToCollisionExceptions(cre_carrier_a);
 	TellMainVisualComponent()->SetCurrentAnimation(anim_idle);
 	AddCyclicAction(func_warn_if_time_to_live_gets_short);
+	SetTimeToLive(default_time_to_live_seconds);
 }
 
 void CreatureCarrierA::SetVelocity(double my_velocity)

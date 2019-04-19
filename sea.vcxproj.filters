@@ -64,6 +64,12 @@
     <Filter Include="Source Files\Levels">
       <UniqueIdentifier>{06902961-88c7-48d0-b4c6-bbb6b3c10ff3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Timers">
+      <UniqueIdentifier>{b40c1206-6595-4e32-a369-7e18e73bc9d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Timers">
+      <UniqueIdentifier>{2eec9ac9-3741-486f-9b5e-d00da28a256c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp">
@@ -73,12 +79,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CustomDefinedTypes.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TimerInterval.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Creature.hpp">
@@ -216,14 +216,23 @@
     <ClInclude Include="SpriteSnailmage.hpp">
       <Filter>Header Files\VisualComponents\Sprites</Filter>
     </ClInclude>
-    <ClInclude Include="TimerCountdown.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TimerGeneral.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SpriteImplosion.hpp">
       <Filter>Header Files\VisualComponents\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.hpp">
+      <Filter>Header Files\Timers</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerCountdown.hpp">
+      <Filter>Header Files\Timers</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerGeneral.hpp">
+      <Filter>Header Files\Timers</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerInterval.hpp">
+      <Filter>Header Files\Timers</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerStartStop.hpp">
+      <Filter>Header Files\Timers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -237,12 +246,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Behavior.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TimerInterval.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Creature.cpp">
@@ -386,11 +389,20 @@
     <ClCompile Include="TimerGeneral.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="TimerCountdown.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SpriteImplosion.cpp">
       <Filter>Source Files\VisualComponents\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerCountdown.cpp">
+      <Filter>Source Files\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerInterval.cpp">
+      <Filter>Source Files\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerStartStop.cpp">
+      <Filter>Source Files\Timers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

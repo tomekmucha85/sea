@@ -12,6 +12,8 @@ public:
     //# VARIABLES
     //#####################
 
+	unsigned int default_time_to_live_seconds = 60;
+	bool is_being_followed = false;
 	bool was_time_warning_activated = false;
 
 	//#####################

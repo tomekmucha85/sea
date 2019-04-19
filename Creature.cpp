@@ -12,15 +12,9 @@ const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
 //STATIC METHODS
 //**************
 
-
 //************
 //DEBUG
 //************
-
-void Creature::PrintStupidThings(Creature* ptr_to_creature)
-{
-    printf("Dupa\n");
-}
 
 //************
 //CONSTRUCTORS

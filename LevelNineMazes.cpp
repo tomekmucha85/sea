@@ -166,8 +166,6 @@ void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 			{
 				was_carrier_created = true;
 				ptr_carrier->SetBehaviorMode(beh_go_towards_fixed_point, &carrier_destination);
-				//DEBUG!!!//
-				ptr_carrier->SetTimeToLive(5);
 			}
 			else
 			{
