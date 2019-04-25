@@ -12,7 +12,7 @@ Uint32 TimerGeneral::HowManyMilisecondsPassedFromStart()
 	return result;
 }
 
-void TimerGeneral::ResetTimer()
+void TimerGeneral::ResetStartTime()
 {
 	Uint32 current_time = SDL_GetTicks();
 	start_time = current_time;

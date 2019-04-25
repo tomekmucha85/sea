@@ -8,6 +8,7 @@ std::vector <Creature*> Creature::current_environment;
 std::vector <CreatureType> Creature::walls = { cre_flying_box, cre_spell_open_doors };
 Creature* Creature::ptr_current_main_charater;
 const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
+
 //**************
 //STATIC METHODS
 //**************
@@ -204,7 +205,6 @@ void Creature::RemoveVisualComponent(std::string component_name)
 	}
 
 }
-
 
 void Creature::SetMyRenderLayer(int layer_number)
 {
@@ -1061,6 +1061,12 @@ void Creature::PerformCyclicActions()
 	{
 		action(this);
 	}
+	PerformCyclicActionsClassSpecific();
+}
+
+void Creature::PerformCyclicActionsClassSpecific()
+{
+	;//JUST A DUMMY VIRTUAL FUNCTION - EVERY CLASS MAY HAVE OWN IMPLEMENTATION
 }
 
 void Creature::AddCyclicAction(std::function<void(Creature*)> my_cyclic_action)
@@ -1082,22 +1088,24 @@ std::vector<CreatureSpawnRequest>* Creature::TellSpawnRequests()
 }
 
 //***********************************
-//MATTER OF LIFE AND DEATH
+// TIMING
 //***********************************
 
-void Creature::Kill()
+void Creature::SetTimeToLive(unsigned int seconds)
 {
-	am_i_alive = false;
-};
-
-void Creature::Resurrect()
-{
-	am_i_alive = true;
+	unsigned int miliseconds = seconds * 1000;
+	ptr_time_left_to_live = new TimerCountdown(miliseconds);
 }
 
-bool Creature::AmIAlive()
+void Creature::ResetTimeToLive()
 {
-	return am_i_alive;
+	//#TODO - implement!;
+}
+
+void Creature::SetTimeToLiveToInfinity()
+{
+	delete ptr_time_left_to_live;
+	ptr_time_left_to_live = nullptr;
 }
 
 Uint32 Creature::HowMuchTimeLeftForMe()
@@ -1126,26 +1134,23 @@ bool Creature::HasMyTimePassedOnThisWorld()
 	return false;
 }
 
-void Creature::SetTimeToLive(unsigned int seconds)
+//***********************************
+//MATTER OF LIFE AND DEATH
+//***********************************
+
+void Creature::Kill()
 {
-	unsigned int miliseconds = seconds * 1000;
-	ptr_time_left_to_live = new TimerCountdown(miliseconds);
+	am_i_alive = false;
+};
+
+void Creature::Resurrect()
+{
+	am_i_alive = true;
 }
 
-void Creature::ResetTimeToLive()
+bool Creature::AmIAlive()
 {
-	//#TODO - implement!;
-}
-
-void Creature::SetTimeToLiveToInfinity()
-{
-	delete ptr_time_left_to_live;
-	ptr_time_left_to_live = nullptr;
-}
-
-void Creature::PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint32 threshold_miliseconds)
-{
-	printf("PlayWarningAnimationIfTimeToLiveDropsBelowThreshold not implemented in this scope.\n");
+	return am_i_alive;
 }
 
 //********************************************

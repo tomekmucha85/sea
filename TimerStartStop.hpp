@@ -5,16 +5,18 @@
 class TimerStartStop : public TimerGeneral
 {
 private:
-	Uint32 stop_time = 0;
+	bool is_counting = true;
 	Uint32 aggregated_time = 0;
 
 public:
 
 	//FUNCTIONS
 	TimerStartStop();
-	void ContinueMeasurement();
+	void Start();
 	void Stop();
-	Uint32 ReadAggregatedTime();
+	Uint32 Read();
+	bool IsTicking();
+	void ResetTimer();
 
 };
 

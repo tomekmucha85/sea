@@ -5,17 +5,38 @@ TimerStartStop::TimerStartStop() : TimerGeneral()
 	;
 }
 
-void TimerStartStop::ContinueMeasurement()
+void TimerStartStop::Start()
 {
-	;
+	ResetStartTime();
+	is_counting = true;
 }
 
 void TimerStartStop::Stop()
 {
 	aggregated_time += HowManyMilisecondsPassedFromStart();
+	is_counting = false;
 }
 
-Uint32 TimerStartStop::ReadAggregatedTime()
+Uint32 TimerStartStop::Read()
 {
-	return aggregated_time;
+	if (is_counting == false)
+	{
+		return aggregated_time;
+	}
+	else
+	{
+		return HowManyMilisecondsPassedFromStart() + aggregated_time;
+	}
+}
+
+void TimerStartStop::ResetTimer()
+{
+	//Resets aggregated time and starts counting.
+	aggregated_time = 0;
+	Start();
+}
+
+bool TimerStartStop::IsTicking()
+{
+	return is_counting;
 }

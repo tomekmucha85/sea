@@ -20,6 +20,7 @@
 #include <Timer.hpp>
 #include <TimerInterval.hpp>
 #include <TimerCountdown.hpp>
+#include <TimerStartStop.hpp>
 #include <Navigator.hpp>
 #include <FactorySpawningNavigators.hpp>
 #include <CommonMath.hpp>
@@ -134,7 +135,7 @@ class Creature
         //Holds address of Creature acting as current main character
         static Creature* ptr_current_main_charater;
 
-		//Request to assign navigation path
+		//NAVIGATION
 		//#TODO - spokojnie mo¿na zast¹piæ zwyk³¹ tablic¹
 		std::vector<RandomPathRequest> random_path_requests = {};
 		std::vector<PointToPointPathRequest> point_to_point_path_requests = {};
@@ -209,6 +210,7 @@ class Creature
 		bool AmIVisible();
 		void SetVisibility(bool should_be_visible);
 		void PerformCyclicActions();
+		virtual void PerformCyclicActionsClassSpecific();
 		void AddCyclicAction(std::function<void(Creature*)> my_cyclic_action);
 		void AddCommonCyclicActions();
 		//#TODO - napisaæ funkcjê do usuwania akcji cyklicznych
@@ -255,16 +257,20 @@ class Creature
 		void Kill();
 		void Resurrect();
 		bool AmIAlive();
+		void CastSpell(SpellName my_spell_name);
+		int TellManaLevel();
+		void SetManaLevel(int new_level);
+		void ChangeManaLevel(int change_amount);
+
+		//###################
+        //Timing
+        //###################
+
 		void SetTimeToLive(unsigned int seconds);
 		void ResetTimeToLive();
 		void SetTimeToLiveToInfinity();
 		bool HasMyTimePassedOnThisWorld();
 		Uint32 HowMuchTimeLeftForMe();
-		virtual void PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint32 threshold_miliseconds);
-		void CastSpell(SpellName my_spell_name);
-		int TellManaLevel();
-		void SetManaLevel(int new_level);
-		void ChangeManaLevel(int change_amount);
 
 		//###################
 		//Virtual functions
@@ -300,11 +306,6 @@ class Creature
 				printf("Killed 'cause time expired!\n");
 				ptr_creature->Kill();
 			}
-		};
-
-		std::function<void(Creature*)> func_warn_if_time_to_live_gets_short = [](Creature* ptr_creature)
-		{
-			ptr_creature->PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(3000);
 		};
 
 };

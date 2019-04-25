@@ -15,7 +15,7 @@ public:
 	//FUNCTIONS
 	TimerGeneral();
 	Uint32 HowManyMilisecondsPassedFromStart();
-	void ResetTimer();
+	void ResetStartTime();
 };
 
 #endif
