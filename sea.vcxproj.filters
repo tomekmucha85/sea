@@ -234,6 +234,9 @@
     <ClInclude Include="TimerStartStop.hpp">
       <Filter>Header Files\Timers</Filter>
     </ClInclude>
+    <ClInclude Include="Brain.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -403,6 +406,9 @@
     </ClCompile>
     <ClCompile Include="TimerStartStop.cpp">
       <Filter>Source Files\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="Brain.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

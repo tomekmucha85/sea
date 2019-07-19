@@ -13,7 +13,7 @@ private:
     //Timer for measuring how long was the creature remaining in hero's proximity.
 	TimerStartStop* ptr_timer_for_hero_proximity = nullptr;
 	//How long can the creature survive in presence of main hero
-	Uint32 allowed_time_to_remain_close_to_main_characte_seconds = 15;
+	Uint32 allowed_time_to_live_in_presence_of_main_character_miliseconds = 5000;
 
 public:
 
@@ -21,8 +21,9 @@ public:
     //# VARIABLES
     //#####################
 
-	unsigned int default_time_to_live_seconds = 15;
+	unsigned int default_time_to_live_miliseconds = 120000;
 	bool was_time_warning_activated = false;
+	bool was_main_character_presence_trigger_activated = false;
 
 	//#####################
     //# FUNCTIONS
@@ -34,12 +35,17 @@ public:
 	void SetVelocity(double my_velocity);
 	void PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint32 threshold_miliseconds);
 	bool AmIWithinMainCharacterProximityRadius();
-	void MeasureTimeSpentInMainCharacterProximity();
-	Uint32 TellTimeSpentInHeroProximity();
+	Uint32 MeasureTimeSpentInMainCharacterProximity();
+	void ManageMainCharacterProximityTrigger();
 
 	std::function<void(CreatureCarrierA*)> func_warn_if_time_to_live_gets_short = [](CreatureCarrierA* ptr_creature)
 	{
 		ptr_creature->PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(3000);
+	};
+
+	std::function<void(CreatureCarrierA*)> func_manage_main_character_proximity_trigger = [](CreatureCarrierA* ptr_creature)
+	{
+		ptr_creature->ManageMainCharacterProximityTrigger();
 	};
 };
 #endif // CREATURE_CARRIER_A_HPP

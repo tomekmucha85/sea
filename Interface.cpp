@@ -155,6 +155,30 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 	}
 
 }
+
+void Interface::UseInterface(std::string bci_detection)
+{
+	if (current_mode == interf_menu)
+	{
+		;
+	}
+	else if (current_mode == interf_guided)
+	{
+		;
+	}
+	else if (current_mode == interf_free)
+	{
+		if (bci_detection == "smile")
+		{
+			printf("Interface got smile!\n");
+		}
+		else if (bci_detection == "clench")
+		{
+			printf("Interface got clench!\n");
+		}
+	}
+}
+
 void Interface::UseInterface(EmoEngineEventHandle my_eEvent)
 {
 	if (current_mode == interf_menu)

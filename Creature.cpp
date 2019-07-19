@@ -1091,9 +1091,8 @@ std::vector<CreatureSpawnRequest>* Creature::TellSpawnRequests()
 // TIMING
 //***********************************
 
-void Creature::SetTimeToLive(unsigned int seconds)
+void Creature::SetTimeToLive(unsigned int miliseconds)
 {
-	unsigned int miliseconds = seconds * 1000;
 	ptr_time_left_to_live = new TimerCountdown(miliseconds);
 }
 

@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Brain.hpp" />
     <ClInclude Include="CommonMath.hpp" />
     <ClInclude Include="Creature.hpp" />
     <ClInclude Include="CreatureBlackSmoke.hpp" />
@@ -191,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Behavior.cpp" />
+    <ClCompile Include="Brain.cpp" />
     <ClCompile Include="CommonMath.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="CreatureBlackSmoke.cpp" />

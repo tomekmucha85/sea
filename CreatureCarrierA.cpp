@@ -1,6 +1,6 @@
 #include <CreatureCarrierA.hpp>
 
-const double CreatureCarrierA::RADIUS_FOR_MAIN_CHARACTER_PROXIMITY_CHECKS = 40;
+const double CreatureCarrierA::RADIUS_FOR_MAIN_CHARACTER_PROXIMITY_CHECKS = 80;
 
 CreatureCarrierA::CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin) :
 	Creature(CreatureCarrierA::my_initial_type, ptr_my_center, hitbox_margin)
@@ -15,7 +15,8 @@ CreatureCarrierA::CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin
 	ptr_timer_for_hero_proximity = new TimerStartStop();
 	//#TODO - napisaæ funkcjê do dodawania cyclic actions na poziomie klasy
 	cyclic_actions_class_specific.push_back(func_warn_if_time_to_live_gets_short);
-	SetTimeToLive(default_time_to_live_seconds);
+	cyclic_actions_class_specific.push_back(func_manage_main_character_proximity_trigger);
+	SetTimeToLive(default_time_to_live_miliseconds);
 }
 
 CreatureCarrierA::~CreatureCarrierA()
@@ -27,6 +28,7 @@ void CreatureCarrierA::PerformCyclicActionsClassSpecific()
 {
 	for (std::function<void(CreatureCarrierA*)> action : cyclic_actions_class_specific)
 	{
+		//printf("Cyclic action class specific for %p.\n", this);
 		action(this);
 	}
 }
@@ -51,7 +53,7 @@ void CreatureCarrierA::PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint3
 	std::string name_of_warning_visual_component = "warning_time_threshold";
 	if (time_to_live <= threshold_miliseconds)
 	{
-		//printf("Warn! - %d ms left\n", time_to_live);
+		//printf("Warn! - %d ms left while threshold is %d\n", time_to_live, threshold_miliseconds);
 		if (was_time_warning_activated == false)
 		{
 			//printf("Warning activated!\n");
@@ -63,6 +65,7 @@ void CreatureCarrierA::PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint3
 	}
 	else
 	{
+		//printf("No worry - %d miliseconds left while threshold is %d.\n", time_to_live, threshold_miliseconds);
 		//In case time to live was increased - get rid of warning animation
 		if (was_time_warning_activated == true)
 		{
@@ -86,6 +89,7 @@ bool CreatureCarrierA::AmIWithinMainCharacterProximityRadius()
 		double distance_to_hero = Distance::CalculateDistanceBetweenPoints(TellCenterPoint(), Creature::ptr_current_main_charater->TellCenterPoint());
 		if (distance_to_hero <= RADIUS_FOR_MAIN_CHARACTER_PROXIMITY_CHECKS)
 		{
+			//printf("%p is close to main character: %f!\n", this, distance_to_hero);
 			result = true;
 		}
 		else
@@ -96,7 +100,8 @@ bool CreatureCarrierA::AmIWithinMainCharacterProximityRadius()
 	return result;
 }
 
-void CreatureCarrierA::MeasureTimeSpentInMainCharacterProximity()
+Uint32 CreatureCarrierA::MeasureTimeSpentInMainCharacterProximity()
+//#TODO - UNUSED, should be deleted?
 {
 	if (AmIWithinMainCharacterProximityRadius())
 	{
@@ -120,9 +125,29 @@ void CreatureCarrierA::MeasureTimeSpentInMainCharacterProximity()
 			;
 		}
 	}
-}
-
-Uint32 CreatureCarrierA::TellTimeSpentInHeroProximity()
-{
 	return ptr_timer_for_hero_proximity->Read();
 }
+
+void CreatureCarrierA::ManageMainCharacterProximityTrigger()
+{
+	if (was_main_character_presence_trigger_activated == true)
+	{
+		if (AmIWithinMainCharacterProximityRadius() == false)
+		{
+			SetTimeToLive(default_time_to_live_miliseconds);
+			was_main_character_presence_trigger_activated = false;
+		}
+	}
+	else
+	{
+		if (was_main_character_presence_trigger_activated == false)
+		{
+			if (AmIWithinMainCharacterProximityRadius() == true)
+			{
+				SetTimeToLive(allowed_time_to_live_in_presence_of_main_character_miliseconds);
+				was_main_character_presence_trigger_activated = true;
+			}
+		}
+	}
+}
+

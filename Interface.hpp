@@ -15,6 +15,7 @@ class Interface
     public:
 		void UseInterface(SDL_Event* ptr_my_event_handler);
 		void UseInterface(EmoEngineEventHandle my_eEvent);
+		void UseInterface(std::string bci_detection);
 		void SetInterfaceMode(InterfaceMode my_mode);
 		InterfaceMode TellInterfaceMode();
 

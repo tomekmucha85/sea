@@ -27,7 +27,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 
 	//MAIN CHARACTER BEHAVIOR
     //Creature::ptr_current_main_charater->SetBehaviorMode(beh_go_towards_fixed_point, &win_center);
-	Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_death_magnetic, ptr_losing_trigger);
+	//Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_death_magnetic, ptr_losing_trigger);
 
 	//How many map blocks will have a maze segment?
 	SetMazeRowsCount(my_rows_count);
@@ -113,10 +113,10 @@ std::pair<Coordinates, Coordinates> LevelNineMazes::CalculateLevelConstraints()
 void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 {
 	std::pair<Coordinates, Coordinates> level_constraints = CalculateLevelConstraints();
-	int min_carrier_start_point_x = level_constraints.first.x;
-	int min_carrier_start_point_y = level_constraints.first.y;
-	int max_carrier_start_point_x = level_constraints.second.x;
-	int max_carrier_start_point_y = level_constraints.second.y;
+	int min_carrier_start_point_x = level_constraints.first.x + 1000;
+	int min_carrier_start_point_y = level_constraints.first.y + 1000;
+	int max_carrier_start_point_x = level_constraints.second.x - 1000;
+	int max_carrier_start_point_y = level_constraints.second.y - 1000;
 
 	for (unsigned int i = 0; i < carriers_number; i++)
 	{
