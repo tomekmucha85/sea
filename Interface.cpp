@@ -72,6 +72,12 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 		{
 			Creature::ptr_current_main_charater->CastSpell(spell_vortex);
 		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+			ptr_my_event_handler->key.keysym.sym == SDLK_DELETE &&
+			ptr_my_event_handler->key.repeat == 0)
+		{
+			Creature::ptr_current_main_charater->Attack(attack_melee);
+		}
 		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
 			     ptr_my_event_handler->key.keysym.sym == SDLK_r && 
 			     ptr_my_event_handler->key.repeat == 0)

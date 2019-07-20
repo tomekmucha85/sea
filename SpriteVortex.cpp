@@ -25,12 +25,14 @@ SpriteVortex::SpriteVortex(Coordinates* ptr_my_center)
 //OVERLOADED VIRTUAL METHODS
 //***********************************
 
-void SpriteVortex::IdleAnimation()
+void SpriteVortex::IdleAnimation(bool* ptr_did_animation_reach_last_frame)
 {
-	VortexAnimation();
+	VortexAnimation(ptr_did_animation_reach_last_frame);
 }
 
-void SpriteVortex::VortexAnimation()
+void SpriteVortex::VortexAnimation(bool* ptr_did_animation_reach_last_frame)
 {
-	Sprite::PlayAnimation(vortex_animation_clips,1);
+	Sprite::PlayAnimation(vortex_animation_clips,
+		ptr_did_animation_reach_last_frame,
+		1);
 }

@@ -8,6 +8,7 @@ std::vector <Creature*> Creature::current_environment;
 std::vector <CreatureType> Creature::walls = { cre_flying_box, cre_spell_open_doors };
 Creature* Creature::ptr_current_main_charater;
 const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
+const double Creature::RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS = 80;
 
 //**************
 //STATIC METHODS
@@ -929,62 +930,83 @@ bool Creature::IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other
 	return result;
 }
 
-Creature* Creature::FindClosestAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit)
+std::vector<Creature*> Creature::FindAllAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit)
 {
-	Creature* result = nullptr;
-	double shortest_distance = 0;
-	std::string message = "Distance limit for finding carrier : " +
-		std::to_string(distance_limit);
-	Logger::Log(message, debug_full);
+	std::vector<Creature*> result = {};
+	//double shortest_distance = 0;
+	Logger::Log("Distance limit for finding carrier : " + std::to_string(distance_limit), debug_full);
 	std::vector<Creature*> neighboring_creatures = FindNeighborsInSet(&current_environment, static_cast<int>(distance_limit));
+	Coordinates my_center = TellCenterPoint();
 	for (Creature* ptr_neighboring_creature : neighboring_creatures)
 	{
 		if (ptr_neighboring_creature->my_type == desired_type && ptr_neighboring_creature != this)
 		{
-			Coordinates my_center = TellCenterPoint();
 			Coordinates other_creature_center = ptr_neighboring_creature->TellCenterPoint();
-            //LOGGING ADDRESSES
-			//std::ostringstream address;
-			//address << (void const *)ptr_neighboring_creature;
-		    //std::string address_as_string = address.str();
+
+			//LOGGING
 			std::string message = "Found neighboring creature of desired type" +
 				Creature::ConvertCreaturePointerToString(ptr_neighboring_creature);
 			Logger::Log(message, debug_full);
-			Logger::Log("Creature at: x: " + 
-			    std::to_string(ptr_neighboring_creature->TellCenterPoint().x) + 
-				" y: " + 
+			Logger::Log("Creature at: x: " +
+				std::to_string(ptr_neighboring_creature->TellCenterPoint().x) +
+				" y: " +
 				std::to_string(ptr_neighboring_creature->TellCenterPoint().y),
 				debug_full);
-			//printf("X: %f, Y: %f\n", ptr_neighboring_creature->TellCenterPoint().x, ptr_neighboring_creature->TellCenterPoint().y);
-			//printf("My center: X: %f, Y:%f\n", TellCenterPoint().x, TellCenterPoint().y);
-			Logger::Log("My center: x: " + 
+			Logger::Log("My center: x: " +
 				std::to_string(TellCenterPoint().x) +
 				" y: " +
-				std::to_string(TellCenterPoint().y), 
+				std::to_string(TellCenterPoint().y),
 				debug_full);
+			//LOGGING END
+
 			if (IsThereCorridorBetweenThesePointsInCurrentEnvironment(my_center, other_creature_center, TellHitbox().w, distance_limit))
 			{
-				double distance = Distance::CalculateDistanceBetweenPoints(my_center, other_creature_center);
-				if (shortest_distance == 0)
-				{
-					shortest_distance = distance;
-					result = ptr_neighboring_creature;
-				}
-				else if (distance < shortest_distance)
-				{
-					shortest_distance = distance;
-					result = ptr_neighboring_creature;
-				}
-				else
-				{
-					;
-				}
+				result.push_back(ptr_neighboring_creature);
 			}
 		}
 	}
 	return result;
 }
 
+Creature* Creature::FindClosestAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit)
+{
+	Creature* result = nullptr;
+	double shortest_distance = 0;
+	std::vector<Creature*> candidates = FindAllAccessibleCreatureOfGivenType(desired_type, distance_limit);
+	Coordinates my_center = TellCenterPoint();
+	for (Creature* ptr_candidate : candidates)
+	{
+		Coordinates other_creature_center = ptr_candidate->TellCenterPoint();
+		double distance = Distance::CalculateDistanceBetweenPoints(my_center, other_creature_center);
+		if (shortest_distance == 0)
+		{
+			shortest_distance = distance;
+			result = ptr_candidate;
+		}
+		else if (distance < shortest_distance)
+		{
+			shortest_distance = distance;
+			result = ptr_candidate;
+		}
+		else
+		{
+			;
+		}
+	}
+	return result;
+}
+
+bool Creature::AmIWithinProximityRadiusOfCertainTypeCreature(CreatureType queried_type)
+{
+	bool result = false;
+	std::vector<Creature*> creatures_within_radius = FindAllAccessibleCreatureOfGivenType(queried_type,
+		RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS);
+	if (creatures_within_radius.size() > 0)
+	{
+		result = true;
+	}
+	return result;
+}
 //**************
 // ANIMATIONS
 //**************
@@ -1168,6 +1190,18 @@ void Creature::Resurrect()
 bool Creature::AmIAlive()
 {
 	return am_i_alive;
+}
+
+void Creature::Attack(AttackTypes my_type)
+{
+	if (my_type == attack_melee)
+	{
+		TellMainVisualComponent()->SetInterruptingAnimation(anim_attack_melee, 1);
+		Logger::Log("Melee attack performed by " + 
+		    ConvertCreaturePointerToString(this) +
+		    " !",
+			debug_info);
+	}
 }
 
 //********************************************

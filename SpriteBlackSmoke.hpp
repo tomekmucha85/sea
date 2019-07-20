@@ -16,7 +16,7 @@ private:
 public:
 
 	SpriteBlackSmoke(Coordinates* ptr_my_center);
-	void SmokeAnimation();
+	void SmokeAnimation(bool* ptr_did_animation_reach_last_frame = nullptr);
 };
 
 #endif //SPRITEBLACKSMOKE_HPP

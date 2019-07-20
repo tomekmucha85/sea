@@ -20,6 +20,8 @@ class Sprite : public VisualComponent
         //###################
         //Variables
         //###################
+		static int DEFAULT_DELAY_BETWEEN_FRAMES;
+
         int animation_frame = 0;
 		Directions current_direction = north;
 
@@ -27,6 +29,8 @@ class Sprite : public VisualComponent
         SDL_Rect texture_clip = {0,0,0,0};
 		static TextureBank* ptr_texture_bank;
 		AnimationType current_animation = anim_none;
+		AnimationType interrupting_animation = anim_none;
+		int interrupting_animation_times_to_be_played = 0;
 
         //###################
         //Functions
@@ -50,19 +54,23 @@ class Sprite : public VisualComponent
 		void SetDirectionFromEightPossibilities(double angle_degrees);
 		Directions TellCurrentDirection();
         void Render();
-        void PlayAnimation(std::vector <SDL_Rect> animation_clips, 
-			int delay_between_frames=3,
-			bool* ptr_has_animation_reached_last_frame=nullptr);
+        void PlayAnimation(std::vector <SDL_Rect> animation_clips,
+			bool* ptr_has_animation_reached_last_frame = nullptr,
+			int delay_between_frames=3);
         void ResetAnimationFrame();
 
         //Animations (including dummy virtual methods)
+		void PerformAnimationMethod(AnimationType my_type, 
+			bool* ptr_did_animation_reach_last_frame=nullptr);
 		void PlayCurrentAnimation();
+		void PlayInterruptingAnimation();
 		void SetCurrentAnimation(AnimationType my_animation_type);
-		virtual void IdleAnimation();
-        virtual void WalkAnimation();
-		virtual void SmokeAnimation();
-		virtual void VortexAnimation();
-		virtual void AttackAnimation();
+		void SetInterruptingAnimation(AnimationType my_animation_type, int my_times_to_be_played = 1);
+		virtual void IdleAnimation(bool* did_animation_reach_last_frame = nullptr);
+        virtual void WalkAnimation(bool* did_animation_reach_last_frame = nullptr);
+		virtual void SmokeAnimation(bool* did_animation_reach_last_frame = nullptr);
+		virtual void VortexAnimation(bool* did_animation_reach_last_frame = nullptr);
+		virtual void AttackAnimation(bool* did_animation_reach_last_frame = nullptr);
 		//Other virtual methods
 		virtual void SetClipAccordingToWallType(WallType my_type);
 

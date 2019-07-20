@@ -483,7 +483,7 @@ void Behavior::SetMode(BehaviorMode mode_to_be_set, Coordinates my_destination_p
 	if (mode_to_be_set != beh_go_towards_fixed_point)
 	{
 		printf("No use of specified destination point!\n");
-		throw("No use of specified destination point!\n");
+		throw std::invalid_argument("No use of specified destination point!\n");
 	}
 	was_mode_changed = true;
 	mode = mode_to_be_set;
@@ -599,7 +599,7 @@ void Behavior::MakeUseOfPathResponse(PointToPointPathResponse my_response)
 	delete ptr_navigator;
 	//#TODO - czy towrzenie anchora potrzebne?
 	Coordinates anchor = { 0, 0 };
-	Logger::Log("Received plan from nav grid. Plan:\n");
+	Logger::Log("Received plan from nav grid. Plan:");
 	for (Coordinates point : my_response.navigation_path)
 	{
 		std::string message = "x: " + std::to_string(point.x) + " y: " + std::to_string(point.y);

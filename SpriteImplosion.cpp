@@ -25,12 +25,12 @@ SpriteImplosion::SpriteImplosion(Coordinates* ptr_my_center)
 //OVERLOADED VIRTUAL METHODS
 //***********************************
 
-void SpriteImplosion::IdleAnimation()
+void SpriteImplosion::IdleAnimation(bool* ptr_did_animation_reach_last_frame)
 {
 	ImplosionAnimation();
 }
 
-void SpriteImplosion::ImplosionAnimation()
+void SpriteImplosion::ImplosionAnimation(bool* ptr_did_animation_reach_last_frame)
 {
-	Sprite::PlayAnimation(implosion_animation_clips, 1);
+	Sprite::PlayAnimation(implosion_animation_clips, ptr_did_animation_reach_last_frame, 1);
 }

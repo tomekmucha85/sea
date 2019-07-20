@@ -17,8 +17,8 @@ private:
 public:
 
 	SpriteImplosion(Coordinates* ptr_my_center);
-	void ImplosionAnimation();
-	void IdleAnimation();
+	void ImplosionAnimation(bool* ptr_did_animation_reach_last_frame = nullptr);
+	void IdleAnimation(bool* ptr_did_animation_reach_last_frame = nullptr);
 };
 
 #endif //SPRITEIMPLOSION_HPP

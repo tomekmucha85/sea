@@ -54,40 +54,48 @@ SpriteSnailmage::SpriteSnailmage(Coordinates* ptr_my_center)
 //OVERLOADED VIRTUAL METHODS
 //***********************************
 
-void SpriteSnailmage::IdleAnimation()
+void SpriteSnailmage::IdleAnimation(bool* ptr_did_animation_reach_last_frame)
 {
 	Directions direction = TellCurrentDirection();
 	if (direction == north)
 	{
-		Sprite::PlayAnimation(idle_animation_clips_north);
+		Sprite::PlayAnimation(idle_animation_clips_north,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == north_east)
 	{
-		Sprite::PlayAnimation(idle_animation_clips_north_east);
+		Sprite::PlayAnimation(idle_animation_clips_north_east,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == east)
 	{
-		Sprite::PlayAnimation(idle_animation_clips_east);
+		Sprite::PlayAnimation(idle_animation_clips_east,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == south_east)
 	{
-		Sprite::PlayAnimation(idle_animation_clips_south_east);
+		Sprite::PlayAnimation(idle_animation_clips_south_east,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == south)
 	{
-		Sprite::PlayAnimation(idle_animation_clips_south);
+		Sprite::PlayAnimation(idle_animation_clips_south,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == south_west)
 	{
-		Sprite::PlayAnimation(idle_animation_clips_south_west);
+		Sprite::PlayAnimation(idle_animation_clips_south_west,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == west)
 	{
-		Sprite::PlayAnimation(idle_animation_clips_west);
+		Sprite::PlayAnimation(idle_animation_clips_west,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == north_west)
 	{
-		Sprite::PlayAnimation(idle_animation_clips_north_west);
+		Sprite::PlayAnimation(idle_animation_clips_north_west,
+			ptr_did_animation_reach_last_frame);
 	}
 	else
 	{
@@ -95,40 +103,48 @@ void SpriteSnailmage::IdleAnimation()
 	}
 }
 
-void SpriteSnailmage::WalkAnimation()
+void SpriteSnailmage::WalkAnimation(bool* ptr_did_animation_reach_last_frame)
 {
 	Directions direction = TellCurrentDirection();
 	if (direction == north)
 	{
-		Sprite::PlayAnimation(walk_animation_clips_north);
+		Sprite::PlayAnimation(walk_animation_clips_north,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == north_east)
 	{
-		Sprite::PlayAnimation(walk_animation_clips_north_east);
+		Sprite::PlayAnimation(walk_animation_clips_north_east,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == east)
 	{
-		Sprite::PlayAnimation(walk_animation_clips_east);
+		Sprite::PlayAnimation(walk_animation_clips_east,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == south_east)
 	{
-		Sprite::PlayAnimation(walk_animation_clips_south_east);
+		Sprite::PlayAnimation(walk_animation_clips_south_east,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == south)
 	{
-		Sprite::PlayAnimation(walk_animation_clips_south);
+		Sprite::PlayAnimation(walk_animation_clips_south,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == south_west)
 	{
-		Sprite::PlayAnimation(walk_animation_clips_south_west);
+		Sprite::PlayAnimation(walk_animation_clips_south_west,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == west)
 	{
-		Sprite::PlayAnimation(walk_animation_clips_west);
+		Sprite::PlayAnimation(walk_animation_clips_west,
+			ptr_did_animation_reach_last_frame);
 	}
 	else if (direction == north_west)
 	{
-		Sprite::PlayAnimation(walk_animation_clips_north_west);
+		Sprite::PlayAnimation(walk_animation_clips_north_west,
+			ptr_did_animation_reach_last_frame);
 	}
 	else
 	{

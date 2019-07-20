@@ -21,7 +21,7 @@ SpriteBlackSmoke::SpriteBlackSmoke(Coordinates* ptr_my_center)
 //OVERLOADED VIRTUAL METHODS
 //***********************************
 
-void SpriteBlackSmoke::SmokeAnimation()
+void SpriteBlackSmoke::SmokeAnimation(bool* ptr_did_animation_reach_last_frame)
 {
 	SDL_Rect smoke_animation_area = { 0,0,900,47 };
 	SDL_Rect current_texture_clip = TellTextureClip();
@@ -29,5 +29,5 @@ void SpriteBlackSmoke::SmokeAnimation()
 	int clip_w = current_texture_clip.w;
 	int clip_h = current_texture_clip.h;
 	std::vector <SDL_Rect> smoke_clips = Sprite::CalculateAnimationClips(smoke_animation_area, clip_w, clip_h);
-	Sprite::PlayAnimation(smoke_clips, timeout_between_frames);
+	Sprite::PlayAnimation(smoke_clips, nullptr, timeout_between_frames);
 }

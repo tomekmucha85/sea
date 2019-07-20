@@ -178,6 +178,12 @@ void VisualComponent::SetCurrentAnimation(AnimationType my_animation_type)
 	printf("Default implementation of SetCurrentAnimation called!\n");
 }
 
+void VisualComponent::SetInterruptingAnimation(AnimationType my_animation_type,
+	int times_to_be_played)
+{
+	printf("Default implementation of SetInterruptingAnimation called!\n");
+}
+
 void VisualComponent::SetColor(Color my_color)
 {
 	printf("Default implementation of SetColor called!\n");

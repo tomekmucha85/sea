@@ -46,9 +46,9 @@ class SpriteClawy : public Sprite
 	//Functions
 	//###################
     SpriteClawy(Coordinates* ptr_my_center);
-    void WalkAnimation();
-	void IdleAnimation();
-	void AttackAnimation();
+    void WalkAnimation(bool* ptr_did_animation_reach_last_frame = nullptr);
+	void IdleAnimation(bool* ptr_did_animation_reach_last_frame=nullptr);
+	void AttackAnimation(bool* ptr_did_animation_reach_last_frame = nullptr);
 };
 
 #endif //SPRITECLAWY_HPP

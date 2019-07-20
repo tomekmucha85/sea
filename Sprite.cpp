@@ -5,7 +5,7 @@
 //***********************************
 
 TextureBank* Sprite::ptr_texture_bank = nullptr;
-
+int Sprite::DEFAULT_DELAY_BETWEEN_FRAMES = 3;
 
 /*SetPositionX(static_cast<int>(center.x - (current_texture_clip.w / 2)));
 SetPositionY(static_cast<int>(center.y - (current_texture_clip.h / 2)));
@@ -207,9 +207,9 @@ std::vector <SDL_Rect> Sprite::CalculateAnimationClips( SDL_Rect area, int clip_
     return clips;
 }
 
-void Sprite::PlayAnimation(std::vector <SDL_Rect> animation_clips, 
-	int delay_between_frames,
-    bool* ptr_has_animation_reached_last_frame)
+void Sprite::PlayAnimation(std::vector <SDL_Rect> animation_clips,
+	bool* ptr_has_animation_reached_last_frame,
+	int delay_between_frames)
 {
 	//printf("Play animation called for sprite!\n");
     int animation_frames_count = static_cast<int>(animation_clips.size());
@@ -239,32 +239,73 @@ void Sprite::SetCurrentAnimation(AnimationType my_animation_type)
 	current_animation = my_animation_type;
 }
 
-void Sprite::PlayCurrentAnimation()
+void Sprite::SetInterruptingAnimation(AnimationType my_animation_type, 
+	int my_times_to_be_played)
 {
-	if (current_animation == anim_none)
+	ResetAnimationFrame();
+	interrupting_animation_times_to_be_played = my_times_to_be_played;
+	interrupting_animation = my_animation_type;
+}
+
+void Sprite::PerformAnimationMethod(AnimationType my_type, bool* ptr_did_animation_reach_last_frame)
+{
+	if (my_type == anim_none)
 	{
 		//DO NOTHING;
 	}
-	else if (current_animation == anim_idle)
+	else if (my_type == anim_idle)
 	{
-		IdleAnimation();
+		IdleAnimation(ptr_did_animation_reach_last_frame);
 	}
-	else if (current_animation == anim_walk)
+	else if (my_type == anim_walk)
 	{
-		WalkAnimation();
+		WalkAnimation(ptr_did_animation_reach_last_frame);
 	}
-	else if (current_animation == anim_vortex)
+	else if (my_type == anim_vortex)
 	{
 		VortexAnimation();
 	}
-	else if (current_animation == anim_attack)
+	else if (my_type == anim_attack_melee)
 	{
-		AttackAnimation();
+		AttackAnimation(ptr_did_animation_reach_last_frame);
 	}
 	else
 	{
 		printf("Unknown animation type!\n");
 	}
+}
+
+void Sprite::PlayCurrentAnimation()
+{
+	if (interrupting_animation != anim_none)
+	{
+		//Interrupting animations are priviledged over "current" ones.
+		PlayInterruptingAnimation();
+	}
+	else
+	{
+		//Played only in case there is no "interrrupting animation" present.
+		PerformAnimationMethod(current_animation);
+	}
+}
+
+void Sprite::PlayInterruptingAnimation()
+{
+	//Interrrupting animation is played specified number of times.
+	//Every time last animation frame is reached, counter decreases.
+	//Hitting zero means that interrupting animation will be set to none.
+	bool has_animation_reached_last_frame = false;
+	PerformAnimationMethod(interrupting_animation, 
+		&has_animation_reached_last_frame);
+	if (has_animation_reached_last_frame)
+	{
+		interrupting_animation_times_to_be_played--;
+	}
+	if (interrupting_animation_times_to_be_played <= 0)
+	{
+		interrupting_animation = anim_none;
+	}
+	//animation_frame
 }
 
 void Sprite::ResetAnimationFrame()
@@ -309,27 +350,27 @@ TextureBank* Sprite::TellTextureBank()
 //Dummy virtual methods
 //#####################
 
-void Sprite::IdleAnimation()
+void Sprite::IdleAnimation(bool* ptr_did_animation_reach_last_frame)
 {
 	printf("Idle animation called for Sprite\n");
 }
 
-void Sprite::WalkAnimation()
+void Sprite::WalkAnimation(bool* ptr_did_animation_reach_last_frame)
 {
     printf("Walk animation called for Sprite\n");
 }
 
-void Sprite::SmokeAnimation()
+void Sprite::SmokeAnimation(bool* ptr_did_animation_reach_last_frame)
 {
 	printf("Smoke animation called for Sprite\n");
 }
 
-void Sprite::VortexAnimation()
+void Sprite::VortexAnimation(bool* ptr_did_animation_reach_last_frame)
 {
 	printf("Vortex animation called for Sprite\n");
 }
 
-void Sprite::AttackAnimation()
+void Sprite::AttackAnimation(bool* ptr_did_animation_reach_last_frame)
 {
 	printf("Attack animation called for Sprite\n");
 }

@@ -67,6 +67,8 @@ public:
 	virtual void SetClipAccordingToWallType(WallType my_type);
 	virtual void PlayCurrentAnimation();
 	virtual void SetCurrentAnimation(AnimationType my_animation_type);
+	virtual void SetInterruptingAnimation(AnimationType my_animation_type,
+		int times_to_be_played=1);
 
 	//STATIC HELPERS
 	static Screen* TellScreen();

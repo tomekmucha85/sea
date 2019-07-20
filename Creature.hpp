@@ -74,6 +74,7 @@ class Creature
 
 
 		static const double MARGIN_FOR_LINE_OF_SIGHT_CHECKS;
+		static const double RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS;
 
 		// Pointer to sprites factory
 		FactorySpawningSprites* ptr_sprites_factory = nullptr;
@@ -87,6 +88,8 @@ class Creature
         int current_angle_degree = 0;
         //Coordinates of next step.
         Coordinates next_step;
+		//Is creature unable to move?
+		bool move_lock = false;
         //Hitbox used for calculating collisions.
 		PreciseRect hitbox = {0,0,0,0};
 		//In what layer should the creature exist (important while rendering whole scene)
@@ -108,6 +111,12 @@ class Creature
 		bool am_i_alive = true;
 		//How much mana do I have?
 		int mana = 2;
+		//Attack range (in pixels, counting from Creature's center)
+		double melee_attack_range = 80;
+		//Melee field of attack (e.g. 90 means +45 and -45 degrees counting from line of sight)
+		double melee_attack_field_degrees = 180;
+		//How long melee attack takes? (miliseconds)
+		double melee_attack_duration = 700;
 		//Requests to spawn other creatures. Requests are collected by LevelComponent
 		std::vector<CreatureSpawnRequest> spawn_requests = {};
 
@@ -165,8 +174,6 @@ class Creature
 		Sprite* SpawnSpriteUsingFactory(SpriteType desired_type);
 		void SetMyRenderLayer(int layer_number);
 		int TellRenderLayer();
-		void MakeMeObstacle();
-		void MakeMeNotObstacle();
 		void AddCreatureTypeToCollisionExceptions(CreatureType my_type);
 		void RemoveCreatureTypeFromCollisionExceptions(CreatureType my_type);
 		std::vector<CreatureType> TellCollisionExceptions();
@@ -200,13 +207,7 @@ class Creature
 		std::vector<Coordinates> TellHitboxCorners();
 		Coordinates TellNextStep();
 		void SetAngleDegree(int my_degree);
-		Coordinates CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance);
-		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles=true);
-        bool DoICollideWithNeighbors();
-		bool IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other_creature, double distance_limit = 0);
-		Creature* FindClosestAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit = 0);
 		bool DoesThisCreatureBelongToWalls();
-		std::vector<Creature*> WhichNeighborsDoICollideWith();
         void MakeMeMainCharacter();
         bool AmIMainCharacter();
 		bool AmIVisible();
@@ -216,6 +217,22 @@ class Creature
 		void AddCyclicAction(std::function<void(Creature*)> my_cyclic_action);
 		void AddCommonCyclicActions();
 		//#TODO - napisaæ funkcjê do usuwania akcji cyklicznych
+
+
+		//#################################################
+		// Collisions and interaction with other Creatures
+		//#################################################
+		void MakeMeObstacle();
+		void MakeMeNotObstacle();
+		Coordinates CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance);
+		bool DoICollideWithThisCreature(Creature* ptr_my_creature, bool check_only_obstacles = true);
+		bool DoICollideWithNeighbors();
+		std::vector<Creature*> WhichNeighborsDoICollideWith();
+		bool IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other_creature, double distance_limit = 0);
+		Creature* FindClosestAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit = 0);
+		std::vector<Creature*> FindAllAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit = 0);
+		bool AmIWithinProximityRadiusOfCertainTypeCreature(CreatureType queried_type);
+		virtual void Attack(AttackTypes my_type);
 
 		//################################
 		//Animation for visual components

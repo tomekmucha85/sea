@@ -38,8 +38,8 @@ public:
 	//Functions
 	//###################
 	SpriteSnailmage(Coordinates* ptr_my_center);
-	void WalkAnimation();
-	void IdleAnimation();
+	void WalkAnimation(bool* ptr_did_animation_reach_last_frame = nullptr);
+	void IdleAnimation(bool* ptr_did_animation_reach_last_frame = nullptr);
 };
 
 #endif //SPRITESNAILMAGE_HPP
