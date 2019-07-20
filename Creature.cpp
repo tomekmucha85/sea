@@ -8,7 +8,7 @@ std::vector <Creature*> Creature::current_environment;
 std::vector <CreatureType> Creature::walls = { cre_flying_box, cre_spell_open_doors };
 Creature* Creature::ptr_current_main_charater;
 const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
-const double Creature::RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS = 80;
+const double Creature::DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS = 80;
 std::vector<CreatureType> Creature::LIVING_CREATUES = {cre_carrier_a, cre_clawy};
 
 //**************
@@ -998,13 +998,17 @@ Creature* Creature::FindClosestAccessibleCreatureOfGivenType(CreatureType desire
 	return result;
 }
 
-bool Creature::AmIWithinProximityRadiusOfCertainTypeCreature(CreatureType queried_type)
+bool Creature::AmIWithinProximityRadiusOfCertainTypeCreature(CreatureType queried_type, double radius)
 {
 	bool result = false;
 	std::vector<Creature*> creatures_within_radius = FindAllAccessibleCreatureOfGivenType(queried_type,
-		RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS);
+		radius);
 	if (creatures_within_radius.size() > 0)
 	{
+		Logger::Log("Found " + std::to_string(creatures_within_radius.size()) + 
+			"creatures of given type witin radius." +
+		    std::to_string(radius),
+			debug_full);
 		result = true;
 	}
 	return result;

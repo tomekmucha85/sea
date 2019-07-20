@@ -100,34 +100,6 @@ bool CreatureCarrierA::AmIWithinMainCharacterProximityRadius()
 	return result;
 }
 
-Uint32 CreatureCarrierA::MeasureTimeSpentInMainCharacterProximity()
-//#TODO - UNUSED, should be deleted?
-{
-	if (AmIWithinMainCharacterProximityRadius())
-	{
-		if (ptr_timer_for_hero_proximity->IsTicking())
-		{
-			;
-		}
-		else
-		{
-			ptr_timer_for_hero_proximity->ResetTimer();
-		}
-	}
-	else
-	{
-		if (ptr_timer_for_hero_proximity->IsTicking())
-		{
-			ptr_timer_for_hero_proximity->Stop();
-		}
-		else
-		{
-			;
-		}
-	}
-	return ptr_timer_for_hero_proximity->Read();
-}
-
 void CreatureCarrierA::ManageMainCharacterProximityTrigger()
 {
 	if (was_main_character_presence_trigger_activated == true)

@@ -74,7 +74,7 @@ class Creature
 
 
 		static const double MARGIN_FOR_LINE_OF_SIGHT_CHECKS;
-		static const double RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS;
+		static const double DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS;
 		static std::vector<CreatureType> LIVING_CREATUES;
 
 		// Pointer to sprites factory
@@ -232,7 +232,8 @@ class Creature
 		bool IsThisCreatureWithinSightInCurrentEnvironment(Creature* ptr_other_creature, double distance_limit = 0);
 		Creature* FindClosestAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit = 0);
 		std::vector<Creature*> FindAllAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit = 0);
-		bool AmIWithinProximityRadiusOfCertainTypeCreature(CreatureType queried_type);
+		bool AmIWithinProximityRadiusOfCertainTypeCreature(CreatureType queried_type, 
+			double radius=DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS);
 		virtual void Attack(AttackTypes my_type);
 		void DealDamageInRadius(int radius, 
 			std::vector<CreatureType> vulnerable_types=LIVING_CREATUES);

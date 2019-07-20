@@ -11,7 +11,7 @@ class Logger
 		static DebugLevel current_debug_level;
     public:
 		//Logger();
-		static void Log(std::string message, DebugLevel level=debug_full);
+		static void Log(std::string message, DebugLevel level=debug_info);
 		static void SetDebugLevel(DebugLevel my_level);
 };
 

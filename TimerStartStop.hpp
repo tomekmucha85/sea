@@ -5,7 +5,7 @@
 class TimerStartStop : public TimerGeneral
 {
 private:
-	bool is_counting = true;
+	bool is_counting = false;
 	Uint32 aggregated_time = 0;
 
 public:
@@ -17,6 +17,7 @@ public:
 	Uint32 Read();
 	bool IsTicking();
 	void ResetTimer();
+	void StopAndErase();
 
 };
 

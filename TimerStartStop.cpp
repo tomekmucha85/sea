@@ -36,6 +36,12 @@ void TimerStartStop::ResetTimer()
 	Start();
 }
 
+void TimerStartStop::StopAndErase()
+{
+	aggregated_time = 0;
+	is_counting = false;
+}
+
 bool TimerStartStop::IsTicking()
 {
 	return is_counting;

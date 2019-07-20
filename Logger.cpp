@@ -1,6 +1,6 @@
 #include <Logger.hpp>
 
-DebugLevel Logger::current_debug_level = debug_full;
+DebugLevel Logger::current_debug_level = debug_info;
 
 void Logger::Log(std::string message, DebugLevel level)
 {

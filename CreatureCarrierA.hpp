@@ -35,7 +35,6 @@ public:
 	void SetVelocity(double my_velocity);
 	void PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint32 threshold_miliseconds);
 	bool AmIWithinMainCharacterProximityRadius();
-	Uint32 MeasureTimeSpentInMainCharacterProximity();
 	void ManageMainCharacterProximityTrigger();
 
 	std::function<void(CreatureCarrierA*)> func_warn_if_time_to_live_gets_short = [](CreatureCarrierA* ptr_creature)
