@@ -88,7 +88,11 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 
 		if (current_requested_mode == beh_follow_certain_creature)
 		{
-			SetMode(current_requested_mode);
+			printf("Behavior pattern stalker agreed to follow creature %p at x: %f,y: %f.\n",
+				ptr_current_requested_mode_destination_creature,
+				ptr_current_requested_mode_destination_creature->TellCenterPoint().x,
+				ptr_current_requested_mode_destination_creature->TellCenterPoint().y);
+			SetMode(current_requested_mode, ptr_current_requested_mode_destination_creature);
 			current_requested_mode = beh_none;
 		}
 		else if (current_requested_mode == beh_wander_on_navmesh)
@@ -111,14 +115,15 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 		if (mode == beh_wander_on_navmesh)
 		{
 			//Check if there is a carrier creature nearby
-			//Creature* ptr_closest_carrier = ptr_my_creature->FindClosestAccessibleCreatureOfGivenType(cre_carrier_a,
-			//	MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE);
+			Creature* ptr_closest_carrier = ptr_my_creature->FindClosestAccessibleCreatureOfGivenType(cre_carrier_a,
+				MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE);
 
-			Creature* ptr_closest_carrier = nullptr;
+			//Creature* ptr_closest_carrier = nullptr;
 
 			if (ptr_closest_carrier != nullptr)
 			{
-				printf("Accessible carrier found for stalker behavior pattern.\n");
+				printf("Accessible carrier found for stalker behavior pattern: %p.\n",
+					ptr_closest_carrier);
 				RequestMode(beh_follow_certain_creature, ptr_closest_carrier);
 			}
 			else
@@ -340,7 +345,9 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 	{
 		if (was_mode_changed == true)
 		{
-			printf("Will go towards fixed point: x: %f y: %f.\n", destination_point.x,
+			printf("Creature %p will go towards fixed point: x: %f y: %f.\n",
+				ptr_my_creature,
+				destination_point.x,
 				destination_point.y);
 			delete ptr_navigator;
 			ptr_navigator = nullptr;
@@ -489,7 +496,7 @@ void Behavior::SetMode(BehaviorMode mode_to_be_set, Creature* ptr_my_destiny)
 	{
 		was_mode_changed = true;
 		mode = mode_to_be_set;
-		ptr_followed_carrier = ptr_my_destiny;
+		ptr_followed_creature = ptr_my_destiny;
 	}
 	else
 	{
@@ -536,6 +543,10 @@ void Behavior::RequestMode(BehaviorMode mode_to_be_requested, Creature* ptr_dest
 {
 	if (mode_to_be_requested == beh_follow_certain_creature)
 	{
+		printf("Requested mode beh_follow_certain_creature");
+		printf("Certain creature at x: %f y: %f\n", 
+			ptr_destination_creature->TellCenterPoint().x,
+			ptr_destination_creature->TellCenterPoint().y);
 		current_requested_mode = mode_to_be_requested;
 		ptr_current_requested_mode_destination_creature = ptr_destination_creature;
 	}
