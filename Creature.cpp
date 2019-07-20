@@ -9,6 +9,7 @@ std::vector <CreatureType> Creature::walls = { cre_flying_box, cre_spell_open_do
 Creature* Creature::ptr_current_main_charater;
 const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
 const double Creature::RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS = 80;
+std::vector<CreatureType> Creature::LIVING_CREATUES = {cre_carrier_a, cre_clawy};
 
 //**************
 //STATIC METHODS
@@ -395,7 +396,8 @@ Only objects with hitboxes within default_neighbor_radius will be checked.*/
 		Coordinates creatures_center = ptr_creature->TellCenterPoint();
 		double distance = Distance::CalculateDistanceBetweenPoints(my_center, creatures_center);
 
-		if (static_cast<int>(distance) <= radius)
+		if (static_cast<int>(distance) <= radius && 
+			ptr_creature != this/* Check is pointless for self - I'm not my neighbour. */)
 		{
 			result.push_back(ptr_creature);
 		}
@@ -1192,15 +1194,35 @@ bool Creature::AmIAlive()
 	return am_i_alive;
 }
 
+void Creature::DealDamageInRadius(int radius, std::vector<CreatureType> vulnerable_types)
+{
+	//#TODO - ogarn¹æ implementacjê dla SpellBall
+	//#TODO - napisaæ metodê, gdzie ra¿enie jest dla wycinka ko³a
+	std::vector<Creature*> creatures_to_be_damaged = FindNeighborsInSet(&Creature::current_environment,
+		radius);
+	for (Creature* ptr_one_sorry_creature : creatures_to_be_damaged)
+	{
+		for (CreatureType vulnerable_type : vulnerable_types)
+		{
+			if (ptr_one_sorry_creature->my_type == vulnerable_type )
+			{
+				ptr_one_sorry_creature->Kill();
+				break;
+			}
+		}
+	}
+}
+
 void Creature::Attack(AttackTypes my_type)
 {
 	if (my_type == attack_melee)
 	{
-		TellMainVisualComponent()->SetInterruptingAnimation(anim_attack_melee, 1);
 		Logger::Log("Melee attack performed by " + 
 		    ConvertCreaturePointerToString(this) +
 		    " !",
 			debug_info);
+		TellMainVisualComponent()->SetInterruptingAnimation(anim_attack_melee, 1);
+		DealDamageInRadius(melee_attack_range);
 	}
 }
 
