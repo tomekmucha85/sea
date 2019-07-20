@@ -28,6 +28,14 @@ class SpriteClawy : public Sprite
 	static std::vector<SDL_Rect> walk_animation_clips_south_west;
 	static std::vector<SDL_Rect> walk_animation_clips_west;
 	static std::vector<SDL_Rect> walk_animation_clips_north_west;
+	static std::vector<SDL_Rect> attack_animation_clips_north;
+	static std::vector<SDL_Rect> attack_animation_clips_north_east;
+	static std::vector<SDL_Rect> attack_animation_clips_east;
+	static std::vector<SDL_Rect> attack_animation_clips_south_east;
+	static std::vector<SDL_Rect> attack_animation_clips_south;
+	static std::vector<SDL_Rect> attack_animation_clips_south_west;
+	static std::vector<SDL_Rect> attack_animation_clips_west;
+	static std::vector<SDL_Rect> attack_animation_clips_north_west;
 
     public:
 	//###################
@@ -40,6 +48,7 @@ class SpriteClawy : public Sprite
     SpriteClawy(Coordinates* ptr_my_center);
     void WalkAnimation();
 	void IdleAnimation();
+	void AttackAnimation();
 };
 
 #endif //SPRITECLAWY_HPP

@@ -235,6 +235,8 @@ class Creature
 		static bool IsThereCorridorBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double corridor_width, double max_corridor_length = 0);
 		static std::vector<Creature*> FindCreaturesInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area);
 		static std::vector<Creature*> FindCreaturesInRadiusInSet(std::vector<Creature*>* ptr_my_creatures_set, Coordinates center_point, int radius);
+		//Useful for logging.
+		static std::string ConvertCreaturePointerToString(Creature* ptr_my_creature);
 
 	    //###################
 		//Requests processing

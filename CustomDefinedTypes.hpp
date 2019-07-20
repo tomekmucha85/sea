@@ -92,7 +92,11 @@ enum SpriteType {
 };
 
 //Animation types
-enum AnimationType {anim_none, anim_idle, anim_walk, anim_vortex};
+enum AnimationType {anim_none, 
+	anim_idle, 
+	anim_walk, 
+	anim_vortex,
+    anim_attack};
 
 //Wall blocks - related to SpriteBlackBox.hpp
 enum WallType { 

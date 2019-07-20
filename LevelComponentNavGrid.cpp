@@ -242,9 +242,10 @@ std::vector<Coordinates> LevelComponentNavGrid::GeneratePathBetweenNodes(Creatur
 		}
 		frontier = future_frontier;
 	}
-	printf("Mapping size: %d.\n", reached_node_vs_where_did_I_come_from.size());
+	Logger::Log("Mapping size: " + std::to_string(reached_node_vs_where_did_I_come_from.size()), 
+		debug_full);
 	//Find way back
-	printf("Will find way back to starting node.\n");
+	Logger::Log("Will find way back to starting node.", debug_full);
 	result.insert(result.begin(), ptr_my_end_node->TellCenterPoint());
 	CreatureNavGridNode* ptr_currently_evaluated_node = ptr_my_end_node;
 	while (ptr_currently_evaluated_node != ptr_my_start_node)
@@ -256,16 +257,20 @@ std::vector<Coordinates> LevelComponentNavGrid::GeneratePathBetweenNodes(Creatur
 		ptr_currently_evaluated_node = reached_node_vs_where_did_I_come_from[ptr_currently_evaluated_node];
 	}
 	result.insert(result.begin(), ptr_my_start_node->TellCenterPoint());
-
-	printf("Following way was proposed from x:%f y:%f to x:%f y:%f:\n", 
-		ptr_my_start_node->TellCenterPoint().x,
-		ptr_my_start_node->TellCenterPoint().y,
-		ptr_my_end_node->TellCenterPoint().x,
-		ptr_my_end_node->TellCenterPoint().y);
+	Logger::Log("Following way was proposed from: x: " +
+		std::to_string(ptr_my_start_node->TellCenterPoint().x) +
+		" y: " +
+		std::to_string(ptr_my_start_node->TellCenterPoint().y) +
+		" to x: " +
+		std::to_string(ptr_my_end_node->TellCenterPoint().x) +
+		" to y: " +
+		std::to_string(ptr_my_end_node->TellCenterPoint().y) +
+		" :", debug_full);
 
 	for (Coordinates step : result)
 	{
-		printf("x: %f, y: %f \n", step.x, step.y);
+		Logger::Log("x: " + std::to_string(step.x) +" y: " + std::to_string(step.y),
+			debug_full);
 	}
 
 

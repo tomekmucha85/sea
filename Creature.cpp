@@ -944,13 +944,24 @@ Creature* Creature::FindClosestAccessibleCreatureOfGivenType(CreatureType desire
 			Coordinates my_center = TellCenterPoint();
 			Coordinates other_creature_center = ptr_neighboring_creature->TellCenterPoint();
             //LOGGING ADDRESSES
-			std::ostringstream address;
-			address << (void const *)ptr_neighboring_creature;
-		    std::string address_as_string = address.str();
+			//std::ostringstream address;
+			//address << (void const *)ptr_neighboring_creature;
+		    //std::string address_as_string = address.str();
 			std::string message = "Found neighboring creature of desired type" +
-				address_as_string;
-			printf("X: %f, Y: %f\n", ptr_neighboring_creature->TellCenterPoint().x, ptr_neighboring_creature->TellCenterPoint().y);
-			printf("My center: X: %f, Y:%f\n", TellCenterPoint().x, TellCenterPoint().y);
+				Creature::ConvertCreaturePointerToString(ptr_neighboring_creature);
+			Logger::Log(message, debug_full);
+			Logger::Log("Creature at: x: " + 
+			    std::to_string(ptr_neighboring_creature->TellCenterPoint().x) + 
+				" y: " + 
+				std::to_string(ptr_neighboring_creature->TellCenterPoint().y),
+				debug_full);
+			//printf("X: %f, Y: %f\n", ptr_neighboring_creature->TellCenterPoint().x, ptr_neighboring_creature->TellCenterPoint().y);
+			//printf("My center: X: %f, Y:%f\n", TellCenterPoint().x, TellCenterPoint().y);
+			Logger::Log("My center: x: " + 
+				std::to_string(TellCenterPoint().x) +
+				" y: " +
+				std::to_string(TellCenterPoint().y), 
+				debug_full);
 			if (IsThereCorridorBetweenThesePointsInCurrentEnvironment(my_center, other_creature_center, TellHitbox().w, distance_limit))
 			{
 				double distance = Distance::CalculateDistanceBetweenPoints(my_center, other_creature_center);
@@ -1278,4 +1289,17 @@ bool Creature::AmIArmed()
 {
 	printf("Default implementation of AmIArmed called!\n");
 	return true;
+}
+
+
+//************************
+// LOGGING
+//************************
+
+std::string Creature::ConvertCreaturePointerToString(Creature* ptr_my_creature)
+{
+	std::ostringstream address;
+	address << (void const *)ptr_my_creature;
+	std::string address_as_string = address.str();
+	return address_as_string;
 }

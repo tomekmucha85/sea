@@ -62,6 +62,7 @@ class Sprite : public VisualComponent
         virtual void WalkAnimation();
 		virtual void SmokeAnimation();
 		virtual void VortexAnimation();
+		virtual void AttackAnimation();
 		//Other virtual methods
 		virtual void SetClipAccordingToWallType(WallType my_type);
 

@@ -599,11 +599,9 @@ void Behavior::MakeUseOfPathResponse(PointToPointPathResponse my_response)
 	delete ptr_navigator;
 	//#TODO - czy towrzenie anchora potrzebne?
 	Coordinates anchor = { 0, 0 };
-	//printf("Received plan from nav grid. Plan:\n");
 	Logger::Log("Received plan from nav grid. Plan:\n");
 	for (Coordinates point : my_response.navigation_path)
 	{
-		//printf("x: %f y: %f\n", point.x, point.y);
 		std::string message = "x: " + std::to_string(point.x) + " y: " + std::to_string(point.y);
 		Logger::Log(message);
 	}

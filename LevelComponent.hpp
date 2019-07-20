@@ -9,6 +9,7 @@
 #include <string>
 #include <Creature.hpp>
 #include <FactorySpawningCreatures.hpp>
+#include <Logger.hpp>
 
 class LevelComponent;
 

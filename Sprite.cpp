@@ -257,6 +257,10 @@ void Sprite::PlayCurrentAnimation()
 	{
 		VortexAnimation();
 	}
+	else if (current_animation == anim_attack)
+	{
+		AttackAnimation();
+	}
 	else
 	{
 		printf("Unknown animation type!\n");
@@ -323,6 +327,11 @@ void Sprite::SmokeAnimation()
 void Sprite::VortexAnimation()
 {
 	printf("Vortex animation called for Sprite\n");
+}
+
+void Sprite::AttackAnimation()
+{
+	printf("Attack animation called for Sprite\n");
 }
 
 void Sprite::SetClipAccordingToWallType(WallType my_type)
