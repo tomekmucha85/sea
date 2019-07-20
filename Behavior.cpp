@@ -1,7 +1,7 @@
 #include <Creature.hpp>
 
 double Behavior::MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE = 400;
-double Behavior::DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CARRIER = 30;
+double Behavior::DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE = 30;
 
 Behavior::Behavior()
 {
@@ -74,6 +74,82 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 			PerformActionDefinedByMode(ptr_my_creature);
 		}
 	}
+	else if (pattern == beh_pat_stalker)
+	{
+		//UPON ENTERING PATTERN
+
+		if (was_pattern_changed == true)
+		{
+			was_pattern_changed = false;
+			SetMode(beh_wander_on_navmesh);
+		}
+        
+		//SERVE MODE CHANGE REQUESTS
+
+		if (current_requested_mode == beh_follow_certain_creature)
+		{
+			SetMode(current_requested_mode);
+			current_requested_mode = beh_none;
+		}
+		else if (current_requested_mode == beh_wander_on_navmesh)
+		{
+			SetMode(current_requested_mode);
+			current_requested_mode = beh_none;
+		}
+		else if (current_requested_mode == beh_none)
+		{
+			;
+		}
+		else
+		{
+			printf("This mode will be not served in stalker behavior pattern.\n");
+			printf("Setting none.\n");
+			current_requested_mode = beh_none;
+		}
+
+		//TAKE ACTION
+		if (mode == beh_wander_on_navmesh)
+		{
+			//Check if there is a carrier creature nearby
+			//Creature* ptr_closest_carrier = ptr_my_creature->FindClosestAccessibleCreatureOfGivenType(cre_carrier_a,
+			//	MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE);
+
+			Creature* ptr_closest_carrier = nullptr;
+
+			if (ptr_closest_carrier != nullptr)
+			{
+				printf("Accessible carrier found for stalker behavior pattern.\n");
+				RequestMode(beh_follow_certain_creature, ptr_closest_carrier);
+			}
+			else
+			{
+				BehaviorActionResult result = PerformActionDefinedByMode(ptr_my_creature);
+				if (result == beh_result_action_failed)
+				{
+					printf("Unable to wander on navmesh. Why?\n");
+				}
+				else if (result == beh_result_objective_complete)
+				{
+					printf("Reached end of random path in stalker mode. Chosing another one.\n");
+					RequestMode(beh_wander_on_navmesh);
+				}
+			}
+		}
+		else if (mode == beh_follow_certain_creature)
+		{
+			BehaviorActionResult result = PerformActionDefinedByMode(ptr_my_creature);
+			if (result == beh_result_action_failed)
+			{
+				printf("Failed to follow creature in stalker behavior pattern.\n");
+				RequestMode(beh_wander_on_navmesh);
+			}
+		}
+		else
+		{
+			//For all other behavior modes - do nothing
+			;
+		}
+	}
 	else if (pattern == beh_pat_none)
 	{
 		if (was_pattern_changed == true)
@@ -143,6 +219,7 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 			else
 			{
 				printf("No one to follow in follow closest carrier mode.\n");
+				present_action_result = beh_result_action_failed;
 			}
 		}
 		if (ptr_followed_carrier != nullptr && Creature::IsThisCreaturePresentInEnvironment(ptr_followed_carrier))
@@ -151,7 +228,7 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 			Coordinates followed_carriers_center = ptr_followed_carrier->TellCenterPoint();
 			double distance_to_carrier = Distance::CalculateDistanceBetweenPoints(ptr_my_creature->TellCenterPoint(),
 				followed_carriers_center);
-			if (distance_to_carrier < DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CARRIER)
+			if (distance_to_carrier < DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE)
 			{
 				//Moving with carrier's velocity if getting close to carrier.
 				double carriers_velocity = ptr_followed_carrier->TellVelocity();
@@ -165,40 +242,97 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 		}
 		else
 		{
-			printf("No one to follow.\n");
+			printf("No one to follow - my carrier creature ceased to be.\n");
+			present_action_result = beh_result_action_failed;
+		}
+	}
+	else if (mode == beh_follow_certain_creature)
+	{
+		if (was_mode_changed == true)
+		{
+			//When this behavior is initialized, follow a creature, pointer to which has been provided as ptr_followed_creature.
+			was_mode_changed = false;
+			if (ptr_followed_creature != nullptr)
+			{
+				printf("Entered mode follow creature. Creature at: x: %f y: %f\n",
+					ptr_followed_creature->TellCenterPoint().x,
+					ptr_followed_creature->TellCenterPoint().y);
+			}
+			else
+			{
+				printf("No one to follow in follow certain creature mode.\n");
+				present_action_result = beh_result_action_failed;
+			}
+		}
+		if (ptr_followed_creature != nullptr && Creature::IsThisCreaturePresentInEnvironment(ptr_followed_creature))
+			//If creature is set && it currently exists in environment (e.g. wasn't deleted after being chosen)
+		{
+			Coordinates followed_creature_center = ptr_followed_creature->TellCenterPoint();
+			double distance_to_creature = Distance::CalculateDistanceBetweenPoints(ptr_my_creature->TellCenterPoint(),
+				followed_creature_center);
+			if (distance_to_creature < DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE)
+			{
+				//Moving with creature's velocity if getting close to it.
+				double creature_velocity = ptr_followed_creature->TellVelocity();
+				ptr_my_creature->ThrustTowardsPoint(followed_creature_center, creature_velocity);
+			}
+			else
+			{
+				//Moving with default velocity
+				ptr_my_creature->ThrustTowardsPoint(followed_creature_center);
+			}
+		}
+		else
+		{
+			printf("No one to follow - my followed creature ceased to be.\n");
 			present_action_result = beh_result_action_failed;
 		}
 	}
 	else if (mode == beh_wander_on_navmesh)
 	{
-		Coordinates my_center = ptr_my_creature->TellCenterPoint();
-		if (ptr_navigator == nullptr)
-		{
-			static bool was_request_placed = false;
-			if (was_request_placed == false)
+	    if (was_mode_changed == true)
+	    {
+			was_mode_changed = false;
+			if (ptr_navigator != nullptr)
 			{
-				ptr_my_creature->PlaceRandomPathRequest(5);
-				was_request_placed = true;
+				//Cleanup
+				delete ptr_navigator;
+				ptr_navigator = nullptr;
 			}
-			else
-			{
-				was_request_placed = false;
-			}
-
+			ptr_my_creature->PlaceRandomPathRequest(5);
+			was_wander_path_request_placed = true;
 		}
 		else
 		{
-			if (ptr_navigator->TellMyState() == active)
+			if (ptr_navigator == nullptr)
 			{
-				if (ptr_navigator->WasCurrentWaypointReached(my_center,10))
+				if (was_wander_path_request_placed)
 				{
-					ptr_navigator->SetNextWaypoint();
+					printf("There is no navigator but path request was already placed.\n");
 				}
-				ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
+				else
+				{
+					printf("There is no navigator and no path request placed!\n");
+				}
 			}
 			else
 			{
-				ptr_my_creature->SetVelocity(0);
+				Coordinates my_center = ptr_my_creature->TellCenterPoint();
+				if (ptr_navigator->TellMyState() == active)
+				{
+					if (ptr_navigator->WasCurrentWaypointReached(my_center, 10))
+					{
+						ptr_navigator->SetNextWaypoint();
+					}
+					ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
+				}
+				else
+				{
+					ptr_my_creature->SetVelocity(0);
+					present_action_result = beh_result_objective_complete;
+					delete ptr_navigator;
+					ptr_navigator = nullptr;
+				}
 			}
 		}
 	}
@@ -288,6 +422,11 @@ void Behavior::SetPattern(BehaviorPattern pattern_to_be_set)
 		pattern = pattern_to_be_set;
 		was_pattern_changed = true;
 	}
+	else if (pattern_to_be_set == beh_pat_stalker)
+	{
+		pattern = pattern_to_be_set;
+		was_pattern_changed = true;
+	}
 	else
 	{
 		printf("Wrong arguments set for this behavior pattern!\n");
@@ -313,13 +452,23 @@ void Behavior::SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_de
 void Behavior::SetMode(BehaviorMode mode_to_be_set)
 {
 	//printf("Behavior mode was changed.\n");
-	if (mode_to_be_set == beh_go_towards_fixed_point)
+	// #TODO - wprowadziæ listê behavior modes niewymagaj¹cych argumentów i iterowaæ po niej tu oraz w RequestMode
+	if (mode_to_be_set == beh_chase_hero ||
+		mode_to_be_set == beh_follow_closest_carrier ||
+		mode_to_be_set == beh_idle ||
+		mode_to_be_set == beh_none ||
+		mode_to_be_set == beh_projectile ||
+		mode_to_be_set == beh_run_in_circles ||
+		mode_to_be_set == beh_wander_on_navmesh)
 	{
-		printf("No destination point specified!\n");
-		throw("No destination point specified!\n");
+		was_mode_changed = true;
+		mode = mode_to_be_set;
 	}
-	was_mode_changed = true;
-	mode = mode_to_be_set;
+	else
+	{
+		printf("Invalid arguments for setting behavior mode %d.\n", mode_to_be_set);
+		throw std::invalid_argument("Invalid arguments for setting behavior mode");
+	}
 }
 
 void Behavior::SetMode(BehaviorMode mode_to_be_set, Coordinates my_destination_point)
@@ -334,25 +483,67 @@ void Behavior::SetMode(BehaviorMode mode_to_be_set, Coordinates my_destination_p
 	destination_point = my_destination_point;
 }
 
+void Behavior::SetMode(BehaviorMode mode_to_be_set, Creature* ptr_my_destiny)
+{
+	if (mode_to_be_set == beh_follow_certain_creature)
+	{
+		was_mode_changed = true;
+		mode = mode_to_be_set;
+		ptr_followed_carrier = ptr_my_destiny;
+	}
+	else
+	{
+		printf("No use of specified destination creature!\n");
+		throw std::invalid_argument("No use of specified destination creature!");
+	}
+}
+
 void Behavior::RequestMode(BehaviorMode mode_to_be_requested)
 {
-	if (mode_to_be_requested == beh_go_towards_fixed_point)
+	if (mode_to_be_requested == beh_chase_hero ||
+		mode_to_be_requested == beh_follow_closest_carrier ||
+		mode_to_be_requested == beh_idle ||
+		mode_to_be_requested == beh_none ||
+		mode_to_be_requested == beh_projectile ||
+		mode_to_be_requested == beh_run_in_circles ||
+		mode_to_be_requested == beh_wander_on_navmesh)
 	{
-		printf("No destination point specified!\n");
-		throw("No destination point specified!\n");
+		current_requested_mode = mode_to_be_requested;
 	}
-	current_requested_mode = mode_to_be_requested;
+	else
+	{
+		printf("Not enough arguments to request chosen behavior mode %d!\n", mode_to_be_requested);
+		throw std::invalid_argument("Not enough arguments to request chosen behavior mode!\n");
+	}
 }
 
 void Behavior::RequestMode(BehaviorMode mode_to_be_requested, Coordinates my_destination_point)
 {
-	if (mode_to_be_requested != beh_go_towards_fixed_point)
+	if (mode_to_be_requested == beh_go_towards_fixed_point)
+	{
+		current_requested_mode = mode_to_be_requested;
+		current_requested_mode_destination = my_destination_point;
+	}
+	else
 	{
 		printf("No use of specified destination point!\n");
 		throw("No use of specified destination point!\n");
 	}
-	current_requested_mode = mode_to_be_requested;
-	current_requested_mode_destination = my_destination_point;
+
+}
+
+void Behavior::RequestMode(BehaviorMode mode_to_be_requested, Creature* ptr_destination_creature)
+{
+	if (mode_to_be_requested == beh_follow_certain_creature)
+	{
+		current_requested_mode = mode_to_be_requested;
+		ptr_current_requested_mode_destination_creature = ptr_destination_creature;
+	}
+	else
+	{
+		printf("No use of specified destination creature!\n");
+		throw std::invalid_argument("No use of specified destination creature!");
+	}
 }
 
 //#TODO - ucywilizowaæ
@@ -369,7 +560,7 @@ void Behavior::MakeUseOfPathResponse(RandomPathResponse my_response)
 {
 	//#TODO! Ogarn¹æ kasowanie nawigatorów!
 	delete ptr_navigator;
-	//#TODO - czy towrzenie anchora potrzebne?
+	//#TODO - czy tworzenie anchora potrzebne?
 	Coordinates anchor = { 0, 0 };
 	printf("Received plan from nav grid. Plan:\n");
 	for (Coordinates point : my_response.navigation_path)

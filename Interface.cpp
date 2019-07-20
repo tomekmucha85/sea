@@ -107,8 +107,8 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 			     ptr_my_event_handler->key.repeat == 0)
         {
 			printf("PRESSED F.\n");
-	        //Creature::ptr_current_main_charater->SetBehaviorMode(beh_follow_closest_carrier);
-			Creature::ptr_current_main_charater->RequestBehaviorMode(beh_follow_closest_carrier);
+	        Creature::ptr_current_main_charater->SetBehaviorMode(beh_follow_closest_carrier);
+			//Creature::ptr_current_main_charater->RequestBehaviorMode(beh_follow_closest_carrier);
         }
         else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
 			     ptr_my_event_handler->key.keysym.sym == SDLK_x && 

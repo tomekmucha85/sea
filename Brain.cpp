@@ -1,27 +1,27 @@
 #include <Brain.hpp>
 
-BCI::BCI(bool real_device_in_use)
+BCI::BCI(BCIMode mode)
 {
 	eEvent = IEE_EmoEngineEventCreate();
 	eState = IEE_EmoStateCreate();
-	if (real_device_in_use)
+	if (mode == bci_physical)
 	{
 		if (IEE_EngineConnect() == EDK_OK)
 		{
-			is_physical_BCI_device_connected = true;
-			printf("Started BCI!\n");
+			bci_device_in_use = bci_physical;
+			printf("Started physical BCI!\n");
 		}
 		else
 		{
-			printf("Unable to connect to real BCI!\n");
-			throw std::domain_error("Unable to connect to real BCI!");
+			printf("Unable to connect to physical BCI!\n");
+			throw std::domain_error("Unable to connect to physical BCI!");
 		}
 	}
-	else
+	else if (mode == bci_virtual)
 	{
 		if (IEE_EngineRemoteConnect(address.c_str(), composerPort) == EDK_OK)
 		{
-			is_physical_BCI_device_connected = false;
+			bci_device_in_use = bci_virtual;
 			printf("Started virtual BCI!\n");
 		}
 		else
@@ -29,6 +29,10 @@ BCI::BCI(bool real_device_in_use)
 			printf("Unable to connect to virtual BCI!\n");
 			throw std::domain_error("Unable to connect to virtual BCI!");
 		}
+	}
+	else
+	{
+		printf("No BCI in use.\n");
 	}
 
 }
@@ -40,9 +44,9 @@ BCI::~BCI()
 	IEE_EmoEngineEventFree(eEvent);
 }
 
-bool BCI::IsPhysicalBCIDeviceConnected()
+BCIMode BCI::WhatBCIIsConnected()
 {
-	return is_physical_BCI_device_connected;
+	return bci_device_in_use;
 }
 
 std::string BCI::GetNextBCIEvent()

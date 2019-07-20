@@ -49,7 +49,8 @@ enum BehaviorMode {
 	beh_run_along_predefined_path,
 	beh_wander_on_navmesh,
 	beh_go_towards_fixed_point,
-	beh_follow_closest_carrier
+	beh_follow_closest_carrier,
+	beh_follow_certain_creature,
 };
 
 //Outcome of actions derived from behavior
@@ -65,6 +66,7 @@ enum BehaviorActionResult {
 enum BehaviorPattern {
 	beh_pat_none,
 	beh_pat_death_magnetic,
+	beh_pat_stalker,
 };
 
 
@@ -174,5 +176,8 @@ enum LevelEnding {victory, defeat, other_ending_1, other_ending_2, other_ending_
 
 //Interface mode - how events are interpreted.
 enum InterfaceMode {interf_none, interf_menu, interf_guided, interf_free};
+
+//Kind of Brain Computer Interface in use
+enum BCIMode { bci_none, bci_physical, bci_virtual };
 
 #endif

@@ -28,6 +28,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	//MAIN CHARACTER BEHAVIOR
     //Creature::ptr_current_main_charater->SetBehaviorMode(beh_go_towards_fixed_point, &win_center);
 	//Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_death_magnetic, ptr_losing_trigger);
+	Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_stalker);
 
 	//How many map blocks will have a maze segment?
 	SetMazeRowsCount(my_rows_count);

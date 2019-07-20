@@ -5,6 +5,7 @@
 #include "Iedk.h"
 #include <IedkErrorCode.h>
 #include <string>
+#include <CustomDefinedTypes.hpp>
 
 class BCI
 {
@@ -15,11 +16,11 @@ class BCI
 		const unsigned short composerPort = 1726;
 		int state = 0;
 		std::string  address = "127.0.0.1";
-		bool is_physical_BCI_device_connected = false;
+		BCIMode bci_device_in_use = bci_none;
     public:
-		BCI(bool real_device_in_use=true);
+		BCI(BCIMode mode=bci_none);
 		~BCI();
-		bool IsPhysicalBCIDeviceConnected();
+		BCIMode WhatBCIIsConnected();
 		std::string GetNextBCIEvent();
 };
 

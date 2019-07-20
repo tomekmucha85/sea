@@ -37,14 +37,14 @@ int main(int argc, char* args[])
     Game::InitializeGame();
 	Interface* ptr_game_interface = new Interface();
 	ptr_game_interface->SetInterfaceMode(interf_free);
-	BCI* ptr_bci_instance = new BCI(false);
+	BCI* ptr_bci_instance = new BCI(bci_none);
 
 	Game::PrepareSingleLevel(level_ninemazes);
 
 	int looped_events = static_cast<int>(Game::ptr_current_level->cyclic_actions.size());
 	printf("There are %d actions present in current event loop.\n", looped_events);
 	printf("Main hero: %p.\n", Creature::ptr_current_main_charater);
-	TimerInterval* ptr_emotiv_bands_check = new TimerInterval(2000);
+	//TimerInterval* ptr_emotiv_bands_check = new TimerInterval(2000);
 
 	int cooldown = 0;
 
@@ -67,7 +67,10 @@ int main(int argc, char* args[])
 		Game::ptr_current_level->PerformCyclicActions();
 
 		//Handle BCI events on queque
-		ptr_game_interface->UseInterface(ptr_bci_instance->GetNextBCIEvent());
+		if (ptr_bci_instance->WhatBCIIsConnected() != bci_none)
+		{
+			ptr_game_interface->UseInterface(ptr_bci_instance->GetNextBCIEvent());
+		}
 
         //Handle non-BCI events on queue
         while(SDL_PollEvent(&event_handler) != 0)
@@ -85,11 +88,12 @@ int main(int argc, char* args[])
 
 		Game::ptr_current_level->RenderAllPresentCreatures();
 		Game::ptr_current_level->RenderGui();
+
         //Update screen
         SDL_RenderPresent(Game::ptr_screen->renderer);
     }
     //Do cleanup
-	delete ptr_emotiv_bands_check;
+	//delete ptr_emotiv_bands_check;
 	delete ptr_bci_instance;
     Game::DestroyGame();
     //Quit SDL subsystems
