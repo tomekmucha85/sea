@@ -933,7 +933,9 @@ Creature* Creature::FindClosestAccessibleCreatureOfGivenType(CreatureType desire
 {
 	Creature* result = nullptr;
 	double shortest_distance = 0;
-	printf("Distance limit for finding carrier: %f.\n", distance_limit);
+	std::string message = "Distance limit for finding carrier : " +
+		std::to_string(distance_limit);
+	Logger::Log(message, debug_full);
 	std::vector<Creature*> neighboring_creatures = FindNeighborsInSet(&current_environment, static_cast<int>(distance_limit));
 	for (Creature* ptr_neighboring_creature : neighboring_creatures)
 	{
@@ -941,7 +943,12 @@ Creature* Creature::FindClosestAccessibleCreatureOfGivenType(CreatureType desire
 		{
 			Coordinates my_center = TellCenterPoint();
 			Coordinates other_creature_center = ptr_neighboring_creature->TellCenterPoint();
-			printf("Found neighboring creature of desired type %p.\n", ptr_neighboring_creature);
+            //LOGGING ADDRESSES
+			std::ostringstream address;
+			address << (void const *)ptr_neighboring_creature;
+		    std::string address_as_string = address.str();
+			std::string message = "Found neighboring creature of desired type" +
+				address_as_string;
 			printf("X: %f, Y: %f\n", ptr_neighboring_creature->TellCenterPoint().x, ptr_neighboring_creature->TellCenterPoint().y);
 			printf("My center: X: %f, Y:%f\n", TellCenterPoint().x, TellCenterPoint().y);
 			if (IsThereCorridorBetweenThesePointsInCurrentEnvironment(my_center, other_creature_center, TellHitbox().w, distance_limit))

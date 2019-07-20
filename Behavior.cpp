@@ -543,10 +543,12 @@ void Behavior::RequestMode(BehaviorMode mode_to_be_requested, Creature* ptr_dest
 {
 	if (mode_to_be_requested == beh_follow_certain_creature)
 	{
-		printf("Requested mode beh_follow_certain_creature");
-		printf("Certain creature at x: %f y: %f\n", 
-			ptr_destination_creature->TellCenterPoint().x,
-			ptr_destination_creature->TellCenterPoint().y);
+		Logger::Log("Requested mode beh_follow_certain_creature.");
+		std::string message = "Certain creature at x: " +
+			std::to_string(ptr_destination_creature->TellCenterPoint().x) +
+			" y: " +
+			std::to_string(ptr_destination_creature->TellCenterPoint().y);
+		Logger::Log(message, debug_full);
 		current_requested_mode = mode_to_be_requested;
 		ptr_current_requested_mode_destination_creature = ptr_destination_creature;
 	}
@@ -573,7 +575,8 @@ void Behavior::MakeUseOfPathResponse(RandomPathResponse my_response)
 	delete ptr_navigator;
 	//#TODO - czy tworzenie anchora potrzebne?
 	Coordinates anchor = { 0, 0 };
-	printf("Received plan from nav grid. Plan:\n");
+	//printf("Received plan from nav grid. Plan:\n");
+	Logger::Log("Received plan from nav grid. Plan:");
 	for (Coordinates point : my_response.navigation_path)
 	{
 		printf("x: %f y: %f\n", point.x, point.y);
@@ -596,10 +599,13 @@ void Behavior::MakeUseOfPathResponse(PointToPointPathResponse my_response)
 	delete ptr_navigator;
 	//#TODO - czy towrzenie anchora potrzebne?
 	Coordinates anchor = { 0, 0 };
-	printf("Received plan from nav grid. Plan:\n");
+	//printf("Received plan from nav grid. Plan:\n");
+	Logger::Log("Received plan from nav grid. Plan:\n");
 	for (Coordinates point : my_response.navigation_path)
 	{
-		printf("x: %f y: %f\n", point.x, point.y);
+		//printf("x: %f y: %f\n", point.x, point.y);
+		std::string message = "x: " + std::to_string(point.x) + " y: " + std::to_string(point.y);
+		Logger::Log(message);
 	}
 	if (my_response.navigation_path.size() != 0)
 	{

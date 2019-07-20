@@ -117,7 +117,24 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 		    //Creature::ptr_current_main_charater->SetBehaviorMode(beh_idle);
 			Creature::ptr_current_main_charater->RequestBehaviorMode(beh_idle);
         }
-
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+		ptr_my_event_handler->key.keysym.sym == SDLK_0 &&
+		ptr_my_event_handler->key.repeat == 0)
+		{
+		    Logger::SetDebugLevel(debug_none);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+		ptr_my_event_handler->key.keysym.sym == SDLK_1 &&
+		ptr_my_event_handler->key.repeat == 0)
+		{
+		    Logger::SetDebugLevel(debug_info);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+		ptr_my_event_handler->key.keysym.sym == SDLK_2 &&
+		ptr_my_event_handler->key.repeat == 0)
+		{
+		    Logger::SetDebugLevel(debug_full);
+		}
 		//FOR SPECIFIC MODES INSIDE GAME
 		if (current_mode == interf_guided)
 		{

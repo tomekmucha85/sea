@@ -168,6 +168,7 @@
     <ClInclude Include="LevelNineMazes.hpp" />
     <ClInclude Include="LevelTest.hpp" />
     <ClInclude Include="Line.hpp" />
+    <ClInclude Include="Logger.hpp" />
     <ClInclude Include="Navigator.hpp" />
     <ClInclude Include="SpriteExit.hpp" />
     <ClInclude Include="SpriteGuiManaBar.hpp" />
@@ -225,6 +226,7 @@
     <ClCompile Include="LevelNineMazes.cpp" />
     <ClCompile Include="LevelTest.cpp" />
     <ClCompile Include="Line.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Navigator.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Magic.cpp" />

@@ -11,6 +11,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdexcept>
+#include <sstream>
 #include <algorithm>
 #include <Sprite.hpp>
 #include <FactorySpawningSprites.hpp>
@@ -24,6 +25,7 @@
 #include <Navigator.hpp>
 #include <FactorySpawningNavigators.hpp>
 #include <CommonMath.hpp>
+#include <Logger.hpp>
 
 class Creature;
 

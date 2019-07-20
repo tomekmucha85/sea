@@ -7,6 +7,7 @@
 #include <Game.hpp>
 #include <CustomDefinedTypes.hpp>
 #include <TimerInterval.hpp>
+#include <Logger.hpp>
 
 class Interface
 {

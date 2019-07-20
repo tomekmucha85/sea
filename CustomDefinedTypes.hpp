@@ -2,7 +2,9 @@
 #define CUSTOM_DEFINED_TYPES_HPP
 
 //Functions to be passed, executing triggered event
-typedef void(*TriggeredEvent)();
+//typedef void(*TriggeredEvent)();
+
+enum DebugLevel {debug_none, debug_info, debug_full};
 
 struct Coordinates
 {
