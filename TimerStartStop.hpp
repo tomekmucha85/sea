@@ -16,8 +16,8 @@ public:
 	void Stop();
 	Uint32 Read();
 	bool IsTicking();
-	void ResetTimer();
-	void StopAndErase();
+	void RestartFromZero();
+	void Reset();
 
 };
 

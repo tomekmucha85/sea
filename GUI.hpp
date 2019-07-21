@@ -14,6 +14,8 @@ class GUI
 		std::vector<Sprite*> gui_components = {};
 		Coordinates mana_bar_center = {320, 25};
 		Sprite* ptr_mana_bar = nullptr;
+		Coordinates hunger_bar_center = { 400, 25 };
+		Sprite* ptr_hunger_bar = nullptr;
     public:
 		GUI();
 		~GUI();
@@ -21,6 +23,8 @@ class GUI
 		void ManageForCreature(Creature* ptr_creature);
 		void ManageManaBar(Creature* ptr_creature);
 		void ManaBarSetChargeLevel(int new_level);
+		void ManageHungerBar(Creature* ptr_creature);
+		void HungerBarSetChargeLevel(int new_level);
 
 };
 

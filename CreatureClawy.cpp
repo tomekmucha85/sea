@@ -75,17 +75,43 @@ void CreatureClawy::PlayWarningAnimationIfHungerRisesAboveThreshold(Uint32 thres
 
 void CreatureClawy::ManagePreyProximityTrigger()
 {
+	static Uint32 last_proximity_timer_indication = 0;
 	if (was_prey_presence_trigger_activated)
 	{
-		if (AmIWithinProximityRadiusOfCertainTypeCreature(cre_carrier_a, 300) == false)
+		if (AmIWithinProximityRadiusOfCertainTypeCreature(cre_carrier_a, RADIUS_FOR_PREY_PROXIMITY_CHECKS) == false)
 		{
+			//Cleanup when leaving prey proximity
 			was_prey_presence_trigger_activated = false;
-			ptr_timer_for_prey_proximity->StopAndErase();
+			ptr_timer_for_prey_proximity->Reset();
+			SetHungerLevel(0);
+			last_proximity_timer_indication = 0;
+		}
+		else
+		{
+			//Building up hunger in prey proximity
+			if (last_proximity_timer_indication == 0)
+			{
+				last_proximity_timer_indication = ptr_timer_for_prey_proximity->Read();
+			}
+			else
+			{
+				//Check if next quant is reached
+				Uint32 current_proximity_timer_indication = ptr_timer_for_prey_proximity->Read();
+				Uint32 current_quant_reached = current_proximity_timer_indication / time_spent_in_prey_proximity_that_elevates_hunger;
+				Uint32 previous_quant_reached = last_proximity_timer_indication / time_spent_in_prey_proximity_that_elevates_hunger;
+				if (current_quant_reached - previous_quant_reached >= 1)
+				{
+					//printf("UP!\n");
+					ChangeHungerLevel(1);
+				}
+				last_proximity_timer_indication = current_proximity_timer_indication;
+			}
 		}
 	}
 	else
+	//If prey proximity trigger is not activated.
 	{
-		if (AmIWithinProximityRadiusOfCertainTypeCreature(cre_carrier_a, 300) == true)
+		if (AmIWithinProximityRadiusOfCertainTypeCreature(cre_carrier_a, RADIUS_FOR_PREY_PROXIMITY_CHECKS) == true)
 		{
 				was_prey_presence_trigger_activated = true;
 				ptr_timer_for_prey_proximity->Start();

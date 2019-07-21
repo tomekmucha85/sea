@@ -112,13 +112,10 @@ void CreatureCarrierA::ManageMainCharacterProximityTrigger()
 	}
 	else
 	{
-		if (was_main_character_presence_trigger_activated == false)
+		if (AmIWithinMainCharacterProximityRadius() == true)
 		{
-			if (AmIWithinMainCharacterProximityRadius() == true)
-			{
-				SetTimeToLive(allowed_time_to_live_in_presence_of_main_character_miliseconds);
-				was_main_character_presence_trigger_activated = true;
-			}
+			SetTimeToLive(allowed_time_to_live_in_presence_of_main_character_miliseconds);
+			was_main_character_presence_trigger_activated = true;
 		}
 	}
 }

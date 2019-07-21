@@ -118,6 +118,8 @@ class Creature
 		double melee_attack_field_degrees = 180;
 		//How long melee attack takes? (miliseconds)
 		double melee_attack_duration = 700;
+		//How hungry am I?
+		int hunger_level = 0;
 		//Requests to spawn other creatures. Requests are collected by LevelComponent
 		std::vector<CreatureSpawnRequest> spawn_requests = {};
 
@@ -286,6 +288,9 @@ class Creature
 		int TellManaLevel();
 		void SetManaLevel(int new_level);
 		void ChangeManaLevel(int change_amount);
+		int TellHungerLevel();
+		void SetHungerLevel(int new_level);
+		void ChangeHungerLevel(int change_amount);
 
 		//###################
         //Timing

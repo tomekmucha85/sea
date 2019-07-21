@@ -4,15 +4,24 @@
 class CreatureClawy : public Creature
 {
 private:
+	//###############
+	// VARIABLES
+	//###############
 	static const SpriteType my_initial_type = spr_clawy;
+	static const int RADIUS_FOR_PREY_PROXIMITY_CHECKS = 100;
 	//TIMING
-    //Timer for measuring how long was the creature remaining in hero's proximity.
+    //Timer for measuring how long was the creature remaining in its potential prey proximity.
 	TimerStartStop* ptr_timer_for_prey_proximity = nullptr;
-	//How long can the creature survive in presence of main hero
-	//Uint32 allowed_time_to_live_in_presence_of_main_character_miliseconds = 5000;
 	std::vector<std::function<void(CreatureClawy*)>> cyclic_actions_class_specific = {};
-	void PerformCyclicActionsClassSpecific();
+	//How much time spent in prey proximity elevates hunger by one step (miliseconds)
+	int time_spent_in_prey_proximity_that_elevates_hunger = 1000;
+	//Threshold above which character is likely to attack preys
+	int hunger_threshold = 2;
 
+	//#################
+    // FUNCTIONS
+    //#################
+	void PerformCyclicActionsClassSpecific();
 
 public:
 	//###############

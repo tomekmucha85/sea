@@ -1326,6 +1326,25 @@ void Creature::SetManaLevel(int new_level)
 }
 
 //********************************************
+// HUNGER
+//********************************************
+
+int Creature::TellHungerLevel()
+{
+	return hunger_level;
+}
+
+void Creature::SetHungerLevel(int new_level)
+{
+	hunger_level = new_level;
+}
+
+void Creature::ChangeHungerLevel(int change_amount)
+{
+	hunger_level += change_amount;
+}
+
+//********************************************
 //DEFAULT IMPLEMENTATIONS OF VIRTUAL FUNCTIONS
 //********************************************
 

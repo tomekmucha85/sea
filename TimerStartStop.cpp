@@ -29,14 +29,14 @@ Uint32 TimerStartStop::Read()
 	}
 }
 
-void TimerStartStop::ResetTimer()
+void TimerStartStop::RestartFromZero()
 {
 	//Resets aggregated time and starts counting.
 	aggregated_time = 0;
 	Start();
 }
 
-void TimerStartStop::StopAndErase()
+void TimerStartStop::Reset()
 {
 	aggregated_time = 0;
 	is_counting = false;
