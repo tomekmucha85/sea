@@ -71,16 +71,16 @@ std::string BCI::GetNextBCIEvent()
 				IEE_FacialExpressionAlgo_t lowerFaceType =
 					IS_FacialExpressionGetLowerFaceAction(eState);
 
-				if (lowerFaceAmp > 0)
+				if (lowerFaceAmp > 0.5)
 				{
 					if (lowerFaceType == FE_CLENCH)
 					{
-						printf("Clench!\n");
+						Logger::Log("Clench! Amplitude: " + std::to_string(lowerFaceAmp));
 						result = "clench";
 					}
 					else if (lowerFaceType == FE_SMILE)
 					{
-						printf("Smile\n");
+						Logger::Log("Smile! Amplitude: " + std::to_string(lowerFaceAmp));
 						result = "smile";
 					}
 				}

@@ -14,9 +14,9 @@ private:
 	TimerStartStop* ptr_timer_for_prey_proximity = nullptr;
 	std::vector<std::function<void(CreatureClawy*)>> cyclic_actions_class_specific = {};
 	//How much time spent in prey proximity elevates hunger by one step (miliseconds)
-	int time_spent_in_prey_proximity_that_elevates_hunger = 1000;
+	int time_spent_in_prey_proximity_that_elevates_hunger = 3000;
 	//Threshold above which character is likely to attack preys
-	int hunger_threshold = 2;
+	int hunger_threshold = 3;
 
 	//#################
     // FUNCTIONS
@@ -37,7 +37,9 @@ public:
 	~CreatureClawy();
 	void SetVelocity(double my_velocity);
 	void ManagePreyProximityTrigger();
-	void PlayWarningAnimationIfHungerRisesAboveThreshold(Uint32 threshold_miliseconds);
+	void PlayWarningAnimationIfTimeSpentInPreyProximityRisesAboveThreshold(Uint32 threshold_miliseconds);
+	//#TODO - uwzglêdniæ prawdopodobieñstwo
+	void AutoAttack(double likehood=0.5);
 
 	//#################
     // LAMBDAS
@@ -45,7 +47,7 @@ public:
 
 	std::function<void(CreatureClawy*)> func_warn_if_hunger_rises_above_threshold = [](CreatureClawy* ptr_creature)
 	{
-		ptr_creature->PlayWarningAnimationIfHungerRisesAboveThreshold(500);
+		ptr_creature->PlayWarningAnimationIfTimeSpentInPreyProximityRisesAboveThreshold(500);
 	};
 
 	std::function<void(CreatureClawy*)> func_manage_prey_proximity_trigger = [](CreatureClawy* ptr_creature)
@@ -53,6 +55,9 @@ public:
 		ptr_creature->ManagePreyProximityTrigger();
 	};
 
-
+	std::function<void(CreatureClawy*)> func_auto_attack_trigger = [](CreatureClawy* ptr_creature)
+	{
+		ptr_creature->AutoAttack();
+	};
 };
 #endif // CREATURE_CLAWY_HPP

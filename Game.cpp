@@ -97,3 +97,16 @@ void Game::SetCurrentLevel(Level* ptr_my_current_level)
 {
 	ptr_current_level = ptr_my_current_level;
 }
+
+void Game::SwitchBetweenLevelsIfNeeded()
+{
+	//#TODO dopracowaæ, na razie jeden level restartuje siê w kó³ko
+	if (ptr_current_level->TellIfPlayerWon())
+	{
+		PrepareSingleLevel(level_ninemazes);
+	}
+	else if (ptr_current_level->TellIfPlayerLost())
+	{
+		PrepareSingleLevel(level_ninemazes);
+	}
+}

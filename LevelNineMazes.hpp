@@ -138,7 +138,7 @@ class LevelNineMazes : public Level
 		void DeleteMazeNumber(int my_number);
 		void DeleteNotNeededMazes();
 		void GenerateMazeNumber(int my_number);
-		void SetCurrentCentralMaze( LevelComponent* ptr_my_maze);
+		void SetCurrentCentralMaze(LevelComponent* ptr_my_maze);
 		LevelComponent* TellCurrentCentralMaze();
 		void MoveWorldNorth();
 		void MoveWorldSouth();

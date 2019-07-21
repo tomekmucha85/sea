@@ -22,6 +22,10 @@ Level* FactorySpawningLevels::SpawnLevel(LevelType my_type)
 	{
 		result = new LevelTest();
 	}
+	else if (my_type == level_menu)
+	{
+		result = new LevelMenu();
+	}
 	else
 	{
 		throw std::invalid_argument("Invalid level type passed to factory!\n");

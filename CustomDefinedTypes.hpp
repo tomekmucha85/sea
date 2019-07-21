@@ -39,7 +39,7 @@ struct PreciseRect
 enum VisualComponentType {visco_sprite, visco_vector, visco_line, visco_undetermined};
 
 //Level names
-enum LevelType { level_ninemazes, level_base, level_test };
+enum LevelType { level_ninemazes, level_base, level_test, level_menu };
 
 //Behavior
 enum BehaviorMode {
@@ -151,8 +151,6 @@ enum InsertionMode { force, merge, safe };
 
 enum Directions { north, north_east, east, south_east, south, south_west, west, north_west };
 
-//enum SpriteDirections {north, north_east, east, south_east, south, south_west, west, north_west };
-
 //Decide if Creature should be spawned with coordinates describing its center point or area occupied by creature.
 enum PositioningMode {center_coordinates, area_coordinates, undefined};
 
@@ -183,9 +181,18 @@ enum AttackTypes {attack_none, attack_melee, attack_projectile};
 enum LevelEnding {victory, defeat, other_ending_1, other_ending_2, other_ending_3};
 
 //Interface mode - how events are interpreted.
-enum InterfaceMode {interf_none, interf_menu, interf_guided, interf_free};
+enum InterfaceMode {interf_none, interf_menu, interf_guided, interf_game};
 
 //Kind of Brain Computer Interface in use
 enum BCIMode { bci_none, bci_physical, bci_virtual };
+
+//Actions possible to perform in menu
+enum MenuActions {menu_none,
+	menu_new_game, 
+	menu_calibration, 
+	menu_quit, 
+	menu_return, 
+	menu_accept_training,
+    menu_revoke_training};
 
 #endif

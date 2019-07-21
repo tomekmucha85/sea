@@ -6,10 +6,37 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 	//USER IN MENU
 	if (current_mode == interf_menu)
 	{
-		;
+	    if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+		    ptr_my_event_handler->key.keysym.sym == SDLK_ESCAPE &&
+		    ptr_my_event_handler->key.repeat == 0)
+	    {
+		    Game::PrepareSingleLevel(level_ninemazes);
+		    SetInterfaceMode(interf_game);
+	    }
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+			ptr_my_event_handler->key.keysym.sym == SDLK_w &&
+			ptr_my_event_handler->key.repeat == 0)
+		{
+			Logger::Log("GOING UP ONE MENU POSITION.");
+			Game::ptr_current_level->BrowseActions(north);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+			ptr_my_event_handler->key.keysym.sym == SDLK_s &&
+			ptr_my_event_handler->key.repeat == 0)
+		{
+			Logger::Log("GOING DOWN ONE MENU POSITION.");
+			Game::ptr_current_level->BrowseActions(south);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+			ptr_my_event_handler->key.keysym.sym == SDLK_RETURN &&
+			ptr_my_event_handler->key.repeat == 0)
+		{
+			Logger::Log("PERFORMING ACTION.");
+			Game::ptr_current_level->PerformSelectedAction();
+		}
 	}
 	//USER INSIDE GAME
-	else if (current_mode == interf_guided || current_mode == interf_free)
+	else if (current_mode == interf_game)
 	{
 		if (ptr_my_event_handler->type == SDL_KEYDOWN &&
 			ptr_my_event_handler->key.keysym.sym == SDLK_p &&
@@ -90,6 +117,13 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 		{
 			Game::PrepareSingleLevel(level_test);
 		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+			ptr_my_event_handler->key.keysym.sym == SDLK_ESCAPE &&
+			ptr_my_event_handler->key.repeat == 0)
+		{
+			Game::PrepareSingleLevel(level_menu);
+			SetInterfaceMode(interf_menu);
+		}
 		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
 			     ptr_my_event_handler->key.keysym.sym == SDLK_v && 
 			     ptr_my_event_handler->key.repeat == 0)
@@ -141,42 +175,7 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 		{
 		    Logger::SetDebugLevel(debug_full);
 		}
-		//FOR SPECIFIC MODES INSIDE GAME
-		if (current_mode == interf_guided)
-		{
-			if (ptr_my_event_handler->type == SDL_KEYDOWN &&
-				ptr_my_event_handler->key.keysym.sym == SDLK_g &&
-				ptr_my_event_handler->key.repeat == 0)
-			{
-				printf("Key hit in guided mode.\n");
-			}
-			else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
-				ptr_my_event_handler->key.keysym.sym == SDLK_h &&
-				ptr_my_event_handler->key.repeat == 0)
-			{
-				printf("Mode change.\n");
-				SetInterfaceMode(interf_free);
-			}
-		}
-		else if (current_mode == interf_free)
-		{
-			//printf("Free mode!\n");
-			if (ptr_my_event_handler->type == SDL_KEYDOWN &&
-				ptr_my_event_handler->key.keysym.sym == SDLK_g &&
-				ptr_my_event_handler->key.repeat == 0)
-			{
-				printf("Key hit in free mode.\n");
-			}
-			else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
-				ptr_my_event_handler->key.keysym.sym == SDLK_h &&
-				ptr_my_event_handler->key.repeat == 0)
-			{
-				printf("Mode change.\n");
-				SetInterfaceMode(interf_guided);
-			}
-		}
 	}
-
 }
 
 void Interface::UseInterface(std::string bci_detection)
@@ -189,11 +188,12 @@ void Interface::UseInterface(std::string bci_detection)
 	{
 		;
 	}
-	else if (current_mode == interf_free)
+	else if (current_mode == interf_game)
 	{
 		if (bci_detection == "smile")
 		{
 			printf("Interface got smile!\n");
+			Creature::ptr_current_main_charater->SetHungerLevel(0);
 		}
 		else if (bci_detection == "clench")
 		{
@@ -212,7 +212,7 @@ void Interface::UseInterface(EmoEngineEventHandle my_eEvent)
 	{
 		;
 	}
-	else if (current_mode == interf_free)
+	else if (current_mode == interf_game)
 	{
 		;
 	}

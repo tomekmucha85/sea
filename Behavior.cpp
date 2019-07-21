@@ -313,11 +313,11 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 			{
 				if (was_wander_path_request_placed)
 				{
-					printf("There is no navigator but path request was already placed.\n");
+					Logger::Log("There is no navigator but path request was already placed.", debug_full);
 				}
 				else
 				{
-					printf("There is no navigator and no path request placed!\n");
+					Logger::Log("There is no navigator and no path request placed!", debug_full);
 				}
 			}
 			else

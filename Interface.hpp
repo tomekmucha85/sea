@@ -12,7 +12,7 @@
 class Interface
 {
     private:
-		InterfaceMode current_mode = interf_none;
+		InterfaceMode current_mode = interf_menu;
     public:
 		void UseInterface(SDL_Event* ptr_my_event_handler);
 		void UseInterface(EmoEngineEventHandle my_eEvent);

@@ -6,6 +6,7 @@
 #include <IedkErrorCode.h>
 #include <string>
 #include <CustomDefinedTypes.hpp>
+#include <Logger.hpp>
 
 class BCI
 {

@@ -12,10 +12,10 @@ CreatureCarrierA::CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin
 	AddCreatureTypeToCollisionExceptions(cre_clawy);
 	AddCreatureTypeToCollisionExceptions(cre_carrier_a);
 	TellMainVisualComponent()->SetCurrentAnimation(anim_idle);
-	ptr_timer_for_hero_proximity = new TimerStartStop();
+	//ptr_timer_for_hero_proximity = new TimerStartStop();
 	//#TODO - napisaæ funkcjê do dodawania cyclic actions na poziomie klasy
-	cyclic_actions_class_specific.push_back(func_warn_if_time_to_live_gets_short);
-	cyclic_actions_class_specific.push_back(func_manage_main_character_proximity_trigger);
+	//cyclic_actions_class_specific.push_back(func_warn_if_time_to_live_gets_short);
+	//cyclic_actions_class_specific.push_back(func_manage_main_character_proximity_trigger);
 	SetTimeToLive(default_time_to_live_miliseconds);
 }
 

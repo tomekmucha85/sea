@@ -240,6 +240,9 @@
     <ClInclude Include="Logger.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelMenu.hpp">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -415,6 +418,9 @@
     </ClCompile>
     <ClCompile Include="Logger.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelMenu.cpp">
+      <Filter>Source Files\Levels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

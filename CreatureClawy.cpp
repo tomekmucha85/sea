@@ -14,7 +14,7 @@ CreatureClawy::CreatureClawy(Coordinates* ptr_my_center, int hitbox_margin) :
 	//#TODO - napisaæ funkcjê do dodawania cyclic actions na poziomie klasy
 	cyclic_actions_class_specific.push_back(func_warn_if_hunger_rises_above_threshold);
 	cyclic_actions_class_specific.push_back(func_manage_prey_proximity_trigger);
-
+	cyclic_actions_class_specific.push_back(func_auto_attack_trigger);
 }
 
 CreatureClawy::~CreatureClawy()
@@ -45,17 +45,17 @@ void CreatureClawy::PerformCyclicActionsClassSpecific()
 	}
 }
 
-void CreatureClawy::PlayWarningAnimationIfHungerRisesAboveThreshold(Uint32 threshold_miliseconds)
+void CreatureClawy::PlayWarningAnimationIfTimeSpentInPreyProximityRisesAboveThreshold(Uint32 threshold_miliseconds)
 {
 	std::string name_of_warning_visual_component = "warning_time_threshold";
 	if (ptr_timer_for_prey_proximity->Read() >= threshold_miliseconds)
 	{
 		Logger::Log("Prey proximity trigger exceeded threshold! (" + 
 			std::to_string(ptr_timer_for_prey_proximity->Read()) +
-		    " )");
+		    " )", debug_full);
 		if (was_hunger_warning_activated == false)
 		{
-			Logger::Log("Huger warning activated!");
+			Logger::Log("Prey proximity warning activated!");
 			VisualComponent* ptr_warning_animation = SpawnSpriteUsingFactory(spr_implosion);
 			AddVisualComponent(ptr_warning_animation, name_of_warning_visual_component);
 			visual_components[name_of_warning_visual_component]->SetCurrentAnimation(anim_idle);
@@ -75,6 +75,7 @@ void CreatureClawy::PlayWarningAnimationIfHungerRisesAboveThreshold(Uint32 thres
 
 void CreatureClawy::ManagePreyProximityTrigger()
 {
+	//#TODO - do rozbicia na funkcjê od timera i g³odu
 	static Uint32 last_proximity_timer_indication = 0;
 	if (was_prey_presence_trigger_activated)
 	{
@@ -101,7 +102,6 @@ void CreatureClawy::ManagePreyProximityTrigger()
 				Uint32 previous_quant_reached = last_proximity_timer_indication / time_spent_in_prey_proximity_that_elevates_hunger;
 				if (current_quant_reached - previous_quant_reached >= 1)
 				{
-					//printf("UP!\n");
 					ChangeHungerLevel(1);
 				}
 				last_proximity_timer_indication = current_proximity_timer_indication;
@@ -115,6 +115,25 @@ void CreatureClawy::ManagePreyProximityTrigger()
 		{
 				was_prey_presence_trigger_activated = true;
 				ptr_timer_for_prey_proximity->Start();
+		}
+	}
+}
+
+void CreatureClawy::AutoAttack(double likehood)
+{
+	//Triggering automatic attack if hunger threshold if exceeded and prey is near.
+	if (TellHungerLevel() >= hunger_threshold)
+	{
+		Logger::Log("Hunger level " +
+            std::to_string(TellHungerLevel()) +
+            " above threshold of " +
+            std::to_string(hunger_threshold));
+		//Timer ticks if prey is near.
+		if (ptr_timer_for_prey_proximity->IsTicking())
+		{
+			Attack(attack_melee);
+			//#TODO - powinno siê to odbywaæ w ramach innej funkcji.
+			SetHungerLevel(0);
 		}
 	}
 }

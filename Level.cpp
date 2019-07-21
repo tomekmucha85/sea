@@ -68,10 +68,10 @@ void Level::LoadLevelCreaturesIntoEnvironment()
 //Every component holds its own creatures
 //Level traces holds record of its components
 
-Creature* Level::SpawnHero(CreatureType hero_type, Coordinates* ptr_hero_position)
+Creature* Level::SpawnHero(CreatureType hero_type, Coordinates* ptr_hero_position, bool force_respawn)
 {
-	printf("Spawning hero.\n");
-	if (Creature::ptr_current_main_charater != nullptr)
+	Logger::Log("Entered SpawnHero implementation for Level.");
+	if (Creature::ptr_current_main_charater != nullptr && force_respawn == false)
 	{
 		printf("There is an existing main hero Creature. Will not spawn a new one.\n");
 		if (ptr_hero_position != nullptr)
@@ -89,7 +89,14 @@ Creature* Level::SpawnHero(CreatureType hero_type, Coordinates* ptr_hero_positio
 	}
 	else
 	{
-		printf("There is no hero Creature yet. Will spawn a new one.\n");
+		if (force_respawn)
+		{
+			Logger::Log("Forceful hero respawn.");
+		}
+		else
+		{
+			Logger::Log("There is no hero Creature yet.Will spawn a new one.");
+		}
 		Creature* ptr_new_hero = nullptr;
 		if (ptr_hero_position != nullptr)
 		{
@@ -493,4 +500,17 @@ void Level::RenderGui()
 		throw std::invalid_argument("Cannot render nullptr!\n");
 	}
 	ptr_gui->RenderComponents();
+}
+
+
+//DEFAULT IMPLEMENTATIONS OF VIRTUAL FUNCTIONS
+
+void Level::BrowseActions(Directions my_direction)
+{
+	Logger::Log("Default implementation of BrowseActions called!");
+}
+
+void Level::PerformSelectedAction()
+{
+	Logger::Log("Default implementation of PerformSelectedAction called!");
 }

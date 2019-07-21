@@ -59,7 +59,8 @@ class Level
 		Level();
 		virtual ~Level();
 		//Level components factory
-		Creature* SpawnHero(CreatureType hero_type = cre_clawy, Coordinates* ptr_hero_position = nullptr);
+		virtual Creature* SpawnHero(CreatureType hero_type = cre_clawy, Coordinates* ptr_hero_position = nullptr,
+			bool force_respawn = true);
 		void LoadLevel();
 		void LoadLevelCreaturesIntoEnvironment();
 		FactorySpawningLevelComponents* ptr_components_factory = nullptr;
@@ -98,6 +99,12 @@ class Level
 		bool TellIfPaused();
 
 		void ProcessAllPathRequests();
+
+		//VIRTUAL METHODS FOR SPECIFIC LEVELS
+
+		//Methods for LevelMenu
+		virtual void BrowseActions(Directions my_direction);
+		virtual void PerformSelectedAction();
 
 		//###################
 		// COMMON LAMBDAS

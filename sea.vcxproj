@@ -165,6 +165,7 @@
     <ClInclude Include="LevelComponentNavGrid.hpp" />
     <ClInclude Include="LevelComponentTest.hpp" />
     <ClInclude Include="LevelComponentTriggers.hpp" />
+    <ClInclude Include="LevelMenu.hpp" />
     <ClInclude Include="LevelNineMazes.hpp" />
     <ClInclude Include="LevelTest.hpp" />
     <ClInclude Include="Line.hpp" />
@@ -223,6 +224,7 @@
     <ClCompile Include="LevelComponentMaze.cpp" />
     <ClCompile Include="LevelComponentTest.cpp" />
     <ClCompile Include="LevelComponentTriggers.cpp" />
+    <ClCompile Include="LevelMenu.cpp" />
     <ClCompile Include="LevelNineMazes.cpp" />
     <ClCompile Include="LevelTest.cpp" />
     <ClCompile Include="Line.cpp" />

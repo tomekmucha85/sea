@@ -36,10 +36,11 @@ int main(int argc, char* args[])
 
     Game::InitializeGame();
 	Interface* ptr_game_interface = new Interface();
-	ptr_game_interface->SetInterfaceMode(interf_free);
+	ptr_game_interface->SetInterfaceMode(interf_menu);
 	BCI* ptr_bci_instance = new BCI(bci_none);
 
-	Game::PrepareSingleLevel(level_ninemazes);
+	//Game::PrepareSingleLevel(level_ninemazes);
+	Game::PrepareSingleLevel(level_menu);
 
 	int looped_events = static_cast<int>(Game::ptr_current_level->cyclic_actions.size());
 	printf("There are %d actions present in current event loop.\n", looped_events);
@@ -91,6 +92,10 @@ int main(int argc, char* args[])
 
         //Update screen
         SDL_RenderPresent(Game::ptr_screen->renderer);
+
+		//Check if level should be finished
+		Game::SwitchBetweenLevelsIfNeeded();
+
     }
     //Do cleanup
 	//delete ptr_emotiv_bands_check;

@@ -13,6 +13,7 @@ class Game
 {
     private:
 		static std::vector <Level*> currently_existing_levels;
+		std::vector<LevelType> levels_order = {level_menu, level_ninemazes};
 
     public:
 
@@ -33,6 +34,7 @@ class Game
 		static Level* InitializeLevel(LevelType my_type);
 		static void DestroyLevel(Level* ptr_destroyed_level);
 		static void PrepareSingleLevel(LevelType my_type);
+		static void SwitchBetweenLevelsIfNeeded();
 		static void UnloadLevel(Level* ptr_unloaded_level);
 		static void LoadLevel(Level* ptr_loaded_level);
         static void DestroyGame();

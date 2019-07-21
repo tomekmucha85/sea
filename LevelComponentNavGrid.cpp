@@ -104,9 +104,12 @@ CreatureNavGridNode* LevelComponentNavGrid::FindAGridNodeAccessibleFromPoint(Coo
 			if (Creature::IsThereCorridorBetweenThesePointsInCurrentEnvironment(point, ptr_candidate->TellCenterPoint(),60, MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE))
 			{
 				accessible_nodes.push_back(ptr_candidate);
-				printf("Candidate %p suitable as declared by FindAGridNodeAccessibleFromPoint.\n", result);
+				printf("Candidate %p suitable as declared by FindAGridNodeAccessibleFromPoint.\n", ptr_candidate);
 			}
-			printf("Candidate behind wall!\n");
+			else
+			{
+				printf("Candidate behind wall!\n");
+			}
 		}
 		if (accessible_nodes.size() > 0)
 		{
