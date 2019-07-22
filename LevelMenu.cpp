@@ -4,17 +4,11 @@ const Coordinates LevelMenu::MENU_HERO_POSITION = {0,0};
 
 LevelMenu::LevelMenu()
 {
+	SetMyType(level_menu);
 	Coordinates bground_position = { 100,100 };
 	Creature* ptr_bground = ptr_initial_core_component->AddCreature(cre_blue_bground, &bground_position, merge);
 	ptr_bground->MakeMeNotObstacle();
-	SpawnHero();
 	possible_actions = possible_actions_menu_top_level;
-}
-
-Creature* LevelMenu::SpawnHero(CreatureType hero_type, Coordinates* ptr_hero_position, bool force_respawn)
-{
-	Logger::Log("Entered SpawnHero implementation for LevelMenu.");
-	return Level::SpawnHero(hero_type, ptr_hero_position, force_respawn);
 }
 
 void LevelMenu::BrowseActions(Directions my_direction)

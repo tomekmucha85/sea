@@ -39,12 +39,22 @@ Level::~Level()
 }
 
 //************
-//TELLERS
+//SETTERS AND TELLERS
 //************
 
 GUI* Level::TellMyGui()
 {
 	return ptr_gui;
+}
+
+LevelType Level::TellMyType()
+{
+	return type;
+}
+
+void Level::SetMyType(LevelType my_type)
+{
+	type = my_type;
 }
 
 //************

@@ -16,16 +16,13 @@
 class Level
 {
     private:
-		//###################
-        //Types
-        //###################
-		
-		bool has_player_lost = false;
-		bool has_player_won = false;
 
 		//###################
 		//Variables & const
 		//###################
+		LevelType type = level_base;
+		bool has_player_lost = false;
+		bool has_player_won = false;
 		GUI* ptr_gui = nullptr;
         //Map of level components
 		std::map<LevelComponentType, std::vector<LevelComponent*>> level_component_types_vs_level_components = {};
@@ -61,6 +58,8 @@ class Level
 		//Level components factory
 		virtual Creature* SpawnHero(CreatureType hero_type = cre_clawy, Coordinates* ptr_hero_position = nullptr,
 			bool force_respawn = true);
+		LevelType TellMyType();
+		void SetMyType(LevelType my_type);
 		void LoadLevel();
 		void LoadLevelCreaturesIntoEnvironment();
 		FactorySpawningLevelComponents* ptr_components_factory = nullptr;

@@ -2,7 +2,7 @@
 
 LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 {
-
+	SetMyType(level_ninemazes);
 	//Adding component for event triggers
 	ptr_border_triggers = ptr_components_factory->SpawnLevelComponent(levco_triggers);
 	printf("Triggers component address: %p.\n", ptr_border_triggers);

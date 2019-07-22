@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
@@ -39,7 +40,6 @@ int main(int argc, char* args[])
 	ptr_game_interface->SetInterfaceMode(interf_menu);
 	BCI* ptr_bci_instance = new BCI(bci_none);
 
-	//Game::PrepareSingleLevel(level_ninemazes);
 	Game::PrepareSingleLevel(level_menu);
 
 	int looped_events = static_cast<int>(Game::ptr_current_level->cyclic_actions.size());
@@ -48,6 +48,10 @@ int main(int argc, char* args[])
 	//TimerInterval* ptr_emotiv_bands_check = new TimerInterval(2000);
 
 	int cooldown = 0;
+
+	//TEXT TEST
+	SDL_Texture* ptr_writing = Texture::LoadTextureFromRenderedText("dupa", Game::ptr_screen->renderer, FontBank::ptr_font_doom);
+
 
     while (!quit)
     {
@@ -90,6 +94,12 @@ int main(int argc, char* args[])
 		Game::ptr_current_level->RenderAllPresentCreatures();
 		Game::ptr_current_level->RenderGui();
 
+		//TEXT TEST
+		int writing_w, writing_h;
+		SDL_QueryTexture(ptr_writing, NULL, NULL, &writing_w, &writing_h);
+		SDL_Rect result = { 0,0,writing_w, writing_h };
+		SDL_RenderCopyEx(Game::ptr_screen->renderer, ptr_writing, nullptr, &result, 0, 0, SDL_FLIP_NONE);
+
         //Update screen
         SDL_RenderPresent(Game::ptr_screen->renderer);
 
@@ -102,7 +112,8 @@ int main(int argc, char* args[])
 	delete ptr_bci_instance;
     Game::DestroyGame();
     //Quit SDL subsystems
-    IMG_Quit();
+	TTF_Quit();
+	IMG_Quit();
     SDL_Quit();
     return 0;
 }

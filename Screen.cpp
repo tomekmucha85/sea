@@ -73,6 +73,13 @@ bool Screen::Init()
 					printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
 					success = false;
 				}
+
+				//Initialize True Type Fonts support
+				if (TTF_Init() == -1)
+				{
+					printf("SDL_ttf could not initialize! Error: %s\n", TTF_GetError());
+					success = false;
+				}
 			}
         }
     }
@@ -94,17 +101,3 @@ int Screen::TellScreenHeight()
 	return Screen::SCREEN_HEIGHT;
 }
 
-
-//*****************
-//CAMERA CORRECTION
-//*****************
-
-void Screen::SetXCorrection(int x)
-{
-    printf("Dupa.\n");
-}
-
-void Screen::SetYCorrection(int y)
-{
-    printf("Dupa.\n");
-}

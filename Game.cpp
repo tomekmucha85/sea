@@ -4,10 +4,11 @@
 //DEFINITIONS OF STATIC CLASS MEMBERS
 //***********************************
 
-Screen* Game::ptr_screen;
-TextureBank* Game::ptr_texture_bank;
+Screen* Game::ptr_screen = nullptr;
+TextureBank* Game::ptr_texture_bank = nullptr;
+FontBank* Game::ptr_font_bank = nullptr;
 int Game::debug_counter;
-Level* Game::ptr_current_level;
+Level* Game::ptr_current_level = nullptr;
 FactorySpawningLevels* Game::ptr_levels_factory;
 std::vector <Level*> Game::currently_existing_levels;
 
@@ -21,6 +22,7 @@ void Game::InitializeGame()
 	debug_counter = 10;
     CreateScreen();
     LoadTextures();
+	LoadFonts();
 	ptr_levels_factory = new FactorySpawningLevels();
 	srand(time(NULL));
 }
@@ -76,6 +78,7 @@ void Game::DestroyGame()
 	Sprite::SetTextureBank(nullptr);
 	VisualComponent::SetScreen(nullptr);
 	delete ptr_texture_bank;
+	delete ptr_font_bank;
 	delete ptr_screen;
 	delete ptr_levels_factory;
 }
@@ -91,6 +94,11 @@ void Game::LoadTextures()
 {
     Game::ptr_texture_bank = new TextureBank(Game::ptr_screen->renderer);
 	Sprite::SetTextureBank(ptr_texture_bank);
+}
+
+void Game::LoadFonts()
+{
+	Game::ptr_font_bank = new FontBank();
 }
 
 void Game::SetCurrentLevel(Level* ptr_my_current_level)

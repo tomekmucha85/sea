@@ -12,8 +12,6 @@ private:
 	unsigned int current_menu_position = 0;
 public:
 	LevelMenu();
-	Creature* SpawnHero(CreatureType hero_type=cre_clawy,
-		Coordinates* ptr_hero_position=nullptr, bool force_respawn=true);
 	void BrowseActions(Directions my_direction);
 	void PerformSelectedAction();
 };

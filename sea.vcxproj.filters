@@ -243,6 +243,9 @@
     <ClInclude Include="LevelMenu.hpp">
       <Filter>Header Files\Levels</Filter>
     </ClInclude>
+    <ClInclude Include="FontBank.hpp">
+      <Filter>Header Files\Textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -421,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="LevelMenu.cpp">
       <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="FontBank.cpp">
+      <Filter>Source Files\Textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

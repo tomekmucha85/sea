@@ -2,18 +2,11 @@
 
 LevelTest::LevelTest()
 {
-	/*Coordinates bground_position = { 320,240 };
-	Creature* ptr_bground = ptr_core->AddCreature(cre_blue_bground, &bground_position, merge);
-	ptr_bground->MakeMeNotObstacle();*/
 
+	SetMyType(level_test);
 	Coordinates other_guy_position = { 50,300 };
 	Creature* ptr_other_guy = ptr_initial_core_component->AddCreature(cre_carrier_a, &other_guy_position, force);
 	ptr_other_guy->SetBehaviorMode(beh_wander_on_navmesh);
-
-	//Coordinates other_guy2_position = { 500,300 };
-	//Creature* ptr_other_guy2 = ptr_initial_core_component->AddCreature(cre_clawy, &other_guy2_position, force);
-	//ptr_other_guy->SetBehaviorMode(beh_wander_on_navmesh);
-
 
 	//Trigger to win level
 	/*std::string signal_to_win = "winning";
@@ -22,14 +15,6 @@ LevelTest::LevelTest()
 	signals_vs_events[signal_to_win] = ptr_func_win;*/
 	//Red
 	//ptr_winning_trigger->TellMainVisualComponent()->SetColor({ 255,0,0,255 });
-
-
-	/*Coordinates wall_1_position = { 100,100 };
-	Creature* ptr_wall_1 = ptr_initial_core_component->AddCreature(cre_flying_box, &wall_1_position, force,1);
-	Coordinates wall_2_position = { 148,100 };
-	Creature* ptr_wall_2 = ptr_initial_core_component->AddCreature(cre_flying_box, &wall_2_position, force,1);
-	ptr_test_creature = ptr_wall_1;*/
-
 	
 	printf("Adding navgrid point!\n");
 	//Test navigation grid creature

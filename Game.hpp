@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <Screen.hpp>
 #include <TextureBank.hpp>
+#include <FontBank.hpp>
 #include <Level.hpp>
 #include <FactorySpawningLevels.hpp>
 #include <VisualComponent.hpp>
@@ -24,6 +25,7 @@ class Game
 		static int debug_counter;
         static Screen* ptr_screen;
         static TextureBank* ptr_texture_bank;
+		static FontBank* ptr_font_bank;
 		static Level* ptr_current_level;
 		static FactorySpawningLevels* ptr_levels_factory;
 
@@ -40,6 +42,7 @@ class Game
         static void DestroyGame();
         static void CreateScreen();
 		static void LoadTextures();
+		static void LoadFonts();
 		static void SetCurrentLevel(Level* ptr_my_current_level);
 
 };

@@ -70,8 +70,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\tmucha\source\repos\sea;C:\visual_studio_dev_lib\SDL2-2.0.8\include;C:\visual_studio_dev_lib\SDL2_image-2.0.3\include;C:\visual_studio_dev_lib\emotiv\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\visual_studio_dev_lib\emotiv\lib;C:\visual_studio_dev_lib\SDL2-2.0.8\lib\x64;C:\visual_studio_dev_lib\SDL2_image-2.0.3\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\visual_studio_dev_lib\SDL2_ttf-2.0.15\include;C:\Users\tmucha\source\repos\sea;C:\visual_studio_dev_lib\SDL2-2.0.8\include;C:\visual_studio_dev_lib\SDL2_image-2.0.3\include;C:\visual_studio_dev_lib\emotiv\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\visual_studio_dev_lib\SDL2_ttf-2.0.15\lib\x64;C:\visual_studio_dev_lib\emotiv\lib;C:\visual_studio_dev_lib\SDL2-2.0.8\lib\x64;C:\visual_studio_dev_lib\SDL2_image-2.0.3\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,7 +96,7 @@
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2_image.lib;SDL2.lib;edk.lib;glut64.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2_image.lib;SDL2.lib;edk.lib;glut64.lib;SDL2main.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -155,6 +155,7 @@
     <ClInclude Include="FactorySpawningLevels.hpp" />
     <ClInclude Include="FactorySpawningNavigators.hpp" />
     <ClInclude Include="FactorySpawningSprites.hpp" />
+    <ClInclude Include="FontBank.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GUI.hpp" />
     <ClInclude Include="Interface.hpp" />
@@ -214,6 +215,7 @@
     <ClCompile Include="FactorySpawningLevels.cpp" />
     <ClCompile Include="FactorySpawningNavigators.cpp" />
     <ClCompile Include="FactorySpawningSprites.cpp" />
+    <ClCompile Include="FontBank.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="hello.cpp" />

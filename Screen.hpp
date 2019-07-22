@@ -2,6 +2,7 @@
 #define SCREEN_HPP
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 
 class Screen
@@ -10,8 +11,8 @@ class Screen
         //Screen dimension constants
         static const int SCREEN_WIDTH = 800;
         static const int SCREEN_HEIGHT = 600;
-		static const int RESOLUTION_W = 640;
-		static const int RESOLUTION_H = 480;
+		//static const int RESOLUTION_W = 640;
+		//static const int RESOLUTION_H = 480;
 
     public:
         //The window itself
@@ -25,8 +26,6 @@ class Screen
         Screen();
         ~Screen();
         bool Init();
-        static void SetXCorrection(int x);
-        static void SetYCorrection(int y);
 		static int TellScreenWidth();
 		static int TellScreenHeight();
 };

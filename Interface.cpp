@@ -1,8 +1,24 @@
 #include <Interface.hpp>
 
+void Interface::SetModeAppropriateToLevelType()
+/*
+    Menu is just a kind of level, but with a whole different controls set.
+*/
+{
+	LevelType current_level_type = Game::ptr_current_level->TellMyType();
+	if (current_level_type == level_menu)
+	{
+		current_mode = interf_menu;
+	}
+	else
+	{
+		current_mode = interf_game;
+	}
+}
 
 void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 {
+	SetModeAppropriateToLevelType();
 	//USER IN MENU
 	if (current_mode == interf_menu)
 	{
@@ -11,7 +27,6 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 		    ptr_my_event_handler->key.repeat == 0)
 	    {
 		    Game::PrepareSingleLevel(level_ninemazes);
-		    SetInterfaceMode(interf_game);
 	    }
 		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
 			ptr_my_event_handler->key.keysym.sym == SDLK_w &&
@@ -122,7 +137,6 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 			ptr_my_event_handler->key.repeat == 0)
 		{
 			Game::PrepareSingleLevel(level_menu);
-			SetInterfaceMode(interf_menu);
 		}
 		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
 			     ptr_my_event_handler->key.keysym.sym == SDLK_v && 
@@ -146,7 +160,6 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 			     ptr_my_event_handler->key.keysym.sym == SDLK_f &&
 			     ptr_my_event_handler->key.repeat == 0)
         {
-			printf("PRESSED F.\n");
 	        Creature::ptr_current_main_charater->SetBehaviorMode(beh_follow_closest_carrier);
 			//Creature::ptr_current_main_charater->RequestBehaviorMode(beh_follow_closest_carrier);
         }
@@ -192,29 +205,13 @@ void Interface::UseInterface(std::string bci_detection)
 	{
 		if (bci_detection == "smile")
 		{
-			printf("Interface got smile!\n");
+			Logger::Log("Interface got smile!");
 			Creature::ptr_current_main_charater->SetHungerLevel(0);
 		}
 		else if (bci_detection == "clench")
 		{
-			printf("Interface got clench!\n");
+			Logger::Log("Interface got clench!");
 		}
-	}
-}
-
-void Interface::UseInterface(EmoEngineEventHandle my_eEvent)
-{
-	if (current_mode == interf_menu)
-	{
-		;
-	}
-	else if (current_mode == interf_guided)
-	{
-		;
-	}
-	else if (current_mode == interf_game)
-	{
-		;
 	}
 }
 
