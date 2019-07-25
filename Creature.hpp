@@ -16,6 +16,7 @@
 #include <Sprite.hpp>
 #include <FactorySpawningSprites.hpp>
 #include <VectorDrawing.hpp>
+#include <TrueTypeWriting.hpp>
 #include <Line.hpp>
 #include <CustomDefinedTypes.hpp>
 #include <Timer.hpp>

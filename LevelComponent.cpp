@@ -177,6 +177,7 @@ Creature* LevelComponent::AddCreature(CreatureType my_type, Coordinates* ptr_my_
 {
 	//Spawning creature and then checking if it can be left on map.
 	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, ptr_my_center, my_render_layer);
+	//printf("Adding creature centered at: x: %f y: %f\n", ptr_my_center->x, ptr_my_center->y);
 	if (LeaveCreatureOnMapIfPossible(ptr_my_creature, my_mode))
 	{
 		return ptr_my_creature;

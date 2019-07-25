@@ -3,7 +3,7 @@
 CreatureNavGridNode::CreatureNavGridNode(Coordinates* ptr_my_coordinates) :
 	Creature(ptr_my_coordinates)
 {
-	//printf("Spawned a navigation grid node.\n");
+	//printf("Spawned a navigation grid node at x: %f y: %f.\n", ptr_my_coordinates->x, ptr_my_coordinates->y);
 	my_type = cre_navgrid_node;
 	//printf("Assigned type.\n");
 	MakeMeNotObstacle();

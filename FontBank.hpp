@@ -6,6 +6,7 @@
 #include <string>
 #include <texture.hpp>
 #include <Logger.hpp>
+#include <FontBank.hpp>
 
 class FontBank
 {
@@ -21,6 +22,7 @@ public:
 	//Variables
 	//###################
 	static TTF_Font* ptr_font_doom;
+	static TTF_Font** ptr_ptr_default_font;
 
 	//###################
 	//Functions

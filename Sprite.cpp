@@ -7,17 +7,11 @@
 TextureBank* Sprite::ptr_texture_bank = nullptr;
 int Sprite::DEFAULT_DELAY_BETWEEN_FRAMES = 3;
 
-/*SetPositionX(static_cast<int>(center.x - (current_texture_clip.w / 2)));
-SetPositionY(static_cast<int>(center.y - (current_texture_clip.h / 2)));
-SetPositionW(current_texture_clip.w);
-SetPositionH(current_texture_clip.h);*/
-
-
 //***********************************
 //CONSTRUCTOR
 //***********************************
 
-Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinates* ptr_my_center) : VisualComponent(ptr_my_center)
+Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinates* ptr_my_center) : VisualComponent()
 {
 	SetMyType(visco_sprite);
 	//Constructor building sprite around specified center coordinates
@@ -32,33 +26,79 @@ Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinate
 		my_texture_clip.w = dimensions.w;
 		my_texture_clip.h = dimensions.h;
 	}
+	/*printf("Texture clip selected for sprite: x: %d y: %d w: %d h: %d\n",
+		my_texture_clip.x,
+		my_texture_clip.y,
+		my_texture_clip.w,
+		my_texture_clip.h);*/
 	SetTextureClip(my_texture_clip);
 	//printf("Texture clip set.");
 	SetCenter(*ptr_my_center);
 }
 
+void Sprite::SetPosition(PreciseRect my_position)
+{
+	position = my_position;
+}
+
+void Sprite::SetPositionX(int new_x)
+{
+	position.x = new_x;
+}
+
+void Sprite::SetPositionY(int new_y)
+{
+	position.y = new_y;
+}
+
+void Sprite::SetPositionW(int new_w)
+{
+	position.w = new_w;
+}
+
+void Sprite::SetPositionH(int new_h)
+{
+	position.h = new_h;
+}
+
+PreciseRect Sprite::TellPosition()
+{
+	return position;
+}
+
+Coordinates Sprite::TellCenter()
+{
+	return center;
+}
+
+double Sprite::TellAngleDegrees()
+{
+	return angle;
+}
+
 void Sprite::SetCenter(Coordinates my_center)
 {
-	VisualComponent::SetCenter(my_center);
-	position = CalculatePositionAroundCenter();
+	center = my_center;
+	position = CalculatePositionAroundCenter(center, texture_clip.w, texture_clip.h);
 }
 
 void Sprite::Move(double step_x, double step_y)
 {
 	center.x += step_x;
 	center.y += step_y;
-	position = CalculatePositionAroundCenter();
+	position = CalculatePositionAroundCenter(center, texture_clip.w, texture_clip.h);
 }
 
 void Sprite::SetAngleDegrees(int my_angle)
 {
-	VisualComponent::SetAngleDegrees(my_angle);
+	angle = Angle::NormalizeAngle(my_angle);
 	SetDirectionFromEightPossibilities(TellAngleDegrees());
 }
 
 void Sprite::TurnByAngleDegrees(int my_angle)
 {
-	VisualComponent::TurnByAngleDegrees(my_angle);
+	angle += my_angle;
+	angle = Angle::NormalizeAngle(angle);
 	SetDirectionFromEightPossibilities(TellAngleDegrees());
 }
 
@@ -119,26 +159,6 @@ void Sprite::SetDirectionFromEightPossibilities(double angle_degrees)
 	}
 }
 
-
-PreciseRect Sprite::CalculatePositionAroundCenter()
-{
-	SDL_Rect current_texture_clip = TellTextureClip();
-	double calculated_position_x = static_cast<int>(center.x - (current_texture_clip.w / 2));
-	double calculated_position_y = static_cast<int>(center.y - (current_texture_clip.h / 2));
-	double calculated_position_w = current_texture_clip.w;
-	double calculated_position_h = current_texture_clip.h;
-	return {calculated_position_x, calculated_position_y, calculated_position_w, calculated_position_h} ;
-}
-
-SDL_Rect Sprite::CheckTextureDimensions(SDL_Texture* ptr_my_texture)
-{
-    int w,h;
-    //printf("Texture address is %p", ptr_my_texture);
-    SDL_QueryTexture(ptr_my_texture, NULL, NULL, &w, &h);
-    SDL_Rect result = {0,0,w,h};
-    return result;
-}
-
 void Sprite::SetTexture(SDL_Texture* ref_my_texture)
 {
     texture = ref_my_texture;
@@ -158,9 +178,9 @@ void Sprite::Render()
 		//Angle is always 0, because sprite should not be rotated. Only sprite clips may change when angle changes.
 		int angle = 0;
 		SDL_Point relative_center = {static_cast<int>(position.w)/2, static_cast<int>(position.h)/2};
-		SDL_RenderCopyEx(TellScreen()->renderer, texture, &texture_clip, &position_int, angle, &relative_center, flip);
+		SDL_RenderCopyEx(Screen::renderer, texture, &texture_clip, &position_int, angle, &relative_center, flip);
 		//printf("RENDER: Sprite center: x: %d, y: %d.\n", center.x, center.y);
-		//printf("RENDER: Sprite position: x: %d, y: %d, w: %d, h: %d\n", position.x, position.y, position.w, position.h);
+		//printf("RENDER: Sprite position: x: %d, y: %d, w: %d, h: %d\n", position_int.x, position_int.y, position_int.w, position_int.h);
 		//printf("RENDER: Sprite angle: %f.\n", angle);
 	}
     else

@@ -70,6 +70,12 @@
     <Filter Include="Source Files\Timers">
       <UniqueIdentifier>{2eec9ac9-3741-486f-9b5e-d00da28a256c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\VisualComponents\TrueTypeWritings">
+      <UniqueIdentifier>{dd6aad6b-4366-4109-aef7-626c84970700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VisualComponents\TrueTypeWritings">
+      <UniqueIdentifier>{03b49392-c99f-40e5-a1c3-b484b968ec0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp">
@@ -246,6 +252,9 @@
     <ClInclude Include="FontBank.hpp">
       <Filter>Header Files\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="TrueTypeWriting.hpp">
+      <Filter>Header Files\VisualComponents\TrueTypeWritings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -389,17 +398,11 @@
     <ClCompile Include="Line.cpp">
       <Filter>Source Files\VisualComponents\Lines</Filter>
     </ClCompile>
-    <ClCompile Include="Interface.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="CreatureCarrierA.cpp">
       <Filter>Source Files\Creatures</Filter>
     </ClCompile>
     <ClCompile Include="SpriteSnailmage.cpp">
       <Filter>Source Files\VisualComponents\Sprites</Filter>
-    </ClCompile>
-    <ClCompile Include="TimerGeneral.cpp">
-      <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="SpriteImplosion.cpp">
       <Filter>Source Files\VisualComponents\Sprites</Filter>
@@ -427,6 +430,15 @@
     </ClCompile>
     <ClCompile Include="FontBank.cpp">
       <Filter>Source Files\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="TrueTypeWriting.cpp">
+      <Filter>Source Files\VisualComponents\TrueTypeWritings</Filter>
+    </ClCompile>
+    <ClCompile Include="Interface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerGeneral.cpp">
+      <Filter>Source Files\Timers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -16,9 +16,9 @@ class Screen
 
     public:
         //The window itself
-        SDL_Window* window = NULL;
+        static SDL_Window* window;
         //The window renderer
-        SDL_Renderer* renderer = NULL;
+        static SDL_Renderer* renderer;
 
         //###################
         //Functions

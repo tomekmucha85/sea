@@ -14,7 +14,6 @@ class Texture
         //###################
         //Functions
         //###################
-		std::string default_font_path = "images/doom.ttf";
         SDL_Texture* LoadTexture(std::string path, SDL_Renderer* renderer);
 
     public:

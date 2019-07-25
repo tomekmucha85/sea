@@ -2,6 +2,7 @@
 
 
 TTF_Font* FontBank::ptr_font_doom = nullptr;
+TTF_Font** FontBank::ptr_ptr_default_font = &ptr_font_doom;
 
 FontBank::FontBank()
 {

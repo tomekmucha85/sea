@@ -50,7 +50,7 @@ int main(int argc, char* args[])
 	int cooldown = 0;
 
 	//TEXT TEST
-	SDL_Texture* ptr_writing = Texture::LoadTextureFromRenderedText("dupa", Game::ptr_screen->renderer, FontBank::ptr_font_doom);
+	//SDL_Texture* ptr_writing = Texture::LoadTextureFromRenderedText("dupa", Screen::renderer, FontBank::ptr_font_doom);
 
 
     while (!quit)
@@ -89,19 +89,20 @@ int main(int argc, char* args[])
         }
 
         //Clear screen
-        SDL_RenderClear(Game::ptr_screen->renderer);
+        SDL_RenderClear(Screen::renderer);
 
 		Game::ptr_current_level->RenderAllPresentCreatures();
 		Game::ptr_current_level->RenderGui();
 
 		//TEXT TEST
-		int writing_w, writing_h;
+		/*int writing_w, writing_h;
+		//nie trzeba tego robiæ za ka¿dym razem
 		SDL_QueryTexture(ptr_writing, NULL, NULL, &writing_w, &writing_h);
 		SDL_Rect result = { 0,0,writing_w, writing_h };
-		SDL_RenderCopyEx(Game::ptr_screen->renderer, ptr_writing, nullptr, &result, 0, 0, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(Screen::renderer, ptr_writing, nullptr, &result, 0, 0, SDL_FLIP_NONE);*/
 
         //Update screen
-        SDL_RenderPresent(Game::ptr_screen->renderer);
+        SDL_RenderPresent(Screen::renderer);
 
 		//Check if level should be finished
 		Game::SwitchBetweenLevelsIfNeeded();

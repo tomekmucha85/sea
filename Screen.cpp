@@ -6,6 +6,8 @@
 
 const int Screen::SCREEN_WIDTH;
 const int Screen::SCREEN_HEIGHT;
+SDL_Window* Screen::window = nullptr;
+SDL_Renderer* Screen::renderer = nullptr;
 
 
 Screen::Screen()

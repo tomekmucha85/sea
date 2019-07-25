@@ -22,6 +22,9 @@ class Sprite : public VisualComponent
         //###################
 		static int DEFAULT_DELAY_BETWEEN_FRAMES;
 
+		PreciseRect position = { 0,0,0,0 };
+		Coordinates center = { 0,0 };
+		int angle = 0;
         int animation_frame = 0;
 		Directions current_direction = north;
 
@@ -49,6 +52,15 @@ class Sprite : public VisualComponent
         //###################
 		Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinates* ptr_my_center);
 		void Move(double step_x, double step_y);
+		void SetPosition(PreciseRect my_position);
+		void SetPositionX(int new_x);
+		void SetPositionY(int new_y);
+		void SetPositionW(int new_w);
+		void SetPositionH(int new_h);
+		void SetCenter(Coordinates my_center);
+		PreciseRect TellPosition();
+		Coordinates TellCenter();
+		double TellAngleDegrees();
 		void SetAngleDegrees(int my_angle);
 		void TurnByAngleDegrees(int my_angle);
 		void SetDirectionFromEightPossibilities(double angle_degrees);
@@ -75,7 +87,6 @@ class Sprite : public VisualComponent
 		virtual void SetClipAccordingToWallType(WallType my_type);
 
         //Utilities
-        SDL_Rect CheckTextureDimensions(SDL_Texture* ptr_my_texture);
         PreciseRect TellSpritePosition();
         SDL_Rect TellTextureClip();
 		static void SetTextureBank(TextureBank* ptr_my_texture_bank);
@@ -83,7 +94,5 @@ class Sprite : public VisualComponent
 		static std::vector <SDL_Rect> CalculateAnimationClips(SDL_Rect area, int clip_w, int clip_h);
         void SetTexture(SDL_Texture* ref_my_texture);
         void SetTextureClip(SDL_Rect my_texture_clip);
-		void SetCenter(Coordinates my_center);
-		PreciseRect CalculatePositionAroundCenter();
 };
 #endif // SPRITE_HPP

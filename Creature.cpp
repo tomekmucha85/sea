@@ -43,6 +43,7 @@ Creature::Creature(Coordinates* ptr_my_center)
 	SetMainVisualComponent(ptr_vector_drawing);
 	PreciseRect visual_component_center = ptr_vector_drawing->TellPosition();
 	//Hitbox == area occupied by vector drawing. No margin is set.
+	//printf("Initializing hitbox for vector centered at x: %f y: %f.\n", ptr_my_center->x, ptr_my_center->y);
 	InitializeHitbox(visual_component_center, 0);
 	ptr_behavior = new Behavior();
 	//printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
@@ -665,6 +666,7 @@ double Creature::TellVelocity()
 }
 
 void Creature::SetPosition(Coordinates new_center_position)
+/* #TODO - nie uwzglêdnia VisualComponents, które nie maj¹ parametru center*/
 {
 	for (std::map<std::string, VisualComponent*>::iterator iter = visual_components.begin();
 		iter != visual_components.end();

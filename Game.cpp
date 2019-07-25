@@ -92,7 +92,7 @@ void Game::CreateScreen()
 
 void Game::LoadTextures()
 {
-    Game::ptr_texture_bank = new TextureBank(Game::ptr_screen->renderer);
+    Game::ptr_texture_bank = new TextureBank(Screen::renderer);
 	Sprite::SetTextureBank(ptr_texture_bank);
 }
 

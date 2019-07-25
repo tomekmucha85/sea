@@ -190,6 +190,7 @@
     <ClInclude Include="TextureBank.hpp" />
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="TimerStartStop.hpp" />
+    <ClInclude Include="TrueTypeWriting.hpp" />
     <ClInclude Include="VectorDrawing.hpp" />
     <ClInclude Include="VisualComponent.hpp" />
   </ItemGroup>
@@ -252,6 +253,7 @@
     <ClCompile Include="TimerGeneral.cpp" />
     <ClCompile Include="TimerInterval.cpp" />
     <ClCompile Include="TimerStartStop.cpp" />
+    <ClCompile Include="TrueTypeWriting.cpp" />
     <ClCompile Include="VectorDrawing.cpp" />
     <ClCompile Include="VisualComponent.cpp" />
   </ItemGroup>
