@@ -5,6 +5,7 @@ TrueTypeWriting::TrueTypeWriting(std::string text,
 	TTF_Font* ptr_font,
 	Color color) : VisualComponent()
 {
+	printf("Will spawn a writing visual component.\n");
 	//Spawning a texture
 	ptr_writing_texture = Texture::LoadTextureFromRenderedText(text, Screen::renderer, FontBank::ptr_font_doom);
 	//Positioning the texture on screen.
@@ -34,6 +35,7 @@ void TrueTypeWriting::SetColor(Color my_color)
 
 void TrueTypeWriting::Render()
 {
+	//printf("Will render a true type writing.\n");
 	SDL_Rect position_int = ConvertPreciseRectToSdlRect(position);
 	SDL_RenderCopyEx(Screen::renderer, ptr_writing_texture, 
 		nullptr, 

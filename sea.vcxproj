@@ -148,6 +148,7 @@
     <ClInclude Include="CreatureSpellBall.hpp" />
     <ClInclude Include="CreatureSpellOpenDoors.hpp" />
     <ClInclude Include="CreatureVectorMask.hpp" />
+    <ClInclude Include="CreatureWriting.hpp" />
     <ClInclude Include="CustomDefinedTypes.hpp" />
     <ClInclude Include="FactorySpawningCreatures.hpp" />
     <ClInclude Include="CreatureFlyingBox.hpp" />
@@ -210,6 +211,7 @@
     <ClCompile Include="CreatureSpellBall.cpp" />
     <ClCompile Include="CreatureSpellOpenDoors.cpp" />
     <ClCompile Include="CreatureVectorMask.cpp" />
+    <ClCompile Include="CreatureWriting.cpp" />
     <ClCompile Include="FactorySpawningCreatures.cpp" />
     <ClCompile Include="CreatureFlyingBox.cpp" />
     <ClCompile Include="FactorySpawningLevelComponents.cpp" />

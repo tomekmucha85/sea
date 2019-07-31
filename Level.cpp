@@ -480,7 +480,8 @@ void Level::RenderAllPresentCreatures()
 		std::vector<Creature*> creatures_to_render = element.second;
 		for (Creature* ptr_creature_to_render : creatures_to_render)
 		{
-				RenderCreatureVisualComponent(ptr_creature_to_render);
+			//printf("Rendering creature %p of type %i.\n", ptr_creature_to_render, ptr_creature_to_render->my_type);
+			RenderCreatureVisualComponent(ptr_creature_to_render);
 		}
 	}
 

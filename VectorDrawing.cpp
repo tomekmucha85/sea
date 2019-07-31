@@ -114,8 +114,3 @@ void VectorDrawing::SetColor(Color my_color)
 {
 	vector_fill_color = my_color;
 }
-
-//###############
-//STATIC METHODS
-//###############
-

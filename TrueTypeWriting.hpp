@@ -39,6 +39,8 @@ public:
 		Coordinates* ptr_upper_left_corner, 
 		TTF_Font* ptr_font = *FontBank::ptr_ptr_default_font,
 		Color color = {255,0,0});
+	//#TODO! - zdefiniowaæ destruktor
+	//~TrueTypeWriting();
 	void SetColor(Color my_color);
 	void Render();
 	void Move(double step_x, double step_y);

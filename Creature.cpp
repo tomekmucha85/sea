@@ -41,12 +41,21 @@ Creature::Creature(Coordinates* ptr_my_center)
 	//printf("Invisible creature constructed.\n");
 	VectorDrawing* ptr_vector_drawing = new VectorDrawing(ptr_my_center);
 	SetMainVisualComponent(ptr_vector_drawing);
-	PreciseRect visual_component_center = ptr_vector_drawing->TellPosition();
+	PreciseRect visual_component_position = ptr_vector_drawing->TellPosition();
 	//Hitbox == area occupied by vector drawing. No margin is set.
 	//printf("Initializing hitbox for vector centered at x: %f y: %f.\n", ptr_my_center->x, ptr_my_center->y);
-	InitializeHitbox(visual_component_center, 0);
+	InitializeHitbox(visual_component_position, 0);
 	ptr_behavior = new Behavior();
 	//printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+}
+
+Creature::Creature(std::string my_text, Coordinates* ptr_my_upper_left_corner)
+{
+	printf("Will spawn a creature with writing texture.\n");
+	TrueTypeWriting* ptr_writing_visual_part = new TrueTypeWriting(my_text, ptr_my_upper_left_corner);
+	SetMainVisualComponent(ptr_writing_visual_part);
+	PreciseRect visual_component_position = ptr_writing_visual_part->TellPosition();
+	InitializeHitbox(visual_component_position, 0);
 }
 
 //Constructor spawning a creature around CENTER coordinates given

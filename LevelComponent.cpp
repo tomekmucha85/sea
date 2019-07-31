@@ -186,8 +186,28 @@ Creature* LevelComponent::AddCreature(CreatureType my_type, Coordinates* ptr_my_
 	{
 		return nullptr;
 	}
-
 }
+
+Creature* LevelComponent::AddCreature(CreatureType my_type,
+	Coordinates* ptr_my_upper_left_corner,
+	InsertionMode my_mode,
+	std::string my_text,
+	int my_render_layer)
+{
+	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, 
+		ptr_my_upper_left_corner,
+		my_text,
+		my_render_layer);
+	if (LeaveCreatureOnMapIfPossible(ptr_my_creature, my_mode))
+	{
+		return ptr_my_creature;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
 
 bool LevelComponent::LeaveCreatureOnMapIfPossible(Creature* ptr_my_creature, InsertionMode my_mode)
 {

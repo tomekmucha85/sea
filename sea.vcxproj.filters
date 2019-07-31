@@ -255,6 +255,9 @@
     <ClInclude Include="TrueTypeWriting.hpp">
       <Filter>Header Files\VisualComponents\TrueTypeWritings</Filter>
     </ClInclude>
+    <ClInclude Include="CreatureWriting.hpp">
+      <Filter>Header Files\Creatures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -439,6 +442,9 @@
     </ClCompile>
     <ClCompile Include="TimerGeneral.cpp">
       <Filter>Source Files\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatureWriting.cpp">
+      <Filter>Source Files\Creatures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

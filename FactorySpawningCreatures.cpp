@@ -64,6 +64,25 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coo
 
 }
 
+Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type,
+	Coordinates* ptr_my_upper_left_corner,
+	std::string my_text, 
+	int render_layer)
+{
+	Creature* result = nullptr;
+	if (desired_type == cre_writing)
+	{
+		printf("Factory will deliver a writing creature.\n");
+		result = new CreatureWriting(ptr_my_upper_left_corner, my_text);
+	}
+	else
+	{
+		printf("Trying to spawn invalid Creature type!\n");
+		throw std::invalid_argument("Trying to spawn invalid Creature type!\n");
+	}
+	result->SetMyRenderLayer(render_layer);
+	return result;
+}
 
 
 Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, PreciseRect* ptr_position,
