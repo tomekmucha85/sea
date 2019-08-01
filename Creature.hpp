@@ -168,7 +168,7 @@ class Creature
 		Creature(PreciseRect* ptr_area);
 		Creature(Coordinates* ptr_my_center);
 		Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin = 10);
-		Creature(std::string my_text, Coordinates* ptr_my_upper_left_corner);
+		Creature(std::string my_text, Coordinates* ptr_my_upper_left_corner, SDL_Color my_color);
 		~Creature();
 		void SetMainVisualComponent(VisualComponent* ptr_my_visual_component);
 		void ResetMainVisualComponent(VisualComponent* ptr_my_visual_component);

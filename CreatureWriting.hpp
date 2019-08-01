@@ -4,9 +4,14 @@
 class CreatureWriting : public Creature
 {
 private:
-	
+	std::string text = "";
+	SDL_Color color = {0,0,0,0};
 public:
-	CreatureWriting(Coordinates* ptr_my_upper_left_corner, std::string my_text, int hitbox_margin = 10);
+	CreatureWriting(Coordinates* ptr_my_upper_left_corner, std::string my_text, SDL_Color my_color = { 255,0,0,255 }, int hitbox_margin = 10);
 	//bool Move(double x, double y);
+	std::string TellText();
+	void SetNewTextColor(SDL_Color my_color);
+	void SetNewText(std::string my_text);
+	SDL_Color TellColor();
 };
 #endif // CREATURE_WRITING_HPP

@@ -39,6 +39,7 @@ Sprite::Sprite(SDL_Texture* ptr_my_texture, SDL_Rect my_texture_clip, Coordinate
 void Sprite::SetPosition(PreciseRect my_position)
 {
 	position = my_position;
+	center = CalculateCenterOfGivenPosition(my_position);
 }
 
 void Sprite::SetPositionX(int new_x)

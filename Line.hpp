@@ -16,7 +16,7 @@ class Line : public VisualComponent
 		Coordinates end = {0,0};
 		Coordinates center = {0,0};
 		int angle = 0;
-		Color line_fill_color;
+		SDL_Color line_fill_color;
     public:
 		Line(Coordinates* ptr_my_line_start, Coordinates* ptr_my_line_end);
         void SetStart(Coordinates my_start);
@@ -26,7 +26,7 @@ class Line : public VisualComponent
 		Coordinates CalculateCenterFromLineStartAndEnd(Coordinates my_line_start, Coordinates my_line_end);
 		void Render();
 		void Move(double step_x, double step_y);
-		void SetColor(Color my_color);
+		void SetColor(SDL_Color my_color);
 };
 
 #endif //LINE_HPP

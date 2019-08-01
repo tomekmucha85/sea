@@ -11,7 +11,7 @@ private:
 	//###################
 	//Variables
 	//###################
-	Color vector_fill_color;
+	SDL_Color vector_fill_color;
 	PreciseRect position = { 0,0,0,0 };
 	Coordinates center = { 0,0 };
 	int angle = 0;
@@ -29,9 +29,9 @@ public:
 	//###################
 	//Functions
 	//###################
-	VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_color = {255,255,255,0});
+	VectorDrawing(PreciseRect* ptr_my_area, SDL_Color my_vector_fill_color = {255,255,255,0});
 	//#TODO - uwzglêdniæ ten konstruktor w VisualComponent?
-	VectorDrawing(Coordinates* ptr_my_center, double my_width = 10, double my_height = 10, Color my_vector_fill_color = { 255,255,255,0 });
+	VectorDrawing(Coordinates* ptr_my_center, double my_width = 10, double my_height = 10, SDL_Color my_vector_fill_color = { 255,255,255,0 });
 	void SetPosition(PreciseRect my_position);
     void SetPositionX(int new_x);
     void SetPositionY(int new_y);
@@ -43,7 +43,7 @@ public:
     void SetAngleDegrees(int my_angle);
     void TurnByAngleDegrees(int my_angle);
     double TellAngleDegrees();
-	void SetColor(Color my_color);
+	void SetColor(SDL_Color my_color);
 	void Render();
 	void Move(double step_x, double step_y);
 };

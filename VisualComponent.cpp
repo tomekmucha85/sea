@@ -15,23 +15,6 @@ VisualComponent::VisualComponent()
 	Logger::Log("Spawned a visual component", debug_full);
 }
 
-/*
-VisualComponent::VisualComponent(PreciseRect* ptr_my_position)
-{
-	//SetPosition(*ptr_my_position);
-}
-
-VisualComponent::VisualComponent(Coordinates* ptr_my_center)
-{
-	//SetCenter(*ptr_my_center);
-}
-
-VisualComponent::VisualComponent(Coordinates* ptr_my_start, Coordinates* ptr_my_end)
-{
-	//SetStart(*ptr_my_start);
-	//SetEnd(*ptr_my_end);
-}
-*/
 //##########################
 // DESTRUCTOR
 //##########################
@@ -164,7 +147,7 @@ void VisualComponent::SetInterruptingAnimation(AnimationType my_animation_type,
 	printf("Default implementation of SetInterruptingAnimation called!\n");
 }
 
-void VisualComponent::SetColor(Color my_color)
+void VisualComponent::SetColor(SDL_Color my_color)
 {
 	printf("Default implementation of SetColor called!\n");
 }

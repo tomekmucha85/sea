@@ -1,5 +1,6 @@
 #ifndef CUSTOM_DEFINED_TYPES_HPP
 #define CUSTOM_DEFINED_TYPES_HPP
+#include <SDL.h>
 
 //Functions to be passed, executing triggered event
 //typedef void(*TriggeredEvent)();
@@ -16,14 +17,6 @@ struct MathLineParams
 { 
 	double slope = 0; 
 	double intercept = 0; 
-};
-
-struct Color
-{
-	int red = 255;
-	int green = 255;
-	int blue = 255;
-	int alpha = 255;
 };
 
 struct PreciseRect
@@ -170,7 +163,7 @@ struct CreatureSpawnRequest
 	BehaviorMode initial_behavior_mode = beh_none;
 	InsertionMode insertion_mode = safe;
 	//RED
-	Color color = { 255,0,0,255 };
+	SDL_Color color = { 255,0,0,255 };
 };
 
 struct CreatureDestructionInGivenAreaRequest

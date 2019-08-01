@@ -24,14 +24,6 @@ public:
 	//Variables
 	//###################
 
-    //Where the component is rendered on screen
-    ////#TODO Move to private!
-	/*Coordinates start = {0,0};
-	Coordinates end = {0, 0};
-	PreciseRect position = { 0,0,0,0 };
-	Coordinates center = {0,0};
-	Coordinates upper_left_corner = {0,0};
-	int angle = 0;*/
 
 	//###################
 	//Functions
@@ -57,7 +49,7 @@ public:
 	virtual void SetAngleDegrees(int my_angle);
 	virtual void TurnByAngleDegrees(int my_angle);
 
-	virtual void SetColor(Color my_color);
+	virtual void SetColor(SDL_Color my_color);
 	virtual void SetClipAccordingToWallType(WallType my_type);
 	virtual void PlayCurrentAnimation();
 	virtual void SetCurrentAnimation(AnimationType my_animation_type);

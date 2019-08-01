@@ -39,7 +39,10 @@ SDL_Texture* Texture::LoadTexture(std::string path, SDL_Renderer* renderer)
 	return new_texture;
 }
 
-SDL_Texture* Texture::LoadTextureFromRenderedText(std::string text, SDL_Renderer* renderer, TTF_Font* ptr_font, SDL_Color color)
+SDL_Texture* Texture::LoadTextureFromRenderedText(std::string text, 
+	SDL_Renderer* renderer, 
+	TTF_Font* ptr_font, 
+	SDL_Color color)
 {
 	//The final texture
 	SDL_Texture* ptr_new_texture = nullptr;

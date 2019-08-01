@@ -66,14 +66,15 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coo
 
 Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type,
 	Coordinates* ptr_my_upper_left_corner,
-	std::string my_text, 
+	std::string my_text,
+	SDL_Color my_color,
 	int render_layer)
 {
 	Creature* result = nullptr;
 	if (desired_type == cre_writing)
 	{
 		printf("Factory will deliver a writing creature.\n");
-		result = new CreatureWriting(ptr_my_upper_left_corner, my_text);
+		result = new CreatureWriting(ptr_my_upper_left_corner, my_text, my_color);
 	}
 	else
 	{

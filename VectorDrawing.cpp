@@ -6,7 +6,7 @@
 
 //#TODO - uwzglêdniæ kolor przekazywany do konstruktora w fabryce?
 
-VectorDrawing::VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_color) : VisualComponent()
+VectorDrawing::VectorDrawing(PreciseRect* ptr_my_area, SDL_Color my_vector_fill_color) : VisualComponent()
 {
 	SetMyType(visco_vector);
 	//printf("Entered VectorDrawing constructor.\n");
@@ -15,7 +15,7 @@ VectorDrawing::VectorDrawing(PreciseRect* ptr_my_area, Color my_vector_fill_colo
 	SetCenter(CalculateCenterOfGivenPosition(*ptr_my_area));
 }
 
-VectorDrawing::VectorDrawing(Coordinates* ptr_my_center, double my_height, double my_width, Color my_vector_fill_color) : VisualComponent()
+VectorDrawing::VectorDrawing(Coordinates* ptr_my_center, double my_height, double my_width, SDL_Color my_vector_fill_color) : VisualComponent()
 {
 	SetMyType(visco_vector);
 	//printf("Entered VectorDrawing constructor.\n");
@@ -44,10 +44,10 @@ void VectorDrawing::Render()
 {
 	//printf("Will render vector.\n");
 	SDL_Rect position_int = ConvertPreciseRectToSdlRect(position);
-	SDL_SetRenderDrawColor(TellScreen()->renderer, vector_fill_color.red,
-		vector_fill_color.green, 
-		vector_fill_color.blue,
-		vector_fill_color.alpha);
+	SDL_SetRenderDrawColor(TellScreen()->renderer, vector_fill_color.r,
+		vector_fill_color.g, 
+		vector_fill_color.b,
+		vector_fill_color.a);
 	SDL_RenderFillRect(TellScreen()->renderer, &position_int);
 	//printf("Vector rendered at: x: %f y: %f\n", position_int.x, position_int.y);
 	//Reset renderer color back to white
@@ -110,7 +110,7 @@ double VectorDrawing::TellAngleDegrees()
 	return angle;
 }
 
-void VectorDrawing::SetColor(Color my_color)
+void VectorDrawing::SetColor(SDL_Color my_color)
 {
 	vector_fill_color = my_color;
 }

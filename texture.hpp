@@ -27,6 +27,9 @@ class Texture
         //###################
         Texture(std::string path, SDL_Renderer* renderer);
         ~Texture();
-		static SDL_Texture* LoadTextureFromRenderedText(std::string text, SDL_Renderer* renderer, TTF_Font* ptr_font, SDL_Color color = { 255,0,0 });
+		static SDL_Texture* LoadTextureFromRenderedText(std::string text, 
+			SDL_Renderer* renderer, 
+			TTF_Font* ptr_font, 
+			SDL_Color color);
 };
 #endif // TEXTURE_HPP

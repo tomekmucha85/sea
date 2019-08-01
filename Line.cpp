@@ -43,7 +43,7 @@ void Line::Move(double step_x, double step_y)
 	end.y += step_y;
 }
 
-void Line::SetColor(Color my_color)
+void Line::SetColor(SDL_Color my_color)
 {
 	line_fill_color = my_color;
 }
@@ -51,10 +51,10 @@ void Line::SetColor(Color my_color)
 void Line::Render()
 {
 	//printf("Will render line.\n");
-	SDL_SetRenderDrawColor(Screen::renderer, line_fill_color.red,
-		line_fill_color.green,
-		line_fill_color.blue,
-		line_fill_color.alpha);
+	SDL_SetRenderDrawColor(Screen::renderer, line_fill_color.r,
+		line_fill_color.g,
+		line_fill_color.b,
+		line_fill_color.a);
 	SDL_RenderDrawLine(Screen::renderer, 
 		static_cast<int>(start.x),
 		static_cast<int>(start.y),
