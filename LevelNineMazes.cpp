@@ -7,6 +7,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	ptr_border_triggers = ptr_components_factory->SpawnLevelComponent(levco_triggers);
 	printf("Triggers component address: %p.\n", ptr_border_triggers);
 
+	/*
 	//Trigger to win level
     std::string signal_to_win = "winning";
     PreciseRect event_win_area = {1000,1000,100,100};
@@ -24,10 +25,25 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	//Red
 	ptr_losing_trigger->TellMainVisualComponent()->SetColor({ 255,0,0,255 });
 	Coordinates loose_center = ptr_losing_trigger->TellMainVisualComponent()->TellCenter();
+	*/
 
-	//MAIN CHARACTER BEHAVIOR
+	//###############
+	//# GUI SETUP
+	//###############
+
+	ptr_gui->AddComponentToDisplay(gui_hunger_meter);
+	ptr_gui->AddComponentToDisplay(gui_winning_timer);
+
+	//###############
+	//# HERO SETUP
+	//###############
+
 	//Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_death_magnetic, ptr_losing_trigger);
 	Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_stalker);
+
+	//###############
+	//# STAGE SETUP
+	//###############
 
 	//How many map blocks will have a maze segment?
 	SetMazeRowsCount(my_rows_count);
@@ -86,9 +102,14 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 
 	SpawnCarriers(20);
 
+	//#######################
+    //# CYCLIC ACTIONS SETUP
+	//#######################
+
 	//Start timer used to determine if user won
 	ptr_winning_timer->Start();
 	cyclic_actions.push_back(func_check_winning_timer);
+	cyclic_actions.push_back(func_restart_winning_timer_if_main_character_attacks_anyone);
 }
 
 LevelNineMazes::~LevelNineMazes()
@@ -199,7 +220,7 @@ void LevelNineMazes::FinishLevel(LevelEnding my_ending)
 	{
 		printf("Some other ending!\n");
 	}
-	//Mandatory call to parent method
+	//Mandatory call to the parent method
 	Level::FinishLevel(my_ending);
 }
 

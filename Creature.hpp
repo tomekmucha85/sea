@@ -121,6 +121,8 @@ class Creature
 		double melee_attack_duration = 700;
 		//How hungry am I?
 		int hunger_level = 0;
+		//Did creature perform attack?
+		bool did_i_perform_attack = false;
 		//Requests to spawn other creatures. Requests are collected by LevelComponent
 		std::vector<CreatureSpawnRequest> spawn_requests = {};
 
@@ -238,7 +240,14 @@ class Creature
 		std::vector<Creature*> FindAllAccessibleCreatureOfGivenType(CreatureType desired_type, double distance_limit = 0);
 		bool AmIWithinProximityRadiusOfCertainTypeCreature(CreatureType queried_type, 
 			double radius=DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS);
+
+
+        //#########################
+		//# Combat
+		//#########################
 		virtual void Attack(AttackTypes my_type);
+		bool TellIfCreaturePerformedAttack();
+		void ResetAttackFlag();
 		void DealDamageInRadius(int radius, 
 			std::vector<CreatureType> vulnerable_types=LIVING_CREATUES);
 

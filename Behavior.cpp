@@ -76,6 +76,9 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 	}
 	else if (pattern == beh_pat_stalker)
 	{
+	    //Follows a creature upon seeing it.
+		//When no creature in sight, wanders randomly on navmesh.
+
 		//UPON ENTERING PATTERN
 
 		if (was_pattern_changed == true)
@@ -117,8 +120,6 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 			//Check if there is a carrier creature nearby
 			Creature* ptr_closest_carrier = ptr_my_creature->FindClosestAccessibleCreatureOfGivenType(cre_carrier_a,
 				MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE);
-
-			//Creature* ptr_closest_carrier = nullptr;
 
 			if (ptr_closest_carrier != nullptr)
 			{

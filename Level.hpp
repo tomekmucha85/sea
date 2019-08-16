@@ -25,7 +25,7 @@ class Level
 		bool has_player_won = false;
 		LevelEnding ending = ending_none;
 		bool is_level_finished = false;
-		GUI* ptr_gui = nullptr;
+
         //Map of level components
 		std::map<LevelComponentType, std::vector<LevelComponent*>> level_component_types_vs_level_components = {};
 		//Expressed in map blocks
@@ -38,6 +38,8 @@ class Level
     public:
 		//Default position for hero spawned on this level
 		Coordinates default_hero_start_position = {400,380};
+		//Pointer to GUI object
+		GUI* ptr_gui = nullptr;
 		//Contains actions associated to specific level which will be performed during every game loop.
 		std::vector<std::function<void(Level*)>> cyclic_actions = {};
 		//Contains assignment of triggers to certain events
@@ -58,8 +60,8 @@ class Level
 
 		//Timer deciding if level is won
 		TimerStartStop* ptr_winning_timer = nullptr;
-		//How much time has to pass before a level is won
-		Uint32 time_to_endure_before_win = 10000;
+		//How much time has to pass before a level is won via a winning timer
+		Uint32 time_to_endure_before_win = 60000;
 
 		//#TODO - czy nie usun¹æ?
 		bool should_nodes_be_reconnected = false;
@@ -151,10 +153,16 @@ class Level
 			}
 		};
 
-		//Cyclic action to manage GUI for main character
-		std::function<void(Level*)> func_manage_gui_for_main_character = [](Level* ptr_level)
+		//Cyclic action to manage GUI for main character and current level
+		std::function<void(Level*)> func_manage_gui = [](Level* ptr_level)
 		{
 			ptr_level->TellMyGui()->ManageForCreature(Creature::ptr_current_main_charater);
+			// If a winning timer exists for this level
+			if (ptr_level->ptr_winning_timer != nullptr)
+			{
+				Uint32 time_passed_on_winning_timer = ptr_level->ptr_winning_timer->HowManyMilisecondsPassedFromStart();
+				ptr_level->TellMyGui()->ManageWinningTimer(time_passed_on_winning_timer);
+			}
 		};
 
 		//Lambda to win level. (Useful for triggers)
@@ -192,13 +200,40 @@ class Level
 		//Lambda to check timer allowing to win a level
 		std::function<void(Level*)> func_check_winning_timer = [](Level* ptr_level)
 		{
-			Uint32 time_passed = ptr_level->ptr_winning_timer->Read();
-			if (time_passed >= ptr_level->time_to_endure_before_win)
+			if (ptr_level->ptr_winning_timer != nullptr)
 			{
-				printf("Level won, cause timer was hit!\n");
-				ptr_level->Win();
+				Uint32 time_passed = ptr_level->ptr_winning_timer->Read();
+				if (time_passed >= ptr_level->time_to_endure_before_win)
+				{
+					printf("Level won, cause timer was hit!\n");
+					ptr_level->Win();
+				}
+			}
+			else
+			{
+				Logger::Log("Cannot check winning timer, because it was not initialized.\n");
+			}
+
+		};
+
+		//Lambda to check if main character attacked someone since last check.
+		//In such case winning timer is restarted.
+		std::function<void(Level*)> func_restart_winning_timer_if_main_character_attacks_anyone = [](Level* ptr_level)
+		{
+			if (Creature::ptr_current_main_charater->TellIfCreaturePerformedAttack())
+			{
+				if (ptr_level->ptr_winning_timer != nullptr)
+				{
+					ptr_level->ptr_winning_timer->RestartFromZero();
+					Creature::ptr_current_main_charater->ResetAttackFlag();
+				}
+				else
+				{
+					Logger::Log("Cannot reset winning timer, because it was not initialized.\n");
+				}
 			}
 		};
+
 };
 
 #endif //LEVEL_HPP

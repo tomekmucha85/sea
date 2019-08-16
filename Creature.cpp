@@ -1212,6 +1212,10 @@ bool Creature::AmIAlive()
 	return am_i_alive;
 }
 
+//##############################
+//# COMBAT
+//##############################
+
 void Creature::DealDamageInRadius(int radius, std::vector<CreatureType> vulnerable_types)
 {
 	//#TODO - ogarn¹æ implementacjê dla SpellBall
@@ -1241,7 +1245,18 @@ void Creature::Attack(AttackTypes my_type)
 			debug_info);
 		TellMainVisualComponent()->SetInterruptingAnimation(anim_attack_melee, 1);
 		DealDamageInRadius(melee_attack_range);
+		did_i_perform_attack = true;
 	}
+}
+
+bool Creature::TellIfCreaturePerformedAttack()
+{
+	return did_i_perform_attack;
+}
+
+void Creature::ResetAttackFlag()
+{
+	did_i_perform_attack = false;
 }
 
 //********************************************
@@ -1383,7 +1398,6 @@ bool Creature::AmIArmed()
 	printf("Default implementation of AmIArmed called!\n");
 	return true;
 }
-
 
 //************************
 // LOGGING

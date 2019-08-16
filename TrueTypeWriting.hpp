@@ -14,13 +14,14 @@ private:
 	//Variables
 	//###################
 	SDL_Texture* ptr_writing_texture = nullptr;
+	TTF_Font* ptr_font = nullptr;
 	SDL_Rect texture_clip = {0,0,0,0};
 	PreciseRect position = { 0,0,0,0 };
 	Coordinates upper_left_corner = { 0,0 };
 	Coordinates center = {0,0};
 	SDL_Color color = {0,0,0,0};
 	int angle = 0;
-	SDL_Color font_fill_color;
+	//SDL_Color font_fill_color;
 	//###################
 	//Functions
 	//###################
@@ -37,14 +38,16 @@ public:
 	//###################
 	TrueTypeWriting(std::string text, 
 		Coordinates* ptr_upper_left_corner, 
-		TTF_Font* ptr_font,
+		TTF_Font* ptr_my_font,
 		SDL_Color color);
-	//#TODO! - zdefiniowaæ destruktor
 	~TrueTypeWriting();
 	void Render();
 	void Move(double step_x, double step_y);
 	Coordinates TellCenter();
 	void SetCenter(Coordinates my_center);
+	void SetText(std::string my_text);
+	void SetFont(TTF_Font* ptr_my_font);
+	void SetColor(SDL_Color my_color);
 	void SetPosition(PreciseRect my_position);
 	PreciseRect TellPosition();
 	Coordinates TellUpperLeftCorner();

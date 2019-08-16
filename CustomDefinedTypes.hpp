@@ -181,6 +181,9 @@ enum LevelEnding {ending_victory, ending_defeat, ending_other_1, ending_other_2,
 //Interface mode - how events are interpreted.
 enum InterfaceMode {interf_none, interf_menu, interf_guided, interf_game};
 
+//Elements that can be displayed as GUI
+enum GuiElement {gui_hunger_meter, gui_winning_timer};
+
 //Kind of Brain Computer Interface in use
 enum BCIMode { bci_none, bci_physical, bci_virtual };
 

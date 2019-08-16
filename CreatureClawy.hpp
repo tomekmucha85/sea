@@ -17,6 +17,8 @@ private:
 	int time_spent_in_prey_proximity_that_elevates_hunger = 3000;
 	//Threshold above which character is likely to attack preys
 	int hunger_threshold = 3;
+	//Time when last attack occured
+	int last_attack_time = 0;
 
 	//#################
     // FUNCTIONS
@@ -40,6 +42,7 @@ public:
 	void PlayWarningAnimationIfTimeSpentInPreyProximityRisesAboveThreshold(Uint32 threshold_miliseconds);
 	//#TODO - uwzglêdniæ prawdopodobieñstwo
 	void AutoAttack(double likehood=0.5);
+	Uint32 TellWhenCreatureAutoAttackedForTheLastTime();
 
 	//#################
     // LAMBDAS

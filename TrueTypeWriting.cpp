@@ -2,13 +2,22 @@
 
 TrueTypeWriting::TrueTypeWriting(std::string text,
 	Coordinates* ptr_upper_left_corner,
-	TTF_Font* ptr_font,
+	TTF_Font* ptr_my_font,
 	SDL_Color color) : VisualComponent()
 {
 	printf("Will spawn a writing visual component.\n");
 	//Spawning a texture
 	SetColor(color);
-	ptr_writing_texture = Texture::LoadTextureFromRenderedText(text, Screen::renderer, FontBank::ptr_font_doom, color);
+	//Default font
+	if (ptr_my_font == nullptr)
+	{
+		SetFont(FontBank::ptr_font_doom);
+	}
+	else
+	{
+		SetFont(ptr_my_font);
+	}
+	ptr_writing_texture = Texture::LoadTextureFromRenderedText(text, Screen::renderer, ptr_font, color);
 	//Positioning the texture on screen.
 	//#TODO - sprawdziæ, czy w innych metodach query nie jest wykonywane za czêsto
 	if (ptr_writing_texture != nullptr)
@@ -27,6 +36,34 @@ TrueTypeWriting::TrueTypeWriting(std::string text,
 	}
 
 	Logger::Log("Spawned a true type writing!: " + text);
+}
+
+void TrueTypeWriting::SetColor(SDL_Color my_color)
+{
+	color = my_color;
+}
+
+void TrueTypeWriting::SetFont(TTF_Font* ptr_my_font)
+{
+	ptr_font = ptr_my_font;
+}
+
+void TrueTypeWriting::SetText(std::string my_text)
+{
+	SDL_DestroyTexture(ptr_writing_texture);
+	ptr_writing_texture = Texture::LoadTextureFromRenderedText(my_text, Screen::renderer, ptr_font, color);
+	if (ptr_writing_texture != nullptr)
+	{
+		texture_clip = CheckTextureDimensions(ptr_writing_texture);
+		//Altering dimensions, 'case texture clip may have changed.
+		position.w = texture_clip.w;
+		position.h = texture_clip.h;
+	}
+	else
+	{
+		printf("Unable to create writing texture!\n");
+		throw("Unable to create writing texture!\n");
+	}
 }
 
 TrueTypeWriting::~TrueTypeWriting()

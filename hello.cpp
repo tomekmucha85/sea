@@ -92,12 +92,7 @@ int main(int argc, char* args[])
         SDL_RenderClear(Screen::renderer);
 
 		Game::ptr_current_level->RenderAllPresentCreatures();
-
-		//Do not display GUI in menu (mo¿na to rozwi¹zaæ ³adniej)
-		if (Game::ptr_current_level->TellMyType() != level_menu)
-		{
-			Game::ptr_current_level->RenderGui();
-		}
+		Game::ptr_current_level->RenderGui();
 
         //Update screen
         SDL_RenderPresent(Screen::renderer);

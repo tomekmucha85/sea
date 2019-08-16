@@ -121,6 +121,7 @@ void CreatureClawy::ManagePreyProximityTrigger()
 
 void CreatureClawy::AutoAttack(double likehood)
 {
+	//#TODO - to bardziej nale¿y do Behavioru
 	//Triggering automatic attack if hunger threshold if exceeded and prey is near.
 	if (TellHungerLevel() >= hunger_threshold)
 	{
@@ -132,8 +133,14 @@ void CreatureClawy::AutoAttack(double likehood)
 		if (ptr_timer_for_prey_proximity->IsTicking())
 		{
 			Attack(attack_melee);
+			last_attack_time = SDL_GetTicks();
 			//#TODO - powinno siê to odbywaæ w ramach innej funkcji.
 			SetHungerLevel(0);
 		}
 	}
+}
+
+Uint32 CreatureClawy::TellWhenCreatureAutoAttackedForTheLastTime()
+{
+	return last_attack_time;
 }
