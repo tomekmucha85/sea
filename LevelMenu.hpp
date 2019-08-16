@@ -1,12 +1,14 @@
 #ifndef LEVEL_MENU_HPP
 #define LEVEL_MENU_HPP
 #include <Level.hpp>
+#include <Brain.hpp>
 
 class LevelMenu : public Level
 {
 private:
 	std::string menu_action_new_game = "new game";
 	std::string menu_action_calibration = "calibration";
+	std::string menu_action_save_profile = "save user profile";
 	std::string menu_action_quit = "quit";
 	std::string menu_action_calibrate_smile = "calibrate your smile";
 	std::string menu_action_calibrate_smile_accept = "accept smile training";
@@ -23,7 +25,7 @@ private:
 	SDL_Color default_menu_highlight_font_color = { 255,255,0,255 }; // yellow
 	static const Coordinates MENU_HERO_POSITION;
 	std::vector<std::string> possible_actions = {};
-	std::vector<std::string> possible_actions_menu_top_level = { menu_action_new_game, menu_action_calibration, menu_action_quit };
+	std::vector<std::string> possible_actions_menu_top_level = { menu_action_new_game, menu_action_calibration, menu_action_save_profile, menu_action_quit };
 	std::vector<std::string> possible_actions_menu_calibration_level = {menu_action_calibrate_clench, menu_action_calibrate_smile, menu_action_go_to_main_menu };
 	std::vector<std::string> possible_actions_menu_clench_calibration_level = { menu_action_calibrate_clench_accept, 
 		menu_action_calibrate_clench_reject,

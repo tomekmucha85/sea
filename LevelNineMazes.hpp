@@ -130,6 +130,7 @@ class LevelNineMazes : public Level
 
     public:
 	    LevelNineMazes(int my_cols_count, int my_rows_count);
+		~LevelNineMazes();
 		void FinishLevel(LevelEnding my_ending);
 		void SetMazeRowsCount(int rows_num);
 		void SetMazeColsCount(int cols_num);

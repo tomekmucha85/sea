@@ -23,6 +23,8 @@ class Level
 		LevelType type = level_base;
 		bool has_player_lost = false;
 		bool has_player_won = false;
+		LevelEnding ending = ending_none;
+		bool is_level_finished = false;
 		GUI* ptr_gui = nullptr;
         //Map of level components
 		std::map<LevelComponentType, std::vector<LevelComponent*>> level_component_types_vs_level_components = {};
@@ -49,6 +51,15 @@ class Level
 		LevelComponent* ptr_initial_triggers_component = nullptr;
 		//Initial level component for navigation grid - always created
 		LevelComponent* ptr_initial_navgrid_component = nullptr;
+
+		//###########################
+        //#VARIABLES FOR OPTIONAL USE 
+		//###########################
+
+		//Timer deciding if level is won
+		TimerStartStop* ptr_winning_timer = nullptr;
+		//How much time has to pass before a level is won
+		Uint32 time_to_endure_before_win = 10000;
 
 		//#TODO - czy nie usun¹æ?
 		bool should_nodes_be_reconnected = false;
@@ -88,11 +99,14 @@ class Level
 		std::vector<Creature*> FindHeroColissionsInGivenComponent(LevelComponent* ptr_my_component, bool check_only_obstacles=true);
 		void PerformActionsForTriggersHitByHero(LevelComponent* ptr_component_with_triggers);
 		bool CheckIfPlayerIsAlive();
+		void Win();
+		void Loose();
+		void SetLevelEnding(LevelEnding my_ending);
+		LevelEnding TellLevelEnding();
 		bool TellIfPlayerWon();
 		bool TellIfPlayerLost();
-		void Win();
 		virtual void FinishLevel(LevelEnding my_ending);
-		void Loose();
+		bool TellIfLevelIsFinished();
 		void Pause();
 		void UnPause();
 		bool TellIfPaused();
@@ -124,7 +138,7 @@ class Level
 		{
 			if (ptr_level->TellIfPlayerWon())
 			{
-				ptr_level->FinishLevel(victory);
+				ptr_level->FinishLevel(ending_victory);
 			}
 		};
 
@@ -133,7 +147,7 @@ class Level
 		{
 			if (ptr_level->TellIfPlayerLost())
 			{
-				ptr_level->FinishLevel(defeat);
+				ptr_level->FinishLevel(ending_defeat);
 			}
 		};
 
@@ -173,6 +187,17 @@ class Level
 		std::function<void(Level*)> func_serve_path_requests = [](Level* ptr_level)
 		{
 			ptr_level->ProcessAllPathRequests();
+		};
+
+		//Lambda to check timer allowing to win a level
+		std::function<void(Level*)> func_check_winning_timer = [](Level* ptr_level)
+		{
+			Uint32 time_passed = ptr_level->ptr_winning_timer->Read();
+			if (time_passed >= ptr_level->time_to_endure_before_win)
+			{
+				printf("Level won, cause timer was hit!\n");
+				ptr_level->Win();
+			}
 		};
 };
 

@@ -38,7 +38,7 @@ int main(int argc, char* args[])
     Game::InitializeGame();
 	Interface* ptr_game_interface = new Interface();
 	ptr_game_interface->SetInterfaceMode(interf_menu);
-	BCI* ptr_bci_instance = new BCI(bci_none);
+	BCI* ptr_bci_instance = new BCI(bci_virtual);
 
 	Game::PrepareSingleLevel(level_menu);
 
@@ -92,14 +92,12 @@ int main(int argc, char* args[])
         SDL_RenderClear(Screen::renderer);
 
 		Game::ptr_current_level->RenderAllPresentCreatures();
-		Game::ptr_current_level->RenderGui();
 
-		//TEXT TEST
-		/*int writing_w, writing_h;
-		//nie trzeba tego robiæ za ka¿dym razem
-		SDL_QueryTexture(ptr_writing, NULL, NULL, &writing_w, &writing_h);
-		SDL_Rect result = { 0,0,writing_w, writing_h };
-		SDL_RenderCopyEx(Screen::renderer, ptr_writing, nullptr, &result, 0, 0, SDL_FLIP_NONE);*/
+		//Do not display GUI in menu (mo¿na to rozwi¹zaæ ³adniej)
+		if (Game::ptr_current_level->TellMyType() != level_menu)
+		{
+			Game::ptr_current_level->RenderGui();
+		}
 
         //Update screen
         SDL_RenderPresent(Screen::renderer);

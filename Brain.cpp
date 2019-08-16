@@ -1,5 +1,8 @@
 #include <Brain.hpp>
 
+//IEE_SaveUserProfile();
+//IEE_ProfileEventCreate();
+
 BCI::BCI(BCIMode mode)
 {
 	eEvent = IEE_EmoEngineEventCreate();
@@ -21,6 +24,7 @@ BCI::BCI(BCIMode mode)
 	{
 		if (IEE_EngineRemoteConnect(address.c_str(), composerPort) == EDK_OK)
 		{
+			EmoEngineEventHandle eProfile = IEE_ProfileEventCreate();
 			bci_device_in_use = bci_virtual;
 			printf("Started virtual BCI!\n");
 		}
@@ -59,7 +63,12 @@ std::string BCI::GetNextBCIEvent()
 		{
 			IEE_Event_t eventType = IEE_EmoEngineEventGetType(eEvent);
 			//printf("Got event!\n");
-			//IEE_EmoEngineEventGetUserId(eEvent, &userID);
+			IEE_EmoEngineEventGetUserId(eEvent, &userID);
+			printf("User id is %i\n", userID);
+			if (eventType == IEE_UserAdded)
+			{
+				printf("Added emotiv user\n");
+			}
 			if (eventType == IEE_EmoStateUpdated)
 			{
 				IEE_EmoEngineEventGetEmoState(eEvent, eState);
@@ -97,6 +106,14 @@ std::string BCI::GetNextBCIEvent()
 	{
 		//printf("No event!\n");
 	}
+	return result;
+}
+
+int BCI::SaveUserProfile()
+{
+	std::string path = "C:\\Users\\tmucha\\ppp.bci";
+	int result = IEE_SaveUserProfile(0, path.c_str());
+	printf("Result of profile saving is %d\n", result);
 	return result;
 }
 

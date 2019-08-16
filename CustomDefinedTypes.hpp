@@ -175,8 +175,8 @@ struct CreatureDestructionInGivenAreaRequest
 //Possible attack types for Creatures
 enum AttackTypes {attack_none, attack_melee, attack_projectile};
 
-//Possible level endings - victory, defeat or some other state - e.g. going to another level without finishing the previous one
-enum LevelEnding {victory, defeat, other_ending_1, other_ending_2, other_ending_3};
+//Possible level endings - ending_victory, ending_defeat or some other state - e.g. going to another level without finishing the previous one
+enum LevelEnding {ending_victory, ending_defeat, ending_other_1, ending_other_2, ending_other_3, ending_entering_menu, ending_exiting_menu, ending_none};
 
 //Interface mode - how events are interpreted.
 enum InterfaceMode {interf_none, interf_menu, interf_guided, interf_game};

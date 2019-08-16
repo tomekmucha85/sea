@@ -1,17 +1,19 @@
-I. Class hierarchy
+I. Class hierarchy (some classes - e.g. Interface - omitted)
 Game________
 |           |
 Level       Screen
 |
 LevelComponent
 |
-Creature_________________
-|                        |              
-|                        |
-VisualComponent        Behavior
-|         
-|
-Sprite or VectorDrawing
+Creature_______________________________
+|                                      |              
+|                                      |
+|                                      |
+VisualComponent___________________    Behavior       
+|            |           |        |
+|            |           |        |
+|            |           |        |
+Sprite  VectorDrawing   Line    True Type Writing  
 |
 Texture
 
@@ -174,3 +176,74 @@ Behavior pattern is a set of rules, like "when certain Character is within sight
 otherwise wander randomly on map."
 
 Behavior mode orders Creature to do a single thing - e.g. follow certain character.
+
+V Level finishing
+
+One of every Level's cyclic tasks is to seek if player has won or lost and therefore if the level should be finished:
+
+see these lambdas in Level header file:
+
+    std::function<void(Level*)> func_check_and_react_if_player_won = [](Level* ptr_level)
+	std::function<void(Level*)> func_check_and_react_if_player_lost = [](Level* ptr_level)
+
+But how the game exactly does take decision if level should be finished/restarted?
+
+Here is the flow:
+
+1. Level performs win/loose check every cycle. Here is the win case:
+
+		//Cyclic action to check if winning conditions were met
+		std::function<void(Level*)> func_check_and_react_if_player_won = [](Level* ptr_level)
+		{
+			if (ptr_level->TellIfPlayerWon())
+			{
+				ptr_level->FinishLevel(ending_victory);
+			}
+		};
+
+2. Finish Level method is called if level is won/lost. This is a virtual method, but should always contain a call to the parent method at the end.
+See example FinishLevel method for Level Nine Mazes:
+
+void LevelNineMazes::FinishLevel(LevelEnding my_ending)
+{
+	Pause();
+	if (my_ending == ending_victory)
+	{
+		printf("You've beaten nine mazes!\n");
+	}
+	else if (my_ending == ending_defeat)
+	{
+		printf("You've been beaten.\n");
+	}
+	else
+	{
+		printf("Some other ending!\n");
+	}
+	//Mandatory call to parent method
+	Level::FinishLevel(my_ending);
+}
+
+The idea is that Finish Method provides a space to perform actions like e.g. exiting animation before level is ultimately closed.
+
+Parent method sets the is_level_finished bool to True:
+
+void Level::FinishLevel(LevelEnding my_ending)
+{
+	SetLevelEnding(my_ending);
+	Logger::Log("Level finished", debug_info);
+	is_level_finished = true;
+}
+
+3. The value of boolean is_level_finished is being observed by Game::SwitchBetweenLevelsIfNeeded().
+This method is called at the end of each main cycle. If this variable is set to True, method also checks what ending the level quit with
+and perform appropriate actions (loads next level, restarts the same one e.t.c).
+
+Notice, that Menu is a level too! It is reached a bit differently - has two dedicated level endings: ending_entering_menu, ending_exiting_menu.
+In Interface code you may note, that these endings are reached by direct call to FinishLevel method, without winning or loosing a level (example for exiting menu is shown):
+
+	    if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+		    ptr_my_event_handler->key.keysym.sym == SDLK_ESCAPE &&
+		    ptr_my_event_handler->key.repeat == 0)
+	    {
+		    Game::ptr_current_level->FinishLevel(ending_exiting_menu);
+	    }

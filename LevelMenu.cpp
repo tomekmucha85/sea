@@ -95,7 +95,7 @@ void LevelMenu::BrowseActions(Directions my_direction)
 	}
 	else
 	{
-		Logger::Log("Unsupported direction for browing menu actions.");
+		Logger::Log("Unsupported direction for browsing menu actions.");
 	}
 
 	HighlightAMenuAction(possible_actions[current_menu_position]);
@@ -121,15 +121,21 @@ void LevelMenu::PerformSelectedAction()
 
 	if (selected_action == menu_action_new_game)
 	{
-		Win();
+		FinishLevel(ending_exiting_menu);
 	}
 	else if (selected_action == menu_action_calibration)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_level);
 	}
+	else if (selected_action == menu_action_save_profile)
+	{
+		BCI::SaveUserProfile();
+	}
 	else if (selected_action == menu_action_quit)
 	{
-		;
+		SDL_Event quit_event;
+		quit_event.type = SDL_QUIT;
+		SDL_PushEvent(&quit_event);
 	}
 	else if (selected_action == menu_action_go_to_main_menu)
 	{

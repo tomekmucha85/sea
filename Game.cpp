@@ -11,6 +11,8 @@ int Game::debug_counter;
 Level* Game::ptr_current_level = nullptr;
 FactorySpawningLevels* Game::ptr_levels_factory;
 std::vector <Level*> Game::currently_existing_levels;
+std::vector<LevelType> Game::levels_order = { level_ninemazes };
+unsigned int Game::current_level_number = 0;
 
 //***********************************
 //METHODS
@@ -108,13 +110,31 @@ void Game::SetCurrentLevel(Level* ptr_my_current_level)
 
 void Game::SwitchBetweenLevelsIfNeeded()
 {
-	//#TODO dopracowaæ, na razie jeden level restartuje siê w kó³ko
-	if (ptr_current_level->TellIfPlayerWon())
+	if (ptr_current_level->TellIfLevelIsFinished() && ptr_current_level->TellLevelEnding() == ending_victory)
 	{
-		PrepareSingleLevel(level_ninemazes);
+		unsigned int next_level_number = current_level_number++;
+		//If next level goes beyond total levels number, begin from the start
+		if (next_level_number >= levels_order.size())
+		{
+			next_level_number = 0;
+		}
+		Logger::Log("Loading next level: " + next_level_number, debug_info);
+		current_level_number = next_level_number;
+		PrepareSingleLevel(levels_order[current_level_number]);
 	}
-	else if (ptr_current_level->TellIfPlayerLost())
+	else if (ptr_current_level->TellIfLevelIsFinished() && ptr_current_level->TellLevelEnding() == ending_defeat)
 	{
-		PrepareSingleLevel(level_ninemazes);
+		Logger::Log("Restarting a failed level", debug_info);
+		PrepareSingleLevel(levels_order[current_level_number]);
+	}
+	else if (ptr_current_level->TellIfLevelIsFinished() && ptr_current_level->TellLevelEnding() == ending_entering_menu)
+	{
+		Logger::Log("Going to menu", debug_info);
+		PrepareSingleLevel(level_menu);
+	}
+	else if (ptr_current_level->TellIfLevelIsFinished() && ptr_current_level->TellLevelEnding() == ending_exiting_menu)
+	{
+		Logger::Log("Exiting menu, recreating current level", debug_info);
+		PrepareSingleLevel(levels_order[current_level_number]);
 	}
 }

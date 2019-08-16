@@ -17,6 +17,8 @@ Level::Level()
 	Creature* ptr_hero = SpawnHero();
 	//Spawning GUI
 	ptr_gui = new GUI();
+	//Adding timer for level winning (making use of it is optional)
+	ptr_winning_timer = new TimerStartStop();
 	//Adding default cyclic actions
 	cyclic_actions.push_back(func_fire_triggers);
 	cyclic_actions.push_back(func_manage_gui_for_main_character);
@@ -36,6 +38,7 @@ Level::~Level()
 	RemoveAllLevelComponents();
 	delete ptr_gui;
 	delete ptr_components_factory;
+	delete ptr_winning_timer;
 }
 
 //************
@@ -326,20 +329,26 @@ bool Level::CheckIfPlayerIsAlive()
 	}
 }
 
+void Level::SetLevelEnding(LevelEnding my_ending)
+{
+	ending = my_ending;
+}
+
+LevelEnding Level::TellLevelEnding()
+{
+	return ending;
+}
+
 void Level::FinishLevel(LevelEnding my_ending)
 {
-	if (my_ending == victory)
-	{
-		printf("You won!\n");
-	}
-	else if (my_ending == defeat)
-	{
-		printf("You lost!\n");
-	}
-	else
-	{
-		printf("Level finished!\n");
-	}
+	SetLevelEnding(my_ending);
+	Logger::Log("Level finished", debug_info);
+	is_level_finished = true;
+}
+
+bool Level::TellIfLevelIsFinished()
+{
+	return is_level_finished;
 }
 
 //**************

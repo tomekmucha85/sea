@@ -23,6 +23,7 @@ class BCI
 		~BCI();
 		BCIMode WhatBCIIsConnected();
 		std::string GetNextBCIEvent();
+		static int SaveUserProfile();
 };
 
 

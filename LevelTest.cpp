@@ -37,11 +37,11 @@ LevelTest::LevelTest()
 void LevelTest::FinishLevel(LevelEnding my_ending)
 {
 	Pause();
-	if (my_ending == victory)
+	if (my_ending == ending_victory)
 	{
 		printf("You've beaten test level!\n");
 	}
-	else if (my_ending == defeat)
+	else if (my_ending == ending_defeat)
 	{
 		printf("You've been beaten.\n");
 	}

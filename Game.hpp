@@ -14,7 +14,8 @@ class Game
 {
     private:
 		static std::vector <Level*> currently_existing_levels;
-		std::vector<LevelType> levels_order = {level_menu, level_ninemazes};
+		static std::vector<LevelType> levels_order;
+		static unsigned int current_level_number;
 
     public:
 

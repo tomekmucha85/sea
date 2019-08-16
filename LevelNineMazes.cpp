@@ -86,7 +86,16 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 
 	SpawnCarriers(20);
 
+	//Start timer used to determine if user won
+	ptr_winning_timer->Start();
+	cyclic_actions.push_back(func_check_winning_timer);
 }
+
+LevelNineMazes::~LevelNineMazes()
+{
+	;
+}
+
 
 std::pair<Coordinates, Coordinates> LevelNineMazes::CalculateLevelConstraints()
 {
@@ -178,11 +187,11 @@ void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 void LevelNineMazes::FinishLevel(LevelEnding my_ending)
 {
 	Pause();
-	if (my_ending == victory)
+	if (my_ending == ending_victory)
 	{
 		printf("You've beaten nine mazes!\n");
 	}
-	else if (my_ending == defeat)
+	else if (my_ending == ending_defeat)
 	{
 		printf("You've been beaten.\n");
 	}
@@ -190,6 +199,8 @@ void LevelNineMazes::FinishLevel(LevelEnding my_ending)
 	{
 		printf("Some other ending!\n");
 	}
+	//Mandatory call to parent method
+	Level::FinishLevel(my_ending);
 }
 
 void LevelNineMazes::SetMazeRowsCount(int rows_num)
