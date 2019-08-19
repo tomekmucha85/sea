@@ -32,7 +32,7 @@ public:
 	CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin = 30);
 	~CreatureCarrierA();
 	void PerformCyclicActionsClassSpecific();
-	void SetVelocity(double my_velocity);
+	void SetVelocityDependentAnimation(double previous_velocity, double new_velocity);
 	void PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint32 threshold_miliseconds);
 	bool AmIWithinMainCharacterProximityRadius();
 	void ManageMainCharacterProximityTrigger();

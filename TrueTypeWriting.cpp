@@ -5,7 +5,7 @@ TrueTypeWriting::TrueTypeWriting(std::string text,
 	TTF_Font* ptr_my_font,
 	SDL_Color color) : VisualComponent()
 {
-	printf("Will spawn a writing visual component.\n");
+	//printf("Will spawn a writing visual component.\n");
 	//Spawning a texture
 	SetColor(color);
 	//Default font
@@ -35,7 +35,7 @@ TrueTypeWriting::TrueTypeWriting(std::string text,
 		throw("Unable to create writing texture!\n");
 	}
 
-	Logger::Log("Spawned a true type writing!: " + text);
+	//Logger::Log("Spawned a true type writing!: " + text);
 }
 
 void TrueTypeWriting::SetColor(SDL_Color my_color)

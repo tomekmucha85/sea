@@ -149,6 +149,19 @@ void LevelMenu::PerformSelectedAction()
 	{
 		LoadMenuActionsSet(possible_actions_menu_smile_calibration_level);
 	}
+	else if (selected_action == menu_action_calibrate_smile_start)
+	{
+		printf("Selected smile training.\n");
+		BCI::TrainSmile();
+	}
+	else if (selected_action == menu_action_calibrate_smile_accept)
+	{
+		BCI::AcceptTraining();
+	}
+	else if (selected_action == menu_action_calibrate_smile_reject)
+	{
+		BCI::RejectTraining();
+	}
 	else if (selected_action == menu_action_go_to_calibration_menu)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_level);

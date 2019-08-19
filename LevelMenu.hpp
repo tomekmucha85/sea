@@ -11,6 +11,7 @@ private:
 	std::string menu_action_save_profile = "save user profile";
 	std::string menu_action_quit = "quit";
 	std::string menu_action_calibrate_smile = "calibrate your smile";
+	std::string menu_action_calibrate_smile_start = "start smile training";
 	std::string menu_action_calibrate_smile_accept = "accept smile training";
 	std::string menu_action_calibrate_smile_reject = "reject smile training";
 	std::string menu_action_calibrate_smile_restart = "restart smile training";
@@ -31,10 +32,13 @@ private:
 		menu_action_calibrate_clench_reject,
 	    menu_action_calibrate_clench_restart,
 	    menu_action_go_to_calibration_menu};
-	std::vector<std::string> possible_actions_menu_smile_calibration_level = { menu_action_calibrate_smile_accept,
-	menu_action_calibrate_smile_reject,
-	menu_action_calibrate_smile_restart,
-	menu_action_go_to_calibration_menu };
+	std::vector<std::string> possible_actions_menu_smile_calibration_level = { 
+	    menu_action_calibrate_smile_start,
+	    menu_action_calibrate_smile_accept,
+	    menu_action_calibrate_smile_reject,
+	    menu_action_calibrate_smile_restart,
+	    menu_action_go_to_calibration_menu 
+	};
 	unsigned int current_menu_position = 0;
 	LevelComponent* ptr_component_containing_menu_positions = ptr_initial_core_component;
 public:

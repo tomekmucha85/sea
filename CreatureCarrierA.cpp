@@ -33,18 +33,16 @@ void CreatureCarrierA::PerformCyclicActionsClassSpecific()
 	}
 }
 
-void CreatureCarrierA::SetVelocity(double my_velocity)
+void CreatureCarrierA::SetVelocityDependentAnimation(double previous_velocity, double new_velocity)
 {
-	double current_velocity = TellVelocity();
-	if (current_velocity == 0 && my_velocity != 0)
+	if (previous_velocity == 0 && new_velocity != 0)
 	{
 		TellMainVisualComponent()->SetCurrentAnimation(anim_walk);
 	}
-	else if (current_velocity != 0 && my_velocity == 0)
+	else if (previous_velocity != 0 && new_velocity == 0)
 	{
 		TellMainVisualComponent()->SetCurrentAnimation(anim_idle);
 	}
-	Creature::SetVelocity(my_velocity);
 }
 
 void CreatureCarrierA::PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint32 threshold_miliseconds)

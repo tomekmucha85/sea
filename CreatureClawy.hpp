@@ -37,7 +37,7 @@ public:
 	//#################
 	CreatureClawy(Coordinates* ptr_my_center, int hitbox_margin = 30);
 	~CreatureClawy();
-	void SetVelocity(double my_velocity);
+	void SetVelocityDependentAnimation(double previous_velocity, double new_velocity);
 	void ManagePreyProximityTrigger();
 	void PlayWarningAnimationIfTimeSpentInPreyProximityRisesAboveThreshold(Uint32 threshold_miliseconds);
 	//#TODO - uwzglêdniæ prawdopodobieñstwo

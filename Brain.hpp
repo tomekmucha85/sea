@@ -13,7 +13,8 @@ class BCI
     private:
 		EmoEngineEventHandle eEvent = nullptr;
 		EmoStateHandle eState = nullptr;
-		unsigned int userID = 0;
+		//#TODO - czy na pewno ma byæ static?
+		static unsigned int userID;
 		const unsigned short composerPort = 1726;
 		int state = 0;
 		std::string  address = "127.0.0.1";
@@ -24,6 +25,10 @@ class BCI
 		BCIMode WhatBCIIsConnected();
 		std::string GetNextBCIEvent();
 		static int SaveUserProfile();
+		static void TrainSmile();
+		static void AcceptTraining();
+		static void RejectTraining();
+		static void ResetTrainingData();
 };
 
 

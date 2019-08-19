@@ -5,7 +5,7 @@ CreatureWriting::CreatureWriting(Coordinates* ptr_my_upper_left_corner,
 	SDL_Color my_color,
 	int hitbox_margin) : Creature(my_text, ptr_my_upper_left_corner, my_color)
 {
-	Logger::Log("Will spawn a WritingCreature.");
+	//Logger::Log("Will spawn a WritingCreature.");
 	my_type = cre_writing;
 	text = my_text;
 	color = my_color;

@@ -220,6 +220,7 @@ void LevelNineMazes::FinishLevel(LevelEnding my_ending)
 	{
 		printf("Some other ending!\n");
 	}
+	//#TODO - rozwi¹zaæ to ³adniej, bez wo³ania parent method w ka¿dym dziedziczeniu
 	//Mandatory call to the parent method
 	Level::FinishLevel(my_ending);
 }

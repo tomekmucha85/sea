@@ -197,7 +197,7 @@ class Creature
 		std::vector<Creature*> FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set, int radius = NULL);
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);
 		void RemoveNeighbors();
-		virtual void SetVelocity(double my_velocity);
+		void SetVelocity(double my_velocity);
 		double TellVelocity();
         bool ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool check_collisions = true);
         void MoveComponents(double x, double y);
@@ -256,6 +256,9 @@ class Creature
 		//################################
 
 		void PlayCurrentAnimationsForVisualComponents();
+		//Used within SetVelocity
+        //#TODO - rozwi¹zaæ to ³adniej, zamiast ukrywania wywo³añ animacji w ró¿nych funkcjach
+		virtual void SetVelocityDependentAnimation(double previous_velocity=0, double new_velocity=0);
 
 	    //###################
 		//Static helpers

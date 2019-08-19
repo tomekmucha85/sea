@@ -1,7 +1,6 @@
 #include <Brain.hpp>
 
-//IEE_SaveUserProfile();
-//IEE_ProfileEventCreate();
+unsigned int BCI::userID = 0;
 
 BCI::BCI(BCIMode mode)
 {
@@ -13,6 +12,10 @@ BCI::BCI(BCIMode mode)
 		{
 			bci_device_in_use = bci_physical;
 			printf("Started physical BCI!\n");
+			//Create structure to hold profile data
+			EmoEngineEventHandle eProfile = IEE_ProfileEventCreate();
+			//Attach base ("clean") profile to eProfile
+			IEE_GetBaseProfile(eProfile);
 		}
 		else
 		{
@@ -24,9 +27,12 @@ BCI::BCI(BCIMode mode)
 	{
 		if (IEE_EngineRemoteConnect(address.c_str(), composerPort) == EDK_OK)
 		{
-			EmoEngineEventHandle eProfile = IEE_ProfileEventCreate();
 			bci_device_in_use = bci_virtual;
 			printf("Started virtual BCI!\n");
+			//Create structure to hold profile data
+			EmoEngineEventHandle eProfile = IEE_ProfileEventCreate();
+			//Attach base ("clean") profile to eProfile
+			IEE_GetBaseProfile(eProfile);
 		}
 		else
 		{
@@ -61,15 +67,20 @@ std::string BCI::GetNextBCIEvent()
 	{
 		if (state == EDK_OK)
 		{
+			//unsigned int userID = 0;
+			//IEE_EmoEngineEventGetUserId(expressivEvent, &userID);
+			//IEE_FacialExpressionEvent_t eventType =
+			//	IEE_FacialExpressionEventGetType(expressivEvent);
+
 			IEE_Event_t eventType = IEE_EmoEngineEventGetType(eEvent);
 			//printf("Got event!\n");
 			IEE_EmoEngineEventGetUserId(eEvent, &userID);
-			printf("User id is %i\n", userID);
+			//printf("User id is %i\n", userID);
 			if (eventType == IEE_UserAdded)
 			{
 				printf("Added emotiv user\n");
 			}
-			if (eventType == IEE_EmoStateUpdated)
+			else if (eventType == IEE_EmoStateUpdated)
 			{
 				IEE_EmoEngineEventGetEmoState(eEvent, eState);
 				float upperFaceAmp = IS_FacialExpressionGetUpperFaceActionPower(eState);
@@ -94,13 +105,27 @@ std::string BCI::GetNextBCIEvent()
 					}
 				}
 			}
+			else if (eventType == IEE_FacialExpressionEvent)
+			{
+				IEE_FacialExpressionEvent_t facial_event_type = IEE_FacialExpressionEventGetType(eEvent);
+				if (facial_event_type == IEE_FacialExpressionTrainingStarted)
+				{
+					Logger::Log("BCI training started!\n", debug_info);
+				}
+				else if (facial_event_type == IEE_FacialExpressionTrainingSucceeded)
+				{
+					Logger::Log("BCI training succeeded!\n", debug_info);
+				}
+				else if (facial_event_type == IEE_FacialExpressionTrainingFailed)
+				{
+					Logger::Log("BCI training failed!\n", debug_info);
+				}
+			}
 		}
 		else
 		{
 			printf("Unexpected EmoEngineBehavior!\n");
 		}
-
-		//state = IEE_EngineGetNextEvent(eEvent);
 	}
 	else
 	{
@@ -115,6 +140,49 @@ int BCI::SaveUserProfile()
 	int result = IEE_SaveUserProfile(0, path.c_str());
 	printf("Result of profile saving is %d\n", result);
 	return result;
+}
+
+void BCI::TrainSmile()
+{
+	Logger::Log("Will attempt to start smile facial expression training for user: " + std::to_string(userID), 
+		debug_info);
+	int exit = (IEE_FacialExpressionSetTrainingAction(userID, FE_SMILE));
+	if (exit != EDK_OK)
+	{
+		Logger::Log("Error while preparing smile training!", debug_info);
+		throw("Error while preparing smile training!");
+	}
+	exit = IEE_FacialExpressionSetTrainingControl(userID, FE_START);
+	if (exit != EDK_OK)
+	{
+		Logger::Log("Error while starting smile training!", debug_info);
+		throw("Error while starting smile training!");
+	}
+}
+
+void BCI::AcceptTraining()
+{
+	int exit = (IEE_FacialExpressionSetTrainingControl(userID, FE_ACCEPT));
+	if (exit != EDK_OK)
+	{
+		Logger::Log("Error while accepting training!", debug_info);
+		throw("Error while accepting training!");
+	}
+}
+
+void BCI::RejectTraining()
+{
+	int exit = (IEE_FacialExpressionSetTrainingControl(userID, FE_REJECT));
+	if (exit != EDK_OK)
+	{
+		Logger::Log("Error while rejecting training!", debug_info);
+		throw("Error while rejecting training!");
+	}
+}
+
+void BCI::ResetTrainingData()
+{
+	;
 }
 
 /*

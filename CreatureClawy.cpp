@@ -22,18 +22,16 @@ CreatureClawy::~CreatureClawy()
 	delete ptr_timer_for_prey_proximity;
 }
 
-void CreatureClawy::SetVelocity(double my_velocity)
+void CreatureClawy::SetVelocityDependentAnimation(double previous_velocity, double new_velocity)
 {
-	double current_velocity = TellVelocity();
-	if (current_velocity == 0 && my_velocity != 0)
+	if (previous_velocity == 0 && new_velocity != 0)
 	{
 		TellMainVisualComponent()->SetCurrentAnimation(anim_walk);
 	}
-	else if (current_velocity != 0 && my_velocity == 0)
+	else if (previous_velocity != 0 && new_velocity == 0)
 	{
 		TellMainVisualComponent()->SetCurrentAnimation(anim_idle);
 	}
-	Creature::SetVelocity(my_velocity);
 }
 
 void CreatureClawy::PerformCyclicActionsClassSpecific()

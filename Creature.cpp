@@ -657,6 +657,7 @@ void Creature::ThrustTowardsPoint(Coordinates destination, double velocity)
 
 void Creature::SetVelocity(double my_velocity)
 {
+	SetVelocityDependentAnimation(TellVelocity(), my_velocity);
 	velocity = my_velocity;
 }
 
@@ -1028,6 +1029,11 @@ void Creature::PlayCurrentAnimationsForVisualComponents()
 		VisualComponent* ptr_my_visual_component = iter->second;
 		ptr_my_visual_component->PlayCurrentAnimation();
 	}
+}
+
+void Creature::SetVelocityDependentAnimation(double previous_velocity, double new_velocity)
+{
+	Logger::Log("Default implementation of SetVelocityDependentAnimation", debug_full);
 }
 
 //**************
