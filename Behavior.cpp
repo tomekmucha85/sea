@@ -1,7 +1,7 @@
 #include <Creature.hpp>
 
 double Behavior::MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE = 400;
-double Behavior::DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE = 30;
+double Behavior::DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE = 50;
 
 Behavior::Behavior()
 {
@@ -239,6 +239,7 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 				//Moving with carrier's velocity if getting close to carrier.
 				double carriers_velocity = ptr_followed_carrier->TellVelocity();
 				ptr_my_creature->ThrustTowardsPoint(followed_carriers_center, carriers_velocity);
+				printf("Carrier velocity: %f\n", carriers_velocity);
 			}
 			else
 			{

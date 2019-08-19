@@ -7,6 +7,7 @@
 std::vector <Creature*> Creature::current_environment;
 std::vector <CreatureType> Creature::walls = { cre_flying_box, cre_spell_open_doors };
 Creature* Creature::ptr_current_main_charater;
+double Creature::DEFAULT_VELOCITY = 100;
 const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
 const double Creature::DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS = 80;
 std::vector<CreatureType> Creature::LIVING_CREATUES = {cre_carrier_a, cre_clawy};
@@ -606,26 +607,13 @@ void Creature::MoveBehaviorComponent(double x, double y)
 
 void Creature::ThrustForward(double velocity)
 {
-	if (velocity)
-	{
-		SetVelocity(velocity);
-	}
-	else
-	{
-		SetVelocity(default_velocity);
-	}
+	//printf("Issued thrust forward with velocity: %f.\n", velocity);
+	SetVelocity(velocity);
 }
 
 void Creature::ThrustBackward(double velocity)
 {
-	if (velocity)
-	{
-		SetVelocity(-velocity);
-	}
-	else
-	{
-		SetVelocity(-default_velocity);
-	}
+	SetVelocity(-velocity);
 }
 
 void Creature::TurnTowardsPoint(Coordinates point)

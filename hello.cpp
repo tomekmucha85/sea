@@ -49,10 +49,6 @@ int main(int argc, char* args[])
 
 	int cooldown = 0;
 
-	//TEXT TEST
-	//SDL_Texture* ptr_writing = Texture::LoadTextureFromRenderedText("dupa", Screen::renderer, FontBank::ptr_font_doom);
-
-
     while (!quit)
     {
 		//Cooldown decreasing
@@ -97,7 +93,7 @@ int main(int argc, char* args[])
         //Update screen
         SDL_RenderPresent(Screen::renderer);
 
-		//Check if level should be finished
+		//Check if level should be loaded
 		Game::SwitchBetweenLevelsIfNeeded();
 
     }

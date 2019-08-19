@@ -140,7 +140,7 @@ class Creature
         //###################
 		CreatureType my_type = cre_none;
         double velocity = 0;
-		double default_velocity = 100;
+		static double DEFAULT_VELOCITY;
 
 		double turn_speed = 0.4; // How fast creature turns around
 		int turn_direction = 0; // -1 = left, 1 = right, 0 = no turning.
@@ -204,10 +204,10 @@ class Creature
 		void MoveVisualComponent(double x, double y);
 		void MoveBehaviorComponent(double x, double y);
         void MoveHitbox(double x, double y);
-        void ThrustForward(double velocity=NULL);
-        void ThrustBackward(double velocity=NULL);
+        void ThrustForward(double velocity=DEFAULT_VELOCITY);
+        void ThrustBackward(double velocity=DEFAULT_VELOCITY);
 		void TurnTowardsPoint(Coordinates point);
-		void ThrustTowardsPoint(Coordinates destination, double velocity = NULL);
+		void ThrustTowardsPoint(Coordinates destination, double velocity=DEFAULT_VELOCITY);
 		void SetPosition(Coordinates new_center_position);
 		int TellCurrentAngleDegree();
 		Coordinates TellCenterPoint();
