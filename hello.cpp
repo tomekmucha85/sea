@@ -38,7 +38,7 @@ int main(int argc, char* args[])
     Game::InitializeGame();
 	Interface* ptr_game_interface = new Interface();
 	ptr_game_interface->SetInterfaceMode(interf_menu);
-	BCI* ptr_bci_instance = new BCI(bci_physical);
+	BCI* ptr_bci_instance = new BCI(bci_virtual);
 
 	Game::PrepareSingleLevel(level_menu);
 

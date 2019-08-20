@@ -119,7 +119,7 @@ class Level
 
 		//Methods for LevelMenu
 		virtual void BrowseActions(Directions my_direction);
-		virtual void PerformSelectedAction();
+		virtual bool PerformSelectedAction();
 
 		//###################
 		// COMMON LAMBDAS

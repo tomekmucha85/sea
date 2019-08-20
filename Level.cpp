@@ -530,7 +530,8 @@ void Level::BrowseActions(Directions my_direction)
 	Logger::Log("Default implementation of BrowseActions called!");
 }
 
-void Level::PerformSelectedAction()
+bool Level::PerformSelectedAction()
 {
 	Logger::Log("Default implementation of PerformSelectedAction called!");
+	return true;
 }

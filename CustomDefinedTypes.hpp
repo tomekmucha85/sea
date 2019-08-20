@@ -172,6 +172,12 @@ struct CreatureDestructionInGivenAreaRequest
 	PreciseRect nukage_area = { 0,0,0,0 };
 };
 
+struct MenuPosition
+{
+	std::string text = "default menu position";
+	bool is_enabled = true;
+};
+
 //Possible attack types for Creatures
 enum AttackTypes {attack_none, attack_melee, attack_projectile};
 
