@@ -26,9 +26,12 @@ class BCI
 		std::string GetNextBCIEvent();
 		static int SaveUserProfile();
 		static void TrainSmile();
+		static void TrainNeutral();
+		static void TrainClench();
 		static void AcceptTraining();
 		static void RejectTraining();
 		static void ResetTrainingData();
+		static void TrySwitchingToTrainedSig();
 };
 
 

@@ -200,30 +200,65 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuPosition* ptr_my_action)
 	{
 		LoadMenuActionsSet(possible_actions_menu_top_level);
 	}
-	else if (ptr_my_action->text == menu_action_calibrate_clench.text)
-	{
-		LoadMenuActionsSet(possible_actions_menu_clench_calibration_level);
-	}
-	else if (ptr_my_action->text == menu_action_calibrate_smile.text)
-	{
-		LoadMenuActionsSet(possible_actions_menu_smile_calibration_level);
-	}
-	else if (ptr_my_action->text == menu_action_calibrate_smile_start.text)
-	{
-		printf("Selected smile training.\n");
-		BCI::TrainSmile();
-	}
-	else if (ptr_my_action->text == menu_action_calibrate_smile_accept.text)
-	{
-		BCI::AcceptTraining();
-	}
-	else if (ptr_my_action->text == menu_action_calibrate_smile_reject.text)
-	{
-		BCI::RejectTraining();
-	}
 	else if (ptr_my_action->text == menu_action_go_to_calibration_menu.text)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_level);
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard.text)
+	{
+		LoadMenuActionsSet(possible_actions_menu_calibration_wizard_1st_step);
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral.text)
+	{
+		BCI::TrainNeutral();
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_accept.text)
+	{
+		BCI::AcceptTraining();
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_reject.text)
+	{
+		BCI::RejectTraining();
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_proceed.text)
+	{
+		LoadMenuActionsSet(possible_actions_menu_calibration_wizard_2nd_step);
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile.text)
+	{
+		BCI::TrainSmile();
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile_accept.text)
+	{
+		BCI::AcceptTraining();
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile_reject.text)
+	{
+		BCI::RejectTraining();
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile_proceed.text)
+	{
+		LoadMenuActionsSet(possible_actions_menu_calibration_wizard_3rd_step);
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_clench.text)
+	{
+		BCI::TrainClench();
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_clench_accept.text)
+	{
+		BCI::AcceptTraining();
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_clench_reject.text)
+	{
+		BCI::RejectTraining();
+	}
+	else if (ptr_my_action->text == menu_action_calibration_wizard_finish.text)
+	{
+		BCI::TrySwitchingToTrainedSig();
+	}
+	else if (ptr_my_action->text == menu_action_calibration_reset.text)
+	{
+		BCI::ResetTrainingData();
 	}
 }
 

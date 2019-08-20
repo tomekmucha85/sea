@@ -142,6 +142,7 @@ int BCI::SaveUserProfile()
 	return result;
 }
 
+//#TODO - usun¹æ duplikacje kodu
 void BCI::TrainSmile()
 {
 	Logger::Log("Will attempt to start smile facial expression training for user: " + std::to_string(userID), 
@@ -157,6 +158,42 @@ void BCI::TrainSmile()
 	{
 		Logger::Log("Error while starting smile training!", debug_info);
 		throw("Error while starting smile training!");
+	}
+}
+
+void BCI::TrainNeutral()
+{
+	Logger::Log("Will attempt to start neutral facial expression training for user: " + std::to_string(userID),
+		debug_info);
+	int exit = (IEE_FacialExpressionSetTrainingAction(userID, FE_NEUTRAL));
+	if (exit != EDK_OK)
+	{
+		Logger::Log("Error while preparing neutral training!", debug_info);
+		throw("Error while preparing neutral training!");
+	}
+	exit = IEE_FacialExpressionSetTrainingControl(userID, FE_START);
+	if (exit != EDK_OK)
+	{
+		Logger::Log("Error while starting neutral training!", debug_info);
+		throw("Error while starting neutral training!");
+	}
+}
+
+void BCI::TrainClench()
+{
+	Logger::Log("Will attempt to start clench facial expression training for user: " + std::to_string(userID),
+		debug_info);
+	int exit = (IEE_FacialExpressionSetTrainingAction(userID, FE_CLENCH));
+	if (exit != EDK_OK)
+	{
+		Logger::Log("Error while preparing clench training!", debug_info);
+		throw("Error while preparing clench training!");
+	}
+	exit = IEE_FacialExpressionSetTrainingControl(userID, FE_START);
+	if (exit != EDK_OK)
+	{
+		Logger::Log("Error while starting clench training!", debug_info);
+		throw("Error while starting clench training!");
 	}
 }
 
@@ -178,6 +215,11 @@ void BCI::RejectTraining()
 		Logger::Log("Error while rejecting training!", debug_info);
 		throw("Error while rejecting training!");
 	}
+}
+
+void BCI::TrySwitchingToTrainedSig()
+{
+	;
 }
 
 void BCI::ResetTrainingData()
