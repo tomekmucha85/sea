@@ -5,7 +5,7 @@ const Coordinates LevelMenu::MENU_HERO_POSITION = {0,0};
 LevelMenu::LevelMenu()
 {
 	SetMyType(level_menu);
-	ptr_component_containing_menu_positions = ptr_components_factory->SpawnLevelComponent(levco_core);
+	ptr_component_containing_menu_actions = ptr_components_factory->SpawnLevelComponent(levco_core);
 	possible_actions = possible_actions_menu_top_level;
 	DisplayMenuActions();
 	//To perform initial highlight.
@@ -16,37 +16,38 @@ void LevelMenu::DisplayMenuActions()
 {
 	//Print menu items on screen
 	int menu_counter = 0;
-	for (MenuPosition* ptr_menu_position : possible_actions)
+	for (MenuAction* ptr_menu_action : possible_actions)
 	{
-		//Determine text color
-		SDL_Color menu_position_color = {0,0,0,0};
-		if (ptr_menu_position->is_enabled)
-		{
-			menu_position_color = default_menu_font_color;
-		}
-		else
-		{
-			menu_position_color = default_menu_disabled_action_font_color;
-		}
-
-		Coordinates text_upper_left_corner = { 10, 10 + (menu_counter*spacing_between_menu_positions) };
-
-		Creature* ptr_my_writing = ptr_component_containing_menu_positions->AddCreature(cre_writing,
+		SDL_Color menu_action_color = DetermineDefaultFontColorForMenuAction(ptr_menu_action);
+		Coordinates text_upper_left_corner = { 10, 10 + (menu_counter*spacing_between_menu_actions) };
+		Creature* ptr_my_writing = ptr_component_containing_menu_actions->AddCreature(cre_writing,
 			&text_upper_left_corner,
 			merge,
-			ptr_menu_position->text,
-			menu_position_color);
+			ptr_menu_action->text,
+			menu_action_color);
 
 		menu_counter++;
 	}
 }
 
-void LevelMenu::DestroyCurrentMenuActions()
+SDL_Color LevelMenu::DetermineDefaultFontColorForMenuAction(MenuAction* ptr_my_action)
 {
-	ptr_component_containing_menu_positions->RemoveAllCreatures();
+	if (ptr_my_action->is_enabled)
+	{
+		return default_menu_font_color;
+	}
+	else
+	{
+		return default_menu_disabled_action_font_color;
+	}
 }
 
-void LevelMenu::LoadMenuActionsSet(std::vector<MenuPosition*> actions_set)
+void LevelMenu::DestroyCurrentMenuActions()
+{
+	ptr_component_containing_menu_actions->RemoveAllCreatures();
+}
+
+void LevelMenu::LoadMenuActionsSet(std::vector<MenuAction*> actions_set)
 {
 	DestroyCurrentMenuActions();
 	possible_actions = actions_set;
@@ -56,27 +57,46 @@ void LevelMenu::LoadMenuActionsSet(std::vector<MenuPosition*> actions_set)
 	BrowseActions(north);
 }
 
-void LevelMenu::ChangeColorOfMenuActionExclusively(MenuPosition* ptr_my_action, SDL_Color my_color)
+MenuAction* LevelMenu::FindPossibleMenuActionWithSpecificText(std::string my_text)
+{
+	MenuAction* result = nullptr;
+	for (MenuAction* ptr_menu_action : possible_actions)
+	{
+		if (ptr_menu_action->text == my_text)
+		{
+			result = ptr_menu_action;
+			break;
+		}   
+	}
+	return result;
+}
+
+void LevelMenu::ChangeColorOfMenuActionExclusively(MenuAction* ptr_my_action, SDL_Color my_color)
 {
 	bool was_color_change_successfull = ChangeColorOfMenuAction(ptr_my_action, my_color);
 	if (was_color_change_successfull)
 	{
-		for (Creature* ptr_my_creature : *(ptr_component_containing_menu_positions->TellPtrToCreaturesArray()))
+		for (Creature* ptr_my_creature : *(ptr_component_containing_menu_actions->TellPtrToCreaturesArray()))
 		{
 			if (ptr_my_creature->my_type == cre_writing)
 			{
 				CreatureWriting* ptr_my_writing = static_cast<CreatureWriting*>(ptr_my_creature);
 				SDL_Color current_color = ptr_my_writing->TellColor();
-				// If we found another menu action which has the same color as desired
-				if (ptr_my_writing->TellText() != ptr_my_action->text)
+				std::string writing_text = ptr_my_writing->TellText();
+				// If we found another CreatureWriting which has the same color as desired
+				if (writing_text != ptr_my_action->text)
 				{
 					if (current_color.r == my_color.r
 						&& current_color.g == my_color.g
 						&& current_color.b == my_color.b
 						&& current_color.a == my_color.a)
 					{
-						//Set color to default
-						ptr_my_writing->SetNewTextColor(default_menu_font_color);
+						//Set color to default, according to entry in MenuAction structure
+						MenuAction* ptr_corresponding_menu_action = FindPossibleMenuActionWithSpecificText(writing_text);
+						if (ptr_corresponding_menu_action != nullptr)
+						{
+							ptr_my_writing->SetNewTextColor(DetermineDefaultFontColorForMenuAction(ptr_corresponding_menu_action));
+						}
 					}
 				}
 			}
@@ -84,10 +104,10 @@ void LevelMenu::ChangeColorOfMenuActionExclusively(MenuPosition* ptr_my_action, 
 	}
 }
 
-bool LevelMenu::ChangeColorOfMenuAction(MenuPosition* ptr_my_action, SDL_Color my_color)
+bool LevelMenu::ChangeColorOfMenuAction(MenuAction* ptr_my_action, SDL_Color my_color)
 {
 	bool was_color_change_successfull = false;
-	for (Creature* ptr_my_creature : *(ptr_component_containing_menu_positions->TellPtrToCreaturesArray()))
+	for (Creature* ptr_my_creature : *(ptr_component_containing_menu_actions->TellPtrToCreaturesArray()))
 	{
 		if (ptr_my_creature->my_type == cre_writing)
 		{
@@ -102,14 +122,14 @@ bool LevelMenu::ChangeColorOfMenuAction(MenuPosition* ptr_my_action, SDL_Color m
 			}
 			else
 			{
-				Logger::Log("Action %s was not displayed on screen currently.", debug_info);
+				Logger::Log("Action" + ptr_my_action->text + "was not displayed on screen currently.", debug_info);
 			}
 		}
 	}
 	return was_color_change_successfull;
 }
 
-void LevelMenu::HighlightMenuAction(MenuPosition* ptr_my_action)
+void LevelMenu::HighlightMenuAction(MenuAction* ptr_my_action)
 {
 	ChangeColorOfMenuActionExclusively(ptr_my_action, default_menu_highlight_font_color);
 }
@@ -140,7 +160,7 @@ void LevelMenu::BrowseActions(Directions my_direction)
 
 bool LevelMenu::PerformSelectedAction()
 {
-	MenuPosition* ptr_selected_action = nullptr;
+	MenuAction* ptr_selected_action = nullptr;
 	if (current_menu_position < possible_actions.size() &&
 		possible_actions.size() > 0)
 	{
@@ -176,7 +196,7 @@ bool LevelMenu::PerformSelectedAction()
 
 }
 
-void LevelMenu::ExecuteTaskBoundToAction(MenuPosition* ptr_my_action)
+void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
 {
 	if (ptr_my_action->text == menu_action_new_game.text)
 	{
@@ -262,13 +282,13 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuPosition* ptr_my_action)
 	}
 }
 
-void LevelMenu::DisableMenuAction(MenuPosition* ptr_my_action)
+void LevelMenu::DisableMenuAction(MenuAction* ptr_my_action)
 {
 	ptr_my_action->is_enabled = false;
 	ChangeColorOfMenuAction(ptr_my_action, default_menu_disabled_action_font_color);
 }
 
-void LevelMenu::EnableMenuAction(MenuPosition* ptr_my_action)
+void LevelMenu::EnableMenuAction(MenuAction* ptr_my_action)
 {
 	ptr_my_action->is_enabled = true;
 	ChangeColorOfMenuAction(ptr_my_action, default_menu_font_color);

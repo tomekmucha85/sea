@@ -35,10 +35,63 @@ int main(int argc, char* args[])
     //Event handler
     SDL_Event event_handler;
 
+	//BCI mode requested when no mode is explicitly chosen
+	BCIMode default_bci_mode = bci_virtual;
+	BCIMode chosen_bci_mode = default_bci_mode;
+
+	//Arguments handling
+	std::string usage = "\nUSAGE:\nsea.exe [-b physical|virtual|none]\n";
+	int max_argument_count = 3;
+	printf("Arguments count: %d\n", argc);
+	for (int i = 0; i < argc; i++)
+	{
+		printf("Received argument: ");
+		printf(args[i]);
+		printf("\n");
+	}
+	if (argc > max_argument_count)
+	{
+		std::cout << usage;
+		return 1;
+	}
+	else if (argc == 3)
+	{
+		if (args[1] == "-b")
+		{
+			if (args[2] == "physical")
+			{
+				chosen_bci_mode = bci_physical;
+			}
+			else if (args[2] == "virtual")
+			{
+				chosen_bci_mode = bci_physical;
+			}
+			else if (args[2] == "none")
+			{
+				chosen_bci_mode = bci_none;
+			}
+		}
+		else
+		{
+			std::cout << usage ;
+			return 1;
+		}
+	}
+	else if (argc == 1)
+	{
+		chosen_bci_mode = default_bci_mode;
+	}
+	else
+	{
+		std::cout << usage;
+		return 1;
+	}
+
+
     Game::InitializeGame();
 	Interface* ptr_game_interface = new Interface();
 	ptr_game_interface->SetInterfaceMode(interf_menu);
-	BCI* ptr_bci_instance = new BCI(bci_virtual);
+	BCI* ptr_bci_instance = new BCI(chosen_bci_mode);
 
 	Game::PrepareSingleLevel(level_menu);
 

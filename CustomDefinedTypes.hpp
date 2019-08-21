@@ -172,7 +172,7 @@ struct CreatureDestructionInGivenAreaRequest
 	PreciseRect nukage_area = { 0,0,0,0 };
 };
 
-struct MenuPosition
+struct MenuAction
 {
 	std::string text = "default menu position";
 	bool is_enabled = true;
