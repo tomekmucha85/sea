@@ -191,28 +191,26 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 	}
 }
 
-void Interface::UseInterface(std::string bci_detection)
+void Interface::UseInterface(BCIEvent my_event)
 {
-	if (current_mode == interf_menu)
+	Game::ptr_current_level->NotifyOfBciEvent(my_event);
+	/*if (current_mode == interf_menu)
 	{
-		;
-	}
-	else if (current_mode == interf_guided)
+		//Reaction for BCI readings is entirely up to current Level - each Level may react in a different way
+
+	}*/
+	/*else if (current_mode == interf_game)
 	{
-		;
-	}
-	else if (current_mode == interf_game)
-	{
-		if (bci_detection == "smile")
+		if (my_event == bci_event_smile)
 		{
 			Logger::Log("Interface got smile!");
 			Creature::ptr_current_main_charater->SetHungerLevel(0);
 		}
-		else if (bci_detection == "clench")
+		else if (my_event == bci_event_clench)
 		{
 			Logger::Log("Interface got clench!");
 		}
-	}
+	}*/
 }
 
 void Interface::SetInterfaceMode(InterfaceMode my_mode)

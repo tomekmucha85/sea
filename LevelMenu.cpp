@@ -122,7 +122,7 @@ bool LevelMenu::ChangeColorOfMenuAction(MenuAction* ptr_my_action, SDL_Color my_
 			}
 			else
 			{
-				Logger::Log("Action" + ptr_my_action->text + "was not displayed on screen currently.", debug_info);
+				Logger::Log("Action " + ptr_my_action->text + "was not displayed on screen currently.", debug_info);
 			}
 		}
 	}
@@ -224,61 +224,94 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_level);
 	}
+	else if (ptr_my_action->text == menu_action_calibration_reset.text)
+	{
+		BCI::ResetTrainingData();
+	}
+	//###############################
+	//# CALIBRATION WIZARD - 1st STEP
+	//###############################
 	else if (ptr_my_action->text == menu_action_calibration_wizard.text)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_wizard_1st_step);
+		//All actions disabled except calibration start and return to menu
+		ManageMenuActionsForNotCalibratedNeutralBCIExpression();
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral.text)
 	{
 		BCI::TrainNeutral();
+		//Preparing set of actions to enable when calibration succeeds
+		//Disabling proceeding to next calibration phase.
+		ManageMenuActionsForNeutralBCICalibration();
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_accept.text)
 	{
 		BCI::AcceptTraining();
+		ManageMenuActionsForAcceptedBCICalibration();
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_reject.text)
 	{
 		BCI::RejectTraining();
+		ManageMenuActionsForRejectedBCICalibration();
 	}
+	//###############################
+    //# CALIBRATION WIZARD - 2nd STEP
+    //###############################
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_proceed.text)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_wizard_2nd_step);
+		//All actions disabled except calibration start and return to menu
+		ManageMenuActionsForNotCalibratedSmileBCIExpression();
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile.text)
 	{
 		BCI::TrainSmile();
+		//Preparing set of actions to enable when calibration succeeds
+		//Disabling proceeding to next calibration phase.
+		ManageMenuActionsForSmileBCICalibration();
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile_accept.text)
 	{
 		BCI::AcceptTraining();
+		ManageMenuActionsForAcceptedBCICalibration();
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile_reject.text)
 	{
 		BCI::RejectTraining();
+		ManageMenuActionsForRejectedBCICalibration();
 	}
+	//###############################
+    //# CALIBRATION WIZARD - 3rd STEP
+    //###############################
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile_proceed.text)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_wizard_3rd_step);
+		//All actions disabled except calibration start and return to menu
+		ManageMenuActionsForNotCalibratedClenchBCIExpression();
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_clench.text)
 	{
 		BCI::TrainClench();
+		//Preparing set of actions to enable when calibration succeeds
+        //Disabling proceeding to next calibration phase.
+		ManageMenuActionsForClenchBCICalibration();
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_clench_accept.text)
 	{
 		BCI::AcceptTraining();
+		ManageMenuActionsForAcceptedBCICalibration();
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_clench_reject.text)
 	{
 		BCI::RejectTraining();
+		ManageMenuActionsForRejectedBCICalibration();
 	}
+	//#################################
+    //# CALIBRATION WIZARD - FINAL STEP
+    //#################################
 	else if (ptr_my_action->text == menu_action_calibration_wizard_finish.text)
 	{
 		BCI::TrySwitchingToTrainedSig();
-	}
-	else if (ptr_my_action->text == menu_action_calibration_reset.text)
-	{
-		BCI::ResetTrainingData();
 	}
 }
 
@@ -292,4 +325,119 @@ void LevelMenu::EnableMenuAction(MenuAction* ptr_my_action)
 {
 	ptr_my_action->is_enabled = true;
 	ChangeColorOfMenuAction(ptr_my_action, default_menu_font_color);
+}
+
+void LevelMenu::ManageMenuActionsForNotCalibratedNeutralBCIExpression()
+{
+	for (MenuAction* ptr_menu_action : possible_actions_menu_calibration_wizard_1st_step)
+	{
+		//Disable all menu actions except calibration neutral and return option
+		if (ptr_menu_action->text != menu_action_calibration_wizard_calibrate_neutral.text &&
+			ptr_menu_action->text != menu_action_go_to_calibration_menu.text)
+		{
+			DisableMenuAction(ptr_menu_action);
+		}
+	}
+}
+
+void LevelMenu::ManageMenuActionsForNeutralBCICalibration()
+{
+	menu_actions_related_to_current_bci_calibration_outcome.clear();
+	//Define which actions should be affected when training succeeds/is rejected/is accepted
+	menu_actions_related_to_current_bci_calibration_outcome =
+	{
+		&menu_action_calibration_wizard_calibrate_neutral_accept,
+		&menu_action_calibration_wizard_calibrate_neutral_reject,
+	};
+	ptr_menu_action_leading_to_next_calibration_stage = &menu_action_calibration_wizard_calibrate_neutral_proceed;
+	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
+}
+
+void LevelMenu::ManageMenuActionsForNotCalibratedSmileBCIExpression() 
+{
+	for (MenuAction* ptr_menu_action : possible_actions_menu_calibration_wizard_2nd_step)
+	{
+		//Disable all menu actions except calibration smile and return option
+		if (ptr_menu_action->text != menu_action_calibration_wizard_calibrate_smile.text &&
+			ptr_menu_action->text != menu_action_go_to_calibration_menu.text)
+		{
+			DisableMenuAction(ptr_menu_action);
+		}
+	}
+}
+
+void LevelMenu::ManageMenuActionsForSmileBCICalibration()
+{
+	menu_actions_related_to_current_bci_calibration_outcome.clear();
+	//Define which actions should be affected when training succeeds/is rejected/is accepted
+	menu_actions_related_to_current_bci_calibration_outcome =
+	{
+		&menu_action_calibration_wizard_calibrate_smile_accept,
+		&menu_action_calibration_wizard_calibrate_smile_reject,
+	};
+	ptr_menu_action_leading_to_next_calibration_stage = &menu_action_calibration_wizard_calibrate_smile_proceed;
+	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
+}
+
+void LevelMenu::ManageMenuActionsForNotCalibratedClenchBCIExpression()
+{
+		for (MenuAction* ptr_menu_action : possible_actions_menu_calibration_wizard_3rd_step)
+	{
+			//Disable all menu actions except calibration smile and return option
+			if (ptr_menu_action->text != menu_action_calibration_wizard_calibrate_clench.text &&
+				ptr_menu_action->text != menu_action_go_to_calibration_menu.text)
+			{
+				DisableMenuAction(ptr_menu_action);
+			}
+		}
+}
+
+void LevelMenu::ManageMenuActionsForClenchBCICalibration()
+{
+	menu_actions_related_to_current_bci_calibration_outcome.clear();
+	//Define which actions should be affected when training succeeds/is rejected/is accepted
+	menu_actions_related_to_current_bci_calibration_outcome =
+	{
+		&menu_action_calibration_wizard_calibrate_clench_accept,
+		&menu_action_calibration_wizard_calibrate_clench_reject,
+	};
+	ptr_menu_action_leading_to_next_calibration_stage = &menu_action_calibration_wizard_finish;
+	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
+}
+
+void LevelMenu::ManageMenuActionsForAcceptedBCICalibration()
+{
+	//Enable proceeding to next calibration stage
+	EnableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
+	//Disable accepting/rejecting training results
+	for (MenuAction* ptr_my_action : menu_actions_related_to_current_bci_calibration_outcome)
+	{
+		DisableMenuAction(ptr_my_action);
+	}
+}
+
+void LevelMenu::ManageMenuActionsForRejectedBCICalibration()
+{
+	//Disable accepting/rejecting training results
+	for (MenuAction* ptr_my_action : menu_actions_related_to_current_bci_calibration_outcome)
+	{
+		DisableMenuAction(ptr_my_action);
+	}
+	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
+}
+
+bool LevelMenu::NotifyOfBciEvent(BCIEvent my_event)
+{
+	if (my_event == bci_event_training_failed)
+	{
+		;
+	}
+	else if (my_event == bci_event_training_success)
+	{
+		for (MenuAction* ptr_my_action : menu_actions_related_to_current_bci_calibration_outcome)
+		{
+			EnableMenuAction(ptr_my_action);
+		}
+	}
+	return true;
 }

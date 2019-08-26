@@ -36,7 +36,7 @@ int main(int argc, char* args[])
     SDL_Event event_handler;
 
 	//BCI mode requested when no mode is explicitly chosen
-	BCIMode default_bci_mode = bci_virtual;
+	BCIMode default_bci_mode = bci_mode_virtual;
 	BCIMode chosen_bci_mode = default_bci_mode;
 
 	//Arguments handling
@@ -56,23 +56,27 @@ int main(int argc, char* args[])
 	}
 	else if (argc == 3)
 	{
-		if (args[1] == "-b")
+		std::string argument_0(args[0]);
+		std::string argument_1(args[1]);
+		std::string argument_2(args[2]);
+		if (argument_1 == "-b")
 		{
-			if (args[2] == "physical")
+			if (argument_2 == "physical")
 			{
-				chosen_bci_mode = bci_physical;
+				chosen_bci_mode = bci_mode_physical;
 			}
-			else if (args[2] == "virtual")
+			else if (argument_2 == "virtual")
 			{
-				chosen_bci_mode = bci_physical;
+				chosen_bci_mode = bci_mode_virtual;
 			}
-			else if (args[2] == "none")
+			else if (argument_2 == "none")
 			{
-				chosen_bci_mode = bci_none;
+				chosen_bci_mode = bci_mode_none;
 			}
 		}
 		else
 		{
+			std::cout << "Invalid switch: \n";
 			std::cout << usage ;
 			return 1;
 		}
@@ -104,15 +108,6 @@ int main(int argc, char* args[])
 
     while (!quit)
     {
-		//Cooldown decreasing
-		/*if (cooldown > 0)
-		{
-			if (cooldown == 1)
-			{
-				printf("COOLDOWN PASSED!\n");
-			}
-			cooldown--;
-		}*/
 		//Timer
 		Timer::CalculateLoopDuration();
 		//printf("Loop duration: %f.\n", Timer::loop_duration);
@@ -121,7 +116,7 @@ int main(int argc, char* args[])
 		Game::ptr_current_level->PerformCyclicActions();
 
 		//Handle BCI events on queque
-		if (ptr_bci_instance->WhatBCIIsConnected() != bci_none)
+		if (ptr_bci_instance->WhatBCIIsConnected() != bci_mode_none)
 		{
 			ptr_game_interface->UseInterface(ptr_bci_instance->GetNextBCIEvent());
 		}

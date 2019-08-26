@@ -18,12 +18,12 @@ class BCI
 		const unsigned short composerPort = 1726;
 		int state = 0;
 		std::string  address = "127.0.0.1";
-		BCIMode bci_device_in_use = bci_none;
+		BCIMode bci_device_in_use = bci_mode_none;
     public:
-		BCI(BCIMode mode=bci_none);
+		BCI(BCIMode mode=bci_mode_none);
 		~BCI();
 		BCIMode WhatBCIIsConnected();
-		std::string GetNextBCIEvent();
+		BCIEvent GetNextBCIEvent();
 		static int SaveUserProfile();
 		static void TrainSmile();
 		static void TrainNeutral();

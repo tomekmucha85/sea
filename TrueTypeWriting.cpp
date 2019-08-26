@@ -22,19 +22,20 @@ TrueTypeWriting::TrueTypeWriting(std::string text,
 	//#TODO - sprawdziæ, czy w innych metodach query nie jest wykonywane za czêsto
 	if (ptr_writing_texture != nullptr)
 	{
+		/*printf("Setting upper left corner in constructor as: x: %f y: %f\n",
+			ptr_upper_left_corner->x,
+			ptr_upper_left_corner->y);*/
 		texture_clip = CheckTextureDimensions(ptr_writing_texture);
 		SetPosition({ ptr_upper_left_corner->x,
 			ptr_upper_left_corner->y,
 			static_cast<double>(texture_clip.w),
 			static_cast<double>(texture_clip.h)});
-		SetCenter(CalculateCenterOfGivenPosition(position));
 	}
 	else
 	{
 		printf("Unable to create writing texture!\n");
 		throw("Unable to create writing texture!\n");
 	}
-
 	//Logger::Log("Spawned a true type writing!: " + text);
 }
 
@@ -107,6 +108,7 @@ PreciseRect TrueTypeWriting::TellPosition()
 
 Coordinates TrueTypeWriting::TellUpperLeftCorner()
 {
+	//printf("Will tell upper left corner: x: %f y: %f.\n", position.x, position.y);
 	return { position.x, position.y };
 }
 

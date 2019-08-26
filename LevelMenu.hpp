@@ -13,17 +13,17 @@ private:
 	MenuAction menu_action_quit = { "quit", true };
 	MenuAction menu_action_calibration_wizard = {"calibration wizard", true};
 	MenuAction menu_action_calibration_wizard_calibrate_neutral = {"calibrate your neutral expression", true};
-	MenuAction menu_action_calibration_wizard_calibrate_neutral_accept = { "accept neutral expression training", false };
-	MenuAction menu_action_calibration_wizard_calibrate_neutral_reject = { "reject neutral expression training", false };
-	MenuAction menu_action_calibration_wizard_calibrate_neutral_proceed = { "proceed to smile calibration", false };
+	MenuAction menu_action_calibration_wizard_calibrate_neutral_accept = { "accept neutral expression training", true };
+	MenuAction menu_action_calibration_wizard_calibrate_neutral_reject = { "reject neutral expression training", true };
+	MenuAction menu_action_calibration_wizard_calibrate_neutral_proceed = { "proceed to smile calibration", true };
 	MenuAction menu_action_calibration_wizard_calibrate_smile = { "calibrate your smile", true };
-	MenuAction menu_action_calibration_wizard_calibrate_smile_accept = { "accept smile training", false};
-	MenuAction menu_action_calibration_wizard_calibrate_smile_reject = { "reject smile training", false };
-	MenuAction menu_action_calibration_wizard_calibrate_smile_proceed = { "proceed to clench calibration", false };
+	MenuAction menu_action_calibration_wizard_calibrate_smile_accept = { "accept smile training", true};
+	MenuAction menu_action_calibration_wizard_calibrate_smile_reject = { "reject smile training", true };
+	MenuAction menu_action_calibration_wizard_calibrate_smile_proceed = { "proceed to clench calibration", true };
 	MenuAction menu_action_calibration_wizard_calibrate_clench = { "calibrate your clench", true };
-	MenuAction menu_action_calibration_wizard_calibrate_clench_accept = { "accept clench training", false };
-	MenuAction menu_action_calibration_wizard_calibrate_clench_reject = { "reject clench training", false };
-	MenuAction menu_action_calibration_wizard_finish = { "finish calibration", false };
+	MenuAction menu_action_calibration_wizard_calibrate_clench_accept = { "accept clench training", true };
+	MenuAction menu_action_calibration_wizard_calibrate_clench_reject = { "reject clench training", true };
+	MenuAction menu_action_calibration_wizard_finish = { "finish calibration", true };
 	MenuAction menu_action_go_to_main_menu = { "return to main menu", true };
 	MenuAction menu_action_go_to_calibration_menu = { "return to calibration menu", true };
 	MenuAction menu_action_calibration_reset = { "reset calibration data", true };
@@ -62,6 +62,12 @@ private:
 	    &menu_action_calibration_wizard_finish,
 	    &menu_action_go_to_calibration_menu };
 	unsigned int current_menu_position = 0;
+
+	//BCI CALIBRATION
+	bool is_bci_calibration_in_progress = false;
+	std::vector<MenuAction*> menu_actions_related_to_current_bci_calibration_outcome = {};
+	MenuAction* ptr_menu_action_leading_to_next_calibration_stage = nullptr;
+
 	LevelComponent* ptr_component_containing_menu_actions = ptr_initial_core_component;
 public:
 	LevelMenu();
@@ -77,7 +83,16 @@ public:
 	void DestroyCurrentMenuActions();
 	void DisableMenuAction(MenuAction* ptr_my_action);
 	void EnableMenuAction(MenuAction* ptr_my_action);
+	void ManageMenuActionsForAcceptedBCICalibration();
+	void ManageMenuActionsForRejectedBCICalibration();
+	void ManageMenuActionsForNotCalibratedNeutralBCIExpression();
+	void ManageMenuActionsForNotCalibratedSmileBCIExpression();
+	void ManageMenuActionsForNotCalibratedClenchBCIExpression();
+	void ManageMenuActionsForNeutralBCICalibration();
+	void ManageMenuActionsForSmileBCICalibration();
+	void ManageMenuActionsForClenchBCICalibration();
 	MenuAction* FindPossibleMenuActionWithSpecificText(std::string my_text);
+	bool NotifyOfBciEvent(BCIEvent my_event);
 };
 
 #endif //LEVEL_MENU_HPP

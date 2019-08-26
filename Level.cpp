@@ -535,3 +535,9 @@ bool Level::PerformSelectedAction()
 	Logger::Log("Default implementation of PerformSelectedAction called!");
 	return true;
 }
+
+bool Level::NotifyOfBciEvent(BCIEvent my_event)
+{
+	Logger::Log("Default implementation of NotifyOfBciEvent called!");
+	return true;
+}

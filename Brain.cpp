@@ -6,11 +6,11 @@ BCI::BCI(BCIMode mode)
 {
 	eEvent = IEE_EmoEngineEventCreate();
 	eState = IEE_EmoStateCreate();
-	if (mode == bci_physical)
+	if (mode == bci_mode_physical)
 	{
 		if (IEE_EngineConnect() == EDK_OK)
 		{
-			bci_device_in_use = bci_physical;
+			bci_device_in_use = bci_mode_physical;
 			printf("Started physical BCI!\n");
 			//Create structure to hold profile data
 			EmoEngineEventHandle eProfile = IEE_ProfileEventCreate();
@@ -23,11 +23,11 @@ BCI::BCI(BCIMode mode)
 			throw std::domain_error("Unable to connect to physical BCI!");
 		}
 	}
-	else if (mode == bci_virtual)
+	else if (mode == bci_mode_virtual)
 	{
 		if (IEE_EngineRemoteConnect(address.c_str(), composerPort) == EDK_OK)
 		{
-			bci_device_in_use = bci_virtual;
+			bci_device_in_use = bci_mode_virtual;
 			printf("Started virtual BCI!\n");
 			//Create structure to hold profile data
 			EmoEngineEventHandle eProfile = IEE_ProfileEventCreate();
@@ -59,10 +59,10 @@ BCIMode BCI::WhatBCIIsConnected()
 	return bci_device_in_use;
 }
 
-std::string BCI::GetNextBCIEvent()
+BCIEvent BCI::GetNextBCIEvent()
 {
 	state = IEE_EngineGetNextEvent(eEvent);
-	std::string result = "";
+	BCIEvent result = bci_event_none;
 	if (state != EDK_NO_EVENT)
 	{
 		if (state == EDK_OK)
@@ -79,6 +79,7 @@ std::string BCI::GetNextBCIEvent()
 			if (eventType == IEE_UserAdded)
 			{
 				printf("Added emotiv user\n");
+				result = bci_event_user_added;
 			}
 			else if (eventType == IEE_EmoStateUpdated)
 			{
@@ -96,12 +97,12 @@ std::string BCI::GetNextBCIEvent()
 					if (lowerFaceType == FE_CLENCH)
 					{
 						Logger::Log("Clench! Amplitude: " + std::to_string(lowerFaceAmp));
-						result = "clench";
+						result = bci_event_smile;
 					}
 					else if (lowerFaceType == FE_SMILE)
 					{
 						Logger::Log("Smile! Amplitude: " + std::to_string(lowerFaceAmp));
-						result = "smile";
+						result = bci_event_smile;
 					}
 				}
 			}
@@ -111,14 +112,17 @@ std::string BCI::GetNextBCIEvent()
 				if (facial_event_type == IEE_FacialExpressionTrainingStarted)
 				{
 					Logger::Log("BCI training started!\n", debug_info);
+					result = bci_event_training_start;
 				}
 				else if (facial_event_type == IEE_FacialExpressionTrainingSucceeded)
 				{
 					Logger::Log("BCI training succeeded!\n", debug_info);
+					result = bci_event_training_success;
 				}
 				else if (facial_event_type == IEE_FacialExpressionTrainingFailed)
 				{
 					Logger::Log("BCI training failed!\n", debug_info);
+					result = bci_event_training_failed;
 				}
 			}
 		}
@@ -226,6 +230,7 @@ void BCI::ResetTrainingData()
 {
 	;
 }
+
 
 /*
 	double theta = 0;

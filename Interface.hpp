@@ -16,7 +16,7 @@ class Interface
     public:
 		void SetModeAppropriateToLevelType();
 		void UseInterface(SDL_Event* ptr_my_event_handler);
-		void UseInterface(std::string bci_detection);
+		void UseInterface(BCIEvent my_event);
 		void SetInterfaceMode(InterfaceMode my_mode);
 		InterfaceMode TellInterfaceMode();
 };
