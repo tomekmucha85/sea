@@ -1,6 +1,21 @@
 #include <Brain.hpp>
 
 unsigned int BCI::userID = 0;
+const IEE_FacialExpressionAlgo_t BCI::all_facial_expressions[] = 
+{
+    FE_NEUTRAL,
+	FE_BLINK,
+	FE_WINK_LEFT,
+	FE_WINK_RIGHT,
+	FE_HORIEYE,
+	FE_SURPRISE,
+	FE_FROWN,
+	FE_SMILE,
+	FE_CLENCH,
+	FE_LAUGH,
+	FE_SMIRK_LEFT,
+	FE_SMIRK_RIGHT
+};
 
 BCI::BCI(BCIMode mode)
 {
@@ -124,6 +139,16 @@ BCIEvent BCI::GetNextBCIEvent()
 					Logger::Log("BCI training failed!\n", debug_info);
 					result = bci_event_training_failed;
 				}
+				else if (facial_event_type == IEE_FacialExpressionTrainingCompleted)
+				{
+					Logger::Log("Signatures updated!\n", debug_info);
+					result = bci_event_training_completed;
+				}
+				else if (facial_event_type == IEE_FacialExpressionTrainingDataErased)
+				{
+					Logger::Log("Training data erased!\n", debug_info);
+					result = bci_event_training_erased;
+				}
 			}
 		}
 		else
@@ -226,9 +251,23 @@ void BCI::TrySwitchingToTrainedSig()
 	;
 }
 
-void BCI::ResetTrainingData()
+void BCI::EraseAllTrainingData()
 {
-	;
+	for (IEE_FacialExpressionAlgo_t expression : all_facial_expressions)
+	{
+		int exit = IEE_FacialExpressionSetTrainingAction(userID, expression);
+		if (exit != EDK_OK)
+		{
+			Logger::Log("Error while preparing training for erasing!: " + std::to_string(expression), debug_info);
+			throw("Error while preparing training for erasing!");
+		}
+		exit = IEE_FacialExpressionSetTrainingControl(userID, FE_ERASE);
+		if (exit != EDK_OK)
+		{
+			Logger::Log("Error while erasing training!: " + std::to_string(expression), debug_info);
+			throw("Error while erasing training!");
+		}
+	}
 }
 
 

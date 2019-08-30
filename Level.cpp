@@ -367,6 +367,9 @@ void Level::PerformCyclicActions()
 
 		//Actions on Level Components plane
 		MakeLevelComponentsPerformCyclicActions();
+
+		//Perform GUI cyclic actions
+		ptr_gui->PerformCyclicActions();
 	}
 }
 
@@ -519,6 +522,7 @@ void Level::RenderGui()
 		printf("Cannot render nullptr!\n");
 		throw std::invalid_argument("Cannot render nullptr!\n");
 	}
+	//printf("Will render GUI.\n");
 	ptr_gui->RenderComponents();
 }
 
@@ -536,8 +540,7 @@ bool Level::PerformSelectedAction()
 	return true;
 }
 
-bool Level::NotifyOfBciEvent(BCIEvent my_event)
+void Level::NotifyOfBciEvent(BCIEvent my_event)
 {
 	Logger::Log("Default implementation of NotifyOfBciEvent called!");
-	return true;
 }

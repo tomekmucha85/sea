@@ -5,6 +5,7 @@
 #include "Iedk.h"
 #include <IedkErrorCode.h>
 #include <string>
+#include <vector>
 #include <CustomDefinedTypes.hpp>
 #include <Logger.hpp>
 
@@ -19,6 +20,8 @@ class BCI
 		int state = 0;
 		std::string  address = "127.0.0.1";
 		BCIMode bci_device_in_use = bci_mode_none;
+		static const IEE_FacialExpressionAlgo_t all_facial_expressions[];
+
     public:
 		BCI(BCIMode mode=bci_mode_none);
 		~BCI();
@@ -30,7 +33,7 @@ class BCI
 		static void TrainClench();
 		static void AcceptTraining();
 		static void RejectTraining();
-		static void ResetTrainingData();
+		static void EraseAllTrainingData();
 		static void TrySwitchingToTrainedSig();
 };
 

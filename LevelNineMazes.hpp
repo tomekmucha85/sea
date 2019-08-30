@@ -150,6 +150,9 @@ class LevelNineMazes : public Level
 		std::pair<Coordinates, Coordinates> CalculateLevelConstraints();
 		void SpawnCarriers(unsigned int carriers_number = 1);
 
+		//BCI usage
+		void NotifyOfBciEvent(BCIEvent my_event);
+
 		//###################
 		// COMMON LAMBDAS
 		//###################

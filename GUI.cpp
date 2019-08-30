@@ -11,6 +11,14 @@ GUI::GUI()
 		&winning_timer_upper_left_corner,
 		nullptr,
 		{ 255,0,0,0 });
+	//Onscreen printer
+	ptr_onscreen_printer = new TrueTypeWriting(
+		" ",
+		&onscreen_printer_upper_left_corner,
+		nullptr,
+		onscreen_printer_default_color);
+	//Cyclic tasks
+	cyclic_actions.push_back(func_manage_onscreen_printer);
 }
 
 GUI::~GUI()
@@ -18,6 +26,7 @@ GUI::~GUI()
 	delete ptr_factory_spawning_sprites;
 	delete ptr_writing_winning_timer;
 	delete ptr_hunger_bar;
+	delete ptr_onscreen_printer;
 }
 
 void GUI::AddComponentToDisplay(GuiElement my_element)
@@ -30,6 +39,10 @@ void GUI::AddComponentToDisplay(GuiElement my_element)
 	{
 		gui_components.push_back(ptr_writing_winning_timer);
 	}
+	else if (my_element == gui_printer)
+	{
+		gui_components.push_back(ptr_onscreen_printer);
+	}
 }
 
 //#TODO - napisaæ funkcjê do usuwania komponentów
@@ -39,6 +52,13 @@ void GUI::ManageForCreature(Creature* ptr_creature)
 	ManageHungerBar(ptr_creature);
 }
 
+void GUI::PerformCyclicActions()
+{
+	for (std::function<void(GUI*)> action : cyclic_actions)
+	{
+		action(this);
+	}
+}
 
 void GUI::ManageWinningTimer(Uint32 new_value)
 {
@@ -63,10 +83,42 @@ void GUI::HungerBarSetChargeLevel(int new_level)
 	ptr_specific_hunger_bar->SetTextureClipWithCharges(new_level);
 }
 
+void GUI::PrintTextOnscreen(std::string my_text, Uint32 time_to_live_in_miliseconds)
+{
+	ptr_onscreen_printer->SetText(my_text);
+	if (time_to_live_in_miliseconds == 0)
+	{
+		time_to_live_in_miliseconds = onscreen_printer_text_default_time_to_live_in_miliseconds;
+	}
+	ptr_timer_for_onscreen_printer = new TimerCountdown(time_to_live_in_miliseconds);
+}
+
+bool GUI::CheckIfOnscreenPrinterTextExpired()
+{
+	if (ptr_timer_for_onscreen_printer != nullptr)
+	{
+		return ptr_timer_for_onscreen_printer->CheckIfCountdownFinished();
+	}
+	return false;
+}
+
+//#TODO - mo¿e wiêcej akcji powinno trafiæ do cyclic actions?
+void GUI::ManageOnscreenPrinter()
+{
+	if (CheckIfOnscreenPrinterTextExpired() == true)
+	{
+		//Clear text displayed onscreen if time to live expired.
+		delete ptr_timer_for_onscreen_printer;
+		ptr_timer_for_onscreen_printer = nullptr;
+		ptr_onscreen_printer->SetText(" ");
+	}
+}
+
 void GUI::RenderComponents()
 {
 	for (VisualComponent* ptr_component : gui_components)
 	{
+		//printf("Rendering GUI component.\n");
 		ptr_component->Render();
 	}
 }

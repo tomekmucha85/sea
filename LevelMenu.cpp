@@ -10,6 +10,12 @@ LevelMenu::LevelMenu()
 	DisplayMenuActions();
 	//To perform initial highlight.
 	BrowseActions(north);
+
+	//###############
+    //# GUI SETUP
+    //###############
+
+	ptr_gui->AddComponentToDisplay(gui_printer);
 }
 
 void LevelMenu::DisplayMenuActions()
@@ -185,7 +191,7 @@ bool LevelMenu::PerformSelectedAction()
 		}
 		else
 		{
-			Logger::Log("Trying to run a disabled action.", debug_info);
+			ptr_gui->PrintTextOnscreen("this action is disabled", 750);
 			return false;
 		}
 	}
@@ -226,7 +232,7 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
 	}
 	else if (ptr_my_action->text == menu_action_calibration_reset.text)
 	{
-		BCI::ResetTrainingData();
+		BCI::EraseAllTrainingData();
 	}
 	//###############################
 	//# CALIBRATION WIZARD - 1st STEP
@@ -243,6 +249,7 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
 		//Preparing set of actions to enable when calibration succeeds
 		//Disabling proceeding to next calibration phase.
 		ManageMenuActionsForNeutralBCICalibration();
+		ptr_gui->PrintTextOnscreen("training will start soon");
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_accept.text)
 	{
@@ -311,7 +318,8 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
     //#################################
 	else if (ptr_my_action->text == menu_action_calibration_wizard_finish.text)
 	{
-		BCI::TrySwitchingToTrainedSig();
+	ptr_gui->PrintTextOnscreen("calibration finished");
+		LoadMenuActionsSet(possible_actions_menu_calibration_level);
 	}
 }
 
@@ -381,15 +389,15 @@ void LevelMenu::ManageMenuActionsForSmileBCICalibration()
 
 void LevelMenu::ManageMenuActionsForNotCalibratedClenchBCIExpression()
 {
-		for (MenuAction* ptr_menu_action : possible_actions_menu_calibration_wizard_3rd_step)
+	for (MenuAction* ptr_menu_action : possible_actions_menu_calibration_wizard_3rd_step)
 	{
-			//Disable all menu actions except calibration smile and return option
-			if (ptr_menu_action->text != menu_action_calibration_wizard_calibrate_clench.text &&
-				ptr_menu_action->text != menu_action_go_to_calibration_menu.text)
-			{
-				DisableMenuAction(ptr_menu_action);
-			}
+		//Disable all menu actions except calibration smile and return option
+		if (ptr_menu_action->text != menu_action_calibration_wizard_calibrate_clench.text &&
+			ptr_menu_action->text != menu_action_go_to_calibration_menu.text)
+		{
+			DisableMenuAction(ptr_menu_action);
 		}
+	}
 }
 
 void LevelMenu::ManageMenuActionsForClenchBCICalibration()
@@ -407,8 +415,6 @@ void LevelMenu::ManageMenuActionsForClenchBCICalibration()
 
 void LevelMenu::ManageMenuActionsForAcceptedBCICalibration()
 {
-	//Enable proceeding to next calibration stage
-	EnableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
 	//Disable accepting/rejecting training results
 	for (MenuAction* ptr_my_action : menu_actions_related_to_current_bci_calibration_outcome)
 	{
@@ -426,11 +432,11 @@ void LevelMenu::ManageMenuActionsForRejectedBCICalibration()
 	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
 }
 
-bool LevelMenu::NotifyOfBciEvent(BCIEvent my_event)
+void LevelMenu::NotifyOfBciEvent(BCIEvent my_event)
 {
 	if (my_event == bci_event_training_failed)
 	{
-		;
+		ptr_gui->PrintTextOnscreen("calibration failed!");;
 	}
 	else if (my_event == bci_event_training_success)
 	{
@@ -438,6 +444,28 @@ bool LevelMenu::NotifyOfBciEvent(BCIEvent my_event)
 		{
 			EnableMenuAction(ptr_my_action);
 		}
+		ptr_gui->PrintTextOnscreen("calibration succeeded!");
 	}
-	return true;
+	else if (my_event == bci_event_training_start)
+	{
+		ptr_gui->PrintTextOnscreen("training started!");
+	}
+	else if (my_event == bci_event_training_completed)
+	{
+		ptr_gui->PrintTextOnscreen("signatures updated!");
+		//Enable proceeding to next calibration stage
+		EnableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
+	}
+	else if (my_event == bci_event_training_erased)
+	{
+		ptr_gui->PrintTextOnscreen("data erased!");;
+	}
+	else if (my_event == bci_event_smile)
+	{
+		Logger::Log("Smile caught!", debug_info);
+	}
+	else if (my_event == bci_event_clench)
+	{
+		Logger::Log("Clench caught!", debug_info);
+	}
 }

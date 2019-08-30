@@ -18,7 +18,6 @@ std::string CreatureWriting::TellText()
 
 void CreatureWriting::SetNewTextColor(SDL_Color my_color)
 {
-
 	color = my_color;
 	//#TODO - nie do koñca bezpieczne za³o¿enie, ¿e mo¿na zrobiæ cast
 	TrueTypeWriting* ptr_current_writing_visual_part = static_cast<TrueTypeWriting*>(TellMainVisualComponent());
@@ -38,7 +37,6 @@ void CreatureWriting::SetNewText(std::string my_text)
 {
 	;
 }
-
 
 SDL_Color CreatureWriting::TellColor()
 {

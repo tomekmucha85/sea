@@ -91,7 +91,7 @@ class Creature
         //Coordinates of next step.
         Coordinates next_step;
 		//Is creature unable to move?
-		bool move_lock = false;
+		bool is_stuck = false;
         //Hitbox used for calculating collisions.
 		PreciseRect hitbox = {0,0,0,0};
 		//In what layer should the creature exist (important while rendering whole scene)
@@ -193,6 +193,7 @@ class Creature
 		double TellTurnVelocity();
 		void DetermineNextStep(double time_passed);
         virtual bool Move(double x, double y);
+		bool TellIfStuck();
 		void AddToNeighbors(std::vector<Creature*> new_neighbors);
 		std::vector<Creature*> FindNeighborsInSet(std::vector<Creature*>* ptr_my_creatures_set, int radius = NULL);
 		std::vector<Creature*> FindCollisionsInSet(std::vector<Creature*>* ptr_my_creatures_set, bool check_only_obstacles = true);

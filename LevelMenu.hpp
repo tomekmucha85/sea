@@ -92,7 +92,8 @@ public:
 	void ManageMenuActionsForSmileBCICalibration();
 	void ManageMenuActionsForClenchBCICalibration();
 	MenuAction* FindPossibleMenuActionWithSpecificText(std::string my_text);
-	bool NotifyOfBciEvent(BCIEvent my_event);
+	//BCI usage
+	void NotifyOfBciEvent(BCIEvent my_event);
 };
 
 #endif //LEVEL_MENU_HPP

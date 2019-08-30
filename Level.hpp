@@ -120,7 +120,7 @@ class Level
 		//Methods for LevelMenu
 		virtual void BrowseActions(Directions my_direction);
 		virtual bool PerformSelectedAction();
-		virtual bool NotifyOfBciEvent(BCIEvent my_event);
+		virtual void NotifyOfBciEvent(BCIEvent my_event);
 
 		//###################
 		// COMMON LAMBDAS

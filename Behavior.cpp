@@ -255,6 +255,7 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 	}
 	else if (mode == beh_follow_certain_creature)
 	{
+		//UPON ENTERING MODE
 		if (was_mode_changed == true)
 		{
 			//When this behavior is initialized, follow a creature, pointer to which has been provided as ptr_followed_creature.
@@ -271,6 +272,7 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 				present_action_result = beh_result_action_failed;
 			}
 		}
+
 		if (ptr_followed_creature != nullptr && Creature::IsThisCreaturePresentInEnvironment(ptr_followed_creature))
 			//If creature is set && it currently exists in environment (e.g. wasn't deleted after being chosen)
 		{
@@ -294,6 +296,14 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 			printf("No one to follow - my followed creature ceased to be.\n");
 			present_action_result = beh_result_action_failed;
 		}
+
+		if (ptr_my_creature->TellIfStuck())
+		{
+			//In case creature is unable to move in desired direction.
+			printf("Stuck!\n");
+			present_action_result = beh_result_action_failed;
+		}
+
 	}
 	else if (mode == beh_wander_on_navmesh)
 	{

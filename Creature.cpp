@@ -118,9 +118,9 @@ Sprite* Creature::SpawnSpriteUsingFactory(SpriteType desired_type)
 	}
 }
 
-//******************************************
+//*************************************************************
 //SETTING MAIN CHARACTER AND OPERATIONS ON MAIN INSTANCES ARRAY
-//******************************************
+//*************************************************************
 
 void Creature::SetMainCharacterToNull()
 {
@@ -167,9 +167,9 @@ PreciseRect Creature::TellHitbox()
 	return hitbox;
 }
 
-//**************
+//***************************
 //SETTING AND TELLING PARAMS
-//**************
+//***************************
 
 void Creature::SetMainVisualComponent(VisualComponent* ptr_my_visual_component)
 {
@@ -553,6 +553,11 @@ bool Creature::Move(double x, double y)
         did_i_move_successfully = ShiftPositionAndRevertIfCollisionOccured(x,y,true);
     }
 	return did_i_move_successfully;
+}
+
+bool Creature::TellIfStuck()
+{
+	return is_stuck;
 }
 
 bool Creature::ShiftPositionAndRevertIfCollisionOccured(double x, double y, bool check_collisions)
@@ -1264,7 +1269,8 @@ void Creature::FollowPhysics()
 	{
 		double time_passed = Timer::loop_duration;
 		DetermineNextStep(time_passed);
-		Move(next_step.x, next_step.y);
+		//If move was not successfull, then creature is stuck.
+		is_stuck = !(Move(next_step.x, next_step.y));
 
 		/*if (this == Creature::ptr_current_main_charater)
 		{
@@ -1272,7 +1278,10 @@ void Creature::FollowPhysics()
 			printf("Next step x: %f, y: %f.\n");
 		}*/
 	}
-
+	else
+	{
+		is_stuck = false;
+	}
 	// Rotation
 	Turn(turn_quant_degree * turn_direction);
 }

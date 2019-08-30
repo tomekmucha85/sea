@@ -33,6 +33,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 
 	ptr_gui->AddComponentToDisplay(gui_hunger_meter);
 	ptr_gui->AddComponentToDisplay(gui_winning_timer);
+	ptr_gui->AddComponentToDisplay(gui_printer);
 
 	//###############
 	//# HERO SETUP
@@ -790,4 +791,15 @@ void LevelNineMazes::DeleteTrigger(Directions my_direction)
 	}
 }
 
-
+void LevelNineMazes::NotifyOfBciEvent(BCIEvent my_event)
+{
+	if (my_event == bci_event_clench)
+	{
+		Logger::Log("Clench caught on Nine Mazes level!", debug_info);
+	}
+	else if (my_event == bci_event_smile)
+	{
+		Logger::Log("Smile caught on Nine Mazes level!");
+		Creature::ptr_current_main_charater->SetHungerLevel(0);
+	}
+}
