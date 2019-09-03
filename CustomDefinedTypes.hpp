@@ -48,7 +48,7 @@ enum BehaviorMode {
 	beh_run_along_predefined_path,
 	beh_wander_on_navmesh,
 	beh_go_towards_fixed_point,
-	beh_follow_closest_carrier,
+	beh_follow_closest_creature,
 	beh_follow_certain_creature,
 };
 

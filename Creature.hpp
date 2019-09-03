@@ -362,6 +362,7 @@ class Behavior
     private:
 		static double MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE;
 		static double DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE;
+		static BehaviorMode MODES_NOT_REQUIRING_ARGUMENTS_UPON_START[];
 		BehaviorMode mode = beh_idle;
 		BehaviorPattern pattern = beh_pat_none;
 		//Object generating navigators
@@ -392,7 +393,7 @@ class Behavior
 		Coordinates destination_point = { 0,0 };
 		//mode follow closest carrier
 		Creature* ptr_followed_carrier = nullptr;
-		//mode follow certain creature
+		//mode follow certain creature && mode follow closest creature
 		Creature* ptr_followed_creature = nullptr;
 		//mode wander on navmesh
 		bool was_wander_path_request_placed = false;
@@ -402,12 +403,17 @@ class Behavior
 		~Behavior();
 		void WhatToDo(Creature* ptr_my_creature);
 		BehaviorActionResult PerformActionDefinedByMode(Creature* ptr_my_creature);
-		void RequestMode(BehaviorMode mode_to_be_requested);
-		void RequestMode(BehaviorMode mode_to_be_requested, Coordinates my_destination_point);
-		void RequestMode(BehaviorMode mode_to_be_requested, Creature* ptr_destination_creature);
-		void SetMode(BehaviorMode mode_to_be_set);
-		void SetMode(BehaviorMode mode_to_be_set, Coordinates my_destination_point);
-		void SetMode(BehaviorMode mode_to_be_set, Creature* ptr_my_destiny);
+		bool InitializeModeFollowCertainCreature(Creature* ptr_my_creature);
+		void SetFollowedCreature(Creature* ptr_my_creature);
+		Creature* TellFollowedCreature();
+		bool FollowCertainCreature(Creature* ptr_my_creature, Creature* ptr_followed_creature);
+		bool InitializeModeFollowClosestCreature(Creature* ptr_my_creature);
+		bool RequestMode(BehaviorMode mode_to_be_requested);
+		bool RequestMode(BehaviorMode mode_to_be_requested, Coordinates my_destination_point);
+		bool RequestMode(BehaviorMode mode_to_be_requested, Creature* ptr_destination_creature);
+		bool SetMode(BehaviorMode mode_to_be_set);
+		bool SetMode(BehaviorMode mode_to_be_set, Coordinates my_destination_point);
+		bool SetMode(BehaviorMode mode_to_be_set, Creature* ptr_my_destiny);
 		void SetPattern(BehaviorPattern pattern_to_be_set);
 		void SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny);
 		void Move(Coordinates movement);
