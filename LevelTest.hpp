@@ -10,6 +10,7 @@ class LevelTest : public Level
 		LevelTest();
 		Creature* ptr_test_creature = nullptr;
 		void FinishLevel(LevelEnding my_ending);
+		void NotifyOfBciEvent(BCIEvent my_event);
 };
 
 #endif //LEVEL_TEST_HPP

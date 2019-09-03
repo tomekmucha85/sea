@@ -46,6 +46,8 @@ class Angle
 		static double DegreeToRadian(int angle_degree);
 		static int RadianToDegree(double angle_radian);
 		static int NormalizeAngle(int angle);
+		static int CalculateAngleBetweenNorthVectorAndVectorGoingThroughTwoPoints(Coordinates point_a,
+			Coordinates point_b);
 };
 
 class Distance

@@ -77,6 +77,7 @@ class Creature
 		static const double MARGIN_FOR_LINE_OF_SIGHT_CHECKS;
 		static const double DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS;
 		static std::vector<CreatureType> LIVING_CREATUES;
+		static const double DEFAULT_RADIUS_FOR_ALERTING_CREATURES;
 
 		// Pointer to sprites factory
 		FactorySpawningSprites* ptr_sprites_factory = nullptr;
@@ -208,7 +209,9 @@ class Creature
         void ThrustForward(double velocity=DEFAULT_VELOCITY);
         void ThrustBackward(double velocity=DEFAULT_VELOCITY);
 		void TurnTowardsPoint(Coordinates point);
+		void TurnAwayFromPoint(Coordinates point);
 		void ThrustTowardsPoint(Coordinates destination, double velocity=DEFAULT_VELOCITY);
+		void RunAwayFromPoint(Coordinates point, double velocity = DEFAULT_VELOCITY);
 		void SetPosition(Coordinates new_center_position);
 		int TellCurrentAngleDegree();
 		Coordinates TellCenterPoint();
@@ -306,6 +309,7 @@ class Creature
 		int TellHungerLevel();
 		void SetHungerLevel(int new_level);
 		void ChangeHungerLevel(int change_amount);
+		void AlertLivingCreaturesInRadius(double radius=DEFAULT_RADIUS_FOR_ALERTING_CREATURES);
 
 		//###################
         //Timing
@@ -381,20 +385,24 @@ class Behavior
 		Creature* ptr_current_requested_mode_destination_creature = nullptr;
 
 		//#TODO - czy na pewno tak powinno byæ? Mo¿e lepiej zrobiæ kilka klas dziedzicz¹cych po Behavior.
+		
 		//###################################
 		//# VARIABLES FOR SPECIFIC PATTERNS
 		//###################################
 		//pattern death magnetic
 		Creature* beh_pat_death_magnetic_destination = nullptr;
+		//pattern alerted by creature
+		Creature* beh_path_alerted_by_creature_alerting_guy = nullptr;
 
 		//###################################
         //# VARIABLES FOR SPECIFIC MODES
         //###################################
+		//mode navigate towards fixed point
 		Coordinates destination_point = { 0,0 };
-		//mode follow closest carrier
-		Creature* ptr_followed_carrier = nullptr;
 		//mode follow certain creature && mode follow closest creature
 		Creature* ptr_followed_creature = nullptr;
+		//mode escape from creature
+		Creature* ptr_dreaded_creature = nullptr;
 		//mode wander on navmesh
 		bool was_wander_path_request_placed = false;
 
@@ -406,6 +414,8 @@ class Behavior
 		bool InitializeModeFollowCertainCreature(Creature* ptr_my_creature);
 		void SetFollowedCreature(Creature* ptr_my_creature);
 		Creature* TellFollowedCreature();
+		void SetDreadedCreature(Creature* ptr_my_creature);
+		Creature* TellDreadedCreature(Creature* ptr_my_creature);
 		bool FollowCertainCreature(Creature* ptr_my_creature, Creature* ptr_followed_creature);
 		bool InitializeModeFollowClosestCreature(Creature* ptr_my_creature);
 		bool RequestMode(BehaviorMode mode_to_be_requested);
@@ -416,6 +426,9 @@ class Behavior
 		bool SetMode(BehaviorMode mode_to_be_set, Creature* ptr_my_destiny);
 		void SetPattern(BehaviorPattern pattern_to_be_set);
 		void SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny);
+		void ServeModeChangeRequestForBehaviorPatternDeathMagnetic(BehaviorMode requested_mode);
+		void ServeModeChangeRequestForBehaviorPatternStalker(BehaviorMode requested_mode);
+		BehaviorMode PopCurrentRequestedMode();
 		void Move(Coordinates movement);
 		void MakeUseOfPathResponse(RandomPathResponse my_response);
 		void MakeUseOfPathResponse(PointToPointPathResponse my_response);

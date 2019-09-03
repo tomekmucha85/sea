@@ -10,7 +10,8 @@ Creature* Creature::ptr_current_main_charater;
 double Creature::DEFAULT_VELOCITY = 100;
 const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
 const double Creature::DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS = 80;
-std::vector<CreatureType> Creature::LIVING_CREATUES = {cre_carrier_a, cre_clawy};
+const double Creature::DEFAULT_RADIUS_FOR_ALERTING_CREATURES = 200;
+std::vector<CreatureType> Creature::LIVING_CREATUES = { cre_carrier_a, cre_clawy };
 
 //**************
 //STATIC METHODS
@@ -624,39 +625,42 @@ void Creature::ThrustBackward(double velocity)
 void Creature::TurnTowardsPoint(Coordinates point)
 {
 	Coordinates my_center = TellCenterPoint();
+	int angle_between_north_pointing_vector_and_vector_aimed_towards_point =
+		Angle::CalculateAngleBetweenNorthVectorAndVectorGoingThroughTwoPoints(my_center, point);
 	//printf("Running towards: x: %f, y: %f.\n", point.x, point.y);
-	//Vector pointing north
-	MathVector* ptr_vector_pointing_north = new MathVector(my_center.x, my_center.y, my_center.x, my_center.y - 100);
-	//Vector pointing towards given point
-	MathVector* ptr_vector_pointing_towards_given_point = new MathVector(my_center.x, my_center.y, point.x, point.y);
-
-	double angle_between_vectors_radian = MathVector::TellRadianAngleBetweenVectors(*ptr_vector_pointing_north, *ptr_vector_pointing_towards_given_point);
-	int angle_between_vectors_degrees = Angle::RadianToDegree(angle_between_vectors_radian);
-	
-	//Calculate if angle should be positive or negative
-	int real_angle_between_vectors_degrees = 0;
-	if (ptr_vector_pointing_towards_given_point->TellValue().x <= 0)
-	{
-		real_angle_between_vectors_degrees = 360 - angle_between_vectors_degrees;
-	}
-	else
-	{
-	    real_angle_between_vectors_degrees = angle_between_vectors_degrees;
-	}
 
 	//Set desired angle
-	if (current_angle_degree != real_angle_between_vectors_degrees)
+	if (current_angle_degree != angle_between_north_pointing_vector_and_vector_aimed_towards_point)
 	{
-		SetAngleDegree(real_angle_between_vectors_degrees);
+		SetAngleDegree(angle_between_north_pointing_vector_and_vector_aimed_towards_point);
 	}
-	// Cleanup
-	delete ptr_vector_pointing_north;
-	delete ptr_vector_pointing_towards_given_point;
+}
+
+
+void Creature::TurnAwayFromPoint(Coordinates point)
+{
+	Coordinates my_center = TellCenterPoint();
+	int angle_between_north_pointing_vector_and_vector_aimed_towards_point =
+		Angle::CalculateAngleBetweenNorthVectorAndVectorGoingThroughTwoPoints(my_center, point);
+	//printf("Running away from: x: %f, y: %f.\n", point.x, point.y);
+	int inverted_angle = 180 - angle_between_north_pointing_vector_and_vector_aimed_towards_point;
+	
+	//Set desired angle
+	if (current_angle_degree != inverted_angle)
+	{
+		SetAngleDegree(inverted_angle);
+	}
 }
 
 void Creature::ThrustTowardsPoint(Coordinates destination, double velocity)
 {
 	TurnTowardsPoint(destination);
+	ThrustForward(velocity);
+}
+
+void Creature::RunAwayFromPoint(Coordinates point, double velocity)
+{
+	TurnAwayFromPoint(point);
 	ThrustForward(velocity);
 }
 
@@ -1374,6 +1378,26 @@ void Creature::SetHungerLevel(int new_level)
 void Creature::ChangeHungerLevel(int change_amount)
 {
 	hunger_level += change_amount;
+}
+
+void Creature::AlertLivingCreaturesInRadius(double radius)
+{
+	Logger::Log("Going to send alert to living creatures in radius: " + std::to_string(radius));
+	std::vector<Creature*> neighboring_creatures = FindNeighborsInSet(&Creature::current_environment,
+		static_cast<int>(radius));
+	for (Creature* ptr_neighbouring_creature : neighboring_creatures)
+	{
+		for (CreatureType living_type : LIVING_CREATUES)
+		{
+			//If creature belongs to living ones, alert it
+			if (ptr_neighbouring_creature->my_type == living_type)
+			{
+				Logger::Log("A living creature was alerted!", debug_info);
+				ptr_neighbouring_creature->SetBehaviorPattern(beh_pat_alerted_by_creature, this);
+				break;
+			}
+		}
+	}
 }
 
 //********************************************

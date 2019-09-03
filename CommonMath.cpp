@@ -104,6 +104,36 @@ int Angle::NormalizeAngle(int angle)
 	return angle;
 }
 
+int Angle::CalculateAngleBetweenNorthVectorAndVectorGoingThroughTwoPoints(Coordinates point_a,
+	Coordinates point_b)
+{
+	//Vector pointing north
+	MathVector* ptr_vector_pointing_north = new MathVector(0, 0, 0, 0 - 100);
+	//Vector pointing towards given point
+	MathVector* ptr_vector_pointing_from_point_a_towards_point_b = 
+		new MathVector(point_a.x, point_a.y, point_b.x, point_b.y);
+
+	double angle_between_vectors_radian = MathVector::TellRadianAngleBetweenVectors(*ptr_vector_pointing_north, *ptr_vector_pointing_from_point_a_towards_point_b);
+	int angle_between_vectors_degrees = Angle::RadianToDegree(angle_between_vectors_radian);
+
+	//Calculate if angle should be positive or negative
+	int real_angle_between_vectors_degrees = 0;
+	if (ptr_vector_pointing_from_point_a_towards_point_b->TellValue().x <= 0)
+	{
+		real_angle_between_vectors_degrees = 360 - angle_between_vectors_degrees;
+	}
+	else
+	{
+		real_angle_between_vectors_degrees = angle_between_vectors_degrees;
+	}
+
+	//Cleanup
+	delete ptr_vector_pointing_north;
+    delete ptr_vector_pointing_from_point_a_towards_point_b;
+
+	return real_angle_between_vectors_degrees;
+}
+
 double Distance::CalculateDistanceBetweenPoints(Coordinates a, Coordinates b)
 {
 	double distance_x = std::abs(a.x - b.x);

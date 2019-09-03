@@ -50,23 +50,7 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 		}
 
 		//SERVE MODE CHANGE REQUESTS
-
-		if (current_requested_mode == beh_follow_closest_creature)
-		{
-			SetMode(current_requested_mode);
-			current_requested_mode = beh_none;
-		}
-		else if (current_requested_mode == beh_idle ||
-			current_requested_mode == beh_go_towards_fixed_point)
-		{
-			SetMode(beh_go_towards_fixed_point, 
-				beh_pat_death_magnetic_destination->TellCenterPoint());
-			current_requested_mode = beh_none;
-		}
-		else
-		{
-			current_requested_mode = beh_none;
-		}
+		ServeModeChangeRequestForBehaviorPatternDeathMagnetic(PopCurrentRequestedMode());
 
 		//TAKE ACTION
 
@@ -100,30 +84,7 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
         
 		//SERVE MODE CHANGE REQUESTS
 
-		if (current_requested_mode == beh_follow_certain_creature)
-		{
-			printf("Behavior pattern stalker agreed to follow creature %p at x: %f,y: %f.\n",
-				ptr_current_requested_mode_destination_creature,
-				ptr_current_requested_mode_destination_creature->TellCenterPoint().x,
-				ptr_current_requested_mode_destination_creature->TellCenterPoint().y);
-			SetMode(current_requested_mode, ptr_current_requested_mode_destination_creature);
-			current_requested_mode = beh_none;
-		}
-		else if (current_requested_mode == beh_wander_on_navmesh)
-		{
-			SetMode(current_requested_mode);
-			current_requested_mode = beh_none;
-		}
-		else if (current_requested_mode == beh_none)
-		{
-			;
-		}
-		else
-		{
-			printf("This mode will be not served in stalker behavior pattern.\n");
-			printf("Setting none.\n");
-			current_requested_mode = beh_none;
-		}
+		ServeModeChangeRequestForBehaviorPatternStalker(PopCurrentRequestedMode());
 
 		//TAKE ACTION
 		if (mode == beh_wander_on_navmesh)
@@ -175,10 +136,69 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 		}
 		PerformActionDefinedByMode(ptr_my_creature);
 	}
+	else if (pattern == beh_pat_alerted_by_creature)
+	{
+		if (was_pattern_changed == true)
+		{
+			was_pattern_changed = false;
+			printf("Will set mode escape from creature %p\n", beh_path_alerted_by_creature_alerting_guy);
+			SetMode(beh_escape_from_creature, beh_path_alerted_by_creature_alerting_guy);
+		}
+		PerformActionDefinedByMode(ptr_my_creature);
+    }
 	else
 	{
 		printf("Unknown behavior pattern: %d!\n", pattern);
 		throw std::invalid_argument("Unknown behavior pattern!\n");
+	}
+}
+
+BehaviorMode Behavior::PopCurrentRequestedMode()
+{
+	BehaviorMode result = current_requested_mode;
+	current_requested_mode = beh_none;
+	return result;
+}
+
+void Behavior::ServeModeChangeRequestForBehaviorPatternDeathMagnetic(BehaviorMode requested_mode)
+{
+	if (requested_mode == beh_follow_closest_creature)
+	{
+		SetMode(requested_mode);
+	}
+	else if (requested_mode == beh_idle ||
+		requested_mode == beh_go_towards_fixed_point)
+	{
+		SetMode(beh_go_towards_fixed_point,
+			beh_pat_death_magnetic_destination->TellCenterPoint());
+	}
+	else
+	{
+		;
+	}
+}
+
+void Behavior::ServeModeChangeRequestForBehaviorPatternStalker(BehaviorMode requested_mode)
+{
+	if (requested_mode == beh_follow_certain_creature)
+	{
+		printf("Behavior pattern stalker agreed to follow creature %p at x: %f,y: %f.\n",
+			ptr_current_requested_mode_destination_creature,
+			ptr_current_requested_mode_destination_creature->TellCenterPoint().x,
+			ptr_current_requested_mode_destination_creature->TellCenterPoint().y);
+		SetMode(requested_mode, ptr_current_requested_mode_destination_creature);
+	}
+	else if (requested_mode == beh_wander_on_navmesh)
+	{
+		SetMode(requested_mode);
+	}
+	else if (requested_mode == beh_none)
+	{
+		;
+	}
+	else
+	{
+		printf("This mode will be not served in stalker behavior pattern.\n");
 	}
 }
 
@@ -374,6 +394,10 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 			ptr_my_creature->ThrustTowardsPoint(ptr_navigator->TellCurrentWaypoint());
 		}
 	}
+	else if (mode == beh_escape_from_creature)
+	{
+	    ptr_my_creature->RunAwayFromPoint(ptr_dreaded_creature->TellCenterPoint());
+    }
 	else if (mode == beh_projectile)
 	{
 		ptr_my_creature->ThrustForward();
@@ -390,6 +414,18 @@ Creature* Behavior::TellFollowedCreature()
 void Behavior::SetFollowedCreature(Creature* ptr_my_creature)
 {
 	ptr_followed_creature = ptr_my_creature;
+}
+
+
+void Behavior::SetDreadedCreature(Creature* ptr_my_creature)
+{
+	printf("Dreaded creature set to %p\n", ptr_my_creature);
+	ptr_dreaded_creature = ptr_my_creature;
+}
+
+Creature* Behavior::TellDreadedCreature(Creature* ptr_my_creature)
+{
+	return ptr_my_creature;
 }
 
 bool Behavior::InitializeModeFollowCertainCreature(Creature* ptr_my_creature)
@@ -440,15 +476,15 @@ bool Behavior::FollowCertainCreature(Creature* ptr_my_creature, Creature* ptr_fo
 bool Behavior::InitializeModeFollowClosestCreature(Creature* ptr_my_creature)
 {
 	//When this behavior is initialized, find closest creature that can serve as character's "carrier" guiding through the maze.
-	Creature* ptr_closest_carrier = ptr_my_creature->FindClosestAccessibleCreatureOfGivenType(cre_carrier_a,
+	Creature* ptr_closest_creature = ptr_my_creature->FindClosestAccessibleCreatureOfGivenType(cre_carrier_a,
 		MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE);
-	ptr_followed_carrier = ptr_closest_carrier;
+	ptr_followed_creature = ptr_closest_creature;
 	was_mode_changed = false;
-	if (ptr_followed_carrier != nullptr)
+	if (ptr_followed_creature != nullptr)
 	{
 		printf("Entered mode follow closest creature. Carrier at: x: %f y: %f\n",
-			ptr_followed_carrier->TellCenterPoint().x,
-			ptr_followed_carrier->TellCenterPoint().y);
+			ptr_followed_creature->TellCenterPoint().x,
+			ptr_followed_creature->TellCenterPoint().y);
 	}
 	else
 	{
@@ -484,6 +520,14 @@ void Behavior::SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_de
 	{
 		pattern = pattern_to_be_set;
 		beh_pat_death_magnetic_destination = ptr_my_destiny;
+		was_pattern_changed = true;
+	}
+	else if (pattern_to_be_set == beh_pat_alerted_by_creature)
+	{
+		printf("Set behavior pattern alerted by creature (%p), main hero is (%p)\n",
+			ptr_my_destiny, Creature::ptr_current_main_charater);
+		pattern = pattern_to_be_set;
+		beh_path_alerted_by_creature_alerting_guy = ptr_my_destiny;
 		was_pattern_changed = true;
 	}
 	else
@@ -532,6 +576,13 @@ bool Behavior::SetMode(BehaviorMode mode_to_be_set, Creature* ptr_my_destiny)
 		was_mode_changed = true;
 		mode = mode_to_be_set;
 		SetFollowedCreature(ptr_my_destiny);
+		return true;
+	}
+	else if (mode_to_be_set == beh_escape_from_creature)
+	{
+		was_mode_changed = true;
+		mode = mode_to_be_set;
+		SetDreadedCreature(ptr_my_destiny);
 		return true;
 	}
 	else
@@ -584,6 +635,13 @@ bool Behavior::RequestMode(BehaviorMode mode_to_be_requested, Creature* ptr_dest
 			" y: " +
 			std::to_string(ptr_destination_creature->TellCenterPoint().y);
 		Logger::Log(message, debug_full);
+		current_requested_mode = mode_to_be_requested;
+		ptr_current_requested_mode_destination_creature = ptr_destination_creature;
+		return true;
+	}
+	else if (mode_to_be_requested == beh_escape_from_creature)
+	{
+		Logger::Log("Requested mode beh_escape_from_creature.");
 		current_requested_mode = mode_to_be_requested;
 		ptr_current_requested_mode_destination_creature = ptr_destination_creature;
 		return true;

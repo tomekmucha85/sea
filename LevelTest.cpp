@@ -50,3 +50,9 @@ void LevelTest::FinishLevel(LevelEnding my_ending)
 		printf("Some other ending!\n");
 	}
 }
+
+void LevelTest::NotifyOfBciEvent(BCIEvent my_event)
+{
+	
+	//STAY SILENT;
+}

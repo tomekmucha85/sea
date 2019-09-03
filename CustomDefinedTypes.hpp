@@ -50,6 +50,7 @@ enum BehaviorMode {
 	beh_go_towards_fixed_point,
 	beh_follow_closest_creature,
 	beh_follow_certain_creature,
+	beh_escape_from_creature,
 };
 
 //Outcome of actions derived from behavior
@@ -66,6 +67,7 @@ enum BehaviorPattern {
 	beh_pat_none,
 	beh_pat_death_magnetic,
 	beh_pat_stalker,
+	beh_pat_alerted_by_creature,
 };
 
 
