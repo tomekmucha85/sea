@@ -118,3 +118,13 @@ void CreatureCarrierA::ManageMainCharacterProximityTrigger()
 	}
 }
 
+void CreatureCarrierA::ReactForReceivedConversationalMessage(ConversationalMessage my_message)
+{
+	Logger::Log("Received message: " + my_message.message_text + "\n");
+	if (my_message.message_text == "Hi!")
+	{
+		ConversationalMessage reply = ConstructConversationalMessage("Ho!");
+		SendConversationalMessage(my_message.ptr_sender, reply);
+	}
+}
+

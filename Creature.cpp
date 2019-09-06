@@ -7,10 +7,11 @@
 std::vector <Creature*> Creature::current_environment;
 std::vector <CreatureType> Creature::walls = { cre_flying_box, cre_spell_open_doors };
 Creature* Creature::ptr_current_main_charater;
-double Creature::DEFAULT_VELOCITY = 100;
+const double Creature::DEFAULT_VELOCITY = 100;
+const double Creature::DEFAULT_TURBO_VELOCITY = Creature::DEFAULT_VELOCITY*2;
 const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
 const double Creature::DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS = 80;
-const double Creature::DEFAULT_RADIUS_FOR_ALERTING_CREATURES = 200;
+const double Creature::DEFAULT_RADIUS_FOR_ALERTING_CREATURES = 500;
 std::vector<CreatureType> Creature::LIVING_CREATUES = { cre_carrier_a, cre_clawy };
 
 //**************
@@ -70,6 +71,7 @@ Creature::Creature(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hi
 	ptr_behavior = new Behavior();
 	Sprite* ptr_sprite = ptr_sprites_factory->SpawnSprite(my_sprite_type, ptr_my_center);
 	SetMainVisualComponent(ptr_sprite);
+	//#TODO - czy w innych konstruktorach te¿ umieœciæ poni¿sze wywo³anie?
 	AddCommonCyclicActions();
 	//Set the initial value to move upwards by (velocity * pixels)
 	next_step.y = velocity * -1;
@@ -643,7 +645,7 @@ void Creature::TurnAwayFromPoint(Coordinates point)
 	int angle_between_north_pointing_vector_and_vector_aimed_towards_point =
 		Angle::CalculateAngleBetweenNorthVectorAndVectorGoingThroughTwoPoints(my_center, point);
 	//printf("Running away from: x: %f, y: %f.\n", point.x, point.y);
-	int inverted_angle = 180 - angle_between_north_pointing_vector_and_vector_aimed_towards_point;
+	int inverted_angle = (180 - angle_between_north_pointing_vector_and_vector_aimed_towards_point)*-1;
 	
 	//Set desired angle
 	if (current_angle_degree != inverted_angle)
@@ -721,30 +723,15 @@ void Creature::SetAngleDegree(int my_degree)
 
 Coordinates Creature::CalculatePointInGivenDistanceFromCreatureCenter(unsigned int distance)
 {
-	PreciseRect current_coordinates = TellHitbox();
-	Coordinates result = {0,0};
-	double creature_center_x = current_coordinates.x + (current_coordinates.w / 2);
-	double creature_center_y = current_coordinates.y + (current_coordinates.h / 2);
-	int current_angle_degree = TellCurrentAngleDegree();
-	double current_angle_radian = Angle::DegreeToRadian(current_angle_degree);
-	/*
-	
-	Notice, that the grid is as following:
-
-315degrees     45 degrees
-		  \	| /
-	       \|/
-	------------------->X
-	        |0,0
-			|
-	        V
-            Y
-	*/
-
-	result.x = creature_center_x + (sin(current_angle_radian) * distance);
-	result.y = creature_center_y + (cos(current_angle_radian) * distance * -1);
-
-
+	//PreciseRect current_coordinates = TellHitbox();
+	//double creature_center_x = current_coordinates.x + (current_coordinates.w / 2);
+	//double creature_center_y = current_coordinates.y + (current_coordinates.h / 2);
+	//int current_angle_degree = TellCurrentAngleDegree();
+	//double current_angle_radian = Angle::DegreeToRadian(current_angle_degree);
+	//result.x = creature_center_x + (sin(current_angle_radian) * distance);
+	//result.y = creature_center_y + (cos(current_angle_radian) * distance * -1);
+	Coordinates result = { 0,0 };
+	result = Distance::CalculatePointInGivenDistanceAndAngleFromNorthPointingVectorFromGivenPoint(TellCenterPoint(), distance, TellCurrentAngleDegree());
 	//printf("Calculated point in distance of %d from creature center x: %d y: %d angle: %d was x: %d y: %d.\n",
 	//	distance, creature_center_x, creature_center_y, current_angle_degree, result.x, result.y);
 
@@ -1061,7 +1048,7 @@ void Creature::PlaceRandomPathRequest(unsigned int path_length)
 void Creature::PlacePointToPointPathRequest(Coordinates destination_point)
 {
 	PointToPointPathRequest my_request;
-	my_request.requestor_id = this;
+	my_request.ptr_requestor_id = this;
 	my_request.my_position = TellCenterPoint();
 	my_request.destination = destination_point;
 	point_to_point_path_requests.push_back(my_request);
@@ -1113,6 +1100,57 @@ void Creature::PushIntoSpawnRequests(CreatureSpawnRequest my_request)
 	spawn_requests.push_back(my_request);
 }
 
+//************************
+// CONVERSATIONS
+//************************
+
+ConversationalMessage Creature::ConstructConversationalMessage(std::string message_text,
+	std::string my_friendly_name,
+	std::vector<std::function<void(Creature*)>> my_routines_to_execute_upon_sending)
+{
+	ConversationalMessage result;
+	result.message_text = message_text;
+	result.sender_friendly_name = my_friendly_name;
+	result.ptr_sender = this;
+	result.routines_to_execute_upon_sending = my_routines_to_execute_upon_sending;
+
+	return result;
+}
+
+void Creature::ReceiveConversationalMessage(ConversationalMessage my_message)
+{
+	received_conversational_messages.push_back(my_message);
+}
+
+void Creature::SendConversationalMessage(Creature* ptr_addressee, ConversationalMessage my_message)
+{
+	if (IsThisCreaturePresentInEnvironment(ptr_addressee))
+	{
+		ptr_addressee->ReceiveConversationalMessage(my_message);
+		//Execute methods bound to outgoing message_text
+		for (std::function<void(Creature*)> routine : my_message.routines_to_execute_upon_sending)
+		{
+			routine(this);
+		}
+		//Once methods were executed, clear vector holding them.
+		my_message.routines_to_execute_upon_sending.clear();
+	}
+}
+
+void Creature::ReadReceivedConversationalMessages()
+{
+	for (ConversationalMessage message : received_conversational_messages)
+	{
+		ReactForReceivedConversationalMessage(message);
+	}
+	received_conversational_messages.clear();
+}
+
+void Creature::ReactForReceivedConversationalMessage(ConversationalMessage my_message)
+{
+	//Do nothing;
+}
+
 
 //**************
 //CYCLIC ACTIONS
@@ -1143,6 +1181,7 @@ void Creature::AddCommonCyclicActions()
 	AddCyclicAction(func_follow_behavior);
 	AddCyclicAction(func_play_current_animation_for_visual_components);
 	AddCyclicAction(func_kill_creature_if_its_time_expired);
+	AddCyclicAction(func_read_received_messages);
 }
 
 std::vector<CreatureSpawnRequest>* Creature::TellSpawnRequests()
@@ -1335,6 +1374,11 @@ void Creature::RequestBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates*
 void Creature::FollowBehavior()
 {
 	ptr_behavior->WhatToDo(this);
+}
+
+Creature* Creature::TellFollowedCreature()
+{
+	return ptr_behavior->TellFollowedCreature();
 }
 
 //********************************************

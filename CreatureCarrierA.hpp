@@ -36,6 +36,7 @@ public:
 	void PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint32 threshold_miliseconds);
 	bool AmIWithinMainCharacterProximityRadius();
 	void ManageMainCharacterProximityTrigger();
+	void ReactForReceivedConversationalMessage(ConversationalMessage my_message);
 
 	std::function<void(CreatureCarrierA*)> func_warn_if_time_to_live_gets_short = [](CreatureCarrierA* ptr_creature)
 	{

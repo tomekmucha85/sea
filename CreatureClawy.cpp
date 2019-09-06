@@ -142,3 +142,8 @@ Uint32 CreatureClawy::TellWhenCreatureAutoAttackedForTheLastTime()
 {
 	return last_attack_time;
 }
+
+void CreatureClawy::ReactForReceivedConversationalMessage(ConversationalMessage my_message)
+{
+	Logger::Log("Received message: " + my_message.message_text + "\n");
+}

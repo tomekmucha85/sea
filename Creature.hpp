@@ -54,9 +54,18 @@ struct PointToPointPathResponse
 //Request for generating point-to-point path along navigation grid
 struct PointToPointPathRequest
 {
-	Creature* requestor_id = nullptr;
+	Creature* ptr_requestor_id = nullptr;
 	Coordinates my_position = { 0,0 };
 	Coordinates destination = { 0,0 };
+};
+
+//Mesages sent between Creatures
+struct ConversationalMessage
+{
+	Creature* ptr_sender = nullptr;
+	std::string sender_friendly_name = "nameless";
+	std::string message_text = "";
+	std::vector<std::function<void(Creature*)>> routines_to_execute_upon_sending = {};
 };
 
 class Behavior;
@@ -126,6 +135,8 @@ class Creature
 		bool did_i_perform_attack = false;
 		//Requests to spawn other creatures. Requests are collected by LevelComponent
 		std::vector<CreatureSpawnRequest> spawn_requests = {};
+		//Messages requested
+		std::vector<ConversationalMessage> received_conversational_messages = {};
 
         //###################
         //Functions
@@ -141,7 +152,8 @@ class Creature
         //###################
 		CreatureType my_type = cre_none;
         double velocity = 0;
-		static double DEFAULT_VELOCITY;
+		const static double DEFAULT_VELOCITY;
+		const static double DEFAULT_TURBO_VELOCITY;
 
 		double turn_speed = 0.4; // How fast creature turns around
 		int turn_direction = 0; // -1 = left, 1 = right, 0 = no turning.
@@ -273,7 +285,7 @@ class Creature
 		static bool IsThisCreaturePresentInEnvironment(Creature* ptr_my_creature);
 		static bool IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double max_line_length = 0,
 			std::vector<Creature*> exceptions = {});
-		static bool IsThereCorridorBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double corridor_width, double max_corridor_length = 0);
+		static bool IsThereCorridorBetweenThesePointsInCurrentEnvironment(Coordinates point_a, Coordinates point_b, double corridor_width = MARGIN_FOR_LINE_OF_SIGHT_CHECKS, double max_corridor_length = 0);
 		static std::vector<Creature*> FindCreaturesInAreaInSet(std::vector<Creature*>* ptr_my_creatures_set, PreciseRect my_area);
 		static std::vector<Creature*> FindCreaturesInRadiusInSet(std::vector<Creature*>* ptr_my_creatures_set, Coordinates center_point, int radius);
 		//Useful for logging.
@@ -291,6 +303,18 @@ class Creature
 		void MakeUseOfPathResponse(PointToPointPathResponse my_response);
 
 		//###################
+        //Conversations
+		//###################
+
+		ConversationalMessage ConstructConversationalMessage(std::string message_text, 
+			std::string my_friendly_name="nameless", 
+			std::vector<std::function<void(Creature*)>> my_routines_to_execute_upon_sending = {});
+		void ReceiveConversationalMessage(ConversationalMessage my_message);
+		void SendConversationalMessage(Creature* ptr_addressee, ConversationalMessage my_message);
+		void ReadReceivedConversationalMessages();
+		virtual void ReactForReceivedConversationalMessage(ConversationalMessage my_message);
+
+		//###################
 		//Events
 		//###################
 
@@ -299,6 +323,7 @@ class Creature
 		void SetBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination=nullptr);
 		void SetBehaviorPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny = nullptr);
 		void RequestBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination = nullptr);
+		Creature* TellFollowedCreature();
 		void Kill();
 		void Resurrect();
 		bool AmIAlive();
@@ -357,6 +382,10 @@ class Creature
 			}
 		};
 
+		std::function<void(Creature*)> func_read_received_messages = [](Creature* ptr_creature)
+		{
+			ptr_creature->ReadReceivedConversationalMessages();
+		};
 };
 
 class Behavior
@@ -364,8 +393,9 @@ class Behavior
 	friend class Creature;
 
     private:
-		static double MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE;
-		static double DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE;
+		static const double MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE;
+		static const double DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE;
+		static const double DISTANCE_MAKING_ESCAPE_SUCCESSFULL;
 		static BehaviorMode MODES_NOT_REQUIRING_ARGUMENTS_UPON_START[];
 		BehaviorMode mode = beh_idle;
 		BehaviorPattern pattern = beh_pat_none;
@@ -392,7 +422,7 @@ class Behavior
 		//pattern death magnetic
 		Creature* beh_pat_death_magnetic_destination = nullptr;
 		//pattern alerted by creature
-		Creature* beh_path_alerted_by_creature_alerting_guy = nullptr;
+		Creature* beh_path_alerted_by_creature_ptr_alerting_guy = nullptr;
 
 		//###################################
         //# VARIABLES FOR SPECIFIC MODES
@@ -424,6 +454,7 @@ class Behavior
 		bool SetMode(BehaviorMode mode_to_be_set);
 		bool SetMode(BehaviorMode mode_to_be_set, Coordinates my_destination_point);
 		bool SetMode(BehaviorMode mode_to_be_set, Creature* ptr_my_destiny);
+		int CalculateBestMovementAngleToAvoidMeetingGivenCreature(Creature* ptr_my_creature, Creature* ptr_creature_to_avoid);
 		void SetPattern(BehaviorPattern pattern_to_be_set);
 		void SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny);
 		void ServeModeChangeRequestForBehaviorPatternDeathMagnetic(BehaviorMode requested_mode);

@@ -88,13 +88,13 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 			     ptr_my_event_handler->key.keysym.sym == SDLK_w && 
 			     ptr_my_event_handler->key.repeat == 0)
 		{
-			Creature::ptr_current_main_charater->ThrustForward(400);
+			Creature::ptr_current_main_charater->ThrustForward(Creature::DEFAULT_TURBO_VELOCITY);
 		}
 		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
 			     ptr_my_event_handler->key.keysym.sym == SDLK_s && 
 			     ptr_my_event_handler->key.repeat == 0)
 		{
-			Creature::ptr_current_main_charater->ThrustBackward(150);
+			Creature::ptr_current_main_charater->ThrustBackward(Creature::DEFAULT_VELOCITY);
 		}
 		else if (ptr_my_event_handler->type == SDL_KEYUP && 
 			     ptr_my_event_handler->key.keysym.sym == SDLK_w && 
@@ -162,6 +162,14 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
         {
 	        Creature::ptr_current_main_charater->SetBehaviorMode(beh_follow_closest_creature);
         }
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+		         ptr_my_event_handler->key.keysym.sym == SDLK_y &&
+		         ptr_my_event_handler->key.repeat == 0)
+		{
+		    Creature* ptr_addressee = Creature::ptr_current_main_charater->TellFollowedCreature();
+			ConversationalMessage message = Creature::ptr_current_main_charater->ConstructConversationalMessage("Hi!");
+			Creature::ptr_current_main_charater->SendConversationalMessage(ptr_addressee, message);
+		}
         else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
 			     ptr_my_event_handler->key.keysym.sym == SDLK_x && 
 			     ptr_my_event_handler->key.repeat == 0)

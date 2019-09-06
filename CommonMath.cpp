@@ -144,6 +144,28 @@ double Distance::CalculateDistanceBetweenPoints(Coordinates a, Coordinates b)
 	return distance;
 }
 
+Coordinates Distance::CalculatePointInGivenDistanceAndAngleFromNorthPointingVectorFromGivenPoint(Coordinates my_point, double distance, int angle_degrees)
+{
+	/*
+
+Notice, that the grid is as following:
+
+315degrees     45 degrees
+		  \	| /
+		   \|/
+	------------------->X
+			|0,0
+			|
+			V
+			Y
+	*/
+	double angle_radian = Angle::DegreeToRadian(angle_degrees);
+	Coordinates result = { 0,0 };
+	result.x = my_point.x + (sin(angle_radian) * distance);
+	result.y = my_point.y + (cos(angle_radian) * distance * -1);
+	return result;
+}
+
 bool Collisions::IsThisPointInsideRectangle(Coordinates point, PreciseRect rectangle)
 {
     bool result = false;

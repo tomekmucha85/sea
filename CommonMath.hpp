@@ -56,6 +56,9 @@ class Distance
 
     public:
 		static double CalculateDistanceBetweenPoints(Coordinates a, Coordinates b);
+		static Coordinates CalculatePointInGivenDistanceAndAngleFromNorthPointingVectorFromGivenPoint(Coordinates my_point, 
+			double distance,
+			int angle_degrees);
 };
 
 class Segment

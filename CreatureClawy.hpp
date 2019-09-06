@@ -43,6 +43,7 @@ public:
 	//#TODO - uwzglêdniæ prawdopodobieñstwo
 	void AutoAttack(double likehood=0.5);
 	Uint32 TellWhenCreatureAutoAttackedForTheLastTime();
+	void ReactForReceivedConversationalMessage(ConversationalMessage my_message);
 
 	//#################
     // LAMBDAS

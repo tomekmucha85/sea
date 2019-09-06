@@ -41,6 +41,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 
 	//Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_death_magnetic, ptr_losing_trigger);
 	Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_stalker);
+	//Creature::ptr_current_main_charater->SetBehaviorMode(beh_wander_on_navmesh);
 
 	//###############
 	//# STAGE SETUP

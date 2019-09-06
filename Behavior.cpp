@@ -1,7 +1,8 @@
 #include <Creature.hpp>
 
-double Behavior::MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE = 400;
-double Behavior::DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE = 50;
+const double Behavior::MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE = 400;
+const double Behavior::DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE = 50;
+const double Behavior::DISTANCE_MAKING_ESCAPE_SUCCESSFULL = 400;
 BehaviorMode Behavior::MODES_NOT_REQUIRING_ARGUMENTS_UPON_START[] =
 {
 	beh_chase_hero,
@@ -141,8 +142,8 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 		if (was_pattern_changed == true)
 		{
 			was_pattern_changed = false;
-			printf("Will set mode escape from creature %p\n", beh_path_alerted_by_creature_alerting_guy);
-			SetMode(beh_escape_from_creature, beh_path_alerted_by_creature_alerting_guy);
+			printf("Will set mode escape from creature %p\n", beh_path_alerted_by_creature_ptr_alerting_guy);
+			SetMode(beh_escape_from_creature, beh_path_alerted_by_creature_ptr_alerting_guy);
 		}
 		PerformActionDefinedByMode(ptr_my_creature);
     }
@@ -314,9 +315,9 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 				else
 				{
 					ptr_my_creature->SetVelocity(0);
-					present_action_result = beh_result_objective_complete;
 					delete ptr_navigator;
 					ptr_navigator = nullptr;
+					return  beh_result_objective_complete;
 				}
 			}
 		}
@@ -396,7 +397,27 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 	}
 	else if (mode == beh_escape_from_creature)
 	{
-	    ptr_my_creature->RunAwayFromPoint(ptr_dreaded_creature->TellCenterPoint());
+	    if (Creature::IsThisCreaturePresentInEnvironment(ptr_dreaded_creature) == false)
+	    {
+			printf("No one to escape from - my dreaded creature ceased to be.\n");
+			return beh_result_action_failed;
+	    }
+		if (Distance::CalculateDistanceBetweenPoints(ptr_dreaded_creature->TellCenterPoint(), ptr_my_creature->TellCenterPoint()) > DISTANCE_MAKING_ESCAPE_SUCCESSFULL)
+		{
+			Logger::Log("Escape successfull!");
+			return beh_result_objective_complete;
+		}
+	    if (was_mode_changed)
+	    {
+			ptr_my_creature->RunAwayFromPoint(ptr_dreaded_creature->TellCenterPoint());
+			was_mode_changed = false;
+		}
+		if (ptr_my_creature->TellIfStuck())
+		{
+			int best_angle_degrees = CalculateBestMovementAngleToAvoidMeetingGivenCreature(ptr_my_creature, ptr_dreaded_creature);
+			ptr_my_creature->SetAngleDegree(best_angle_degrees);
+			ptr_my_creature->ThrustForward();
+		}
     }
 	else if (mode == beh_projectile)
 	{
@@ -406,8 +427,60 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 	return present_action_result;
 }
 
+int Behavior::CalculateBestMovementAngleToAvoidMeetingGivenCreature(Creature* ptr_my_creature, Creature* ptr_creature_to_avoid)
+{
+	Coordinates my_center = ptr_my_creature->TellCenterPoint();
+	double distance_from_me_to_avoided_creature = Distance::CalculateDistanceBetweenPoints(my_center, ptr_creature_to_avoid->TellCenterPoint());
+	const int ANGLE_QUANT = 20;
+	const double CORRIDOR_LENGTH = 100;
+	double longest_distance_so_far = 0;
+	int angle_offering_longest_distance = 0;
+	for (int angle = 0; angle < 360; angle += ANGLE_QUANT)
+	{
+		Coordinates proposed_point = Distance::CalculatePointInGivenDistanceAndAngleFromNorthPointingVectorFromGivenPoint(my_center, CORRIDOR_LENGTH, angle);
+		printf("Proposed point x: %f y:%f\n", proposed_point.x, proposed_point.y);
+		if (Creature::IsThereCorridorBetweenThesePointsInCurrentEnvironment(my_center, proposed_point))
+		{
+			printf("Corridor check passed.\n");
+			//If this move will bring me away from the dreaded creature, move right away!
+			double distance_from_proposed_point_to_avoided_creature = Distance::CalculateDistanceBetweenPoints(proposed_point, ptr_creature_to_avoid->TellCenterPoint());
+			if (distance_from_proposed_point_to_avoided_creature > distance_from_me_to_avoided_creature)
+			{
+				return angle;
+			}
+			//If this won't bring me away from the dreaded creature, at least check if it's not good enough.
+			//(High water mark)
+			else if (distance_from_proposed_point_to_avoided_creature > longest_distance_so_far)
+			{
+				longest_distance_so_far = distance_from_proposed_point_to_avoided_creature;
+				angle_offering_longest_distance = angle;
+			}
+		}
+	}
+	//If we did not exit this function inside loop.
+	return angle_offering_longest_distance;
+}
+
 Creature* Behavior::TellFollowedCreature()
 {
+	//#TODO - rozwa¿yæ wp³yw zerowania nieistniej¹cej Creature na ca³oœæ kodu
+	if (ptr_followed_creature == nullptr)
+	{
+		return nullptr;
+	}
+	else
+	{
+		if (Creature::IsThisCreaturePresentInEnvironment(ptr_followed_creature))
+		{
+			return ptr_followed_creature;
+		}
+		else
+		{
+			ptr_followed_creature = nullptr;
+			return nullptr;
+		}
+	}
+
 	return ptr_followed_creature;
 }
 
@@ -527,7 +600,7 @@ void Behavior::SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_de
 		printf("Set behavior pattern alerted by creature (%p), main hero is (%p)\n",
 			ptr_my_destiny, Creature::ptr_current_main_charater);
 		pattern = pattern_to_be_set;
-		beh_path_alerted_by_creature_alerting_guy = ptr_my_destiny;
+		beh_path_alerted_by_creature_ptr_alerting_guy = ptr_my_destiny;
 		was_pattern_changed = true;
 	}
 	else
@@ -559,6 +632,7 @@ bool Behavior::SetMode(BehaviorMode mode_to_be_set, Coordinates my_destination_p
 {
 	if (mode_to_be_set != beh_go_towards_fixed_point)
 	{
+		was_mode_changed = true;
 		printf("No use of specified destination point!\n");
 		//throw std::invalid_argument("No use of specified destination point!\n");
 		return false;

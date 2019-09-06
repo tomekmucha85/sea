@@ -486,7 +486,7 @@ PointToPointPathRequestEncalpsulated LevelComponent::EncapsulatePathRequest(Poin
 {
 	PointToPointPathRequestEncalpsulated result;
 	result.source_component = this;
-	result.requestor_id = my_request.requestor_id;
+	result.requestor_id = my_request.ptr_requestor_id;
 	result.my_position = my_request.my_position;
 	result.destination = my_request.destination;
 	return result;

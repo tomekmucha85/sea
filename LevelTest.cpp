@@ -31,6 +31,14 @@ LevelTest::LevelTest()
 	Coordinates navgrid_point_center_3 = { 200,600 };
 	CreatureNavGridNode* ptr_test_navgrid_node_3 = dynamic_cast<CreatureNavGridNode*>(AddNavigationNodeUsingDefaultComponent(navgrid_point_center_3));
 	
+	//Test obstacles
+	Coordinates obstacle_1 = { 100,600 };
+	Creature* ptr_test_obstacle_1 = ptr_initial_core_component->AddCreature(cre_flying_box, &obstacle_1, force);
+	Coordinates obstacle_2 = { 100,648 };
+	Creature* ptr_test_obstacle_2 = ptr_initial_core_component->AddCreature(cre_flying_box, &obstacle_2, merge);
+	Coordinates obstacle_3 = { 100,696 };
+	Creature* ptr_test_obstacle_3 = ptr_initial_core_component->AddCreature(cre_flying_box, &obstacle_3, merge);
+	
 	dynamic_cast<LevelComponentNavGrid*>(ptr_initial_navgrid_component)->ConnectNodes(400);
 }
 
