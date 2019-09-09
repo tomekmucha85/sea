@@ -1371,6 +1371,11 @@ void Creature::RequestBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates*
     }
 }
 
+void Creature::RequestBehaviorMode(BehaviorMode behavior_to_be_set, Uint32 time_limit)
+{
+	ptr_behavior->RequestMode(behavior_to_be_set, time_limit);
+}
+
 void Creature::FollowBehavior()
 {
 	ptr_behavior->WhatToDo(this);

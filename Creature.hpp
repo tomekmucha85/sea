@@ -319,11 +319,6 @@ class Creature
 		//###################
 
 		void FollowPhysics();
-		void FollowBehavior();
-		void SetBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination=nullptr);
-		void SetBehaviorPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny = nullptr);
-		void RequestBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination = nullptr);
-		Creature* TellFollowedCreature();
 		void Kill();
 		void Resurrect();
 		bool AmIAlive();
@@ -335,6 +330,17 @@ class Creature
 		void SetHungerLevel(int new_level);
 		void ChangeHungerLevel(int change_amount);
 		void AlertLivingCreaturesInRadius(double radius=DEFAULT_RADIUS_FOR_ALERTING_CREATURES);
+
+		//###################
+		//Behavior
+		//###################
+		void FollowBehavior();
+		void SetBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination = nullptr);
+		void SetBehaviorPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny = nullptr);
+		void RequestBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination = nullptr);
+		void RequestBehaviorMode(BehaviorMode behavior_to_be_set, Uint32 time_limit);
+		Creature* TellFollowedCreature();
+
 
 		//###################
         //Timing
@@ -413,6 +419,7 @@ class Behavior
 		BehaviorMode current_requested_mode = beh_none;
 		Coordinates current_requested_mode_destination = {0,0};
 		Creature* ptr_current_requested_mode_destination_creature = nullptr;
+		Uint32 current_requested_mode_time_limit = 0;
 
 		//#TODO - czy na pewno tak powinno byæ? Mo¿e lepiej zrobiæ kilka klas dziedzicz¹cych po Behavior.
 		
@@ -422,7 +429,7 @@ class Behavior
 		//pattern death magnetic
 		Creature* beh_pat_death_magnetic_destination = nullptr;
 		//pattern alerted by creature
-		Creature* beh_path_alerted_by_creature_ptr_alerting_guy = nullptr;
+		Creature* beh_pat_alerted_by_creature_ptr_alerting_guy = nullptr;
 
 		//###################################
         //# VARIABLES FOR SPECIFIC MODES
@@ -435,8 +442,19 @@ class Behavior
 		Creature* ptr_dreaded_creature = nullptr;
 		//mode wander on navmesh
 		bool was_wander_path_request_placed = false;
+		//mode sleep
+		TimerCountdown* ptr_timer_for_sleep = nullptr;
 
     public:
+		//###################
+		//# CONSTS
+		//###################
+		static const Uint32 BEH_PAT_STALKER_SLEEP_TIME;
+
+		//###################
+		//# FUNCTIONS
+		//###################
+
 		Behavior();
 		~Behavior();
 		void WhatToDo(Creature* ptr_my_creature);
@@ -451,9 +469,11 @@ class Behavior
 		bool RequestMode(BehaviorMode mode_to_be_requested);
 		bool RequestMode(BehaviorMode mode_to_be_requested, Coordinates my_destination_point);
 		bool RequestMode(BehaviorMode mode_to_be_requested, Creature* ptr_destination_creature);
+		bool RequestMode(BehaviorMode mode_to_be_requested, Uint32 time_limit);
 		bool SetMode(BehaviorMode mode_to_be_set);
 		bool SetMode(BehaviorMode mode_to_be_set, Coordinates my_destination_point);
 		bool SetMode(BehaviorMode mode_to_be_set, Creature* ptr_my_destiny);
+		bool SetMode(BehaviorMode mode_to_be_set, Uint32 time_limit);
 		int CalculateBestMovementAngleToAvoidMeetingGivenCreature(Creature* ptr_my_creature, Creature* ptr_creature_to_avoid);
 		void SetPattern(BehaviorPattern pattern_to_be_set);
 		void SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny);

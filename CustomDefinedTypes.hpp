@@ -43,6 +43,7 @@ enum BehaviorMode {
 	beh_none,
 	beh_chase_hero,
 	beh_idle,
+	beh_sleep,
 	beh_projectile,
 	beh_run_in_circles,
 	beh_run_along_predefined_path,

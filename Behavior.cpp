@@ -13,6 +13,7 @@ BehaviorMode Behavior::MODES_NOT_REQUIRING_ARGUMENTS_UPON_START[] =
 	beh_run_in_circles,
 	beh_wander_on_navmesh
 };
+const Uint32 Behavior::BEH_PAT_STALKER_SLEEP_TIME = 750;
 
 Behavior::Behavior()
 {
@@ -123,6 +124,15 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 				RequestMode(beh_wander_on_navmesh);
 			}
 		}
+		else if (mode == beh_sleep)
+		{
+			BehaviorActionResult result = PerformActionDefinedByMode(ptr_my_creature);
+			if (result == beh_result_objective_complete)
+			{
+				printf("Sleep is over in stalker behavior patter.\n");
+				RequestMode(beh_wander_on_navmesh);
+			}
+		}
 		else
 		{
 			//For all other behavior modes - do nothing
@@ -142,8 +152,8 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 		if (was_pattern_changed == true)
 		{
 			was_pattern_changed = false;
-			printf("Will set mode escape from creature %p\n", beh_path_alerted_by_creature_ptr_alerting_guy);
-			SetMode(beh_escape_from_creature, beh_path_alerted_by_creature_ptr_alerting_guy);
+			printf("Will set mode escape from creature %p\n", beh_pat_alerted_by_creature_ptr_alerting_guy);
+			SetMode(beh_escape_from_creature, beh_pat_alerted_by_creature_ptr_alerting_guy);
 		}
 		PerformActionDefinedByMode(ptr_my_creature);
     }
@@ -192,6 +202,10 @@ void Behavior::ServeModeChangeRequestForBehaviorPatternStalker(BehaviorMode requ
 	else if (requested_mode == beh_wander_on_navmesh)
 	{
 		SetMode(requested_mode);
+	}
+	else if (requested_mode == beh_sleep)
+	{
+		SetMode(requested_mode, current_requested_mode_time_limit);
 	}
 	else if (requested_mode == beh_none)
 	{
@@ -409,21 +423,44 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 		}
 	    if (was_mode_changed)
 	    {
-			ptr_my_creature->RunAwayFromPoint(ptr_dreaded_creature->TellCenterPoint());
+			ptr_my_creature->RunAwayFromPoint(ptr_dreaded_creature->TellCenterPoint(), Creature::DEFAULT_TURBO_VELOCITY);
 			was_mode_changed = false;
 		}
 		if (ptr_my_creature->TellIfStuck())
 		{
 			int best_angle_degrees = CalculateBestMovementAngleToAvoidMeetingGivenCreature(ptr_my_creature, ptr_dreaded_creature);
 			ptr_my_creature->SetAngleDegree(best_angle_degrees);
-			ptr_my_creature->ThrustForward();
+			ptr_my_creature->ThrustForward(Creature::DEFAULT_TURBO_VELOCITY);
 		}
     }
 	else if (mode == beh_projectile)
 	{
 		ptr_my_creature->ThrustForward();
 	}
-
+	else if (mode == beh_sleep)
+	{
+		if (was_mode_changed)
+		{
+			{
+				was_mode_changed = false;
+				ptr_my_creature->SetVelocity(0);
+			}
+		}
+		if (ptr_timer_for_sleep != nullptr)
+		{
+			if (ptr_timer_for_sleep->CheckIfCountdownFinished())
+			{
+				delete ptr_timer_for_sleep;
+				ptr_timer_for_sleep = nullptr;
+				return beh_result_objective_complete;
+			}
+		}
+		else
+		{
+			printf("Timer undefined in sleep behavior mode!\n");
+			throw "This shouldn't have happened!\n";
+		}
+	}
 	return present_action_result;
 }
 
@@ -600,7 +637,7 @@ void Behavior::SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_de
 		printf("Set behavior pattern alerted by creature (%p), main hero is (%p)\n",
 			ptr_my_destiny, Creature::ptr_current_main_charater);
 		pattern = pattern_to_be_set;
-		beh_path_alerted_by_creature_ptr_alerting_guy = ptr_my_destiny;
+		beh_pat_alerted_by_creature_ptr_alerting_guy = ptr_my_destiny;
 		was_pattern_changed = true;
 	}
 	else
@@ -667,6 +704,22 @@ bool Behavior::SetMode(BehaviorMode mode_to_be_set, Creature* ptr_my_destiny)
 	}
 }
 
+bool Behavior::SetMode(BehaviorMode mode_to_be_set, Uint32 time_limit)
+{
+	if (mode_to_be_set == beh_sleep)
+	{
+		was_mode_changed = true;
+		mode = mode_to_be_set;
+		ptr_timer_for_sleep = new TimerCountdown(time_limit);
+		return true;
+	}
+	else
+	{
+		printf("No use of specified time limit!\n");
+		return false;
+	}
+}
+
 bool Behavior::RequestMode(BehaviorMode mode_to_be_requested)
 {
 	for (BehaviorMode my_mode : MODES_NOT_REQUIRING_ARGUMENTS_UPON_START)
@@ -696,7 +749,22 @@ bool Behavior::RequestMode(BehaviorMode mode_to_be_requested, Coordinates my_des
 		//throw("No use of specified destination point!\n");
 		return false;
 	}
+}
 
+bool Behavior::RequestMode(BehaviorMode mode_to_be_requested, Uint32 time_limit)
+{
+	if (mode_to_be_requested == beh_sleep)
+	{
+		current_requested_mode = mode_to_be_requested;
+		current_requested_mode_time_limit = time_limit;
+		return true;
+	}
+	else
+	{
+		printf("No use of specified time limit!\n");
+		//throw("No use of specified destination point!\n");
+		return false;
+	}
 }
 
 bool Behavior::RequestMode(BehaviorMode mode_to_be_requested, Creature* ptr_destination_creature)
