@@ -1376,6 +1376,11 @@ void Creature::RequestBehaviorMode(BehaviorMode behavior_to_be_set, Uint32 time_
 	ptr_behavior->RequestMode(behavior_to_be_set, time_limit);
 }
 
+void Creature::RequestBehaviorMode(BehaviorMode behavior_to_be_set, Creature* ptr_related_creature)
+{
+	ptr_behavior->RequestMode(behavior_to_be_set, ptr_related_creature);
+}
+
 void Creature::FollowBehavior()
 {
 	ptr_behavior->WhatToDo(this);
@@ -1442,7 +1447,7 @@ void Creature::AlertLivingCreaturesInRadius(double radius)
 			if (ptr_neighbouring_creature->my_type == living_type)
 			{
 				Logger::Log("A living creature was alerted!", debug_info);
-				ptr_neighbouring_creature->SetBehaviorPattern(beh_pat_alerted_by_creature, this);
+				ptr_neighbouring_creature->RequestBehaviorMode(beh_escape_from_creature, this);
 				break;
 			}
 		}

@@ -68,7 +68,7 @@ enum BehaviorPattern {
 	beh_pat_none,
 	beh_pat_death_magnetic,
 	beh_pat_stalker,
-	beh_pat_alerted_by_creature,
+	beh_pat_careful_wanderer,
 };
 
 

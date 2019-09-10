@@ -17,11 +17,31 @@ CreatureCarrierA::CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin
 	//cyclic_actions_class_specific.push_back(func_warn_if_time_to_live_gets_short);
 	//cyclic_actions_class_specific.push_back(func_manage_main_character_proximity_trigger);
 	SetTimeToLive(default_time_to_live_miliseconds);
+	GenerateTypicalRepliesForGreeting();
 }
 
 CreatureCarrierA::~CreatureCarrierA()
 {
 	delete ptr_timer_for_hero_proximity;
+}
+
+void CreatureCarrierA::GenerateTypicalRepliesForGreeting()
+{
+	std::string creature_name = "nameless snail";
+
+	std::string calm_down_words = "calm down";
+	std::vector<std::function<void(Creature*)>> calm_down_coroutines = { func_calm_main_character_down };
+	ConversationalMessage calm_down = ConstructConversationalMessage(creature_name, 
+		calm_down_words,
+		calm_down_coroutines);
+	typical_replies_to_greeting.push_back(calm_down);
+
+	std::string aggravate_words = "catch me if you can!";
+	std::vector<std::function<void(Creature*)>> aggravate_coroutines = { func_aggravate_main_character };
+	ConversationalMessage aggravate = ConstructConversationalMessage(creature_name,
+		aggravate_words,
+		aggravate_coroutines);
+	typical_replies_to_greeting.push_back(aggravate);
 }
 
 void CreatureCarrierA::PerformCyclicActionsClassSpecific()
@@ -123,8 +143,9 @@ void CreatureCarrierA::ReactForReceivedConversationalMessage(ConversationalMessa
 	Logger::Log("Received message: " + my_message.message_text + "\n");
 	if (my_message.message_text == "Hi!")
 	{
-		ConversationalMessage reply = ConstructConversationalMessage("Ho!");
+		//RANDOM NUMBER IN RANGE:
+		unsigned int random_reply_index = (rand() % (unsigned int)(typical_replies_to_greeting.size()));
+		ConversationalMessage reply = typical_replies_to_greeting[random_reply_index];
 		SendConversationalMessage(my_message.ptr_sender, reply);
 	}
 }
-

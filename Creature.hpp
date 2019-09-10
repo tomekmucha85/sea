@@ -337,8 +337,10 @@ class Creature
 		void FollowBehavior();
 		void SetBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination = nullptr);
 		void SetBehaviorPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny = nullptr);
-		void RequestBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination = nullptr);
+		//#TODO - zrobiæ cztery metody, bez domyœlnego argumentu
+		void RequestBehaviorMode(BehaviorMode behavior_to_be_set, Coordinates* ptr_my_destination);
 		void RequestBehaviorMode(BehaviorMode behavior_to_be_set, Uint32 time_limit);
+		void RequestBehaviorMode(BehaviorMode behavior_to_be_set, Creature* ptr_related_creature);
 		Creature* TellFollowedCreature();
 
 
@@ -392,6 +394,17 @@ class Creature
 		{
 			ptr_creature->ReadReceivedConversationalMessages();
 		};
+
+		std::function<void(Creature*)> func_calm_main_character_down = [](Creature* ptr_creature)
+		{
+			Creature::ptr_current_main_charater->SetHungerLevel(0);
+			Creature::ptr_current_main_charater->RequestBehaviorMode(beh_sleep, 1500);
+		};
+
+		std::function<void(Creature*)> func_aggravate_main_character = [](Creature* ptr_creature)
+		{
+			Creature::ptr_current_main_charater->SetHungerLevel(3);
+		};
 };
 
 class Behavior
@@ -428,8 +441,6 @@ class Behavior
 		//###################################
 		//pattern death magnetic
 		Creature* beh_pat_death_magnetic_destination = nullptr;
-		//pattern alerted by creature
-		Creature* beh_pat_alerted_by_creature_ptr_alerting_guy = nullptr;
 
 		//###################################
         //# VARIABLES FOR SPECIFIC MODES
@@ -479,6 +490,7 @@ class Behavior
 		void SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_destiny);
 		void ServeModeChangeRequestForBehaviorPatternDeathMagnetic(BehaviorMode requested_mode);
 		void ServeModeChangeRequestForBehaviorPatternStalker(BehaviorMode requested_mode);
+		void ServeModeChangeRequestForBehaviorPatternCarefulWanderer(BehaviorMode requested_mode);
 		BehaviorMode PopCurrentRequestedMode();
 		void Move(Coordinates movement);
 		void MakeUseOfPathResponse(RandomPathResponse my_response);

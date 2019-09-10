@@ -8,15 +8,6 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	printf("Triggers component address: %p.\n", ptr_border_triggers);
 
 	/*
-	//Trigger to win level
-    std::string signal_to_win = "winning";
-    PreciseRect event_win_area = {1000,1000,100,100};
-    Creature* ptr_winning_trigger = AddTriggerUsingDefaultComponent(event_win_area, signal_to_win);
-    signals_vs_events[signal_to_win] = ptr_func_win;
-    //Blue
-    ptr_winning_trigger->TellMainVisualComponent()->SetColor({ 0,0,255,255 });
-	Coordinates win_center = ptr_winning_trigger->TellMainVisualComponent()->TellCenter();
-
 	//Trigger to loose level
 	std::string signal_to_lose = "losing";
 	PreciseRect event_lose_area = { 700,1000,100,100 };
@@ -41,7 +32,6 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 
 	//Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_death_magnetic, ptr_losing_trigger);
 	Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_stalker);
-	//Creature::ptr_current_main_charater->SetBehaviorMode(beh_wander_on_navmesh);
 
 	//###############
 	//# STAGE SETUP
@@ -102,7 +92,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	/*printf("Current mazes setup: 1: %p\n2: %p\n3: %p\n4: %p\n5: %p\n6: %p\n7: %p\n8: %p\n9: %p\n",
 		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);*/
 
-	SpawnCarriers(20);
+	SpawnCarriers(5);
 
 	//#######################
     //# CYCLIC ACTIONS SETUP
@@ -164,40 +154,12 @@ void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 				min_carrier_start_point_y + rand() % (max_carrier_start_point_y - min_carrier_start_point_y + 1)
 			};
 
-			double carrier_destination_x = 0;
-			double carrier_destination_y = 0;
-			int min_offset = 1000;
-			int max_offset = 2000;
-			if (carrier_start_point.x >= 0)
-			{
-				carrier_destination_x = 
-					carrier_start_point.x + (min_offset*-1 + rand() % (max_offset - min_offset + 1))*-1;
-			}
-			else
-			{
-				carrier_destination_x = 
-					carrier_start_point.x + min_offset + rand() % (max_offset - min_offset + 1);
-			}
-
-			if (carrier_start_point.y >= 0)
-			{
-				carrier_destination_y = 
-					carrier_start_point.y + (min_offset*-1 + rand() % (max_offset - min_offset + 1))*-1;
-			}
-			else
-			{
-				carrier_destination_y =
-					carrier_start_point.y + min_offset + rand() % (max_offset - min_offset + 1);
-			}
-			Coordinates carrier_destination = 
-			{ 
-				carrier_destination_x, carrier_destination_y
-			};
 			Creature* ptr_carrier = ptr_initial_core_component->AddCreature(cre_carrier_a, &carrier_start_point, safe);
 			if (ptr_carrier != nullptr)
 			{
 				was_carrier_created = true;
-				ptr_carrier->SetBehaviorMode(beh_go_towards_fixed_point, &carrier_destination);
+				//ptr_carrier->SetBehaviorMode(beh_go_towards_fixed_point, &carrier_destination);
+				ptr_carrier->SetBehaviorPattern(beh_pat_careful_wanderer);
 			}
 			else
 			{

@@ -141,21 +141,48 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 	}
 	else if (pattern == beh_pat_none)
 	{
+	    //UPON ENTERING PATTERN
 		if (was_pattern_changed == true)
 		{
 			was_pattern_changed = false;
 		}
 		PerformActionDefinedByMode(ptr_my_creature);
 	}
-	else if (pattern == beh_pat_alerted_by_creature)
+	    //SERVE MODE CHANGE REQUESTS
+
+	    //TAKE ACTION
+
+	else if (pattern == beh_pat_careful_wanderer)
 	{
+	    //UPON ENTERING PATTERN
 		if (was_pattern_changed == true)
 		{
 			was_pattern_changed = false;
-			printf("Will set mode escape from creature %p\n", beh_pat_alerted_by_creature_ptr_alerting_guy);
-			SetMode(beh_escape_from_creature, beh_pat_alerted_by_creature_ptr_alerting_guy);
+			SetMode(beh_wander_on_navmesh);
 		}
-		PerformActionDefinedByMode(ptr_my_creature);
+	    //SERVE MODE CHANGE REQUESTS
+		ServeModeChangeRequestForBehaviorPatternCarefulWanderer(PopCurrentRequestedMode());
+	    //TAKE ACTION
+		if (mode == beh_escape_from_creature)
+		{
+			BehaviorActionResult result = PerformActionDefinedByMode(ptr_my_creature);
+			if (result == beh_result_objective_complete)
+			{
+				RequestMode(beh_wander_on_navmesh);
+			}
+		}
+		else if (mode == beh_wander_on_navmesh)
+		{
+			BehaviorActionResult result = PerformActionDefinedByMode(ptr_my_creature);
+			if (result == beh_result_objective_complete)
+			{
+				RequestMode(beh_wander_on_navmesh);
+			}
+		}
+		else
+		{
+			PerformActionDefinedByMode(ptr_my_creature);
+		}
     }
 	else
 	{
@@ -214,6 +241,26 @@ void Behavior::ServeModeChangeRequestForBehaviorPatternStalker(BehaviorMode requ
 	else
 	{
 		printf("This mode will be not served in stalker behavior pattern.\n");
+	}
+}
+
+void Behavior::ServeModeChangeRequestForBehaviorPatternCarefulWanderer(BehaviorMode requested_mode)
+{
+	if (requested_mode == beh_wander_on_navmesh)
+	{
+	    SetMode(requested_mode);
+	}
+	else if (requested_mode == beh_escape_from_creature)
+	{
+		SetMode(requested_mode, ptr_current_requested_mode_destination_creature);
+	}
+	else if (requested_mode == beh_none)
+	{
+		;
+	}
+	else
+	{
+		printf("This mode (%d) will not be served in careful wanderer behavior pattern.\n", requested_mode);
 	}
 }
 
@@ -567,7 +614,10 @@ bool Behavior::FollowCertainCreature(Creature* ptr_my_creature, Creature* ptr_fo
 		{
 			//Moving with creature's velocity if getting close to it.
 			double creature_velocity = ptr_followed_creature->TellVelocity();
-			ptr_my_creature->ThrustTowardsPoint(followed_creature_center, creature_velocity);
+			if (creature_velocity < ptr_my_creature->TellVelocity())
+			{
+				ptr_my_creature->ThrustTowardsPoint(followed_creature_center, creature_velocity);
+			}
 		}
 		else
 		{
@@ -617,6 +667,11 @@ void Behavior::SetPattern(BehaviorPattern pattern_to_be_set)
 		pattern = pattern_to_be_set;
 		was_pattern_changed = true;
 	}
+	else if (pattern_to_be_set == beh_pat_careful_wanderer)
+	{
+		pattern = pattern_to_be_set;
+		was_pattern_changed = true;
+	}
 	else
 	{
 		printf("Wrong arguments set for this behavior pattern!\n");
@@ -630,14 +685,6 @@ void Behavior::SetPattern(BehaviorPattern pattern_to_be_set, Creature* ptr_my_de
 	{
 		pattern = pattern_to_be_set;
 		beh_pat_death_magnetic_destination = ptr_my_destiny;
-		was_pattern_changed = true;
-	}
-	else if (pattern_to_be_set == beh_pat_alerted_by_creature)
-	{
-		printf("Set behavior pattern alerted by creature (%p), main hero is (%p)\n",
-			ptr_my_destiny, Creature::ptr_current_main_charater);
-		pattern = pattern_to_be_set;
-		beh_pat_alerted_by_creature_ptr_alerting_guy = ptr_my_destiny;
 		was_pattern_changed = true;
 	}
 	else

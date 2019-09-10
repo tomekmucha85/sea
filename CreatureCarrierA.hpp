@@ -8,6 +8,7 @@ private:
 	static const double RADIUS_FOR_MAIN_CHARACTER_PROXIMITY_CHECKS;
 	//Contains actions associated to specific Creature Carrier A which will be performed during every game loop / every n game loops.
 	std::vector<std::function<void(CreatureCarrierA*)>> cyclic_actions_class_specific = {};
+	std::vector<ConversationalMessage> typical_replies_to_greeting = {};
 
 	//TIMING
     //Timer for measuring how long was the creature remaining in hero's proximity.
@@ -20,7 +21,6 @@ public:
     //#####################
     //# VARIABLES
     //#####################
-
 	unsigned int default_time_to_live_miliseconds = 120000;
 	bool was_time_warning_activated = false;
 	bool was_main_character_presence_trigger_activated = false;
@@ -28,9 +28,9 @@ public:
 	//#####################
     //# FUNCTIONS
     //#####################
-
 	CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin = 30);
 	~CreatureCarrierA();
+	void GenerateTypicalRepliesForGreeting();
 	void PerformCyclicActionsClassSpecific();
 	void SetVelocityDependentAnimation(double previous_velocity, double new_velocity);
 	void PlayWarningAnimationIfTimeToLiveDropsBelowThreshold(Uint32 threshold_miliseconds);
