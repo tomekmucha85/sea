@@ -13,6 +13,7 @@ private:
 	//###################
 	//Variables
 	//###################
+	std::string current_text = "";
 	SDL_Texture* ptr_writing_texture = nullptr;
 	TTF_Font* ptr_font = nullptr;
 	SDL_Rect texture_clip = {0,0,0,0};
@@ -46,6 +47,7 @@ public:
 	Coordinates TellCenter();
 	void SetCenter(Coordinates my_center);
 	void SetText(std::string my_text);
+	std::string TellText();
 	void SetFont(TTF_Font* ptr_my_font);
 	void SetColor(SDL_Color my_color);
 	void SetPosition(PreciseRect my_position);

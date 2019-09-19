@@ -74,6 +74,8 @@ class LevelComponent
 		static int map_block_height;
 		std::vector<RandomPathRequestEncalpsulated> random_path_requests_encapsulated = {};
 		std::vector<PointToPointPathRequestEncalpsulated> point_to_point_path_requests_encapsulated = {};
+		std::vector<PrintRequest> print_requests_per_level_component = {};
+
 		//###################
 		//Functions
 		//###################
@@ -95,6 +97,7 @@ class LevelComponent
 		virtual void ServeAllExternalSpawnRequests();
 		virtual void ServeExternalSpawnRequest(CreatureSpawnRequest my_request);
 		virtual void ServeExternalDestructionRequest(CreatureDestructionInGivenAreaRequest my_request);
+		std::vector<CreatureSpawnRequest> TellExternalSpawnRequests();
 
 		RandomPathRequestEncalpsulated EncapsulatePathRequest(RandomPathRequest my_request);
 		PointToPointPathRequestEncalpsulated EncapsulatePathRequest(PointToPointPathRequest my_request);
@@ -110,6 +113,9 @@ class LevelComponent
 		void PushIntoExternalSpawnRequests(CreatureSpawnRequest my_request);
 		void SendDestructionRequestToPeerComponent(CreatureDestructionInGivenAreaRequest my_request, LevelComponent* ptr_peer_component);
 		void PushIntoExternalDestructionRequests(CreatureDestructionInGivenAreaRequest my_request);
+
+		void CollectAllPrintRequests();
+		void ClearPrintRequests();
 		
 		//###################
 		//Creatures operations
@@ -130,6 +136,7 @@ class LevelComponent
 		std::vector<Creature*> FindCollisionsWithMainCharacter(bool check_only_obstacles = true);
 		void MakeCreaturesPerformCyclicActions();
 		void PerformCyclicActions();
+		unsigned int CalculateNumberOfCreaturesOfGivenTypePresent(CreatureType my_type);
 		//###################
         //Virtual Functions
         //###################
@@ -219,6 +226,12 @@ class LevelComponent
 			ptr_level_component->SendAllPathRequests();
 		};
 
+
+		//Cyclic action to send through print requests
+		std::function<void(LevelComponent*)> func_send_all_print_requests = [](LevelComponent* ptr_level_component)
+		{
+			ptr_level_component->CollectAllPrintRequests();
+		};
 };
 
 #endif LEVEL_COMPONENT_HPP

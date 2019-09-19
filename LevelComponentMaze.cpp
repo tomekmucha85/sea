@@ -419,8 +419,8 @@ void LevelComponentMaze::GenerateMaze()
 	ManageBorders();
 	//printf("Border state:\n N: %d, E: %d, W: %d, S: %d.\n", TellBorderState(north), TellBorderState(east), TellBorderState(west), TellBorderState(south));
 	//printf("Maze columns count: %d, maze rows count: %d.\n", maze_columns_count, maze_rows_count);
-	PrepareNavigationGrid();
 	VivifyMaze();
+	PrepareNavigationGrid();
 	//printf("Maze generated.\n");
 }
 

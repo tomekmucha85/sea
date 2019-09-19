@@ -88,3 +88,8 @@ std::vector<CreatureNavGridNode*> CreatureNavGridNode::TellConnectedNodes()
 {
 	return connected_nodes;
 }
+
+void CreatureNavGridNode::RemoveAllConnections()
+{
+	connected_nodes.clear();
+}

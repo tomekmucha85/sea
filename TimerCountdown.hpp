@@ -14,6 +14,7 @@ public:
 	TimerCountdown(Uint32 my_time_to_live);
 	bool CheckIfCountdownFinished();
 	Uint32 HowManyMilisecondsLeftTillEnd();
+	void ResetWithNewTimeToLive(Uint32 new_time_to_live);
 };
 
 #endif //TIMER_COUNTDOWN_HPP

@@ -150,12 +150,12 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 		{
 			Game::ptr_current_level->ptr_initial_navgrid_component->SetVisibilityForAllCreatures(false);
 		}
-		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
+		/*else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
 			     ptr_my_event_handler->key.keysym.sym == SDLK_n && 
 			     ptr_my_event_handler->key.repeat == 0)
 		{
 			Game::ptr_current_level->should_nodes_be_reconnected = true;
-		}
+		}*/
 		else if (ptr_my_event_handler->type == SDL_KEYDOWN && 
 			     ptr_my_event_handler->key.keysym.sym == SDLK_f &&
 			     ptr_my_event_handler->key.repeat == 0)
@@ -167,7 +167,7 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 		         ptr_my_event_handler->key.repeat == 0)
 		{
 		    Creature* ptr_addressee = Creature::ptr_current_main_charater->TellFollowedCreature();
-			ConversationalMessage message = Creature::ptr_current_main_charater->ConstructConversationalMessage("Hi!");
+			ConversationalMessage message = Creature::ptr_current_main_charater->ConstructConversationalMessage("hi!");
 			Creature::ptr_current_main_charater->SendConversationalMessage(ptr_addressee, message);
 		}
         else if (ptr_my_event_handler->type == SDL_KEYDOWN && 

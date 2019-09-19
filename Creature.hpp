@@ -87,6 +87,7 @@ class Creature
 		static const double DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS;
 		static std::vector<CreatureType> LIVING_CREATUES;
 		static const double DEFAULT_RADIUS_FOR_ALERTING_CREATURES;
+		static const Uint32 DEFAULT_CONVERSATIONL_MESSAGE_TIME_TO_STAY_ON_SCREEN;
 
 		// Pointer to sprites factory
 		FactorySpawningSprites* ptr_sprites_factory = nullptr;
@@ -170,12 +171,11 @@ class Creature
 		std::vector<RandomPathRequest> random_path_requests = {};
 		std::vector<PointToPointPathRequest> point_to_point_path_requests = {};
 
-		//###################
-		//Arrays&vectors
-		//###################
-
 		//Vectors grouping creatures by type. Used when random one from some category is needed.
 		static std::vector <CreatureType> walls;
+
+		//Vector storing requests to print something onscreen
+		std::vector<PrintRequest> print_requests = {};
 
         //###################
         //Functions
@@ -313,6 +313,9 @@ class Creature
 		void SendConversationalMessage(Creature* ptr_addressee, ConversationalMessage my_message);
 		void ReadReceivedConversationalMessages();
 		virtual void ReactForReceivedConversationalMessage(ConversationalMessage my_message);
+		PrintRequest ConstructRequestToPrintMessageOnscreen(std::string my_text, Uint32 my_duration_miliseconds=DEFAULT_CONVERSATIONL_MESSAGE_TIME_TO_STAY_ON_SCREEN);
+		void PlaceRequestToPrintMessageOnscreen(PrintRequest my_request);
+		void ClearPrintRequestsBuffer();
 
 		//###################
 		//Events

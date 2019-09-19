@@ -8,7 +8,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	printf("Triggers component address: %p.\n", ptr_border_triggers);
 
 	/*
-	//Trigger to loose level
+	//Trigger to lose level
 	std::string signal_to_lose = "losing";
 	PreciseRect event_lose_area = { 700,1000,100,100 };
 	Creature* ptr_losing_trigger = AddTriggerUsingDefaultComponent(event_lose_area, signal_to_lose);
@@ -102,13 +102,13 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	ptr_winning_timer->Start();
 	cyclic_actions.push_back(func_check_winning_timer);
 	cyclic_actions.push_back(func_restart_winning_timer_if_main_character_attacks_anyone);
+	cyclic_actions.push_back(func_watch_carrier_creatures_number);
 }
 
 LevelNineMazes::~LevelNineMazes()
 {
 	;
 }
-
 
 std::pair<Coordinates, Coordinates> LevelNineMazes::CalculateLevelConstraints()
 {
@@ -166,6 +166,15 @@ void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 				printf("Carrier reroll.\n");
 			}
 		}
+	}
+}
+
+void LevelNineMazes::MakeSureThatCarriersNumberInInitialComponentDoesNotDropBelowThreshold(unsigned int threshold)
+{
+	unsigned int creatures_number = ptr_initial_core_component->CalculateNumberOfCreaturesOfGivenTypePresent(cre_carrier_a);
+	if (creatures_number < threshold)
+	{
+		SpawnCarriers(threshold - creatures_number);
 	}
 }
 
@@ -759,10 +768,15 @@ void LevelNineMazes::NotifyOfBciEvent(BCIEvent my_event)
 	if (my_event == bci_event_clench)
 	{
 		Logger::Log("Clench caught on Nine Mazes level!", debug_info);
+		Creature::ptr_current_main_charater->AlertLivingCreaturesInRadius();
+		Creature::ptr_current_main_charater->RequestBehaviorMode(beh_sleep,
+			Behavior::BEH_PAT_STALKER_SLEEP_TIME);
 	}
 	else if (my_event == bci_event_smile)
 	{
 		Logger::Log("Smile caught on Nine Mazes level!");
-		Creature::ptr_current_main_charater->SetHungerLevel(0);
+		Creature* ptr_addressee = Creature::ptr_current_main_charater->TellFollowedCreature();
+		ConversationalMessage message = Creature::ptr_current_main_charater->ConstructConversationalMessage("hi!");
+		Creature::ptr_current_main_charater->SendConversationalMessage(ptr_addressee, message);
 	}
 }

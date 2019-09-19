@@ -17,6 +17,7 @@ public:
 	void RemoveTwoSidedConnection(CreatureNavGridNode* ptr_neighbor_node);
 	void CreateLineTowardsNode(Creature* ptr_neighbor_node);
 	void RemoveLineTowardsNode(Creature* ptr_neighbor_node);
+	void RemoveAllConnections();
 	std::vector<CreatureNavGridNode*> TellConnectedNodes();
 };
 #endif // CREATURE_NAVGRID_NODE_HPP

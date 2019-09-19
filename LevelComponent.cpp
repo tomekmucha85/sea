@@ -23,6 +23,7 @@ LevelComponent::LevelComponent(std::map<LevelComponentType, std::vector<LevelCom
 	cyclic_actions.push_back(func_destroy_creatures_on_peer_component_demand);
 	cyclic_actions.push_back(func_reaper);
 	cyclic_actions.push_back(func_send_through_path_requests);
+	cyclic_actions.push_back(func_send_all_print_requests);
 }
 
 LevelComponent::~LevelComponent()
@@ -328,6 +329,18 @@ void LevelComponent::RemoveAllCreaturesExceptHero()
 	}
 }
 
+unsigned int LevelComponent::CalculateNumberOfCreaturesOfGivenTypePresent(CreatureType my_type)
+{
+	unsigned int result = 0;
+	for (Creature* ptr_creature : creatures)
+	{
+		if (ptr_creature->my_type == my_type)
+		{
+			result++;
+		}
+	}
+	return result;
+}
 
 std::vector<Creature*> LevelComponent::FindCollisionsWithMainCharacter(bool check_only_obstacles)
 {
@@ -406,6 +419,11 @@ void LevelComponent::ServeAllExternalSpawnRequests()
 		ServeExternalSpawnRequest(request_to_serve);
 	}
 	external_spawn_requests.clear();
+}
+
+std::vector<CreatureSpawnRequest> LevelComponent::TellExternalSpawnRequests()
+{
+	return external_spawn_requests;
 }
 
 void LevelComponent::ServeExternalDestructionRequest(CreatureDestructionInGivenAreaRequest my_request)
@@ -555,7 +573,30 @@ void LevelComponent::DeliverPathResponse(PointToPointPathResponseEncapsulated my
 	}
 }
 
+//####################
+//# PRINT REQUESTS
+//####################
 
+void LevelComponent::CollectAllPrintRequests()
+{
+	for (Creature* ptr_creature : creatures)
+	{
+		if (ptr_creature->print_requests.size() > 0)
+		{
+			for (PrintRequest my_print_request : ptr_creature->print_requests)
+			{
+				print_requests_per_level_component.push_back(my_print_request);
+			}
+		}
+		ptr_creature->ClearPrintRequestsBuffer();
+	}
+}
+
+
+void LevelComponent::ClearPrintRequests()
+{
+	print_requests_per_level_component.clear();
+}
 
 //##############################
 //Cyclic actions

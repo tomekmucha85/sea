@@ -11,10 +11,9 @@ LevelComponentNavGrid::LevelComponentNavGrid(std::map<LevelComponentType, std::v
 
 void LevelComponentNavGrid::ServeAllExternalSpawnRequests()
 {
-	unsigned int creatures_count_before = TellPtrToCreaturesArray()->size();
+	unsigned int spawn_requests_number = TellExternalSpawnRequests().size();
 	LevelComponent::ServeAllExternalSpawnRequests();
-	unsigned int creatures_count_after = TellPtrToCreaturesArray()->size();
-	if (creatures_count_before != creatures_count_after)
+	if (spawn_requests_number > 0)
 	{
 		ConnectNodes(MAX_RADIUS_FOR_NODE_CONNECTION);
 	}
@@ -28,6 +27,7 @@ void LevelComponentNavGrid::ConnectNodes(double search_radius)
 	{
 		if (ptr_first_creature->my_type == cre_navgrid_node)
 		{
+			dynamic_cast<CreatureNavGridNode*>(ptr_first_creature)->RemoveAllConnections();
 			for (Creature* ptr_second_creature : *(TellPtrToCreaturesArray()))
 			{
 				if (ptr_second_creature->my_type == cre_navgrid_node && ptr_first_creature != ptr_second_creature)
@@ -275,7 +275,5 @@ std::vector<Coordinates> LevelComponentNavGrid::GeneratePathBetweenNodes(Creatur
 		Logger::Log("x: " + std::to_string(step.x) +" y: " + std::to_string(step.y),
 			debug_full);
 	}
-
-
 	return result;
 }

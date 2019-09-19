@@ -212,4 +212,11 @@ enum BCIEvent
 	bci_event_training_erased
 };
 
+//Request to print something on console
+struct PrintRequest
+{
+	std::string text = "";
+	Uint32 duration_miliseconds = 500;
+};
+
 #endif

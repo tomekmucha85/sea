@@ -24,6 +24,7 @@ Level::Level()
 	cyclic_actions.push_back(func_manage_gui);
 	cyclic_actions.push_back(func_check_and_react_if_player_won);
 	cyclic_actions.push_back(func_check_and_react_if_player_lost);
+	cyclic_actions.push_back(func_display_onscreen_prints);
 	//cyclic_actions.push_back(func_connect_nodes);
 	cyclic_actions.push_back(func_serve_path_requests);
 }
@@ -457,6 +458,34 @@ void Level::ProcessAllPathRequests()
 
 }
 
+void Level::CollectPrintRequests()
+{
+	//Collecting print requests from components
+	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_component_types_vs_level_components)
+	{
+		std::vector<LevelComponent*> my_level_components = element.second;
+		for (LevelComponent* ptr_my_level_component : my_level_components)
+		{
+			for (PrintRequest my_request : ptr_my_level_component->print_requests_per_level_component)
+			{
+				print_requests_level.push_back(my_request);
+			}
+			ptr_my_level_component->ClearPrintRequests();
+		}
+	}
+}
+
+void Level::ServePrintRequests()
+{
+	while (print_requests_level.size() > 0)
+	{
+		PrintRequest last_print_request = print_requests_level.back();
+		ptr_gui->PrintTextOnscreen(last_print_request.text, last_print_request.duration_miliseconds);
+		//#TODO czy nie lepiej braæ z frontu?
+		print_requests_level.pop_back();
+	}
+}
+
 //************
 //RENDERING
 //************
@@ -543,4 +572,19 @@ bool Level::PerformSelectedAction()
 void Level::NotifyOfBciEvent(BCIEvent my_event)
 {
 	Logger::Log("Default implementation of NotifyOfBciEvent called!");
+}
+
+void Level::SpawnCarriers(unsigned int carriers_number)
+{
+	Logger::Log("Default implementation of SpawnCarriers called!");
+}
+
+void Level::SpawnACarrierEveryNMiliseconds(Uint32 delay_miliseconds)
+{
+	Logger::Log("Default implementation of SpawnACarrierEveryNMiliseconds called!");
+}
+
+void Level::MakeSureThatCarriersNumberInInitialComponentDoesNotDropBelowThreshold(unsigned int threshold)
+{
+	Logger::Log("Default implementation of MakeSureThatCarriersNumberInInitialComponentDoesNotDropBelowThreshold called!");
 }

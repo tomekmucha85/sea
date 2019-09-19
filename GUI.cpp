@@ -1,5 +1,7 @@
 #include <GUI.hpp>
 
+const std::string GUI::EMPTY_TEXT_STRING = " ";
+
 GUI::GUI()
 {
 	//Hunger bar
@@ -11,12 +13,20 @@ GUI::GUI()
 		&winning_timer_upper_left_corner,
 		nullptr,
 		{ 255,0,0,0 });
-	//Onscreen printer
-	ptr_onscreen_printer = new TrueTypeWriting(
+	//Onscreen printer - initialize 2 rows
+	ptr_onscreen_printer_1st_row = new TrueTypeWriting(
 		" ",
-		&onscreen_printer_upper_left_corner,
+		&onscreen_printer_1st_row_upper_left_corner,
 		nullptr,
 		onscreen_printer_default_color);
+	ptr_onscreen_printer_2nd_row = new TrueTypeWriting(
+		" ",
+		&onscreen_printer_2nd_row_upper_left_corner,
+		nullptr,
+		onscreen_printer_default_color);
+	ptr_timer_for_onscreen_printer_1st_row = new TimerCountdown(0);
+	ptr_timer_for_onscreen_printer_2nd_row = new TimerCountdown(0);
+	ptr_timer_for_onscreen_printer_3rd_row = new TimerCountdown(0);
 	//Cyclic tasks
 	cyclic_actions.push_back(func_manage_onscreen_printer);
 }
@@ -26,7 +36,12 @@ GUI::~GUI()
 	delete ptr_factory_spawning_sprites;
 	delete ptr_writing_winning_timer;
 	delete ptr_hunger_bar;
-	delete ptr_onscreen_printer;
+	delete ptr_onscreen_printer_1st_row;
+	delete ptr_onscreen_printer_2nd_row;
+	delete ptr_onscreen_printer_3rd_row;
+	delete ptr_timer_for_onscreen_printer_1st_row;
+	delete ptr_timer_for_onscreen_printer_2nd_row;
+	delete ptr_timer_for_onscreen_printer_3rd_row;
 }
 
 void GUI::AddComponentToDisplay(GuiElement my_element)
@@ -41,7 +56,9 @@ void GUI::AddComponentToDisplay(GuiElement my_element)
 	}
 	else if (my_element == gui_printer)
 	{
-		gui_components.push_back(ptr_onscreen_printer);
+		gui_components.push_back(ptr_onscreen_printer_1st_row);
+		gui_components.push_back(ptr_onscreen_printer_2nd_row);
+		//gui_components.push_back(ptr_onscreen_printer_3rd_row);
 	}
 }
 
@@ -85,32 +102,91 @@ void GUI::HungerBarSetChargeLevel(int new_level)
 
 void GUI::PrintTextOnscreen(std::string my_text, Uint32 time_to_live_in_miliseconds)
 {
-	ptr_onscreen_printer->SetText(my_text);
+	if (CheckIfOnscreenPrinter1stRowIsAvailable())
+	{
+		printf("1st row was available.\n");
+		Populate1stPrinterRow(my_text, time_to_live_in_miliseconds);
+	}
+	else if (CheckIfOnscreenPrinter2ndRowIsAvailable())
+	{
+		printf("2nd row was available.\n");
+		PushFirstPrinterRowUpToSecond();
+		Populate1stPrinterRow(my_text, time_to_live_in_miliseconds);
+	}
+	else
+	//In case both 1st and second row are occupied
+	{
+		printf("No rows were available.\n");
+		PushFirstPrinterRowUpToSecond();
+		Populate1stPrinterRow(my_text, time_to_live_in_miliseconds);
+	}
+}
+
+void GUI::Populate1stPrinterRow(std::string my_text, Uint32 time_to_live_in_miliseconds)
+{
+	ptr_onscreen_printer_1st_row->SetText(my_text);
 	if (time_to_live_in_miliseconds == 0)
 	{
 		time_to_live_in_miliseconds = onscreen_printer_text_default_time_to_live_in_miliseconds;
 	}
-	ptr_timer_for_onscreen_printer = new TimerCountdown(time_to_live_in_miliseconds);
+	ptr_timer_for_onscreen_printer_1st_row->ResetWithNewTimeToLive(time_to_live_in_miliseconds);
 }
 
-bool GUI::CheckIfOnscreenPrinterTextExpired()
+void GUI::PushFirstPrinterRowUpToSecond()
 {
-	if (ptr_timer_for_onscreen_printer != nullptr)
+	//Populate 2nd row
+	ptr_onscreen_printer_2nd_row->SetText(ptr_onscreen_printer_1st_row->TellText()); // Copy text from 1st row
+	printf("Text should be transfered to second row: ");
+	Logger::Log(ptr_onscreen_printer_1st_row->TellText());
+	//Timer for the second row "inherits" value from timer for the first row
+	ptr_timer_for_onscreen_printer_2nd_row->ResetWithNewTimeToLive(ptr_timer_for_onscreen_printer_1st_row->HowManyMilisecondsLeftTillEnd());
+	printf("Time to live of %d was set for the second row.\n", ptr_timer_for_onscreen_printer_1st_row->HowManyMilisecondsLeftTillEnd());
+}
+
+bool GUI::CheckIfOnscreenPrinter1stRowIsAvailable()
+{
+	return ptr_timer_for_onscreen_printer_1st_row->CheckIfCountdownFinished();
+}
+
+bool GUI::CheckIfOnscreenPrinter2ndRowIsAvailable()
+{
+	return ptr_timer_for_onscreen_printer_2nd_row->CheckIfCountdownFinished();
+}
+
+bool GUI::CheckIfOnscreenPrinter3rdRowIsAvailable()
+{
+	return ptr_timer_for_onscreen_printer_3rd_row->CheckIfCountdownFinished();
+}
+
+bool GUI::CheckIfAnyPrintIsDisplayedNow()
+{
+	if (ptr_timer_for_onscreen_printer_1st_row != nullptr)
 	{
-		return ptr_timer_for_onscreen_printer->CheckIfCountdownFinished();
+		return true;
 	}
-	return false;
+	else
+	{
+		return false;
+	}
 }
 
 //#TODO - mo¿e wiêcej akcji powinno trafiæ do cyclic actions?
 void GUI::ManageOnscreenPrinter()
+// Wiping out printed text if it's outdated
 {
-	if (CheckIfOnscreenPrinterTextExpired() == true)
+	if (CheckIfOnscreenPrinter1stRowIsAvailable() == true)
 	{
-		//Clear text displayed onscreen if time to live expired.
-		delete ptr_timer_for_onscreen_printer;
-		ptr_timer_for_onscreen_printer = nullptr;
-		ptr_onscreen_printer->SetText(" ");
+		if (ptr_onscreen_printer_1st_row->TellText() != EMPTY_TEXT_STRING)
+		{
+			ptr_onscreen_printer_1st_row->SetText(EMPTY_TEXT_STRING);
+		}
+	}
+	if (CheckIfOnscreenPrinter2ndRowIsAvailable() == true)
+	{
+		if (ptr_onscreen_printer_2nd_row->TellText() != EMPTY_TEXT_STRING)
+		{
+			ptr_onscreen_printer_2nd_row->SetText(EMPTY_TEXT_STRING);
+		}
 	}
 }
 

@@ -12,6 +12,7 @@ const double Creature::DEFAULT_TURBO_VELOCITY = Creature::DEFAULT_VELOCITY*2;
 const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
 const double Creature::DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS = 80;
 const double Creature::DEFAULT_RADIUS_FOR_ALERTING_CREATURES = 500;
+const Uint32 Creature::DEFAULT_CONVERSATIONL_MESSAGE_TIME_TO_STAY_ON_SCREEN = 3000;
 std::vector<CreatureType> Creature::LIVING_CREATUES = { cre_carrier_a, cre_clawy };
 
 //**************
@@ -1134,6 +1135,9 @@ void Creature::SendConversationalMessage(Creature* ptr_addressee, Conversational
 		}
 		//Once methods were executed, clear vector holding them.
 		my_message.routines_to_execute_upon_sending.clear();
+		//Display message onscreen
+		std::string message_to_print = my_message.sender_friendly_name + " says: " + my_message.message_text;
+		PlaceRequestToPrintMessageOnscreen(ConstructRequestToPrintMessageOnscreen(message_to_print));
 	}
 }
 
@@ -1151,6 +1155,23 @@ void Creature::ReactForReceivedConversationalMessage(ConversationalMessage my_me
 	//Do nothing;
 }
 
+PrintRequest Creature::ConstructRequestToPrintMessageOnscreen(std::string my_text, Uint32 my_duration_miliseconds)
+{
+	PrintRequest result;
+	result.text = my_text;
+	result.duration_miliseconds = my_duration_miliseconds;
+	return result;
+}
+
+void Creature::PlaceRequestToPrintMessageOnscreen(PrintRequest my_request)
+{
+	print_requests.push_back(my_request);
+}
+
+void Creature::ClearPrintRequestsBuffer()
+{
+	print_requests.clear();
+}
 
 //**************
 //CYCLIC ACTIONS

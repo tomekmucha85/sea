@@ -77,7 +77,7 @@ BCIMode BCI::WhatBCIIsConnected()
 BCIEvent BCI::GetNextBCIEvent()
 {
 	state = IEE_EngineGetNextEvent(eEvent);
-	BCIEvent result = bci_event_none;
+	//BCIEvent result = bci_event_none;
 	if (state != EDK_NO_EVENT)
 	{
 		if (state == EDK_OK)
@@ -94,7 +94,7 @@ BCIEvent BCI::GetNextBCIEvent()
 			if (eventType == IEE_UserAdded)
 			{
 				printf("Added emotiv user\n");
-				result = bci_event_user_added;
+				return bci_event_user_added;
 			}
 			else if (eventType == IEE_EmoStateUpdated)
 			{
@@ -102,8 +102,8 @@ BCIEvent BCI::GetNextBCIEvent()
 				float upperFaceAmp = IS_FacialExpressionGetUpperFaceActionPower(eState);
 				float lowerFaceAmp = IS_FacialExpressionGetLowerFaceActionPower(eState);
 				//printf("State updated.\n");
-				IEE_FacialExpressionAlgo_t upperFaceType =
-					IS_FacialExpressionGetUpperFaceAction(eState);
+				//IEE_FacialExpressionAlgo_t upperFaceType =
+				//	IS_FacialExpressionGetUpperFaceAction(eState);
 				IEE_FacialExpressionAlgo_t lowerFaceType =
 					IS_FacialExpressionGetLowerFaceAction(eState);
 
@@ -112,12 +112,12 @@ BCIEvent BCI::GetNextBCIEvent()
 					if (lowerFaceType == FE_CLENCH)
 					{
 						Logger::Log("Clench! Amplitude: " + std::to_string(lowerFaceAmp));
-						result = bci_event_smile;
+						return bci_event_clench;
 					}
 					else if (lowerFaceType == FE_SMILE)
 					{
 						Logger::Log("Smile! Amplitude: " + std::to_string(lowerFaceAmp));
-						result = bci_event_smile;
+						return bci_event_smile;
 					}
 				}
 			}
@@ -127,40 +127,41 @@ BCIEvent BCI::GetNextBCIEvent()
 				if (facial_event_type == IEE_FacialExpressionTrainingStarted)
 				{
 					Logger::Log("BCI training started!\n", debug_info);
-					result = bci_event_training_start;
+					return bci_event_training_start;
 				}
 				else if (facial_event_type == IEE_FacialExpressionTrainingSucceeded)
 				{
 					Logger::Log("BCI training succeeded!\n", debug_info);
-					result = bci_event_training_success;
+					return bci_event_training_success;
 				}
 				else if (facial_event_type == IEE_FacialExpressionTrainingFailed)
 				{
 					Logger::Log("BCI training failed!\n", debug_info);
-					result = bci_event_training_failed;
+					return bci_event_training_failed;
 				}
 				else if (facial_event_type == IEE_FacialExpressionTrainingCompleted)
 				{
 					Logger::Log("Signatures updated!\n", debug_info);
-					result = bci_event_training_completed;
+					return bci_event_training_completed;
 				}
 				else if (facial_event_type == IEE_FacialExpressionTrainingDataErased)
 				{
 					Logger::Log("Training data erased!\n", debug_info);
-					result = bci_event_training_erased;
+					return bci_event_training_erased;
 				}
 			}
 		}
 		else
 		{
 			printf("Unexpected EmoEngineBehavior!\n");
+			return bci_event_none;
 		}
 	}
 	else
 	{
 		//printf("No event!\n");
+		return bci_event_none;
 	}
-	return result;
 }
 
 int BCI::SaveUserProfile()

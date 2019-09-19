@@ -125,9 +125,6 @@ class LevelNineMazes : public Level
 		std::string signal_for_regenerating_eastern_column = "generate mazes east";
 		std::string signal_for_regenerating_western_column = "generate mazes west";
 
-		//Carriers - guiding creatures
-		unsigned int number_of_carriers_to_maintain = 6;
-
     public:
 	    LevelNineMazes(int my_cols_count, int my_rows_count);
 		~LevelNineMazes();
@@ -149,6 +146,7 @@ class LevelNineMazes : public Level
 		void DeleteTrigger(Directions my_direction);
 		std::pair<Coordinates, Coordinates> CalculateLevelConstraints();
 		void SpawnCarriers(unsigned int carriers_number = 1);
+		void MakeSureThatCarriersNumberInInitialComponentDoesNotDropBelowThreshold(unsigned int threshold);
 
 		//BCI usage
 		void NotifyOfBciEvent(BCIEvent my_event);
@@ -179,6 +177,13 @@ class LevelNineMazes : public Level
 		{
 			printf("TRIGGER!\n");
 			this->MoveWorldWest();
+		};
+
+		//Cyclic action to keep carrier creatures herd above given level
+		std::function<void(Level*)> func_watch_carrier_creatures_number = [](Level* ptr_level)
+		{
+			const Uint32 CARRIERS_TO_KEEP_NUMBER = 6;
+			ptr_level->MakeSureThatCarriersNumberInInitialComponentDoesNotDropBelowThreshold(CARRIERS_TO_KEEP_NUMBER);
 		};
 };
 #endif // LEVEL_NINE_MAZES_HPP

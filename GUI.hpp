@@ -21,11 +21,18 @@ class GUI
 		TrueTypeWriting* ptr_writing_winning_timer = nullptr;
 		Uint32 winning_timer_value_in_seconds = 0;
 		//On-screen prints
-		Coordinates onscreen_printer_upper_left_corner = { 10, static_cast<double>(Screen::TellScreenHeight() - 40) };
+		Coordinates onscreen_printer_1st_row_upper_left_corner = { 10, static_cast<double>(Screen::TellScreenHeight() - 40) };
+		Coordinates onscreen_printer_2nd_row_upper_left_corner = { 10, static_cast<double>(Screen::TellScreenHeight() - 80) };
+		Coordinates onscreen_printer_3rd_row_upper_left_corner = { 10, static_cast<double>(Screen::TellScreenHeight() - 120) };
 		Uint32 onscreen_printer_text_default_time_to_live_in_miliseconds = 2000;
-		TimerCountdown* ptr_timer_for_onscreen_printer = nullptr;
-		TrueTypeWriting* ptr_onscreen_printer = nullptr;
+		TimerCountdown* ptr_timer_for_onscreen_printer_1st_row = nullptr;
+		TimerCountdown* ptr_timer_for_onscreen_printer_2nd_row = nullptr;
+		TimerCountdown* ptr_timer_for_onscreen_printer_3rd_row = nullptr;
+		TrueTypeWriting* ptr_onscreen_printer_1st_row = nullptr;
+		TrueTypeWriting* ptr_onscreen_printer_2nd_row = nullptr;
+		TrueTypeWriting* ptr_onscreen_printer_3rd_row = nullptr;
 		SDL_Color onscreen_printer_default_color = {0,40,200,255}; //Blue
+		static const std::string EMPTY_TEXT_STRING;
 
     public:
 		GUI();
@@ -38,8 +45,13 @@ class GUI
 		void HungerBarSetChargeLevel(int new_level);
 		void ManageWinningTimer(Uint32 my_time_passed);
 		void PrintTextOnscreen(std::string my_text, Uint32 time_to_live=0);
-		bool CheckIfOnscreenPrinterTextExpired();
+		bool CheckIfOnscreenPrinter1stRowIsAvailable();
+		bool CheckIfOnscreenPrinter2ndRowIsAvailable();
+		bool CheckIfOnscreenPrinter3rdRowIsAvailable();
+		bool CheckIfAnyPrintIsDisplayedNow();
 		void ManageOnscreenPrinter();
+		void PushFirstPrinterRowUpToSecond();
+		void Populate1stPrinterRow(std::string my_text, Uint32 time_to_live_in_miliseconds);
 
 
 		//################################

@@ -52,6 +52,7 @@ void TrueTypeWriting::SetFont(TTF_Font* ptr_my_font)
 void TrueTypeWriting::SetText(std::string my_text)
 {
 	SDL_DestroyTexture(ptr_writing_texture);
+	current_text = my_text;
 	ptr_writing_texture = Texture::LoadTextureFromRenderedText(my_text, Screen::renderer, ptr_font, color);
 	if (ptr_writing_texture != nullptr)
 	{
@@ -65,6 +66,11 @@ void TrueTypeWriting::SetText(std::string my_text)
 		printf("Unable to create writing texture!\n");
 		throw("Unable to create writing texture!\n");
 	}
+}
+
+std::string TrueTypeWriting::TellText()
+{
+	return current_text;
 }
 
 TrueTypeWriting::~TrueTypeWriting()

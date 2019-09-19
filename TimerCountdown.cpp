@@ -5,9 +5,15 @@ TimerCountdown::TimerCountdown(Uint32 my_time_to_live) : TimerGeneral()
 	time_to_live = my_time_to_live;
 }
 
+
+void TimerCountdown::ResetWithNewTimeToLive(Uint32 new_time_to_live)
+{
+	time_to_live = new_time_to_live;
+	TimerGeneral::ResetStartTime();
+}
+
 bool TimerCountdown::CheckIfCountdownFinished()
 {
-	Uint32 current_time = SDL_GetTicks();
 	if (HowManyMilisecondsLeftTillEnd() > 0)
 	{
 		return false;

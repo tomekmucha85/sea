@@ -34,6 +34,7 @@ class Level
 		int map_offset_x = NULL;
 		int map_offset_y = NULL;
 		bool is_paused = false;
+		std::vector<PrintRequest> print_requests_level;
 
     public:
 		//Default position for hero spawned on this level
@@ -62,9 +63,6 @@ class Level
 		TimerStartStop* ptr_winning_timer = nullptr;
 		//How much time has to pass before a level is won via a winning timer
 		Uint32 time_to_endure_before_win = 60000;
-
-		//#TODO - czy nie usun¹æ?
-		bool should_nodes_be_reconnected = false;
 
 		Level();
 		virtual ~Level();
@@ -114,6 +112,8 @@ class Level
 		bool TellIfPaused();
 
 		void ProcessAllPathRequests();
+		void CollectPrintRequests();
+		void ServePrintRequests();
 
 		//VIRTUAL METHODS FOR SPECIFIC LEVELS
 
@@ -121,6 +121,11 @@ class Level
 		virtual void BrowseActions(Directions my_direction);
 		virtual bool PerformSelectedAction();
 		virtual void NotifyOfBciEvent(BCIEvent my_event);
+
+		//Methods for LevelNineMazes
+		virtual void SpawnCarriers(unsigned int carriers_number);
+		virtual void SpawnACarrierEveryNMiliseconds(Uint32 delay_miliseconds);
+		virtual void MakeSureThatCarriersNumberInInitialComponentDoesNotDropBelowThreshold(unsigned int threshold);
 
 		//###################
 		// COMMON LAMBDAS
@@ -152,6 +157,13 @@ class Level
 			{
 				ptr_level->FinishLevel(ending_defeat);
 			}
+		};
+
+		//Cyclic action to display onscreen prints
+		std::function<void(Level*)> func_display_onscreen_prints = [](Level* ptr_level)
+		{
+			ptr_level->CollectPrintRequests();
+			ptr_level->ServePrintRequests();
 		};
 
 		//Cyclic action to manage GUI for main character and current level
