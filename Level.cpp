@@ -340,11 +340,25 @@ LevelEnding Level::TellLevelEnding()
 	return ending;
 }
 
+bool Level::FinishLevelInACustomWay(LevelEnding my_ending)
+{
+	/*
+	Method where custom actions at level ending (depending on specific level) can be defined.
+	Returns true when finishing action is done.
+	*/
+	printf("Default implementation of FinishLevelInACustomWay called.\n");
+	return true;
+}
+
 void Level::FinishLevel(LevelEnding my_ending)
 {
-	SetLevelEnding(my_ending);
-	Logger::Log("Level finished", debug_info);
-	is_level_finished = true;
+	//Repeats FinishLevelInACustomWay in subsequent calls until it's done
+	if (FinishLevelInACustomWay(my_ending))
+	{
+		SetLevelEnding(my_ending);
+		Logger::Log("Level finished", debug_info);
+		is_level_finished = true;
+	}
 }
 
 bool Level::TellIfLevelIsFinished()
@@ -371,6 +385,30 @@ void Level::PerformCyclicActions()
 
 		//Perform GUI cyclic actions
 		ptr_gui->PerformCyclicActions();
+	}
+}
+
+/*void Level::RemoveAllCreaturesExceptHero()
+{
+	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_component_types_vs_level_components)
+	{
+		std::vector<LevelComponent*> my_level_components = element.second;
+		for (LevelComponent* ptr_my_level_component : my_level_components)
+		{
+			ptr_my_level_component->RemoveAllCreaturesExceptHero();
+		}
+	}
+}*/
+
+void Level::MakeAllCreaturesOnThisLevelInvisibleExceptHero()
+{
+	for (std::pair<LevelComponentType, std::vector<LevelComponent*>> element : level_component_types_vs_level_components)
+	{
+		std::vector<LevelComponent*> my_level_components = element.second;
+		for (LevelComponent* ptr_my_level_component : my_level_components)
+		{
+			ptr_my_level_component->MakeAllCreaturesInvisibleExceptHero();
+		}
 	}
 }
 

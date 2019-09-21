@@ -16,12 +16,14 @@ private:
 	//###################
 	std::string path_font_doom = "images/doom.ttf";
 	static const int FONT_SIZE_MED = 28;
+	static const int FONT_SIZE_BIG = 48;
 
 public:
 	//###################
 	//Variables
 	//###################
 	static TTF_Font* ptr_font_doom;
+	static TTF_Font* ptr_font_doom_big;
 	static TTF_Font** ptr_ptr_default_font;
 
 	//###################

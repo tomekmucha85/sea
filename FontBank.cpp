@@ -2,12 +2,14 @@
 
 
 TTF_Font* FontBank::ptr_font_doom = nullptr;
+TTF_Font* FontBank::ptr_font_doom_big = nullptr;
 TTF_Font** FontBank::ptr_ptr_default_font = &ptr_font_doom;
 
 FontBank::FontBank()
 {
 	Logger::Log("Loading fonts");
 	ptr_font_doom = LoadFont(path_font_doom);
+	ptr_font_doom_big = LoadFont(path_font_doom, FONT_SIZE_BIG);
 	Logger::Log("Finished loading fonts");
 }
 

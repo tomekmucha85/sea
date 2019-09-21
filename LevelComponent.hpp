@@ -137,6 +137,7 @@ class LevelComponent
 		void MakeCreaturesPerformCyclicActions();
 		void PerformCyclicActions();
 		unsigned int CalculateNumberOfCreaturesOfGivenTypePresent(CreatureType my_type);
+		void MakeAllCreaturesInvisibleExceptHero();
 		//###################
         //Virtual Functions
         //###################

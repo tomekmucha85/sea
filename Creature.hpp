@@ -87,7 +87,7 @@ class Creature
 		static const double DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS;
 		static std::vector<CreatureType> LIVING_CREATUES;
 		static const double DEFAULT_RADIUS_FOR_ALERTING_CREATURES;
-		static const Uint32 DEFAULT_CONVERSATIONL_MESSAGE_TIME_TO_STAY_ON_SCREEN;
+		static const Uint32 DEFAULT_CONVERSATION_MESSAGE_TIME_TO_STAY_ON_SCREEN;
 
 		// Pointer to sprites factory
 		FactorySpawningSprites* ptr_sprites_factory = nullptr;
@@ -218,12 +218,13 @@ class Creature
 		void MoveVisualComponent(double x, double y);
 		void MoveBehaviorComponent(double x, double y);
         void MoveHitbox(double x, double y);
-        void ThrustForward(double velocity=DEFAULT_VELOCITY);
-        void ThrustBackward(double velocity=DEFAULT_VELOCITY);
+		virtual double TellDefaultVelocity();
+        void ThrustForward(double velocity=0);
+        void ThrustBackward(double velocity=0);
+		void ThrustTowardsPoint(Coordinates destination, double velocity=0);
+		void RunAwayFromPoint(Coordinates point, double velocity=0);
 		void TurnTowardsPoint(Coordinates point);
 		void TurnAwayFromPoint(Coordinates point);
-		void ThrustTowardsPoint(Coordinates destination, double velocity=DEFAULT_VELOCITY);
-		void RunAwayFromPoint(Coordinates point, double velocity = DEFAULT_VELOCITY);
 		void SetPosition(Coordinates new_center_position);
 		int TellCurrentAngleDegree();
 		Coordinates TellCenterPoint();
@@ -313,7 +314,7 @@ class Creature
 		void SendConversationalMessage(Creature* ptr_addressee, ConversationalMessage my_message);
 		void ReadReceivedConversationalMessages();
 		virtual void ReactForReceivedConversationalMessage(ConversationalMessage my_message);
-		PrintRequest ConstructRequestToPrintMessageOnscreen(std::string my_text, Uint32 my_duration_miliseconds=DEFAULT_CONVERSATIONL_MESSAGE_TIME_TO_STAY_ON_SCREEN);
+		PrintRequest ConstructRequestToPrintMessageOnscreen(std::string my_text, Uint32 my_duration_miliseconds=DEFAULT_CONVERSATION_MESSAGE_TIME_TO_STAY_ON_SCREEN);
 		void PlaceRequestToPrintMessageOnscreen(PrintRequest my_request);
 		void ClearPrintRequestsBuffer();
 

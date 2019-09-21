@@ -9,6 +9,8 @@ private:
 	//###############
 	static const SpriteType my_initial_type = spr_clawy;
 	static const int RADIUS_FOR_PREY_PROXIMITY_CHECKS = 100;
+	static const double DEFAULT_CLAWY_VELOCITY;
+	static const double DEFAULT_CLAWY_TURBO_VELOCITY;
 	//TIMING
     //Timer for measuring how long was the creature remaining in its potential prey proximity.
 	TimerStartStop* ptr_timer_for_prey_proximity = nullptr;
@@ -37,6 +39,7 @@ public:
 	//#################
 	CreatureClawy(Coordinates* ptr_my_center, int hitbox_margin = 30);
 	~CreatureClawy();
+	double TellDefaultVelocity();
 	void SetVelocityDependentAnimation(double previous_velocity, double new_velocity);
 	void ManagePreyProximityTrigger();
 	void PlayWarningAnimationIfTimeSpentInPreyProximityRisesAboveThreshold(Uint32 threshold_miliseconds);

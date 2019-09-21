@@ -3,12 +3,14 @@
 CreatureWriting::CreatureWriting(Coordinates* ptr_my_upper_left_corner, 
 	std::string my_text, 
 	SDL_Color my_color,
+	TTF_Font* ptr_my_font,
 	int hitbox_margin) : Creature(my_text, ptr_my_upper_left_corner, my_color)
 {
 	//Logger::Log("Will spawn a WritingCreature.");
 	my_type = cre_writing;
 	text = my_text;
 	color = my_color;
+	ptr_font = ptr_my_font;
 }
 
 std::string CreatureWriting::TellText()

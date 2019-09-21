@@ -8,11 +8,11 @@ std::vector <Creature*> Creature::current_environment;
 std::vector <CreatureType> Creature::walls = { cre_flying_box, cre_spell_open_doors };
 Creature* Creature::ptr_current_main_charater;
 const double Creature::DEFAULT_VELOCITY = 100;
-const double Creature::DEFAULT_TURBO_VELOCITY = Creature::DEFAULT_VELOCITY*2;
+const double Creature::DEFAULT_TURBO_VELOCITY = Creature::DEFAULT_VELOCITY*3;
 const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
 const double Creature::DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS = 80;
 const double Creature::DEFAULT_RADIUS_FOR_ALERTING_CREATURES = 500;
-const Uint32 Creature::DEFAULT_CONVERSATIONL_MESSAGE_TIME_TO_STAY_ON_SCREEN = 3000;
+const Uint32 Creature::DEFAULT_CONVERSATION_MESSAGE_TIME_TO_STAY_ON_SCREEN = 3000;
 std::vector<CreatureType> Creature::LIVING_CREATUES = { cre_carrier_a, cre_clawy };
 
 //**************
@@ -614,14 +614,26 @@ void Creature::MoveBehaviorComponent(double x, double y)
 	}
 }
 
+double Creature::TellDefaultVelocity()
+{
+	return DEFAULT_VELOCITY;
+}
+
 void Creature::ThrustForward(double velocity)
 {
-	//printf("Issued thrust forward with velocity: %f.\n", velocity);
+	if (velocity == 0)
+	{
+		velocity = TellDefaultVelocity();
+	}
 	SetVelocity(velocity);
 }
 
 void Creature::ThrustBackward(double velocity)
 {
+	if (velocity == 0)
+	{
+		velocity = TellDefaultVelocity();
+	}
 	SetVelocity(-velocity);
 }
 
@@ -658,12 +670,20 @@ void Creature::TurnAwayFromPoint(Coordinates point)
 void Creature::ThrustTowardsPoint(Coordinates destination, double velocity)
 {
 	TurnTowardsPoint(destination);
+	if (velocity == 0)
+	{
+		velocity = TellDefaultVelocity();
+	}
 	ThrustForward(velocity);
 }
 
 void Creature::RunAwayFromPoint(Coordinates point, double velocity)
 {
 	TurnAwayFromPoint(point);
+	if (velocity == 0)
+	{
+		velocity = TellDefaultVelocity();
+	}
 	ThrustForward(velocity);
 }
 

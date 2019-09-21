@@ -342,6 +342,17 @@ unsigned int LevelComponent::CalculateNumberOfCreaturesOfGivenTypePresent(Creatu
 	return result;
 }
 
+void LevelComponent::MakeAllCreaturesInvisibleExceptHero()
+{
+	for (Creature* ptr_creature : creatures)
+	{
+		if (ptr_creature != Creature::ptr_current_main_charater)
+		{
+			ptr_creature->SetVisibility(false);
+		}
+	}
+}
+
 std::vector<Creature*> LevelComponent::FindCollisionsWithMainCharacter(bool check_only_obstacles)
 {
 	Creature* ptr_main_character = Creature::ptr_current_main_charater;

@@ -107,7 +107,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 
 LevelNineMazes::~LevelNineMazes()
 {
-	;
+	delete ptr_timer_for_custom_finishing_action;
 }
 
 std::pair<Coordinates, Coordinates> LevelNineMazes::CalculateLevelConstraints()
@@ -178,12 +178,37 @@ void LevelNineMazes::MakeSureThatCarriersNumberInInitialComponentDoesNotDropBelo
 	}
 }
 
-void LevelNineMazes::FinishLevel(LevelEnding my_ending)
+bool LevelNineMazes::FinishLevelInACustomWay(LevelEnding my_ending)
 {
-	Pause();
+	//Pause();
 	if (my_ending == ending_victory)
 	{
-		printf("You've beaten nine mazes!\n");
+		//On action start
+		if (ptr_timer_for_custom_finishing_action == nullptr)
+		{
+			Logger::Log("You've beaten nine mazes!");
+			ptr_timer_for_custom_finishing_action = new TimerCountdown(TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS);
+			MakeAllCreaturesOnThisLevelInvisibleExceptHero();
+			Creature::ptr_current_main_charater->RequestBehaviorMode(beh_sleep, TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS);
+			//Display text
+			Coordinates final_text_position = {Screen::TellScreenWidth()/3, Screen::TellScreenHeight()/3};
+			std::string final_text_content = "you won!";
+			Creature* ptr_final_text = ptr_initial_core_component->AddCreature(cre_writing, &final_text_position, merge, final_text_content, {255,0,100,255});
+
+			return false;
+		}
+		//While the timer ticks
+		else
+		{
+			if (ptr_timer_for_custom_finishing_action->CheckIfCountdownFinished())
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	}
 	else if (my_ending == ending_defeat)
 	{
@@ -193,9 +218,7 @@ void LevelNineMazes::FinishLevel(LevelEnding my_ending)
 	{
 		printf("Some other ending!\n");
 	}
-	//#TODO - rozwi¹zaæ to ³adniej, bez wo³ania parent method w ka¿dym dziedziczeniu
-	//Mandatory call to the parent method
-	Level::FinishLevel(my_ending);
+	return true;
 }
 
 void LevelNineMazes::SetMazeRowsCount(int rows_num)

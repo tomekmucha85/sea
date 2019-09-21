@@ -1,5 +1,8 @@
 #include <CreatureClawy.hpp>
 
+const double CreatureClawy::DEFAULT_CLAWY_VELOCITY = 150;
+const double CreatureClawy::DEFAULT_CLAWY_TURBO_VELOCITY = 300;
+
 CreatureClawy::CreatureClawy(Coordinates* ptr_my_center, int hitbox_margin) :
 	Creature(CreatureClawy::my_initial_type, ptr_my_center, hitbox_margin)
 {
@@ -20,6 +23,11 @@ CreatureClawy::CreatureClawy(Coordinates* ptr_my_center, int hitbox_margin) :
 CreatureClawy::~CreatureClawy()
 {
 	delete ptr_timer_for_prey_proximity;
+}
+
+double CreatureClawy::TellDefaultVelocity()
+{
+	return DEFAULT_CLAWY_VELOCITY;
 }
 
 void CreatureClawy::SetVelocityDependentAnimation(double previous_velocity, double new_velocity)

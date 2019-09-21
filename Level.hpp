@@ -62,7 +62,7 @@ class Level
 		//Timer deciding if level is won
 		TimerStartStop* ptr_winning_timer = nullptr;
 		//How much time has to pass before a level is won via a winning timer
-		Uint32 time_to_endure_before_win = 60000;
+		const Uint32 TIME_TO_ENDURE_BEFORE_WIN = 1000;
 
 		Level();
 		virtual ~Level();
@@ -88,6 +88,8 @@ class Level
 		FactorySpawningLevelComponents* CreateComponentsFactory();
 		void RemoveLevelComponent(LevelComponent* ptr_my_component);
 		void RemoveAllLevelComponents();
+		//void RemoveAllCreaturesExceptHero();
+		void MakeAllCreaturesOnThisLevelInvisibleExceptHero();
 		//#TODO - dopisaæ metodê dodaj¹c¹ level component zamiast obecnych dzia³añ na wskaŸniku do fabryki
 
 		//Shortcut methods for adding Creatures using level components genereated by default.
@@ -105,7 +107,8 @@ class Level
 		LevelEnding TellLevelEnding();
 		bool TellIfPlayerWon();
 		bool TellIfPlayerLost();
-		virtual void FinishLevel(LevelEnding my_ending);
+		void FinishLevel(LevelEnding my_ending);
+		virtual bool FinishLevelInACustomWay(LevelEnding my_ending);
 		bool TellIfLevelIsFinished();
 		void Pause();
 		void UnPause();
@@ -216,9 +219,9 @@ class Level
 			if (ptr_level->ptr_winning_timer != nullptr)
 			{
 				Uint32 time_passed = ptr_level->ptr_winning_timer->Read();
-				if (time_passed >= ptr_level->time_to_endure_before_win)
+				if (time_passed >= ptr_level->TIME_TO_ENDURE_BEFORE_WIN)
 				{
-					printf("Level won, cause timer was hit!\n");
+					//printf("Level won, cause timer was hit!\n");
 					ptr_level->Win();
 				}
 			}

@@ -125,10 +125,14 @@ class LevelNineMazes : public Level
 		std::string signal_for_regenerating_eastern_column = "generate mazes east";
 		std::string signal_for_regenerating_western_column = "generate mazes west";
 
+		const Uint32 TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS = 5000;
+		TimerCountdown* ptr_timer_for_custom_finishing_action = nullptr;
+
     public:
 	    LevelNineMazes(int my_cols_count, int my_rows_count);
 		~LevelNineMazes();
-		void FinishLevel(LevelEnding my_ending);
+		bool FinishLevelInACustomWay(LevelEnding my_ending);
+		//void FinishLevel(LevelEnding my_ending);
 		void SetMazeRowsCount(int rows_num);
 		void SetMazeColsCount(int cols_num);
 		PreciseRect CalculateInitialCentralMazeArea();
