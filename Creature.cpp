@@ -53,12 +53,12 @@ Creature::Creature(Coordinates* ptr_my_center)
 	//printf("Hitbox is: x: %f y: %f w: %f h: %f.\n", hitbox.x, hitbox.y, hitbox.w, hitbox.h);
 }
 
-Creature::Creature(std::string my_text, Coordinates* ptr_my_upper_left_corner, SDL_Color my_color)
+Creature::Creature(std::string my_text, Coordinates* ptr_my_upper_left_corner, SDL_Color my_color, TTF_Font* ptr_my_font)
 {
 	printf("Will spawn a creature with writing texture.\n");
 	TrueTypeWriting* ptr_writing_visual_part = new TrueTypeWriting(my_text, 
 		ptr_my_upper_left_corner,
-		*FontBank::ptr_ptr_default_font, 
+		ptr_my_font, 
 		my_color);
 	SetMainVisualComponent(ptr_writing_visual_part);
 	PreciseRect visual_component_position = ptr_writing_visual_part->TellPosition();

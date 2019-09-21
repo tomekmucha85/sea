@@ -38,6 +38,7 @@ class GUI
 		GUI();
 		~GUI();
 		void AddComponentToDisplay(GuiElement my_element);
+		void RemoveComponentFromDisplay(GuiElement my_element);
 		void RenderComponents();
 		void ManageForCreature(Creature* ptr_creature);
 		void PerformCyclicActions();

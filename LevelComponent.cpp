@@ -194,12 +194,14 @@ Creature* LevelComponent::AddCreature(CreatureType my_type,
 	InsertionMode my_mode,
 	std::string my_text,
 	SDL_Color my_color,
+	TTF_Font* ptr_my_font,
 	int my_render_layer)
 {
 	Creature* ptr_my_creature = ptr_creatures_factory->SpawnCreature(my_type, 
 		ptr_my_upper_left_corner,
 		my_text,
 		my_color,
+		ptr_my_font,
 		my_render_layer);
 	if (LeaveCreatureOnMapIfPossible(ptr_my_creature, my_mode))
 	{

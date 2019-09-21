@@ -123,7 +123,13 @@ class LevelComponent
 
 		Creature* AddCreature(CreatureType my_type, PreciseRect* ptr_my_position, InsertionMode my_mode, std::string my_trigger_signal = "");
 		Creature* AddCreature(CreatureType my_type, Coordinates* ptr_my_center, InsertionMode my_mode, int my_render_layer = 0);
-		Creature* AddCreature(CreatureType my_type, Coordinates* ptr_my_upper_left_corner, InsertionMode my_mode, std::string my_text, SDL_Color my_color, int my_render_layer = 0);
+		Creature* AddCreature(CreatureType my_type, 
+			Coordinates* ptr_my_upper_left_corner, 
+			InsertionMode my_mode, 
+			std::string my_text, 
+			SDL_Color my_color,
+			TTF_Font* ptr_my_font=*FontBank::ptr_ptr_default_font,
+			int my_render_layer = 0);
 		bool LeaveCreatureOnMapIfPossible(Creature* ptr_my_creature, InsertionMode my_mode);
 		void AddExistingCreature(Creature* ptr_my_creature);
 		bool DetermineIfCreatureCanBeLeftOnMap(Creature* ptr_my_creature, InsertionMode my_mode);

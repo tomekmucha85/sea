@@ -11,8 +11,7 @@ public:
 	CreatureWriting(Coordinates* ptr_my_upper_left_corner, 
 		std::string my_text, 
 		SDL_Color my_color = { 255,0,0,255 },
-		TTF_Font* ptr_my_font = *(FontBank::ptr_ptr_default_font),
-		int hitbox_margin = 10);
+		TTF_Font* ptr_my_font = *(FontBank::ptr_ptr_default_font));
 	//bool Move(double x, double y);
 	std::string TellText();
 	void SetNewTextColor(SDL_Color my_color);

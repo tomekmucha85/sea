@@ -3,8 +3,7 @@
 CreatureWriting::CreatureWriting(Coordinates* ptr_my_upper_left_corner, 
 	std::string my_text, 
 	SDL_Color my_color,
-	TTF_Font* ptr_my_font,
-	int hitbox_margin) : Creature(my_text, ptr_my_upper_left_corner, my_color)
+	TTF_Font* ptr_my_font) : Creature(my_text, ptr_my_upper_left_corner, my_color, ptr_my_font)
 {
 	//Logger::Log("Will spawn a WritingCreature.");
 	my_type = cre_writing;
@@ -29,7 +28,7 @@ void CreatureWriting::SetNewTextColor(SDL_Color my_color)
 	TrueTypeWriting* ptr_new_writing_visual_part = new TrueTypeWriting(
 		text,
 		&(current_upper_left_corner),
-		*FontBank::ptr_ptr_default_font,
+		ptr_font,
 		my_color);
 
 	ResetMainVisualComponent(ptr_new_writing_visual_part);

@@ -188,13 +188,22 @@ bool LevelNineMazes::FinishLevelInACustomWay(LevelEnding my_ending)
 		{
 			Logger::Log("You've beaten nine mazes!");
 			ptr_timer_for_custom_finishing_action = new TimerCountdown(TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS);
+			//Hiding most visual components
 			MakeAllCreaturesOnThisLevelInvisibleExceptHero();
+			ptr_gui->RemoveComponentFromDisplay(gui_hunger_meter);
+			ptr_gui->RemoveComponentFromDisplay(gui_printer);
+			ptr_gui->RemoveComponentFromDisplay(gui_winning_timer);
+			//Stopping main character
 			Creature::ptr_current_main_charater->RequestBehaviorMode(beh_sleep, TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS);
 			//Display text
 			Coordinates final_text_position = {Screen::TellScreenWidth()/3, Screen::TellScreenHeight()/3};
 			std::string final_text_content = "you won!";
-			Creature* ptr_final_text = ptr_initial_core_component->AddCreature(cre_writing, &final_text_position, merge, final_text_content, {255,0,100,255});
-
+			Creature* ptr_final_text = ptr_initial_core_component->AddCreature(cre_writing, 
+				&final_text_position, 
+				merge, 
+				final_text_content, 
+				{255,0,100,255},
+				FontBank::ptr_font_doom_big);
 			return false;
 		}
 		//While the timer ticks

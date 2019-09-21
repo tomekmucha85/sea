@@ -62,7 +62,23 @@ void GUI::AddComponentToDisplay(GuiElement my_element)
 	}
 }
 
-//#TODO - napisaæ funkcjê do usuwania komponentów
+void GUI::RemoveComponentFromDisplay(GuiElement my_element)
+{
+	if (my_element == gui_hunger_meter)
+	{
+		gui_components.erase(std::remove(gui_components.begin(), gui_components.end(), ptr_hunger_bar), gui_components.end());
+	}
+	else if (my_element == gui_winning_timer)
+	{
+		gui_components.erase(std::remove(gui_components.begin(), gui_components.end(), ptr_writing_winning_timer), gui_components.end());
+	}
+	else if (my_element == gui_printer)
+	{
+		gui_components.erase(std::remove(gui_components.begin(), gui_components.end(), ptr_onscreen_printer_1st_row), gui_components.end());
+		gui_components.erase(std::remove(gui_components.begin(), gui_components.end(), ptr_onscreen_printer_2nd_row), gui_components.end());
+		//gui_components.erase(std::remove(gui_components.begin(), gui_components.end(), ptr_onscreen_printer_3rd_row), gui_components.end());
+	}
+}
 
 void GUI::ManageForCreature(Creature* ptr_creature)
 {
