@@ -25,6 +25,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	ptr_gui->AddComponentToDisplay(gui_hunger_meter);
 	ptr_gui->AddComponentToDisplay(gui_winning_timer);
 	ptr_gui->AddComponentToDisplay(gui_printer);
+	ptr_gui->AddComponentToDisplay(gui_centered_printer);
 
 	//###############
 	//# HERO SETUP
@@ -196,14 +197,7 @@ bool LevelNineMazes::FinishLevelInACustomWay(LevelEnding my_ending)
 			//Stopping main character
 			Creature::ptr_current_main_charater->RequestBehaviorMode(beh_sleep, TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS);
 			//Display text
-			Coordinates final_text_position = {Screen::TellScreenWidth()/3, Screen::TellScreenHeight()/3};
-			std::string final_text_content = "you won!";
-			Creature* ptr_final_text = ptr_initial_core_component->AddCreature(cre_writing, 
-				&final_text_position, 
-				merge, 
-				final_text_content, 
-				{255,0,100,255},
-				FontBank::ptr_font_doom_big);
+			ptr_gui->PrintBigMessaeOnScreenCenter("You made it!", TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS);
 			return false;
 		}
 		//While the timer ticks
@@ -716,6 +710,8 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		//printf("Added trigger NORTH %p x: %f, y: %f, w: %f, h: %f.\n", ptr_my_trigger_north, event_area.x, event_area.y, event_area.w, event_area.h);
 		//Red
 		ptr_my_trigger_north->TellMainVisualComponent()->SetColor({ 255,0,0,255 });
+		//Trigger should not be seen
+		ptr_my_trigger_north->SetVisibility(false);
 		ptr_trigger_north = ptr_my_trigger_north;
 	}
 	else if (my_direction == south)
@@ -730,6 +726,8 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		//printf("Added trigger SOUTH %p x: %f, y: %f, w: %f, h: %f.\n", ptr_my_trigger_south, event_area.x, event_area.y, event_area.w, event_area.h);
 		//Green
 		ptr_my_trigger_south->TellMainVisualComponent()->SetColor({ 0,255,0,255 });
+		//Trigger should not be seen
+		ptr_my_trigger_south->SetVisibility(false);
 		ptr_trigger_south = ptr_my_trigger_south;
 	}
 	else if (my_direction == east)
@@ -744,6 +742,8 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		signals_vs_events[signal_for_regenerating_eastern_column] = ptr_func_trigger_east;
 		//Blue
 		ptr_my_trigger_east->TellMainVisualComponent()->SetColor({ 0,0,255,255 });
+		//Trigger should not be seen
+		ptr_my_trigger_east->SetVisibility(false);
 		ptr_trigger_east = ptr_my_trigger_east;
 	}
 	else if (my_direction == west)
@@ -758,6 +758,8 @@ void LevelNineMazes::GenerateTrigger(Directions my_direction, PreciseRect offset
 		signals_vs_events[signal_for_regenerating_western_column] = ptr_func_trigger_west;
 		//Black
 		ptr_my_trigger_west->TellMainVisualComponent()->SetColor({ 0,0,0,255 });
+		//Trigger should not be seen
+		ptr_my_trigger_west->SetVisibility(false);
 		ptr_trigger_west = ptr_my_trigger_west;
 	}
 	else

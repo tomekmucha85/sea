@@ -27,8 +27,16 @@ GUI::GUI()
 	ptr_timer_for_onscreen_printer_1st_row = new TimerCountdown(0);
 	ptr_timer_for_onscreen_printer_2nd_row = new TimerCountdown(0);
 	ptr_timer_for_onscreen_printer_3rd_row = new TimerCountdown(0);
+	//Onscreen printer - instant messages in the middle of the screen
+	ptr_centered_onscreen_printer = new TrueTypeWriting(
+		" ",
+		&centered_onscreen_printer_upper_left_corner,
+		FontBank::ptr_font_mania_huge,
+		onscreen_centered_printer_default_color);
+	ptr_timer_for_centered_onscreen_printer = new TimerCountdown(0);
 	//Cyclic tasks
 	cyclic_actions.push_back(func_manage_onscreen_printer);
+	cyclic_actions.push_back(func_manage_centered_onscreen_printer);
 }
 
 GUI::~GUI()
@@ -42,6 +50,8 @@ GUI::~GUI()
 	delete ptr_timer_for_onscreen_printer_1st_row;
 	delete ptr_timer_for_onscreen_printer_2nd_row;
 	delete ptr_timer_for_onscreen_printer_3rd_row;
+	delete ptr_centered_onscreen_printer;
+	delete ptr_timer_for_centered_onscreen_printer;
 }
 
 void GUI::AddComponentToDisplay(GuiElement my_element)
@@ -59,6 +69,10 @@ void GUI::AddComponentToDisplay(GuiElement my_element)
 		gui_components.push_back(ptr_onscreen_printer_1st_row);
 		gui_components.push_back(ptr_onscreen_printer_2nd_row);
 		//gui_components.push_back(ptr_onscreen_printer_3rd_row);
+	}
+	else if (my_element == gui_centered_printer)
+	{
+		gui_components.push_back(ptr_centered_onscreen_printer);
 	}
 }
 
@@ -116,6 +130,18 @@ void GUI::HungerBarSetChargeLevel(int new_level)
 	ptr_specific_hunger_bar->SetTextureClipWithCharges(new_level);
 }
 
+void GUI::PrintBigMessaeOnScreenCenter(std::string my_text, Uint32 time_to_live)
+{
+	Logger::Log("Will print big message: " + my_text, debug_info);
+	ptr_centered_onscreen_printer->SetText(my_text);
+	if (time_to_live == 0)
+	{
+		time_to_live = centered_oncreen_printer_text_default_time_to_live_in_miliseconds;
+	}
+	printf("Message will last %d miliseconds.\n", time_to_live);
+	ptr_timer_for_centered_onscreen_printer->ResetWithNewTimeToLive(time_to_live);
+}
+
 void GUI::PrintTextOnscreen(std::string my_text, Uint32 time_to_live_in_miliseconds)
 {
 	if (CheckIfOnscreenPrinter1stRowIsAvailable())
@@ -157,6 +183,11 @@ void GUI::PushFirstPrinterRowUpToSecond()
 	//Timer for the second row "inherits" value from timer for the first row
 	ptr_timer_for_onscreen_printer_2nd_row->ResetWithNewTimeToLive(ptr_timer_for_onscreen_printer_1st_row->HowManyMilisecondsLeftTillEnd());
 	printf("Time to live of %d was set for the second row.\n", ptr_timer_for_onscreen_printer_1st_row->HowManyMilisecondsLeftTillEnd());
+}
+
+bool GUI::CheckIfCenteredOnscreenPrinterIsAvailable()
+{
+	return ptr_timer_for_centered_onscreen_printer->CheckIfCountdownFinished();
 }
 
 bool GUI::CheckIfOnscreenPrinter1stRowIsAvailable()
@@ -202,6 +233,20 @@ void GUI::ManageOnscreenPrinter()
 		if (ptr_onscreen_printer_2nd_row->TellText() != EMPTY_TEXT_STRING)
 		{
 			ptr_onscreen_printer_2nd_row->SetText(EMPTY_TEXT_STRING);
+		}
+	}
+}
+
+void GUI::ManageCenteredOnscreenPrinter()
+{
+	// Wiping out printed text if it's outdated
+	{
+		if (CheckIfCenteredOnscreenPrinterIsAvailable() == true)
+		{
+			if (ptr_centered_onscreen_printer->TellText() != EMPTY_TEXT_STRING)
+			{
+				ptr_centered_onscreen_printer->SetText(EMPTY_TEXT_STRING);
+			}
 		}
 	}
 }

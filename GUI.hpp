@@ -24,14 +24,19 @@ class GUI
 		Coordinates onscreen_printer_1st_row_upper_left_corner = { 10, static_cast<double>(Screen::TellScreenHeight() - 40) };
 		Coordinates onscreen_printer_2nd_row_upper_left_corner = { 10, static_cast<double>(Screen::TellScreenHeight() - 80) };
 		Coordinates onscreen_printer_3rd_row_upper_left_corner = { 10, static_cast<double>(Screen::TellScreenHeight() - 120) };
+		Coordinates centered_onscreen_printer_upper_left_corner = { static_cast<double>(Screen::TellScreenWidth() / 3), static_cast<double>(Screen::TellScreenHeight() / 4)};
 		Uint32 onscreen_printer_text_default_time_to_live_in_miliseconds = 2000;
+		Uint32 centered_oncreen_printer_text_default_time_to_live_in_miliseconds = 1500;
 		TimerCountdown* ptr_timer_for_onscreen_printer_1st_row = nullptr;
 		TimerCountdown* ptr_timer_for_onscreen_printer_2nd_row = nullptr;
 		TimerCountdown* ptr_timer_for_onscreen_printer_3rd_row = nullptr;
+		TimerCountdown* ptr_timer_for_centered_onscreen_printer = nullptr;
 		TrueTypeWriting* ptr_onscreen_printer_1st_row = nullptr;
 		TrueTypeWriting* ptr_onscreen_printer_2nd_row = nullptr;
 		TrueTypeWriting* ptr_onscreen_printer_3rd_row = nullptr;
+		TrueTypeWriting* ptr_centered_onscreen_printer = nullptr;
 		SDL_Color onscreen_printer_default_color = {0,40,200,255}; //Blue
+		SDL_Color onscreen_centered_printer_default_color = { 200,0,50,100 }; //Transparent red
 		static const std::string EMPTY_TEXT_STRING;
 
     public:
@@ -46,11 +51,14 @@ class GUI
 		void HungerBarSetChargeLevel(int new_level);
 		void ManageWinningTimer(Uint32 my_time_passed);
 		void PrintTextOnscreen(std::string my_text, Uint32 time_to_live=0);
+		void PrintBigMessaeOnScreenCenter(std::string my_text, Uint32 time_to_live=0);
 		bool CheckIfOnscreenPrinter1stRowIsAvailable();
 		bool CheckIfOnscreenPrinter2ndRowIsAvailable();
 		bool CheckIfOnscreenPrinter3rdRowIsAvailable();
+		bool CheckIfCenteredOnscreenPrinterIsAvailable();
 		bool CheckIfAnyPrintIsDisplayedNow();
 		void ManageOnscreenPrinter();
+		void ManageCenteredOnscreenPrinter();
 		void PushFirstPrinterRowUpToSecond();
 		void Populate1stPrinterRow(std::string my_text, Uint32 time_to_live_in_miliseconds);
 
@@ -59,10 +67,16 @@ class GUI
 		//# COMMON LAMBDAS
 		//################################
 
-		//Cyclic action to fire all triggers hit by hero
+		//Cyclic action to check what text should be displayed onscreen
 		std::function<void(GUI*)> func_manage_onscreen_printer = [](GUI* ptr_gui)
 		{
 			ptr_gui->ManageOnscreenPrinter();
+		};
+
+		//
+		std::function<void(GUI*)> func_manage_centered_onscreen_printer = [](GUI* ptr_gui)
+		{
+			ptr_gui->ManageCenteredOnscreenPrinter();
 		};
 
 };

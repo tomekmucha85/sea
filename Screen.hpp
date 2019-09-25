@@ -9,8 +9,8 @@ class Screen
 {
     private:
         //Screen dimension constants
-        static const int SCREEN_WIDTH = 800;
-        static const int SCREEN_HEIGHT = 600;
+        static const int SCREEN_WIDTH;
+        static const int SCREEN_HEIGHT;
 		//static const int RESOLUTION_W = 640;
 		//static const int RESOLUTION_H = 480;
 

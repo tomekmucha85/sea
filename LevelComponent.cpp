@@ -2,8 +2,8 @@
 //***********************************
 //DEFINITIONS OF STATIC CLASS MEMBERS
 //***********************************
-int LevelComponent::map_block_width = 48;
-int LevelComponent::map_block_height = 48;
+int LevelComponent::map_block_width = 64;
+int LevelComponent::map_block_height = 64;
 
 //***********************************
 //FUNCTIONS

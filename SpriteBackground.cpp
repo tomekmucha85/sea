@@ -4,7 +4,7 @@
 //DEFINITIONS OF STATIC CLASS MEMBERS
 //***********************************
 
-SDL_Rect SpriteBackground::initial_texture_clip_background = { 0,0,691,461 };
+SDL_Rect SpriteBackground::initial_texture_clip_background = { 0,0,0,0 };
 //Zero width and height will make Sprite Class show whole texture.
 
 //***********************************

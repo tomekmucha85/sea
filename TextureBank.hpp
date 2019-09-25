@@ -12,7 +12,7 @@ class TextureBank
         //###################
         //Variables
         //###################
-        std::string path_image_bground = "images/bground.png";
+        std::string path_image_bground = "images/maze_bground.png";
         Texture* background = nullptr;
 		std::string path_image_clawy = "images/wolfy.png";
         Texture* clawy = nullptr;
@@ -20,7 +20,7 @@ class TextureBank
         Texture* black_box = nullptr;
 		std::string path_image_black_smoke = "images/black_smoke.png";
 		Texture* black_smoke = nullptr;
-		std::string path_image_wall = "images/walls_48_x_48.png";
+		std::string path_image_wall = "images/walls_variants.png";
 		Texture* purple_vortex = nullptr;
 		std::string path_image_purple_vortex = "images/vortex.png";
 		Texture* wall = nullptr;

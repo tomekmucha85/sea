@@ -4,16 +4,49 @@
 //DEFINITIONS OF STATIC CLASS MEMBERS
 //***********************************
 
-SDL_Rect SpriteBlackBox::initial_texture_clip_black_box = { 336,0,48,48 };
+SDL_Rect SpriteBlackBox::initial_texture_clip_black_box = { 0,0,64,64 };
+const SDL_Rect SpriteBlackBox::texture_clip_wall_a = { 0,0,BOX_WIDTH, BOX_HEIGHT };
+const SDL_Rect SpriteBlackBox::texture_clip_wall_b = { BOX_WIDTH,0,BOX_WIDTH, BOX_HEIGHT };
+const SDL_Rect SpriteBlackBox::texture_clip_wall_c = { BOX_WIDTH * 2,0,BOX_WIDTH, BOX_HEIGHT };
+const SDL_Rect SpriteBlackBox::texture_clip_wall_d = { BOX_WIDTH * 3,0,BOX_WIDTH, BOX_HEIGHT };
+const SDL_Rect SpriteBlackBox::texture_clip_wall_e = { BOX_WIDTH * 4,0,BOX_WIDTH, BOX_HEIGHT };
+const SDL_Rect SpriteBlackBox::texture_clip_wall_f = { BOX_WIDTH * 5,0,BOX_WIDTH, BOX_HEIGHT };
+const SDL_Rect SpriteBlackBox::texture_clip_wall_g = { BOX_WIDTH * 6,0,BOX_WIDTH, BOX_HEIGHT };
+const SDL_Rect SpriteBlackBox::texture_clip_wall_h = { BOX_WIDTH * 7,0,BOX_WIDTH, BOX_HEIGHT };
+const SDL_Rect SpriteBlackBox::all_texture_clips[SpriteBlackBox::NUMBER_OF_WALL_CLIPS] = 
+{ 
+	texture_clip_wall_a,
+	texture_clip_wall_b,
+	texture_clip_wall_c,
+	texture_clip_wall_d,
+	texture_clip_wall_e,
+	texture_clip_wall_f,
+	texture_clip_wall_g,
+	texture_clip_wall_h 
+};
+
+
 
 //***********************************
 //CONSTRUCTORS
 //***********************************
 
 SpriteBlackBox::SpriteBlackBox(Coordinates* ptr_my_center)
-	: Sprite(TellTextureBank()->ptr_tex_wall, SpriteBlackBox::initial_texture_clip_black_box, ptr_my_center)
+	: Sprite(TellTextureBank()->ptr_tex_wall, SelectRandomClip(), ptr_my_center)
 {
 	//printf("Constructor called for SpriteBlackBox\n");
+}
+
+
+
+//***********************************
+//* FUNCTIONS
+//***********************************
+
+SDL_Rect SpriteBlackBox::SelectRandomClip()
+{
+	unsigned int chosen_clip = rand() % NUMBER_OF_WALL_CLIPS;
+	return all_texture_clips[chosen_clip];
 }
 
 
@@ -21,7 +54,7 @@ SpriteBlackBox::SpriteBlackBox(Coordinates* ptr_my_center)
 //OVERLOADED METHODS
 //***********************************
 
-void SpriteBlackBox::SetClipAccordingToWallType(WallType my_type)
+/*void SpriteBlackBox::SetClipAccordingToWallType(WallType my_type)
 {
 	if (my_type == wall_bottom)
 	{
@@ -84,5 +117,5 @@ void SpriteBlackBox::SetClipAccordingToWallType(WallType my_type)
 		printf("Unknown wall type!\n");
 		throw std::invalid_argument("Unknown wall type.\n");
 	}
-}
+}*/
 

@@ -1,7 +1,7 @@
 #include <LevelComponentNavGrid.hpp>
 
-const double LevelComponentNavGrid::MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE = 500;
-const double LevelComponentNavGrid::MAX_RADIUS_FOR_NODE_CONNECTION = 400;
+const double LevelComponentNavGrid::MAX_RADIUS_FOR_SEARCHING_CLOSEST_NODE = 600;
+const double LevelComponentNavGrid::MAX_RADIUS_FOR_NODE_CONNECTION = 600;
 
 LevelComponentNavGrid::LevelComponentNavGrid(std::map<LevelComponentType, std::vector<LevelComponent*>>* my_ptr_peer_level_components) :
 	LevelComponent(my_ptr_peer_level_components)

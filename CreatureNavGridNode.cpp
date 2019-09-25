@@ -9,7 +9,7 @@ CreatureNavGridNode::CreatureNavGridNode(Coordinates* ptr_my_coordinates) :
 	MakeMeNotObstacle();
 	//printf("No obstacle set.\n");
 	//By default this creature should not be rendered on screen.
-	SetVisibility(true);
+	SetVisibility(false);
 	TellMainVisualComponent()->SetColor({ 255,0,0,255 });
 }
 
@@ -57,7 +57,7 @@ void CreatureNavGridNode::AddOneSidedConnection(CreatureNavGridNode* ptr_neighbo
 	if (CheckIfConnectionAlrreadyExists(ptr_neighbor_node) == false && ptr_neighbor_node != this)
 	{
 		connected_nodes.push_back(ptr_neighbor_node);
-		CreateLineTowardsNode(ptr_neighbor_node);
+		//CreateLineTowardsNode(ptr_neighbor_node);
 		//printf("Added connection between %p and %p.\n", this, ptr_neighbor_node);
 	}
 	else

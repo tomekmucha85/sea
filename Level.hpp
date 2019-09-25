@@ -38,7 +38,7 @@ class Level
 
     public:
 		//Default position for hero spawned on this level
-		Coordinates default_hero_start_position = {400,380};
+		Coordinates default_hero_start_position = {300,300};
 		//Pointer to GUI object
 		GUI* ptr_gui = nullptr;
 		//Contains actions associated to specific level which will be performed during every game loop.
@@ -62,7 +62,7 @@ class Level
 		//Timer deciding if level is won
 		TimerStartStop* ptr_winning_timer = nullptr;
 		//How much time has to pass before a level is won via a winning timer
-		const Uint32 TIME_TO_ENDURE_BEFORE_WIN = 1000;
+		const Uint32 TIME_TO_ENDURE_BEFORE_WIN = 60000;
 
 		Level();
 		virtual ~Level();
@@ -242,6 +242,7 @@ class Level
 				{
 					ptr_level->ptr_winning_timer->RestartFromZero();
 					Creature::ptr_current_main_charater->ResetAttackFlag();
+					ptr_level->ptr_gui->PrintBigMessaeOnScreenCenter("Aww! You animal!");
 				}
 				else
 				{

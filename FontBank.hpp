@@ -15,8 +15,10 @@ private:
 	//Variables
 	//###################
 	std::string path_font_doom = "images/doom.ttf";
+	std::string path_font_mania = "images/HoganMania.ttf";
 	static const int FONT_SIZE_MED = 28;
 	static const int FONT_SIZE_BIG = 48;
+	static const int FONT_SIZE_HUGE = 100;
 
 public:
 	//###################
@@ -24,6 +26,7 @@ public:
 	//###################
 	static TTF_Font* ptr_font_doom;
 	static TTF_Font* ptr_font_doom_big;
+	static TTF_Font* ptr_font_mania_huge;
 	static TTF_Font** ptr_ptr_default_font;
 
 	//###################

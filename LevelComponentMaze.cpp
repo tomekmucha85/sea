@@ -13,8 +13,8 @@ LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<
 	}
 	else
 	{
-		/*printf("Maze component area passed to constructor is x: %f, y: %f, w: %f, h: %f.\n",
-			my_component_area.x, my_component_area.y, my_component_area.w, my_component_area.h);*/
+		printf("Maze component area passed to constructor is x: %f, y: %f, w: %f, h: %f.\n",
+			my_component_area.x, my_component_area.y, my_component_area.w, my_component_area.h);
 	}
 	maze_rows_count = CalculateRowsNumber();
 	maze_columns_count = CalculateColumnsNumber();
@@ -22,6 +22,9 @@ LevelComponentMaze::LevelComponentMaze(std::map<LevelComponentType, std::vector<
 	maze_blocks_count_horizontal = CalculateBlocksCountHorizontally();
 	/*printf("Maze rows: %d, maze columns: %d, maze blocks vertically: %d, maze blocks horizontally: %d.\n",
 		maze_rows_count, maze_columns_count, maze_blocks_count_vertical, maze_blocks_count_horizontal);*/
+
+	//Set background
+	AddCreature(cre_blue_bground, &(ptr_component_outline->TellCenterPoint()), merge, -1);
 }
 
 LevelComponentMaze::~LevelComponentMaze()

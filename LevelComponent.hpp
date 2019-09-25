@@ -52,8 +52,6 @@ class LevelComponent
 		//###################
 		std::vector<Creature*> creatures = {};
 		std::map<LevelComponentType, std::vector<LevelComponent*>>* ptr_peer_level_components;
-		//Invisible creature serving as "mask" of level component. Applied only to level components with defined area.
-		Creature* ptr_component_outline = nullptr;
 		//Contains actions associated to specific creature which will be performed during every game loop / every n game loops.
 		std::vector<std::function<void(LevelComponent*)>> cyclic_actions = {};
 		//#TODO - powróciæ do jednoargumentowego spawn requestu
@@ -75,6 +73,8 @@ class LevelComponent
 		std::vector<RandomPathRequestEncalpsulated> random_path_requests_encapsulated = {};
 		std::vector<PointToPointPathRequestEncalpsulated> point_to_point_path_requests_encapsulated = {};
 		std::vector<PrintRequest> print_requests_per_level_component = {};
+		//Invisible creature serving as "mask" of level component. Applied only to level components with defined area.
+		Creature* ptr_component_outline = nullptr;
 
 		//###################
 		//Functions

@@ -191,7 +191,7 @@ enum LevelEnding {ending_victory, ending_defeat, ending_other_1, ending_other_2,
 enum InterfaceMode {interf_none, interf_menu, interf_guided, interf_game};
 
 //Elements that can be displayed as GUI
-enum GuiElement {gui_hunger_meter, gui_winning_timer, gui_printer};
+enum GuiElement {gui_hunger_meter, gui_winning_timer, gui_printer, gui_centered_printer};
 
 //Kind of Brain Computer Interface in use
 enum BCIMode { bci_mode_none, bci_mode_physical, bci_mode_virtual };
