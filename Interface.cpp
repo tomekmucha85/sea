@@ -49,6 +49,13 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 			Logger::Log("PERFORMING ACTION.");
 			Game::ptr_current_level->PerformSelectedAction();
 		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+			ptr_my_event_handler->key.keysym.sym == SDLK_t &&
+			ptr_my_event_handler->key.repeat == 0)
+		{
+			Logger::Log("Trying to set trained signature.");
+			BCI::TrySwitchingToTrainedSig();
+		}
 	}
 	//USER INSIDE GAME
 	else if (current_mode == interf_game)

@@ -62,12 +62,14 @@ private:
 	    &menu_action_calibration_wizard_finish,
 	    &menu_action_go_to_calibration_menu };
 	unsigned int current_menu_position = 0;
+	Coordinates menu_hero_start_position = {static_cast<double>(Screen::TellScreenWidth()) - 40, 
+		static_cast<double>(Screen::TellScreenHeight() - 60)};
 
 	//BCI CALIBRATION
 	bool is_bci_calibration_in_progress = false;
 	std::vector<MenuAction*> menu_actions_related_to_current_bci_calibration_outcome = {};
 	MenuAction* ptr_menu_action_leading_to_next_calibration_stage = nullptr;
-
+	MenuAction* ptr_menu_action_calibrate_chosen_expression = nullptr;
 	LevelComponent* ptr_component_containing_menu_actions = ptr_initial_core_component;
 public:
 	LevelMenu();

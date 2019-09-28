@@ -90,13 +90,11 @@ Creature* Level::SpawnHero(CreatureType hero_type, Coordinates* ptr_hero_positio
 		printf("There is an existing main hero Creature. Will not spawn a new one.\n");
 		if (ptr_hero_position != nullptr)
 		{
-			printf("Will set predefined hero position: x: %f y: %f.\n", ptr_hero_position->x, ptr_hero_position->y);
 			ptr_initial_core_component->AddExistingCreature(Creature::ptr_current_main_charater);
 			Creature::ptr_current_main_charater->SetPosition(*ptr_hero_position);
 		}
 		else
 		{
-			printf("Will set hero position: x: %f y: %f.\n", default_hero_start_position.x, default_hero_start_position.y);
 			ptr_initial_core_component->AddExistingCreature(Creature::ptr_current_main_charater);
 			Creature::ptr_current_main_charater->SetPosition(default_hero_start_position);
 		}
@@ -114,10 +112,12 @@ Creature* Level::SpawnHero(CreatureType hero_type, Coordinates* ptr_hero_positio
 		Creature* ptr_new_hero = nullptr;
 		if (ptr_hero_position != nullptr)
 		{
+			printf("There was a defined hero position.\n");
 			ptr_new_hero = ptr_initial_core_component->AddCreature(hero_type, ptr_hero_position, force);
 		}
 		else
 		{
+			printf("There was no defined hero position.\n");
 			ptr_new_hero = ptr_initial_core_component->AddCreature(hero_type, &default_hero_start_position, force);
 		}
         ptr_new_hero->MakeMeMainCharacter();

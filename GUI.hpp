@@ -36,7 +36,7 @@ class GUI
 		TrueTypeWriting* ptr_onscreen_printer_3rd_row = nullptr;
 		TrueTypeWriting* ptr_centered_onscreen_printer = nullptr;
 		SDL_Color onscreen_printer_default_color = {0,40,200,255}; //Blue
-		SDL_Color onscreen_centered_printer_default_color = { 200,0,50,100 }; //Transparent red
+		SDL_Color onscreen_centered_printer_default_color = { 200,0,50,150 }; //Transparent red
 		static const std::string EMPTY_TEXT_STRING;
 
     public:

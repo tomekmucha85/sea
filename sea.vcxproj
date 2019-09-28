@@ -73,6 +73,10 @@
     <IncludePath>C:\visual_studio_dev_lib\SDL2_ttf-2.0.15\include;C:\Users\tmucha\source\repos\sea;C:\visual_studio_dev_lib\SDL2-2.0.8\include;C:\visual_studio_dev_lib\SDL2_image-2.0.3\include;C:\visual_studio_dev_lib\emotiv\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\visual_studio_dev_lib\SDL2_ttf-2.0.15\lib\x64;C:\visual_studio_dev_lib\emotiv\lib;C:\visual_studio_dev_lib\SDL2-2.0.8\lib\x64;C:\visual_studio_dev_lib\SDL2_image-2.0.3\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\visual_studio_dev_lib\emotiv\include;C:\Users\tmucha\source\repos\sea;C:\visual_studio_dev_lib\SDL2-2.0.8\include;C:\visual_studio_dev_lib\SDL2_ttf-2.0.15\include;C:\visual_studio_dev_lib\SDL2_image-2.0.3\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\visual_studio_dev_lib\SDL2-2.0.8\lib\x64;C:\visual_studio_dev_lib\SDL2_ttf-2.0.15\lib\x64;C:\visual_studio_dev_lib\SDL2_image-2.0.3\lib\x64;C:\visual_studio_dev_lib\emotiv\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -131,6 +135,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2_image.lib;SDL2.lib;edk.lib;glut64.lib;SDL2main.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

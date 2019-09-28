@@ -10,7 +10,27 @@ LevelMenu::LevelMenu()
 	DisplayMenuActions();
 	//To perform initial highlight.
 	BrowseActions(north);
-
+	//Move hero to desired position
+	Creature::ptr_current_main_charater->SetPosition(menu_hero_start_position);
+	//Make hero face south
+	Creature::ptr_current_main_charater->SetAngleDegree(-90);
+	//Display game title
+	Coordinates title_upper_left_corner = { 10,380 };
+	Coordinates title_upper_left_corner_2nd_row = { 10,480 };
+	std::string title_text = "Don't eat anyone";
+	std::string title_text_2nd_row = "   for a minute";
+	ptr_initial_core_component->AddCreature(cre_writing,
+		&title_upper_left_corner,
+		merge, title_text,
+		{ 255,0,0,255 },
+		FontBank::ptr_font_nightbird_huge,
+		1);
+	ptr_initial_core_component->AddCreature(cre_writing,
+		&title_upper_left_corner_2nd_row,
+		merge, title_text_2nd_row,
+		{ 255,0,0,255 },
+		FontBank::ptr_font_nightbird_huge,
+		1);
 	//###############
     //# GUI SETUP
     //###############
@@ -318,7 +338,14 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
     //#################################
 	else if (ptr_my_action->text == menu_action_calibration_wizard_finish.text)
 	{
-	ptr_gui->PrintTextOnscreen("calibration finished");
+	    if (BCI::TrySwitchingToTrainedSig())
+		{
+			ptr_gui->PrintTextOnscreen("Calibration finished successfully.");
+		}
+		else
+		{
+			ptr_gui->PrintTextOnscreen("Unable to use calibration data. Please recalibrate.");
+		}
 		LoadMenuActionsSet(possible_actions_menu_calibration_level);
 	}
 }
@@ -358,6 +385,8 @@ void LevelMenu::ManageMenuActionsForNeutralBCICalibration()
 		&menu_action_calibration_wizard_calibrate_neutral_reject,
 	};
 	ptr_menu_action_leading_to_next_calibration_stage = &menu_action_calibration_wizard_calibrate_neutral_proceed;
+	ptr_menu_action_calibrate_chosen_expression = &menu_action_calibration_wizard_calibrate_neutral;
+	DisableMenuAction(ptr_menu_action_calibrate_chosen_expression);
 	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
 }
 
@@ -384,6 +413,8 @@ void LevelMenu::ManageMenuActionsForSmileBCICalibration()
 		&menu_action_calibration_wizard_calibrate_smile_reject,
 	};
 	ptr_menu_action_leading_to_next_calibration_stage = &menu_action_calibration_wizard_calibrate_smile_proceed;
+	ptr_menu_action_calibrate_chosen_expression = &menu_action_calibration_wizard_calibrate_smile;
+	DisableMenuAction(ptr_menu_action_calibrate_chosen_expression);
 	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
 }
 
@@ -410,6 +441,8 @@ void LevelMenu::ManageMenuActionsForClenchBCICalibration()
 		&menu_action_calibration_wizard_calibrate_clench_reject,
 	};
 	ptr_menu_action_leading_to_next_calibration_stage = &menu_action_calibration_wizard_finish;
+	ptr_menu_action_calibrate_chosen_expression = &menu_action_calibration_wizard_calibrate_clench;
+	DisableMenuAction(ptr_menu_action_calibrate_chosen_expression);
 	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
 }
 
@@ -420,6 +453,7 @@ void LevelMenu::ManageMenuActionsForAcceptedBCICalibration()
 	{
 		DisableMenuAction(ptr_my_action);
 	}
+	EnableMenuAction(ptr_menu_action_calibrate_chosen_expression);
 }
 
 void LevelMenu::ManageMenuActionsForRejectedBCICalibration()
@@ -429,6 +463,7 @@ void LevelMenu::ManageMenuActionsForRejectedBCICalibration()
 	{
 		DisableMenuAction(ptr_my_action);
 	}
+	EnableMenuAction(ptr_menu_action_calibrate_chosen_expression);
 	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
 }
 

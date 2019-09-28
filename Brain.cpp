@@ -82,18 +82,13 @@ BCIEvent BCI::GetNextBCIEvent()
 	{
 		if (state == EDK_OK)
 		{
-			//unsigned int userID = 0;
-			//IEE_EmoEngineEventGetUserId(expressivEvent, &userID);
-			//IEE_FacialExpressionEvent_t eventType =
-			//	IEE_FacialExpressionEventGetType(expressivEvent);
-
 			IEE_Event_t eventType = IEE_EmoEngineEventGetType(eEvent);
 			//printf("Got event!\n");
 			IEE_EmoEngineEventGetUserId(eEvent, &userID);
 			//printf("User id is %i\n", userID);
 			if (eventType == IEE_UserAdded)
 			{
-				printf("Added emotiv user\n");
+				printf("Added emotiv user %d\n", userID);
 				return bci_event_user_added;
 			}
 			else if (eventType == IEE_EmoStateUpdated)
@@ -104,21 +99,14 @@ BCIEvent BCI::GetNextBCIEvent()
 				//printf("State updated.\n");
 				//IEE_FacialExpressionAlgo_t upperFaceType =
 				//	IS_FacialExpressionGetUpperFaceAction(eState);
-				IEE_FacialExpressionAlgo_t lowerFaceType =
-					IS_FacialExpressionGetLowerFaceAction(eState);
-
-				if (lowerFaceAmp > 0.5)
+				if (lowerFaceAmp > DETECTION_THRESHOLD)
 				{
-					if (lowerFaceType == FE_CLENCH)
-					{
-						Logger::Log("Clench! Amplitude: " + std::to_string(lowerFaceAmp));
-						return bci_event_clench;
-					}
-					else if (lowerFaceType == FE_SMILE)
-					{
-						Logger::Log("Smile! Amplitude: " + std::to_string(lowerFaceAmp));
-						return bci_event_smile;
-					}
+					IEE_FacialExpressionAlgo_t lowerFaceType = IS_FacialExpressionGetLowerFaceAction(eState);
+					return HandleLowerfaceExpression(lowerFaceType);
+				}
+				else
+				{
+					return bci_event_none;
 				}
 			}
 			else if (eventType == IEE_FacialExpressionEvent)
@@ -149,6 +137,16 @@ BCIEvent BCI::GetNextBCIEvent()
 					Logger::Log("Training data erased!\n", debug_info);
 					return bci_event_training_erased;
 				}
+				else
+				{
+					//Logger::Log("Some other facial expression event.");
+					return bci_event_none;
+				}
+			}
+			else
+			{
+				//Logger::Log("Some other event type caught.");
+				return bci_event_none;
 			}
 		}
 		else
@@ -160,6 +158,57 @@ BCIEvent BCI::GetNextBCIEvent()
 	else
 	{
 		//printf("No event!\n");
+		return bci_event_none;
+	}
+}
+
+BCIEvent BCI::HandleLowerfaceExpression(IEE_FacialExpressionAlgo_t my_expression)
+{
+	if (my_expression == FE_CLENCH)
+	{
+		if (last_detected_lowerface_expression == FE_CLENCH)
+		{
+			subsequent_lowerface_detections_recorded++;
+			if (subsequent_lowerface_detections_recorded >= SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED)
+			{
+				Logger::Log("Clench! Amplitude: " + std::to_string(my_expression));
+				return bci_event_clench;
+			}
+			else
+			{
+				return bci_event_none;
+			}
+		}
+		else
+		{
+			last_detected_lowerface_expression = FE_CLENCH;
+			subsequent_lowerface_detections_recorded = 0;
+			return bci_event_none;
+		}
+	}
+	else if (my_expression == FE_SMILE)
+	{
+		if (last_detected_lowerface_expression == FE_SMILE)
+		{
+			subsequent_lowerface_detections_recorded++;
+			if (subsequent_lowerface_detections_recorded >= SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED)
+			{
+				Logger::Log("Smile! Amplitude: " + std::to_string(my_expression));
+				return bci_event_smile;
+			}
+			else
+			{
+				return bci_event_none;
+			}
+		}
+		else
+		{
+			last_detected_lowerface_expression = FE_SMILE;
+			subsequent_lowerface_detections_recorded = 0;
+			return bci_event_none;			}
+		}
+	else
+	{
 		return bci_event_none;
 	}
 }
@@ -247,9 +296,28 @@ void BCI::RejectTraining()
 	}
 }
 
-void BCI::TrySwitchingToTrainedSig()
+bool BCI::TrySwitchingToTrainedSig()
 {
-	;
+	int result = IEE_FacialExpressionSetSignatureType(userID, FE_SIG_TRAINED);
+	for (IEE_FacialExpressionAlgo_t expression : all_facial_expressions)
+	{
+
+	}
+	if (result == EDK_FE_NO_SIG_AVAILABLE)
+	{
+		Logger::Log("No trained signature for user " + std::to_string(userID));
+		return false;
+	}
+	else if (result != EDK_OK)
+	{
+		Logger::Log("Something went wrong when setting trained signature for user " + std::to_string(userID));
+		return false;
+	}
+	else
+	{
+		Logger::Log("Trained signature successfully set for user " + std::to_string(userID));
+		return true;
+	}
 }
 
 void BCI::EraseAllTrainingData()
@@ -260,7 +328,7 @@ void BCI::EraseAllTrainingData()
 		if (exit != EDK_OK)
 		{
 			Logger::Log("Error while preparing training for erasing!: " + std::to_string(expression), debug_info);
-			throw("Error while preparing training for erasing!");
+			//throw("Error while preparing training for erasing!");
 		}
 		exit = IEE_FacialExpressionSetTrainingControl(userID, FE_ERASE);
 		if (exit != EDK_OK)
