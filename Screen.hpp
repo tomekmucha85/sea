@@ -15,6 +15,7 @@ class Screen
 		//static const int RESOLUTION_H = 480;
 
     public:
+		static bool should_be_fullscreen;
         //The window itself
         static SDL_Window* window;
         //The window renderer

@@ -6,6 +6,7 @@
 
 const int Screen::SCREEN_WIDTH = 800;
 const int Screen::SCREEN_HEIGHT = 600;
+bool Screen::should_be_fullscreen = false;
 SDL_Window* Screen::window = nullptr;
 SDL_Renderer* Screen::renderer = nullptr;
 
@@ -43,9 +44,15 @@ bool Screen::Init()
 		}
         //Create window
 		printf("Screen width: %d, Screen height: %d\n", SCREEN_WIDTH, SCREEN_HEIGHT);
-        window = SDL_CreateWindow("Sea", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-		//window = SDL_CreateWindow("Sea", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN);
-        if(window == NULL)
+		if (should_be_fullscreen)
+		{
+			window = SDL_CreateWindow("Sea", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN);
+		}
+		else
+		{
+			window = SDL_CreateWindow("Sea", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		}
+        if (window == NULL)
         {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
             success = false;

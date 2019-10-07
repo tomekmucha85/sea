@@ -5,6 +5,7 @@
 #include <iostream>
 #include <math.h>
 #include <string>
+#include <stdexcept>
 #include "Iedk.h"
 #include <IedkErrorCode.h>
 #include <Game.hpp>
@@ -22,9 +23,47 @@
 #include <Interface.hpp>
 #include <Brain.hpp>
 
-//###################
-//Variables
-//###################
+const std::string USAGE = "\nUSAGE:\nsea.exe [-b physical|virtual|none] [-f on|off]\nWhere:\n-b is BCI mode\n-f is fullscreen mode\n";
+
+BCIMode ParseBCIArgument(std::string argument)
+{
+	if (argument == "physical")
+	{
+		return bci_mode_physical;
+	}
+	else if (argument == "virtual")
+	{
+		return bci_mode_virtual;
+	}
+	else if (argument == "none")
+	{
+		return bci_mode_none;
+	}
+	else
+	{
+		std::cout << "Invalid switch " + argument + "\n";
+		std::cout << USAGE;
+		throw std::invalid_argument("Invalid switch");
+	}
+}
+
+bool ParseFullscreenArgument(std::string argument)
+{
+	if (argument == "on") 
+	{
+		return true;
+	}
+	else if (argument == "off")
+	{
+		return false;
+	}
+	else
+	{
+		std::cout << "Invalid switch " + argument + "\n";
+		std::cout << USAGE;
+		throw std::invalid_argument("Invalid switch");
+	}
+}
 
 int main(int argc, char* args[])
 {
@@ -40,9 +79,10 @@ int main(int argc, char* args[])
 	BCIMode chosen_bci_mode = default_bci_mode;
 
 	//Arguments handling
-	std::string usage = "\nUSAGE:\nsea.exe [-b physical|virtual|none]\n";
-	int max_argument_count = 3;
+	int max_argument_count = 5;
 	printf("Arguments count: %d\n", argc);
+	bool is_fullscreen_evaluated = false;
+	bool is_BCI_evaluated = false;
 	for (int i = 0; i < argc; i++)
 	{
 		printf("Received argument: ");
@@ -51,46 +91,41 @@ int main(int argc, char* args[])
 	}
 	if (argc > max_argument_count)
 	{
-		std::cout << usage;
+		std::cout << USAGE;
 		return 1;
 	}
-	else if (argc == 3)
+	printf("Checked arguments count.\n");
+    // Beginning with number 1, 'cause 0 holds executable name.
+	for (int i = 1; i < argc; i++)
 	{
-		std::string argument_0(args[0]);
-		std::string argument_1(args[1]);
-		std::string argument_2(args[2]);
-		if (argument_1 == "-b")
+		printf("Will parse an argument.\n");
+		std::string argument(args[i]);
+		std::string message = "Parsing argument: " + argument + "\n";
+		printf(message.c_str());
+		if (argument == "-b" && !is_BCI_evaluated && !is_fullscreen_evaluated)
 		{
-			if (argument_2 == "physical")
-			{
-				chosen_bci_mode = bci_mode_physical;
-			}
-			else if (argument_2 == "virtual")
-			{
-				chosen_bci_mode = bci_mode_virtual;
-			}
-			else if (argument_2 == "none")
-			{
-				chosen_bci_mode = bci_mode_none;
-			}
+			is_BCI_evaluated = true;
+		}
+		else if (argument == "-f" && !is_BCI_evaluated && !is_fullscreen_evaluated)
+		{
+			is_fullscreen_evaluated = true;
+		}
+		else if (is_BCI_evaluated)
+		{
+			chosen_bci_mode = ParseBCIArgument(argument);
+			is_BCI_evaluated = false;
+		}
+		else if (is_fullscreen_evaluated)
+		{
+			is_fullscreen_evaluated = false;
+			Screen::should_be_fullscreen = ParseFullscreenArgument(argument);
 		}
 		else
 		{
-			std::cout << "Invalid switch: \n";
-			std::cout << usage ;
+			std::cout << USAGE;
 			return 1;
 		}
 	}
-	else if (argc == 1)
-	{
-		chosen_bci_mode = default_bci_mode;
-	}
-	else
-	{
-		std::cout << usage;
-		return 1;
-	}
-
 
     Game::InitializeGame();
 	Interface* ptr_game_interface = new Interface();

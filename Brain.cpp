@@ -205,8 +205,9 @@ BCIEvent BCI::HandleLowerfaceExpression(IEE_FacialExpressionAlgo_t my_expression
 		{
 			last_detected_lowerface_expression = FE_SMILE;
 			subsequent_lowerface_detections_recorded = 0;
-			return bci_event_none;			}
+			return bci_event_none;
 		}
+	}
 	else
 	{
 		return bci_event_none;

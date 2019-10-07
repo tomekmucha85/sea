@@ -1,7 +1,8 @@
 #ifndef CREATURE_CARRIER_A_HPP
 #define CREATURE_CARRIER_A_HPP
 #include <Creature.hpp>
-class CreatureCarrierA : public Creature
+#include <CreatureNPC.hpp>
+class CreatureCarrierA : public CreatureNPC
 {
 private:
 	static const SpriteType my_initial_type = spr_snailmage;

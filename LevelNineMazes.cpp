@@ -136,10 +136,10 @@ std::pair<Coordinates, Coordinates> LevelNineMazes::CalculateLevelConstraints()
 void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 {
 	std::pair<Coordinates, Coordinates> level_constraints = CalculateLevelConstraints();
-	int min_carrier_start_point_x = level_constraints.first.x + 1000;
-	int min_carrier_start_point_y = level_constraints.first.y + 1000;
-	int max_carrier_start_point_x = level_constraints.second.x - 1000;
-	int max_carrier_start_point_y = level_constraints.second.y - 1000;
+	int min_carrier_start_point_x = level_constraints.first.x + 2000;
+	int min_carrier_start_point_y = level_constraints.first.y + 2000;
+	int max_carrier_start_point_x = level_constraints.second.x - 2000;
+	int max_carrier_start_point_y = level_constraints.second.y - 2000;
 
 	for (unsigned int i = 0; i < carriers_number; i++)
 	{

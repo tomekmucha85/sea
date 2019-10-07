@@ -516,7 +516,7 @@ int Behavior::CalculateBestMovementAngleToAvoidMeetingGivenCreature(Creature* pt
 	Coordinates my_center = ptr_my_creature->TellCenterPoint();
 	double distance_from_me_to_avoided_creature = Distance::CalculateDistanceBetweenPoints(my_center, ptr_creature_to_avoid->TellCenterPoint());
 	const int ANGLE_QUANT = 20;
-	const double CORRIDOR_LENGTH = 100;
+	const double CORRIDOR_LENGTH = 200;
 	double longest_distance_so_far = 0;
 	int angle_offering_longest_distance = 0;
 	for (int angle = 0; angle < 360; angle += ANGLE_QUANT)
@@ -530,6 +530,7 @@ int Behavior::CalculateBestMovementAngleToAvoidMeetingGivenCreature(Creature* pt
 			double distance_from_proposed_point_to_avoided_creature = Distance::CalculateDistanceBetweenPoints(proposed_point, ptr_creature_to_avoid->TellCenterPoint());
 			if (distance_from_proposed_point_to_avoided_creature > distance_from_me_to_avoided_creature)
 			{
+				printf("Escape angle is: %d\n", angle);
 				return angle;
 			}
 			//If this won't bring me away from the dreaded creature, at least check if it's not good enough.
@@ -542,6 +543,7 @@ int Behavior::CalculateBestMovementAngleToAvoidMeetingGivenCreature(Creature* pt
 		}
 	}
 	//If we did not exit this function inside loop.
+	printf("Won't escape. Best angle is: %d\n", angle_offering_longest_distance);
 	return angle_offering_longest_distance;
 }
 

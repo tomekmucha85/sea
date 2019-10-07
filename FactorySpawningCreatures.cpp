@@ -34,7 +34,8 @@ Creature* FactorySpawningCreatures::SpawnCreature(CreatureType desired_type, Coo
 	}
 	else if (desired_type == cre_npc)
 	{
-		result = new CreatureNPC(ptr_my_center);
+		//result = new CreatureNPC(ptr_my_center);
+		throw std::invalid_argument("Trying to spawn NPC creature! This should not happen, as it is an abstract class.\n");
 	}
 	else if (desired_type == cre_spell)
 	{

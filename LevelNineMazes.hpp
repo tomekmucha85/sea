@@ -186,7 +186,7 @@ class LevelNineMazes : public Level
 		//Cyclic action to keep carrier creatures herd above given level
 		std::function<void(Level*)> func_watch_carrier_creatures_number = [](Level* ptr_level)
 		{
-			const Uint32 CARRIERS_TO_KEEP_NUMBER = 6;
+			const Uint32 CARRIERS_TO_KEEP_NUMBER = 12;
 			ptr_level->MakeSureThatCarriersNumberInInitialComponentDoesNotDropBelowThreshold(CARRIERS_TO_KEEP_NUMBER);
 		};
 };

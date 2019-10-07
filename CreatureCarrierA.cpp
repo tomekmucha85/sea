@@ -3,7 +3,7 @@
 const double CreatureCarrierA::RADIUS_FOR_MAIN_CHARACTER_PROXIMITY_CHECKS = 80;
 
 CreatureCarrierA::CreatureCarrierA(Coordinates* ptr_my_center, int hitbox_margin) :
-	Creature(CreatureCarrierA::my_initial_type, ptr_my_center, hitbox_margin)
+	CreatureNPC(CreatureCarrierA::my_initial_type, ptr_my_center, hitbox_margin)
 {
 	printf("Spawned CreatureSnailmage.\n");
 	my_type = cre_carrier_a;

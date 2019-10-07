@@ -1,8 +1,7 @@
 #include <CreatureNPC.hpp>
 
-CreatureNPC::CreatureNPC(Coordinates* ptr_my_center, int hitbox_margin) :
-	Creature(CreatureNPC::my_initial_type, ptr_my_center, hitbox_margin)
+CreatureNPC::CreatureNPC(SpriteType my_sprite_type, Coordinates* ptr_my_center, int hitbox_margin) :
+	Creature(my_sprite_type, ptr_my_center, hitbox_margin)
 {
-	//printf("Spawned CreatureNPC.\n");
-	my_type = cre_npc;
+	//Abstract class - no instance of NPC should exist, only its children are meant to be spawned.
 }
