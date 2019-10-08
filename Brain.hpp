@@ -8,6 +8,7 @@
 #include <vector>
 #include <CustomDefinedTypes.hpp>
 #include <Logger.hpp>
+#include <TimerCountdown.hpp>
 
 class BCI
 {
@@ -21,9 +22,12 @@ class BCI
 		BCIMode bci_device_in_use = bci_mode_none;
 		static const IEE_FacialExpressionAlgo_t all_facial_expressions[];
 		const float DETECTION_THRESHOLD = 0.5;
-		const unsigned int SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED = 8;
+		const unsigned int SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED = 3;
 		unsigned int subsequent_lowerface_detections_recorded = 0;
+		unsigned int subsequent_upperface_detections_recorded = 0;
 		IEE_FacialExpressionAlgo_t last_detected_lowerface_expression = FE_NEUTRAL;
+		static const unsigned int COOLDOWN_INTERVAL_MILISECONDS = 250;
+		TimerCountdown* ptr_cooldown_timer = new TimerCountdown(COOLDOWN_INTERVAL_MILISECONDS);
 
 
     public:
@@ -32,6 +36,7 @@ class BCI
 		BCIMode WhatBCIIsConnected();
 		BCIEvent GetNextBCIEvent();
 		BCIEvent HandleLowerfaceExpression(IEE_FacialExpressionAlgo_t my_expression);
+		BCIEvent HandleUpperfaceExpression(IEE_FacialExpressionAlgo_t my_expression);
 		static int SaveUserProfile();
 		static void TrainSmile();
 		static void TrainNeutral();

@@ -59,11 +59,11 @@ BCI::BCI(BCIMode mode)
 	{
 		printf("No BCI in use.\n");
 	}
-
 }
 
 BCI::~BCI()
 {
+	delete ptr_cooldown_timer;
 	IEE_EngineDisconnect();
 	IEE_EmoStateFree(eState);
 	IEE_EmoEngineEventFree(eEvent);
@@ -94,15 +94,39 @@ BCIEvent BCI::GetNextBCIEvent()
 			else if (eventType == IEE_EmoStateUpdated)
 			{
 				IEE_EmoEngineEventGetEmoState(eEvent, eState);
-				float upperFaceAmp = IS_FacialExpressionGetUpperFaceActionPower(eState);
+				//float upperFaceAmp = IS_FacialExpressionGetUpperFaceActionPower(eState);
 				float lowerFaceAmp = IS_FacialExpressionGetLowerFaceActionPower(eState);
 				//printf("State updated.\n");
-				//IEE_FacialExpressionAlgo_t upperFaceType =
-				//	IS_FacialExpressionGetUpperFaceAction(eState);
+				IEE_FacialExpressionAlgo_t upperFaceType =
+					IS_FacialExpressionGetUpperFaceAction(eState);
+				IEE_FacialExpressionAlgo_t lowerFaceType =
+					IS_FacialExpressionGetLowerFaceAction(eState);
+				IS_FacialExpressionIsLeftWink(eState);
 				if (lowerFaceAmp > DETECTION_THRESHOLD)
 				{
-					IEE_FacialExpressionAlgo_t lowerFaceType = IS_FacialExpressionGetLowerFaceAction(eState);
-					return HandleLowerfaceExpression(lowerFaceType);
+					if (ptr_cooldown_timer->CheckIfCountdownFinished())
+					{
+						ptr_cooldown_timer->ResetStartTime();
+						return HandleLowerfaceExpression(lowerFaceType);
+					}
+					else
+					{
+						Logger::Log("Cooldown not passed yet! Remaining: " + std::to_string(ptr_cooldown_timer->HowManyMilisecondsLeftTillEnd()) + " ms\n");
+						return bci_event_none;
+					}
+				}
+				else if (upperFaceType != FE_NONE)
+				{
+					if (ptr_cooldown_timer->CheckIfCountdownFinished())
+					{
+						ptr_cooldown_timer->ResetStartTime();
+						return HandleUpperfaceExpression(upperFaceType);
+					}
+					else
+					{
+						Logger::Log("Cooldown not passed yet! Remaining: " + std::to_string(ptr_cooldown_timer->HowManyMilisecondsLeftTillEnd()) + " ms\n");
+						return bci_event_none;
+					}
 				}
 				else
 				{
@@ -162,6 +186,34 @@ BCIEvent BCI::GetNextBCIEvent()
 	}
 }
 
+BCIEvent BCI::HandleUpperfaceExpression(IEE_FacialExpressionAlgo_t my_expression)
+{
+	printf("Handling upperface!:%d\n", my_expression);
+	if (my_expression == FE_WINK_LEFT || my_expression == FE_WINK_RIGHT)
+	{
+		Logger::Log("Wink candidate!\n");
+		subsequent_upperface_detections_recorded++;
+		if (subsequent_upperface_detections_recorded >= SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED)
+		{
+			Logger::Log("Wink!");
+			return bci_event_wink;
+		}
+		else
+		{
+			return bci_event_none;
+		}
+	}
+	else if (my_expression == FE_BLINK)
+	{
+		printf("Blink candidate!\n");
+	}
+	else
+	{
+		subsequent_lowerface_detections_recorded = 0;
+		return bci_event_none;
+	}
+}
+
 BCIEvent BCI::HandleLowerfaceExpression(IEE_FacialExpressionAlgo_t my_expression)
 {
 	if (my_expression == FE_CLENCH)
@@ -171,7 +223,7 @@ BCIEvent BCI::HandleLowerfaceExpression(IEE_FacialExpressionAlgo_t my_expression
 			subsequent_lowerface_detections_recorded++;
 			if (subsequent_lowerface_detections_recorded >= SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED)
 			{
-				Logger::Log("Clench! Amplitude: " + std::to_string(my_expression));
+				Logger::Log("Clench!");
 				return bci_event_clench;
 			}
 			else
@@ -193,7 +245,7 @@ BCIEvent BCI::HandleLowerfaceExpression(IEE_FacialExpressionAlgo_t my_expression
 			subsequent_lowerface_detections_recorded++;
 			if (subsequent_lowerface_detections_recorded >= SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED)
 			{
-				Logger::Log("Smile! Amplitude: " + std::to_string(my_expression));
+				subsequent_lowerface_detections_recorded = 0;
 				return bci_event_smile;
 			}
 			else

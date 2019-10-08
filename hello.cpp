@@ -23,6 +23,8 @@
 #include <Interface.hpp>
 #include <Brain.hpp>
 
+//FOR PARSING COMMANDLINE PARAMETERS
+
 const std::string USAGE = "\nUSAGE:\nsea.exe [-b physical|virtual|none] [-f on|off]\nWhere:\n-b is BCI mode\n-f is fullscreen mode\n";
 
 BCIMode ParseBCIArgument(std::string argument)
@@ -81,8 +83,8 @@ int main(int argc, char* args[])
 	//Arguments handling
 	int max_argument_count = 5;
 	printf("Arguments count: %d\n", argc);
-	bool is_fullscreen_evaluated = false;
-	bool is_BCI_evaluated = false;
+	bool is_fullscreen_being_evaluated = false;
+	bool is_BCI_being_evaluated = false;
 	for (int i = 0; i < argc; i++)
 	{
 		printf("Received argument: ");
@@ -102,22 +104,22 @@ int main(int argc, char* args[])
 		std::string argument(args[i]);
 		std::string message = "Parsing argument: " + argument + "\n";
 		printf(message.c_str());
-		if (argument == "-b" && !is_BCI_evaluated && !is_fullscreen_evaluated)
+		if (argument == "-b" && !is_BCI_being_evaluated && !is_fullscreen_being_evaluated)
 		{
-			is_BCI_evaluated = true;
+			is_BCI_being_evaluated = true;
 		}
-		else if (argument == "-f" && !is_BCI_evaluated && !is_fullscreen_evaluated)
+		else if (argument == "-f" && !is_BCI_being_evaluated && !is_fullscreen_being_evaluated)
 		{
-			is_fullscreen_evaluated = true;
+			is_fullscreen_being_evaluated = true;
 		}
-		else if (is_BCI_evaluated)
+		else if (is_BCI_being_evaluated)
 		{
 			chosen_bci_mode = ParseBCIArgument(argument);
-			is_BCI_evaluated = false;
+			is_BCI_being_evaluated = false;
 		}
-		else if (is_fullscreen_evaluated)
+		else if (is_fullscreen_being_evaluated)
 		{
-			is_fullscreen_evaluated = false;
+			is_fullscreen_being_evaluated = false;
 			Screen::should_be_fullscreen = ParseFullscreenArgument(argument);
 		}
 		else
@@ -137,9 +139,8 @@ int main(int argc, char* args[])
 	int looped_events = static_cast<int>(Game::ptr_current_level->cyclic_actions.size());
 	printf("There are %d actions present in current event loop.\n", looped_events);
 	printf("Main hero: %p.\n", Creature::ptr_current_main_charater);
-	//TimerInterval* ptr_emotiv_bands_check = new TimerInterval(2000);
 
-	int cooldown = 0;
+	//int cooldown = 0;
 
     while (!quit)
     {
@@ -181,7 +182,6 @@ int main(int argc, char* args[])
 
     }
     //Do cleanup
-	//delete ptr_emotiv_bands_check;
 	delete ptr_bci_instance;
     Game::DestroyGame();
     //Quit SDL subsystems

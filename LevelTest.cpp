@@ -61,6 +61,12 @@ void LevelTest::FinishLevel(LevelEnding my_ending)
 
 void LevelTest::NotifyOfBciEvent(BCIEvent my_event)
 {
-	
-	//STAY SILENT;
+	if (my_event == bci_event_wink)
+	{
+		Logger::Log("Wink caught on test level!");
+	}
+	else if (my_event == bci_event_smile)
+	{
+		Logger::Log("Smile caught on test level!");
+	}
 }

@@ -14,8 +14,10 @@ void TimerCountdown::ResetWithNewTimeToLive(Uint32 new_time_to_live)
 
 bool TimerCountdown::CheckIfCountdownFinished()
 {
-	if (HowManyMilisecondsLeftTillEnd() > 0)
+	Uint32 miliseconds_left_till_end = HowManyMilisecondsLeftTillEnd();
+	if (miliseconds_left_till_end > 0)
 	{
+		//printf("Countdown not finished yet. %d miliseconds left.\n", miliseconds_left_till_end);
 		return false;
 	}
 	else
