@@ -101,7 +101,8 @@ BCIEvent BCI::GetNextBCIEvent()
 					IS_FacialExpressionGetUpperFaceAction(eState);
 				IEE_FacialExpressionAlgo_t lowerFaceType =
 					IS_FacialExpressionGetLowerFaceAction(eState);
-				IS_FacialExpressionIsLeftWink(eState);
+				//There are priorities in BCI readings handling.
+				//Lowerface actions are placed on top, further actions are taken into account if there is no lowerface event.
 				if (lowerFaceAmp > DETECTION_THRESHOLD)
 				{
 					if (ptr_cooldown_timer->CheckIfCountdownFinished())
@@ -115,18 +116,9 @@ BCIEvent BCI::GetNextBCIEvent()
 						return bci_event_none;
 					}
 				}
-				else if (upperFaceType != FE_NONE)
+				else if (ptr_cooldown_timer->CheckIfCountdownFinished())
 				{
-					if (ptr_cooldown_timer->CheckIfCountdownFinished())
-					{
-						ptr_cooldown_timer->ResetStartTime();
-						return HandleUpperfaceExpression(upperFaceType);
-					}
-					else
-					{
-						Logger::Log("Cooldown not passed yet! Remaining: " + std::to_string(ptr_cooldown_timer->HowManyMilisecondsLeftTillEnd()) + " ms\n");
-						return bci_event_none;
-					}
+					return HandleWink(eState);
 				}
 				else
 				{
@@ -188,14 +180,19 @@ BCIEvent BCI::GetNextBCIEvent()
 
 BCIEvent BCI::HandleUpperfaceExpression(IEE_FacialExpressionAlgo_t my_expression)
 {
-	printf("Handling upperface!:%d\n", my_expression);
-	if (my_expression == FE_WINK_LEFT || my_expression == FE_WINK_RIGHT)
+	return bci_event_none;
+}
+
+BCIEvent BCI::HandleWink(EmoStateHandle my_state)
+{
+	if (IS_FacialExpressionIsLeftWink(my_state) == 1 ||
+		IS_FacialExpressionIsRightWink(my_state) == 1)
 	{
 		Logger::Log("Wink candidate!\n");
-		subsequent_upperface_detections_recorded++;
-		if (subsequent_upperface_detections_recorded >= SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED)
+		subsequent_wink_detections_recorded++;
+		if (subsequent_wink_detections_recorded >= SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED)
 		{
-			Logger::Log("Wink!");
+			subsequent_wink_detections_recorded = 0;
 			return bci_event_wink;
 		}
 		else
@@ -203,13 +200,9 @@ BCIEvent BCI::HandleUpperfaceExpression(IEE_FacialExpressionAlgo_t my_expression
 			return bci_event_none;
 		}
 	}
-	else if (my_expression == FE_BLINK)
-	{
-		printf("Blink candidate!\n");
-	}
 	else
 	{
-		subsequent_lowerface_detections_recorded = 0;
+		subsequent_wink_detections_recorded = 0;
 		return bci_event_none;
 	}
 }

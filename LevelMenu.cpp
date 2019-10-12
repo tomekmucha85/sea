@@ -296,6 +296,7 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
 		//Preparing set of actions to enable when calibration succeeds
 		//Disabling proceeding to next calibration phase.
 		ManageMenuActionsForSmileBCICalibration();
+		ptr_gui->PrintTextOnscreen("training will start soon");
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile_accept.text)
 	{
@@ -322,6 +323,7 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
 		//Preparing set of actions to enable when calibration succeeds
         //Disabling proceeding to next calibration phase.
 		ManageMenuActionsForClenchBCICalibration();
+		ptr_gui->PrintTextOnscreen("training will start soon");
 	}
 	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_clench_accept.text)
 	{
@@ -493,7 +495,7 @@ void LevelMenu::NotifyOfBciEvent(BCIEvent my_event)
 	}
 	else if (my_event == bci_event_training_erased)
 	{
-		ptr_gui->PrintTextOnscreen("data erased!");;
+		ptr_gui->PrintTextOnscreen("data erased!");
 	}
 	else if (my_event == bci_event_smile)
 	{

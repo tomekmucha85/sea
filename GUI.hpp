@@ -56,7 +56,6 @@ class GUI
 		bool CheckIfOnscreenPrinter2ndRowIsAvailable();
 		bool CheckIfOnscreenPrinter3rdRowIsAvailable();
 		bool CheckIfCenteredOnscreenPrinterIsAvailable();
-		bool CheckIfAnyPrintIsDisplayedNow();
 		void ManageOnscreenPrinter();
 		void ManageCenteredOnscreenPrinter();
 		void PushFirstPrinterRowUpToSecond();

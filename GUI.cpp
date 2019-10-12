@@ -181,8 +181,15 @@ void GUI::PushFirstPrinterRowUpToSecond()
 	printf("Text should be transfered to second row: ");
 	Logger::Log(ptr_onscreen_printer_1st_row->TellText());
 	//Timer for the second row "inherits" value from timer for the first row
-	ptr_timer_for_onscreen_printer_2nd_row->ResetWithNewTimeToLive(ptr_timer_for_onscreen_printer_1st_row->HowManyMilisecondsLeftTillEnd());
-	printf("Time to live of %d was set for the second row.\n", ptr_timer_for_onscreen_printer_1st_row->HowManyMilisecondsLeftTillEnd());
+	//If inherited value is smaller than minimal value, it is normalized to min. value.
+	const Uint32 MINIMAL_TIME_TO_LIVE = 800;
+	Uint32 time_left_for_inherited_entry = ptr_timer_for_onscreen_printer_1st_row->HowManyMilisecondsLeftTillEnd();
+	if (time_left_for_inherited_entry < MINIMAL_TIME_TO_LIVE)
+	{
+		time_left_for_inherited_entry = MINIMAL_TIME_TO_LIVE;
+	}
+	ptr_timer_for_onscreen_printer_2nd_row->ResetWithNewTimeToLive(time_left_for_inherited_entry);
+	printf("Time to live of %d was set for the second row.\n", time_left_for_inherited_entry);
 }
 
 bool GUI::CheckIfCenteredOnscreenPrinterIsAvailable()
@@ -203,18 +210,6 @@ bool GUI::CheckIfOnscreenPrinter2ndRowIsAvailable()
 bool GUI::CheckIfOnscreenPrinter3rdRowIsAvailable()
 {
 	return ptr_timer_for_onscreen_printer_3rd_row->CheckIfCountdownFinished();
-}
-
-bool GUI::CheckIfAnyPrintIsDisplayedNow()
-{
-	if (ptr_timer_for_onscreen_printer_1st_row != nullptr)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }
 
 //#TODO - mo¿e wiêcej akcji powinno trafiæ do cyclic actions?
