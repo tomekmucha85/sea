@@ -87,6 +87,7 @@ class Creature
 		static const double DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS;
 		static std::vector<CreatureType> LIVING_CREATUES;
 		static const double DEFAULT_RADIUS_FOR_ALERTING_CREATURES;
+		static const double DEFAULT_RADIUS_FOR_CONVERSATION;
 		static const Uint32 DEFAULT_CONVERSATION_MESSAGE_TIME_TO_STAY_ON_SCREEN;
 
 		// Pointer to sprites factory

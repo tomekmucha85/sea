@@ -11,12 +11,7 @@ LevelComponentNavGrid::LevelComponentNavGrid(std::map<LevelComponentType, std::v
 
 void LevelComponentNavGrid::ServeAllExternalSpawnRequests()
 {
-	unsigned int spawn_requests_number = TellExternalSpawnRequests().size();
 	LevelComponent::ServeAllExternalSpawnRequests();
-	if (spawn_requests_number > 0)
-	{
-		ConnectNodes(MAX_RADIUS_FOR_NODE_CONNECTION);
-	}
 }
 
 void LevelComponentNavGrid::ConnectNodes(double search_radius)
@@ -66,6 +61,7 @@ PointToPointPathResponseEncapsulated LevelComponentNavGrid::GiveResponseForPoint
 	PointToPointPathResponseEncapsulated response;
 	response.source_component = my_request.source_component;
 	response.requestor_id = my_request.requestor_id;
+	ConnectNodes(MAX_RADIUS_FOR_NODE_CONNECTION);
 	response.navigation_path = GeneratePathToChosenPoint(my_request.my_position, my_request.destination);
 	return response;
 }
@@ -155,6 +151,8 @@ std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(Creat
 	CreatureNavGridNode* ptr_previous_node = nullptr;
 	CreatureNavGridNode* ptr_current_node = ptr_starting_node;
 	std::vector<Coordinates> result = {};
+	//Reconnecting nodes every time someone needs mapping
+	ConnectNodes(MAX_RADIUS_FOR_NODE_CONNECTION);
 	for (unsigned int i = 1; i <= number_of_hops; i++)
 	{
 		//printf("Generating path. Run number %d.\n", i);
@@ -199,6 +197,8 @@ std::vector<Coordinates> LevelComponentNavGrid::GeneratePathToChosenPoint(Coordi
 	CreatureNavGridNode* ptr_start_node = FindAGridNodeAccessibleFromPoint(start_point);
 	CreatureNavGridNode* ptr_end_node = FindAGridNodeNearestToPoint(end_point);
 	std::vector<Coordinates> result = {};
+	//Reconnecting nodes every time someone needs mapping
+	ConnectNodes(MAX_RADIUS_FOR_NODE_CONNECTION);
 	if (ptr_start_node == nullptr || ptr_end_node == nullptr)
 	{
 		printf("Could not find suitable start/end node for path between points.\n");

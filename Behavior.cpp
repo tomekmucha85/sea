@@ -566,8 +566,6 @@ Creature* Behavior::TellFollowedCreature()
 			return nullptr;
 		}
 	}
-
-	return ptr_followed_creature;
 }
 
 void Behavior::SetFollowedCreature(Creature* ptr_my_creature)

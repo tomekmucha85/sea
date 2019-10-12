@@ -13,6 +13,7 @@ const double Creature::MARGIN_FOR_LINE_OF_SIGHT_CHECKS = 48;
 const double Creature::DEFAULT_RADIUS_FOR_CREATURE_OF_GIVEN_TYPE_PROXIMITY_CHECKS = 80;
 const double Creature::DEFAULT_RADIUS_FOR_ALERTING_CREATURES = 500;
 const Uint32 Creature::DEFAULT_CONVERSATION_MESSAGE_TIME_TO_STAY_ON_SCREEN = 3000;
+const double Creature::DEFAULT_RADIUS_FOR_CONVERSATION = 200;
 std::vector<CreatureType> Creature::LIVING_CREATUES = { cre_carrier_a, cre_clawy };
 
 //**************
@@ -1145,7 +1146,9 @@ void Creature::ReceiveConversationalMessage(ConversationalMessage my_message)
 
 void Creature::SendConversationalMessage(Creature* ptr_addressee, ConversationalMessage my_message)
 {
-	if (IsThisCreaturePresentInEnvironment(ptr_addressee))
+	if (IsThisCreaturePresentInEnvironment(ptr_addressee) && 
+		IsThereLineOfSightBetweenThesePointsInCurrentEnvironment(TellCenterPoint(), ptr_addressee->TellCenterPoint(),
+			DEFAULT_RADIUS_FOR_CONVERSATION))
 	{
 		ptr_addressee->ReceiveConversationalMessage(my_message);
 		//Execute methods bound to outgoing message_text
