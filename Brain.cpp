@@ -117,7 +117,10 @@ BCIEvent BCI::GetNextBCIEvent()
 
 				if (ptr_cooldown_timer->CheckIfCountdownFinished())
 				{
-					ptr_cooldown_timer->ResetStartTime();
+					if (received_bci_event != bci_event_none)
+					{
+						ptr_cooldown_timer->ResetStartTime();
+					}
 					return received_bci_event;
 				}
 				else
@@ -201,7 +204,7 @@ BCIEvent BCI::HandleWink(EmoStateHandle my_state)
 			{
 				if (ptr_doublewink_min_timer->CheckIfCountdownFinished() == true)
 				{
-					printf("Wink!\n");
+					printf("Wink just in time!\n");
 					subsequent_wink_detections_recorded = 0;
 					return bci_event_wink;
 				}

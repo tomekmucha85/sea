@@ -25,9 +25,9 @@ class BCI
 		unsigned int subsequent_wink_detections_recorded = 0;
 		unsigned int subsequent_smile_detections_recorded = 0;
 		unsigned int subsequent_clench_detections_recorded = 0;
-		static const unsigned int COOLDOWN_INTERVAL_MILISECONDS = 250;
+		static const unsigned int COOLDOWN_INTERVAL_MILISECONDS = 400;
 		static const unsigned int DOUBLEWINK_TIME_WINDOW = 600;
-		static const unsigned int DOUBLEWINK_MIN_INTERVAL = 200;
+		static const unsigned int DOUBLEWINK_MIN_INTERVAL = 100;
 		static const unsigned int LOWERFACE_TIME_WINDOW = 600;
 		static const unsigned int LOWERFACE_MIN_INTERVAL = 200;
 		TimerCountdown* ptr_cooldown_timer = new TimerCountdown(COOLDOWN_INTERVAL_MILISECONDS);
