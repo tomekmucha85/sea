@@ -284,7 +284,7 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
 	//###############################
     //# CALIBRATION WIZARD - 2nd STEP
     //###############################
-	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_proceed.text)
+	/*else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_proceed.text)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_wizard_2nd_step);
 		//All actions disabled except calibration start and return to menu
@@ -307,11 +307,11 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
 	{
 		BCI::RejectTraining();
 		ManageMenuActionsForRejectedBCICalibration();
-	}
+	}*/
 	//###############################
     //# CALIBRATION WIZARD - 3rd STEP
     //###############################
-	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile_proceed.text)
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_proceed.text)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_wizard_3rd_step);
 		//All actions disabled except calibration start and return to menu

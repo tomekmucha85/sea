@@ -64,6 +64,8 @@ BCI::BCI(BCIMode mode)
 BCI::~BCI()
 {
 	delete ptr_cooldown_timer;
+	delete ptr_doublewink_max_timer;
+	delete ptr_doublewink_min_timer;
 	IEE_EngineDisconnect();
 	IEE_EmoStateFree(eState);
 	IEE_EmoEngineEventFree(eEvent);
@@ -103,22 +105,20 @@ BCIEvent BCI::GetNextBCIEvent()
 					IS_FacialExpressionGetLowerFaceAction(eState);
 				//There are priorities in BCI readings handling.
 				//Lowerface actions are placed on top, further actions are taken into account if there is no lowerface event.
+				BCIEvent received_bci_event = bci_event_none;
 				if (lowerFaceAmp > DETECTION_THRESHOLD)
 				{
-					if (ptr_cooldown_timer->CheckIfCountdownFinished())
-					{
-						ptr_cooldown_timer->ResetStartTime();
-						return HandleLowerfaceExpression(lowerFaceType);
-					}
-					else
-					{
-						Logger::Log("Cooldown not passed yet! Remaining: " + std::to_string(ptr_cooldown_timer->HowManyMilisecondsLeftTillEnd()) + " ms\n");
-						return bci_event_none;
-					}
+					received_bci_event = HandleLowerfaceExpression(lowerFaceType);
 				}
-				else if (ptr_cooldown_timer->CheckIfCountdownFinished())
+				else
 				{
-					return HandleWink(eState);
+					received_bci_event = HandleWink(eState);
+				}
+
+				if (ptr_cooldown_timer->CheckIfCountdownFinished())
+				{
+					ptr_cooldown_timer->ResetStartTime();
+					return received_bci_event;
 				}
 				else
 				{
@@ -188,22 +188,102 @@ BCIEvent BCI::HandleWink(EmoStateHandle my_state)
 	if (IS_FacialExpressionIsLeftWink(my_state) == 1 ||
 		IS_FacialExpressionIsRightWink(my_state) == 1)
 	{
-		Logger::Log("Wink candidate!\n");
-		subsequent_wink_detections_recorded++;
-		if (subsequent_wink_detections_recorded >= SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED)
+		if (subsequent_wink_detections_recorded == 0)
 		{
-			subsequent_wink_detections_recorded = 0;
-			return bci_event_wink;
+			ptr_doublewink_max_timer->ResetStartTime();
+			ptr_doublewink_min_timer->ResetStartTime();
+			subsequent_wink_detections_recorded++;
+			return bci_event_none;
 		}
 		else
 		{
-			return bci_event_none;
+			if (ptr_doublewink_max_timer->CheckIfCountdownFinished() == false)
+			{
+				if (ptr_doublewink_min_timer->CheckIfCountdownFinished() == true)
+				{
+					printf("Wink!\n");
+					subsequent_wink_detections_recorded = 0;
+					return bci_event_wink;
+				}
+				else
+				{
+					printf("Winking too fast.\n");
+					return bci_event_none;
+				}
+			}
+			else
+			{
+				printf("Winking too slow.\n");
+				//Second event, which came too late becomes first event. We're still waiting for second to come.
+				subsequent_wink_detections_recorded = 1;
+				ptr_doublewink_max_timer->ResetStartTime();
+				ptr_doublewink_min_timer->ResetStartTime();
+				return bci_event_none;
+			}
 		}
 	}
 	else
 	{
-		subsequent_wink_detections_recorded = 0;
 		return bci_event_none;
+	}
+}
+
+BCIEvent BCI::HandleSpecificLowerfaceEvent(BCIEvent my_event)
+{
+	//Assigning value to pointer
+	unsigned int* ptr_subsequent_lowerface_detections_recorded = nullptr;
+	if (my_event == bci_event_smile)
+	{
+		printf("Evaluating smile.\n");
+		ptr_subsequent_lowerface_detections_recorded = &subsequent_smile_detections_recorded;
+	}
+	else if (my_event == bci_event_clench)
+	{
+		printf("Evaluating clench.\n");
+		ptr_subsequent_lowerface_detections_recorded = &subsequent_clench_detections_recorded;
+	}
+	else
+	{
+		Logger::Log("Unexpected lowerface event!");
+		return bci_event_none;
+	}
+	//Processing lowerface event
+	if (*ptr_subsequent_lowerface_detections_recorded == 0)
+	{
+		ptr_lowerface_max_timer->ResetStartTime();
+		ptr_lowerface_min_timer->ResetStartTime();
+		//Dirty trick with parentheses here!
+		(*ptr_subsequent_lowerface_detections_recorded)++;
+		printf("Timers reset for lowerface event.\n");
+		return bci_event_none;
+	}
+	else
+	{
+		printf("There was a detection recorded before.\n");
+		if (ptr_lowerface_max_timer->CheckIfCountdownFinished() == false)
+		{
+			printf("Time window still open.\n");
+			if (ptr_lowerface_min_timer->CheckIfCountdownFinished() == true)
+			{
+				*ptr_subsequent_lowerface_detections_recorded = 0;
+				printf("Lowerface event just in time!\n");
+				return my_event;
+			}
+			else
+			{
+				printf("Lowerface event coming too fast.\n");
+				return bci_event_none;
+			}
+		}
+		else
+		{
+			printf("Lowerface event coming too slow.\n");
+			//Second event, which came too late becomes first event. We're still waiting for second to come.
+			*ptr_subsequent_lowerface_detections_recorded = 1;
+			ptr_lowerface_max_timer->ResetStartTime();
+			ptr_lowerface_min_timer->ResetStartTime();
+			return bci_event_none;
+		}
 	}
 }
 
@@ -211,47 +291,13 @@ BCIEvent BCI::HandleLowerfaceExpression(IEE_FacialExpressionAlgo_t my_expression
 {
 	if (my_expression == FE_CLENCH)
 	{
-		if (last_detected_lowerface_expression == FE_CLENCH)
-		{
-			subsequent_lowerface_detections_recorded++;
-			if (subsequent_lowerface_detections_recorded >= SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED)
-			{
-				Logger::Log("Clench!");
-				return bci_event_clench;
-			}
-			else
-			{
-				return bci_event_none;
-			}
-		}
-		else
-		{
-			last_detected_lowerface_expression = FE_CLENCH;
-			subsequent_lowerface_detections_recorded = 0;
-			return bci_event_none;
-		}
+		printf("Will handle clench. Subsequent detections so far: %d.\n", subsequent_clench_detections_recorded);
+		return HandleSpecificLowerfaceEvent(bci_event_clench);
 	}
 	else if (my_expression == FE_SMILE)
 	{
-		if (last_detected_lowerface_expression == FE_SMILE)
-		{
-			subsequent_lowerface_detections_recorded++;
-			if (subsequent_lowerface_detections_recorded >= SUBSEQUENT_FACIAL_EXPRESSION_DETECTIONS_NEEDED)
-			{
-				subsequent_lowerface_detections_recorded = 0;
-				return bci_event_smile;
-			}
-			else
-			{
-				return bci_event_none;
-			}
-		}
-		else
-		{
-			last_detected_lowerface_expression = FE_SMILE;
-			subsequent_lowerface_detections_recorded = 0;
-			return bci_event_none;
-		}
+		printf("Will handle smile. Subsequent detections so far: %d.\n", subsequent_smile_detections_recorded);
+		return HandleSpecificLowerfaceEvent(bci_event_smile);
 	}
 	else
 	{

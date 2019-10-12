@@ -15,7 +15,8 @@ private:
 	MenuAction menu_action_calibration_wizard_calibrate_neutral = {"calibrate your neutral expression", true};
 	MenuAction menu_action_calibration_wizard_calibrate_neutral_accept = { "accept neutral expression training", true };
 	MenuAction menu_action_calibration_wizard_calibrate_neutral_reject = { "reject neutral expression training", true };
-	MenuAction menu_action_calibration_wizard_calibrate_neutral_proceed = { "proceed to smile calibration", true };
+	//MenuAction menu_action_calibration_wizard_calibrate_neutral_proceed = { "proceed to smile calibration", true };
+	MenuAction menu_action_calibration_wizard_calibrate_neutral_proceed = { "proceed to clench calibration", true };
 	MenuAction menu_action_calibration_wizard_calibrate_smile = { "calibrate your smile", true };
 	MenuAction menu_action_calibration_wizard_calibrate_smile_accept = { "accept smile training", true};
 	MenuAction menu_action_calibration_wizard_calibrate_smile_reject = { "reject smile training", true };
