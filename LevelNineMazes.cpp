@@ -810,12 +810,19 @@ void LevelNineMazes::NotifyOfBciEvent(BCIEvent my_event)
 	{
 		Logger::Log("Smile caught on Nine Mazes level!");
 		Creature* ptr_addressee = Creature::ptr_current_main_charater->TellFollowedCreature();
-		ConversationalMessage message = Creature::ptr_current_main_charater->ConstructConversationalMessage("hi!");
-		Creature::ptr_current_main_charater->SendConversationalMessage(ptr_addressee, message);
+		//ConversationalMessage message = Creature::ptr_current_main_charater->ConstructConversationalMessage("hi!");
+		//Creature::ptr_current_main_charater->SendConversationalMessage(ptr_addressee, message);
 	}
 	else if (my_event == bci_event_wink)
 	{
 		Logger::Log("Wink caught on Nine Mazes level!");
+		Creature* ptr_addressee = Creature::ptr_current_main_charater->TellFollowedCreature();
+		//ConversationalMessage message = Creature::ptr_current_main_charater->ConstructConversationalMessage("hi!");
+		//Creature::ptr_current_main_charater->SendConversationalMessage(ptr_addressee, message);
+	}
+	else if (my_event == bci_event_raise_brow)
+	{
+		Logger::Log("Raise brow caught on Nine Mazes level!");
 		Creature* ptr_addressee = Creature::ptr_current_main_charater->TellFollowedCreature();
 		ConversationalMessage message = Creature::ptr_current_main_charater->ConstructConversationalMessage("hi!");
 		Creature::ptr_current_main_charater->SendConversationalMessage(ptr_addressee, message);

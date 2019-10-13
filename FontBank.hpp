@@ -17,6 +17,7 @@ private:
 	std::string path_font_doom = "images/doom.ttf";
 	std::string path_font_mania = "images/HoganMania.ttf";
 	std::string path_font_nightbird = "images/Nightbird.ttf";
+	std::string path_font_morris = "images/MorrisRoman-Black.ttf";
 	static const int FONT_SIZE_MED = 28;
 	static const int FONT_SIZE_BIG = 48;
 	static const int FONT_SIZE_HUGE = 100;
@@ -30,6 +31,8 @@ public:
 	static TTF_Font* ptr_font_mania_huge;
 	static TTF_Font* ptr_font_nightbird_huge;
 	static TTF_Font** ptr_ptr_default_font;
+	static TTF_Font* ptr_font_morris;
+	static TTF_Font* ptr_font_morris_big;
 
 	//###################
 	//Functions

@@ -284,34 +284,34 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
 	//###############################
     //# CALIBRATION WIZARD - 2nd STEP
     //###############################
-	/*else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_proceed.text)
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_proceed.text)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_wizard_2nd_step);
 		//All actions disabled except calibration start and return to menu
-		ManageMenuActionsForNotCalibratedSmileBCIExpression();
+		ManageMenuActionsForNotCalibratedRaiseBrowBCIExpression();
 	}
-	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile.text)
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_raise_brow.text)
 	{
-		BCI::TrainSmile();
+		BCI::TrainRaiseBrow();
 		//Preparing set of actions to enable when calibration succeeds
 		//Disabling proceeding to next calibration phase.
-		ManageMenuActionsForSmileBCICalibration();
+		ManageMenuActionsForRaiseBrowBCICalibration();
 		ptr_gui->PrintTextOnscreen("training will start soon");
 	}
-	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile_accept.text)
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_raise_brow_accept.text)
 	{
 		BCI::AcceptTraining();
 		ManageMenuActionsForAcceptedBCICalibration();
 	}
-	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_smile_reject.text)
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_raise_brow_reject.text)
 	{
 		BCI::RejectTraining();
 		ManageMenuActionsForRejectedBCICalibration();
-	}*/
+	}
 	//###############################
     //# CALIBRATION WIZARD - 3rd STEP
     //###############################
-	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_neutral_proceed.text)
+	else if (ptr_my_action->text == menu_action_calibration_wizard_calibrate_raise_brow_proceed.text)
 	{
 		LoadMenuActionsSet(possible_actions_menu_calibration_wizard_3rd_step);
 		//All actions disabled except calibration start and return to menu
@@ -392,12 +392,12 @@ void LevelMenu::ManageMenuActionsForNeutralBCICalibration()
 	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
 }
 
-void LevelMenu::ManageMenuActionsForNotCalibratedSmileBCIExpression() 
+void LevelMenu::ManageMenuActionsForNotCalibratedRaiseBrowBCIExpression() 
 {
 	for (MenuAction* ptr_menu_action : possible_actions_menu_calibration_wizard_2nd_step)
 	{
-		//Disable all menu actions except calibration smile and return option
-		if (ptr_menu_action->text != menu_action_calibration_wizard_calibrate_smile.text &&
+		//Disable all menu actions except calibration raise brow and return option
+		if (ptr_menu_action->text != menu_action_calibration_wizard_calibrate_raise_brow.text &&
 			ptr_menu_action->text != menu_action_go_to_calibration_menu.text)
 		{
 			DisableMenuAction(ptr_menu_action);
@@ -405,17 +405,17 @@ void LevelMenu::ManageMenuActionsForNotCalibratedSmileBCIExpression()
 	}
 }
 
-void LevelMenu::ManageMenuActionsForSmileBCICalibration()
+void LevelMenu::ManageMenuActionsForRaiseBrowBCICalibration()
 {
 	menu_actions_related_to_current_bci_calibration_outcome.clear();
 	//Define which actions should be affected when training succeeds/is rejected/is accepted
 	menu_actions_related_to_current_bci_calibration_outcome =
 	{
-		&menu_action_calibration_wizard_calibrate_smile_accept,
-		&menu_action_calibration_wizard_calibrate_smile_reject,
+		&menu_action_calibration_wizard_calibrate_raise_brow_accept,
+		&menu_action_calibration_wizard_calibrate_raise_brow_reject,
 	};
-	ptr_menu_action_leading_to_next_calibration_stage = &menu_action_calibration_wizard_calibrate_smile_proceed;
-	ptr_menu_action_calibrate_chosen_expression = &menu_action_calibration_wizard_calibrate_smile;
+	ptr_menu_action_leading_to_next_calibration_stage = &menu_action_calibration_wizard_calibrate_raise_brow_proceed;
+	ptr_menu_action_calibrate_chosen_expression = &menu_action_calibration_wizard_calibrate_raise_brow;
 	DisableMenuAction(ptr_menu_action_calibrate_chosen_expression);
 	DisableMenuAction(ptr_menu_action_leading_to_next_calibration_stage);
 }
@@ -424,7 +424,7 @@ void LevelMenu::ManageMenuActionsForNotCalibratedClenchBCIExpression()
 {
 	for (MenuAction* ptr_menu_action : possible_actions_menu_calibration_wizard_3rd_step)
 	{
-		//Disable all menu actions except calibration smile and return option
+		//Disable all menu actions except calibration clench and return option
 		if (ptr_menu_action->text != menu_action_calibration_wizard_calibrate_clench.text &&
 			ptr_menu_action->text != menu_action_go_to_calibration_menu.text)
 		{
@@ -504,5 +504,9 @@ void LevelMenu::NotifyOfBciEvent(BCIEvent my_event)
 	else if (my_event == bci_event_clench)
 	{
 		Logger::Log("Clench caught!", debug_info);
+	}
+	else if (my_event == bci_event_raise_brow)
+	{
+		Logger::Log("Raise brow caught!", debug_info);
 	}
 }

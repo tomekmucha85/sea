@@ -15,12 +15,11 @@ private:
 	MenuAction menu_action_calibration_wizard_calibrate_neutral = {"calibrate your neutral expression", true};
 	MenuAction menu_action_calibration_wizard_calibrate_neutral_accept = { "accept neutral expression training", true };
 	MenuAction menu_action_calibration_wizard_calibrate_neutral_reject = { "reject neutral expression training", true };
-	//MenuAction menu_action_calibration_wizard_calibrate_neutral_proceed = { "proceed to smile calibration", true };
-	MenuAction menu_action_calibration_wizard_calibrate_neutral_proceed = { "proceed to clench calibration", true };
-	MenuAction menu_action_calibration_wizard_calibrate_smile = { "calibrate your smile", true };
-	MenuAction menu_action_calibration_wizard_calibrate_smile_accept = { "accept smile training", true};
-	MenuAction menu_action_calibration_wizard_calibrate_smile_reject = { "reject smile training", true };
-	MenuAction menu_action_calibration_wizard_calibrate_smile_proceed = { "proceed to clench calibration", true };
+	MenuAction menu_action_calibration_wizard_calibrate_neutral_proceed = { "proceed to brow raising calibration", true };
+	MenuAction menu_action_calibration_wizard_calibrate_raise_brow = { "calibrate your raising brow", true };
+	MenuAction menu_action_calibration_wizard_calibrate_raise_brow_accept = { "accept raising brow training", true};
+	MenuAction menu_action_calibration_wizard_calibrate_raise_brow_reject = { "reject raising brow training", true };
+	MenuAction menu_action_calibration_wizard_calibrate_raise_brow_proceed = { "proceed to clench calibration", true };
 	MenuAction menu_action_calibration_wizard_calibrate_clench = { "calibrate your clench", true };
 	MenuAction menu_action_calibration_wizard_calibrate_clench_accept = { "accept clench training", true };
 	MenuAction menu_action_calibration_wizard_calibrate_clench_reject = { "reject clench training", true };
@@ -51,10 +50,10 @@ private:
 	    &menu_action_calibration_wizard_calibrate_neutral_proceed,
 	    &menu_action_go_to_calibration_menu};
 	std::vector<MenuAction*> possible_actions_menu_calibration_wizard_2nd_step = {
-		&menu_action_calibration_wizard_calibrate_smile,
-		&menu_action_calibration_wizard_calibrate_smile_accept,
-		&menu_action_calibration_wizard_calibrate_smile_reject,
-		&menu_action_calibration_wizard_calibrate_smile_proceed,
+		&menu_action_calibration_wizard_calibrate_raise_brow,
+		&menu_action_calibration_wizard_calibrate_raise_brow_accept,
+		&menu_action_calibration_wizard_calibrate_raise_brow_reject,
+		&menu_action_calibration_wizard_calibrate_raise_brow_proceed,
 		&menu_action_go_to_calibration_menu };
 	std::vector<MenuAction*> possible_actions_menu_calibration_wizard_3rd_step = {
 	    &menu_action_calibration_wizard_calibrate_clench,
@@ -89,10 +88,10 @@ public:
 	void ManageMenuActionsForAcceptedBCICalibration();
 	void ManageMenuActionsForRejectedBCICalibration();
 	void ManageMenuActionsForNotCalibratedNeutralBCIExpression();
-	void ManageMenuActionsForNotCalibratedSmileBCIExpression();
+	void ManageMenuActionsForNotCalibratedRaiseBrowBCIExpression();
 	void ManageMenuActionsForNotCalibratedClenchBCIExpression();
 	void ManageMenuActionsForNeutralBCICalibration();
-	void ManageMenuActionsForSmileBCICalibration();
+	void ManageMenuActionsForRaiseBrowBCICalibration();
 	void ManageMenuActionsForClenchBCICalibration();
 	MenuAction* FindPossibleMenuActionWithSpecificText(std::string my_text);
 	//BCI usage

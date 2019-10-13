@@ -27,7 +27,7 @@ CreatureCarrierA::~CreatureCarrierA()
 
 void CreatureCarrierA::GenerateTypicalRepliesForGreeting()
 {
-	std::string creature_name = "nameless snail";
+	std::string creature_name = "snail";
 
 	std::string calm_down_words = "calm down";
 	std::vector<std::function<void(Creature*)>> calm_down_coroutines = { func_calm_main_character_down };

@@ -25,16 +25,21 @@ class BCI
 		unsigned int subsequent_wink_detections_recorded = 0;
 		unsigned int subsequent_smile_detections_recorded = 0;
 		unsigned int subsequent_clench_detections_recorded = 0;
+		unsigned int subsequent_raise_brow_detections_recorded = 0;
 		static const unsigned int COOLDOWN_INTERVAL_MILISECONDS = 400;
 		static const unsigned int DOUBLEWINK_TIME_WINDOW = 600;
 		static const unsigned int DOUBLEWINK_MIN_INTERVAL = 100;
 		static const unsigned int LOWERFACE_TIME_WINDOW = 600;
 		static const unsigned int LOWERFACE_MIN_INTERVAL = 200;
+		static const unsigned int UPPERFACE_TIME_WINDOW = 600;
+		static const unsigned int UPPERFACE_MIN_INTERVAL = 200;
 		TimerCountdown* ptr_cooldown_timer = new TimerCountdown(COOLDOWN_INTERVAL_MILISECONDS);
 		TimerCountdown* ptr_doublewink_max_timer = new TimerCountdown(DOUBLEWINK_TIME_WINDOW);
 		TimerCountdown* ptr_doublewink_min_timer = new TimerCountdown(DOUBLEWINK_MIN_INTERVAL);
 		TimerCountdown* ptr_lowerface_max_timer = new TimerCountdown(LOWERFACE_TIME_WINDOW);
 		TimerCountdown* ptr_lowerface_min_timer = new TimerCountdown(LOWERFACE_MIN_INTERVAL);
+		TimerCountdown* ptr_upperface_max_timer = new TimerCountdown(UPPERFACE_TIME_WINDOW);
+		TimerCountdown* ptr_upperface_min_timer = new TimerCountdown(UPPERFACE_MIN_INTERVAL);
 
     public:
 		BCI(BCIMode mode=bci_mode_none);
@@ -45,8 +50,9 @@ class BCI
 		BCIEvent HandleUpperfaceExpression(IEE_FacialExpressionAlgo_t my_expression);
 		BCIEvent HandleWink(EmoStateHandle my_state);
 		BCIEvent HandleSpecificLowerfaceEvent(BCIEvent my_event);
+		BCIEvent HandleSpecificUpperfaceEvent(BCIEvent my_event);
 		static int SaveUserProfile();
-		static void TrainSmile();
+		static void TrainRaiseBrow();
 		static void TrainNeutral();
 		static void TrainClench();
 		static void AcceptTraining();

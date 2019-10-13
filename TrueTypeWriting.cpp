@@ -11,7 +11,7 @@ TrueTypeWriting::TrueTypeWriting(std::string text,
 	//Default font
 	if (ptr_my_font == nullptr)
 	{
-		SetFont(FontBank::ptr_font_doom);
+		SetFont(*(FontBank::ptr_ptr_default_font));
 	}
 	else
 	{

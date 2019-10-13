@@ -26,7 +26,7 @@ class GUI
 		Coordinates onscreen_printer_3rd_row_upper_left_corner = { 10, static_cast<double>(Screen::TellScreenHeight() - 120) };
 		Coordinates centered_onscreen_printer_upper_left_corner = { static_cast<double>(Screen::TellScreenWidth() / 3), static_cast<double>(Screen::TellScreenHeight() / 4)};
 		Uint32 onscreen_printer_text_default_time_to_live_in_miliseconds = 2000;
-		Uint32 centered_oncreen_printer_text_default_time_to_live_in_miliseconds = 1500;
+		Uint32 centered_oncreen_printer_text_default_time_to_live_in_miliseconds = 2500;
 		TimerCountdown* ptr_timer_for_onscreen_printer_1st_row = nullptr;
 		TimerCountdown* ptr_timer_for_onscreen_printer_2nd_row = nullptr;
 		TimerCountdown* ptr_timer_for_onscreen_printer_3rd_row = nullptr;
@@ -35,7 +35,7 @@ class GUI
 		TrueTypeWriting* ptr_onscreen_printer_2nd_row = nullptr;
 		TrueTypeWriting* ptr_onscreen_printer_3rd_row = nullptr;
 		TrueTypeWriting* ptr_centered_onscreen_printer = nullptr;
-		SDL_Color onscreen_printer_default_color = {0,40,200,255}; //Blue
+		SDL_Color onscreen_printer_default_color = {0,40,255,255}; //Blue
 		SDL_Color onscreen_centered_printer_default_color = { 200,0,50,150 }; //Transparent red
 		static const std::string EMPTY_TEXT_STRING;
 

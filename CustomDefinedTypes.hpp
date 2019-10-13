@@ -203,6 +203,7 @@ enum BCIEvent
 	bci_event_smile,
     bci_event_clench,
 	bci_event_wink,
+	bci_event_raise_brow,
     bci_event_training_start,
     bci_event_training_reject,
     bci_event_training_accept,
@@ -217,7 +218,7 @@ enum BCIEvent
 struct PrintRequest
 {
 	std::string text = "";
-	Uint32 duration_miliseconds = 500;
+	Uint32 duration_miliseconds = 1500;
 };
 
 #endif

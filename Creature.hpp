@@ -309,7 +309,7 @@ class Creature
 		//###################
 
 		ConversationalMessage ConstructConversationalMessage(std::string message_text, 
-			std::string my_friendly_name="nameless", 
+			std::string my_friendly_name="our hero", 
 			std::vector<std::function<void(Creature*)>> my_routines_to_execute_upon_sending = {});
 		void ReceiveConversationalMessage(ConversationalMessage my_message);
 		void SendConversationalMessage(Creature* ptr_addressee, ConversationalMessage my_message);

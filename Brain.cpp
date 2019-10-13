@@ -66,6 +66,10 @@ BCI::~BCI()
 	delete ptr_cooldown_timer;
 	delete ptr_doublewink_max_timer;
 	delete ptr_doublewink_min_timer;
+	delete ptr_lowerface_max_timer;
+	delete ptr_lowerface_min_timer;
+	delete ptr_upperface_max_timer;
+	delete ptr_upperface_min_timer;
 	IEE_EngineDisconnect();
 	IEE_EmoStateFree(eState);
 	IEE_EmoEngineEventFree(eEvent);
@@ -96,7 +100,7 @@ BCIEvent BCI::GetNextBCIEvent()
 			else if (eventType == IEE_EmoStateUpdated)
 			{
 				IEE_EmoEngineEventGetEmoState(eEvent, eState);
-				//float upperFaceAmp = IS_FacialExpressionGetUpperFaceActionPower(eState);
+				float upperFaceAmp = IS_FacialExpressionGetUpperFaceActionPower(eState);
 				float lowerFaceAmp = IS_FacialExpressionGetLowerFaceActionPower(eState);
 				//printf("State updated.\n");
 				IEE_FacialExpressionAlgo_t upperFaceType =
@@ -104,17 +108,45 @@ BCIEvent BCI::GetNextBCIEvent()
 				IEE_FacialExpressionAlgo_t lowerFaceType =
 					IS_FacialExpressionGetLowerFaceAction(eState);
 				//There are priorities in BCI readings handling.
-				//Lowerface actions are placed on top, further actions are taken into account if there is no lowerface event.
+				//Lowerface/Upperface actions are placed on top, eyelid actions are taken into account if there is no lowerface event.
 				BCIEvent received_bci_event = bci_event_none;
-				if (lowerFaceAmp > DETECTION_THRESHOLD)
+				if (lowerFaceAmp > DETECTION_THRESHOLD && upperFaceAmp > DETECTION_THRESHOLD)
+				{
+					BCIEvent upperface_event = HandleUpperfaceExpression(upperFaceType);
+					BCIEvent lowerface_event = HandleLowerfaceExpression(lowerFaceType);
+					//Amplitude may be above threshold but still event will be none - this happens, because only few events
+					//are really used in the code and have their BCIEvent types.
+					if (upperface_event == bci_event_none)
+					{
+						received_bci_event = lowerface_event;
+					}
+					else if (lowerface_event == bci_event_none)
+					{
+						received_bci_event = upperface_event;
+					}
+					//If both (upper and lowerface) events are not none, we'll be looking for the stronger one.
+					else if (lowerFaceAmp > upperFaceAmp)
+					{
+						received_bci_event = lowerface_event;
+					}
+					else
+					{
+						received_bci_event = upperface_event;
+					}
+				}
+				else if (lowerFaceAmp > DETECTION_THRESHOLD)
 				{
 					received_bci_event = HandleLowerfaceExpression(lowerFaceType);
+				}
+				else if (upperFaceAmp > DETECTION_THRESHOLD)
+				{
+					received_bci_event = HandleUpperfaceExpression(upperFaceType);
 				}
 				else
 				{
 					received_bci_event = HandleWink(eState);
 				}
-
+				// Decision if event should be passed further on
 				if (ptr_cooldown_timer->CheckIfCountdownFinished())
 				{
 					if (received_bci_event != bci_event_none)
@@ -181,11 +213,6 @@ BCIEvent BCI::GetNextBCIEvent()
 	}
 }
 
-BCIEvent BCI::HandleUpperfaceExpression(IEE_FacialExpressionAlgo_t my_expression)
-{
-	return bci_event_none;
-}
-
 BCIEvent BCI::HandleWink(EmoStateHandle my_state)
 {
 	if (IS_FacialExpressionIsLeftWink(my_state) == 1 ||
@@ -228,6 +255,61 @@ BCIEvent BCI::HandleWink(EmoStateHandle my_state)
 	else
 	{
 		return bci_event_none;
+	}
+}
+
+//#TODO zmniejszyc duplikacje kodu ponizej
+BCIEvent BCI::HandleSpecificUpperfaceEvent(BCIEvent my_event)
+{
+	//Assigning value to pointer
+	unsigned int* ptr_subsequent_upperface_detections_recorded = nullptr;
+	if (my_event == bci_event_raise_brow)
+	{
+		printf("Evaluating raise brow.\n");
+		ptr_subsequent_upperface_detections_recorded = &subsequent_raise_brow_detections_recorded;
+	}
+	else
+	{
+		Logger::Log("Unexpected upperface event!");
+		return bci_event_none;
+	}
+	//Processing lowerface event
+	if (*ptr_subsequent_upperface_detections_recorded == 0)
+	{
+		ptr_upperface_max_timer->ResetStartTime();
+		ptr_upperface_min_timer->ResetStartTime();
+		//Dirty trick with parentheses here!
+		(*ptr_subsequent_upperface_detections_recorded)++;
+		printf("Timers reset for upperface event.\n");
+		return bci_event_none;
+	}
+	else
+	{
+		printf("There was a detection recorded before.\n");
+		if (ptr_upperface_max_timer->CheckIfCountdownFinished() == false)
+		{
+			printf("Time window still open.\n");
+			if (ptr_upperface_min_timer->CheckIfCountdownFinished() == true)
+			{
+				*ptr_subsequent_upperface_detections_recorded = 0;
+				printf("Upperface event just in time!\n");
+				return my_event;
+			}
+			else
+			{
+				printf("Upperface event coming too fast.\n");
+				return bci_event_none;
+			}
+		}
+		else
+		{
+			printf("Upperface event coming too slow.\n");
+			//Second event, which came too late becomes first event. We're still waiting for second to come.
+			*ptr_subsequent_upperface_detections_recorded = 1;
+			ptr_upperface_max_timer->ResetStartTime();
+			ptr_upperface_min_timer->ResetStartTime();
+			return bci_event_none;
+		}
 	}
 }
 
@@ -290,6 +372,19 @@ BCIEvent BCI::HandleSpecificLowerfaceEvent(BCIEvent my_event)
 	}
 }
 
+BCIEvent BCI::HandleUpperfaceExpression(IEE_FacialExpressionAlgo_t my_expression)
+{
+	if (my_expression == FE_SURPRISE)
+	{
+		printf("Will handle raise brow. Subsequent detections so far: %d.\n", subsequent_raise_brow_detections_recorded);
+		return HandleSpecificUpperfaceEvent(bci_event_raise_brow);
+	}
+	else
+	{
+		return bci_event_none;
+	}
+}
+
 BCIEvent BCI::HandleLowerfaceExpression(IEE_FacialExpressionAlgo_t my_expression)
 {
 	if (my_expression == FE_CLENCH)
@@ -310,28 +405,28 @@ BCIEvent BCI::HandleLowerfaceExpression(IEE_FacialExpressionAlgo_t my_expression
 
 int BCI::SaveUserProfile()
 {
-	std::string path = "C:\\Users\\tmucha\\ppp.bci";
+	std::string path = "C:\\ppp.bci";
 	int result = IEE_SaveUserProfile(0, path.c_str());
 	printf("Result of profile saving is %d\n", result);
 	return result;
 }
 
 //#TODO - usun¹æ duplikacje kodu
-void BCI::TrainSmile()
+void BCI::TrainRaiseBrow()
 {
-	Logger::Log("Will attempt to start smile facial expression training for user: " + std::to_string(userID), 
+	Logger::Log("Will attempt to start raise brow facial expression training for user: " + std::to_string(userID), 
 		debug_info);
-	int exit = (IEE_FacialExpressionSetTrainingAction(userID, FE_SMILE));
+	int exit = (IEE_FacialExpressionSetTrainingAction(userID, FE_SURPRISE));
 	if (exit != EDK_OK)
 	{
-		Logger::Log("Error while preparing smile training!", debug_info);
-		throw("Error while preparing smile training!");
+		Logger::Log("Error while preparing raise brow training!", debug_info);
+		throw("Error while preparing raise brow training!");
 	}
 	exit = IEE_FacialExpressionSetTrainingControl(userID, FE_START);
 	if (exit != EDK_OK)
 	{
-		Logger::Log("Error while starting smile training!", debug_info);
-		throw("Error while starting smile training!");
+		Logger::Log("Error while starting raise brow training!", debug_info);
+		throw("Error while starting raise brow training!");
 	}
 }
 
@@ -394,10 +489,6 @@ void BCI::RejectTraining()
 bool BCI::TrySwitchingToTrainedSig()
 {
 	int result = IEE_FacialExpressionSetSignatureType(userID, FE_SIG_TRAINED);
-	for (IEE_FacialExpressionAlgo_t expression : all_facial_expressions)
-	{
-
-	}
 	if (result == EDK_FE_NO_SIG_AVAILABLE)
 	{
 		Logger::Log("No trained signature for user " + std::to_string(userID));
