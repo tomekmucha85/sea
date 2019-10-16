@@ -103,7 +103,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 
 	PreciseRect outer_spawn_limit = { -300,-300,Screen::TellScreenWidth() + 600, Screen::TellScreenHeight() + 600 };
 	//Upon level start spawn several carrier creatures in player's proximity.
-	SpawnCarriers(5, outer_spawn_limit, inner_spawn_limit);
+	//SpawnCarriers(5, outer_spawn_limit, inner_spawn_limit);
 
 	//#######################
     //# CYCLIC ACTIONS SETUP
@@ -113,7 +113,7 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	ptr_winning_timer->Start();
 	cyclic_actions.push_back(func_check_winning_timer);
 	cyclic_actions.push_back(func_restart_winning_timer_if_main_character_attacks_anyone);
-	cyclic_actions.push_back(func_watch_carrier_creatures_number);
+	//cyclic_actions.push_back(func_watch_carrier_creatures_number);
 }
 
 LevelNineMazes::~LevelNineMazes()

@@ -170,6 +170,8 @@ std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(Creat
 				not_visited_connected_nodes.end());
 		}
 		unsigned int not_visited_connected_nodes_count = not_visited_connected_nodes.size();
+		printf("There are %d connected nodes and %d not visited connected nodes.\n", my_connected_nodes.size(),
+			not_visited_connected_nodes_count);
 		if (not_visited_connected_nodes_count > 1)
 		{
 			unsigned int chosen_node_number = rand() % not_visited_connected_nodes_count;
@@ -183,7 +185,6 @@ std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(Creat
 		}
 		else
 		{
-			ptr_previous_node = ptr_current_node;
 			if (my_connected_nodes.size() > 1)
 			{
 				std::vector<CreatureNavGridNode*>connected_nodes_without_previuos = my_connected_nodes;
@@ -192,6 +193,7 @@ std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(Creat
 					connected_nodes_without_previuos.end(),
 					ptr_previous_node),
 					connected_nodes_without_previuos.end());
+				ptr_previous_node = ptr_current_node;
 				if (connected_nodes_without_previuos.size() > 0)
 				{
 					unsigned int chosen_node_number = rand() % connected_nodes_without_previuos.size();
@@ -207,6 +209,7 @@ std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(Creat
 			}
 			else if (my_connected_nodes.size() == 1)
 			{
+				ptr_previous_node = ptr_current_node;
 				ptr_current_node = my_connected_nodes[0];
 				printf("Had to choose a visited node as only choice: x: %f, y: %f.\n", ptr_current_node->TellCenterPoint().x,
 					ptr_current_node->TellCenterPoint().y);
@@ -217,30 +220,6 @@ std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(Creat
 				break;
 			}
 		}
-
-		//unsigned int neighbor_nodes_count = my_connected_nodes.size();
-		/*if (neighbor_nodes_count > 1)
-		{
-			unsigned int chosen_node_number = rand() % neighbor_nodes_count;
-			//#TODO - niezbyt bezpieczne
-			while (my_connected_nodes[chosen_node_number] == ptr_previous_node)
-			{
-				chosen_node_number = rand() % neighbor_nodes_count;
-			}
-			ptr_previous_node = ptr_current_node;
-			ptr_current_node = my_connected_nodes[chosen_node_number];
-		}
-		else if (neighbor_nodes_count == 1)
-		{
-			ptr_previous_node = ptr_current_node;
-			ptr_current_node = my_connected_nodes[0];
-		}
-		else
-		{
-			printf("Connection chain broken!\n");
-			break;
-		}*/
-
 	}
 	printf("Generated random path:\n");
 	for (Coordinates my_coordinate : result)
