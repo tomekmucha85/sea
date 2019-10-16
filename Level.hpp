@@ -59,6 +59,8 @@ class Level
         //#VARIABLES FOR OPTIONAL USE 
 		//###########################
 
+		//Timer for performing initial action
+		//TimerCountdown* ptr_starting_level_timer = nullptr;
 		//Timer deciding if level is won
 		TimerStartStop* ptr_winning_timer = nullptr;
 		//How much time has to pass before a level is won via a winning timer
@@ -109,6 +111,7 @@ class Level
 		bool TellIfPlayerLost();
 		void FinishLevel(LevelEnding my_ending);
 		virtual bool FinishLevelInACustomWay(LevelEnding my_ending);
+		//virtual void StartLevelInACustomWay();
 		bool TellIfLevelIsFinished();
 		void Pause();
 		void UnPause();

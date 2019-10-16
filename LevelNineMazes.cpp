@@ -93,7 +93,17 @@ LevelNineMazes::LevelNineMazes(int my_cols_count, int my_rows_count) : Level()
 	/*printf("Current mazes setup: 1: %p\n2: %p\n3: %p\n4: %p\n5: %p\n6: %p\n7: %p\n8: %p\n9: %p\n",
 		ptr_maze1, ptr_maze2, ptr_maze3, ptr_maze4, ptr_current_central_maze, ptr_maze6, ptr_maze7, ptr_maze8, ptr_maze9);*/
 
-	SpawnCarriers(5);
+	PreciseRect inner_spawn_limit = 
+	{ 
+		Creature::ptr_current_main_charater->TellCenterPoint().x - 100,
+		Creature::ptr_current_main_charater->TellCenterPoint().y - 100,
+		100,
+		100
+	};
+
+	PreciseRect outer_spawn_limit = { -300,-300,Screen::TellScreenWidth() + 600, Screen::TellScreenHeight() + 600 };
+	//Upon level start spawn several carrier creatures in player's proximity.
+	SpawnCarriers(5, outer_spawn_limit, inner_spawn_limit);
 
 	//#######################
     //# CYCLIC ACTIONS SETUP
@@ -133,19 +143,49 @@ std::pair<Coordinates, Coordinates> LevelNineMazes::CalculateLevelConstraints()
 	return result;
 }
 
-void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
+void LevelNineMazes::SpawnCarriers(unsigned int carriers_number, PreciseRect outer_limit, PreciseRect inner_limit)
 {
-	std::pair<Coordinates, Coordinates> level_constraints = CalculateLevelConstraints();
-	int min_carrier_start_point_x = level_constraints.first.x + 2000;
-	int min_carrier_start_point_y = level_constraints.first.y + 2000;
-	int max_carrier_start_point_x = level_constraints.second.x - 2000;
-	int max_carrier_start_point_y = level_constraints.second.y - 2000;
+	//#TODO - dodaæ walidacjê, inner musi mieœciæ siê w outer
+	/*
+	Nothing can be spawned inside INNER LIMIT and outside OUTER LIMIT
+
+	+---------------------------+  <= OUTER LIMIT
+	|   RECTANGLE TOP           |
+	|---+------------------+----|
+	| L |      INNER LIMIT |  R |
+	|---+------------------+----|
+	|   RECTANGLE BOTTOM        |
+	+---------------------------+
+
+	*/
+	PreciseRect rectangle_top = { outer_limit.x, outer_limit.y, outer_limit.w, std::abs(outer_limit.y - inner_limit.y) };
+	PreciseRect rectangle_bottom = { outer_limit.x, inner_limit.y + inner_limit.h, outer_limit.w, outer_limit.h - inner_limit.h - rectangle_top.h };
+	PreciseRect rectangle_left = { outer_limit.x, outer_limit.y + rectangle_top.h, std::abs(outer_limit.x - inner_limit.x) ,inner_limit.h };
+	PreciseRect rectangle_right = {inner_limit.x + inner_limit.w, inner_limit.y, outer_limit.w - rectangle_left.w - inner_limit.w, inner_limit.h };
+
+	std::vector<PreciseRect> spawn_areas = {rectangle_top, rectangle_bottom, rectangle_left, rectangle_right};
+	printf("Limits:\n");
+	printf("Outer: x: %f, y: %f, w: %f, h: %f\n", outer_limit.x, outer_limit.y, outer_limit.w, outer_limit.h);
+	printf("Inner: x: %f, y: %f, w: %f, h: %f\n", inner_limit.x, inner_limit.y, inner_limit.w, inner_limit.h);
+	printf("Spawn areas:\n");
+	printf("Top x: %f y: %f w: %f h: %f\n", rectangle_top.x, rectangle_top.y, rectangle_top.w, rectangle_top.h);
+	printf("Bottom x: %f y: %f w: %f h: %f\n", rectangle_bottom.x, rectangle_bottom.y, rectangle_bottom.w, rectangle_bottom.h);
+	printf("Left x: %f y: %f w: %f h: %f\n", rectangle_left.x, rectangle_left.y, rectangle_left.w, rectangle_left.h);
+	printf("Right x: %f y: %f w: %f h: %f\n", rectangle_right.x, rectangle_right.y, rectangle_right.w, rectangle_right.h);
 
 	for (unsigned int i = 0; i < carriers_number; i++)
 	{
 		bool was_carrier_created = false;
 		while (was_carrier_created == false)
 		{
+			unsigned int chosen_area_index = rand() % spawn_areas.size();
+			PreciseRect chosen_area = spawn_areas[chosen_area_index];
+
+			int min_carrier_start_point_x = static_cast<int>(chosen_area.x);
+			int max_carrier_start_point_x = static_cast<int>(chosen_area.x + chosen_area.w);
+			int min_carrier_start_point_y = static_cast<int>(chosen_area.y);
+			int max_carrier_start_point_y = static_cast<int>(chosen_area.y + chosen_area.h);
+
 			//RANDOM NUMBER IN RANGE:
 			//output = min + (rand() % (int)(max - min + 1))
 
@@ -154,12 +194,12 @@ void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 				min_carrier_start_point_x + rand() % (max_carrier_start_point_x - min_carrier_start_point_x + 1),
 				min_carrier_start_point_y + rand() % (max_carrier_start_point_y - min_carrier_start_point_y + 1)
 			};
+			printf("Carrier spawn point: x: %f, y: %f\n", carrier_start_point.x, carrier_start_point.y);
 
 			Creature* ptr_carrier = ptr_initial_core_component->AddCreature(cre_carrier_a, &carrier_start_point, safe);
 			if (ptr_carrier != nullptr)
 			{
 				was_carrier_created = true;
-				//ptr_carrier->SetBehaviorMode(beh_go_towards_fixed_point, &carrier_destination);
 				ptr_carrier->SetBehaviorPattern(beh_pat_careful_wanderer);
 			}
 			else
@@ -172,10 +212,12 @@ void LevelNineMazes::SpawnCarriers(unsigned int carriers_number)
 
 void LevelNineMazes::MakeSureThatCarriersNumberInInitialComponentDoesNotDropBelowThreshold(unsigned int threshold)
 {
+	PreciseRect inner_spawn_limit = { 0,0, Screen::TellScreenWidth(), Screen::TellScreenHeight() };
+	PreciseRect outer_spawn_limit = { -300,-300,Screen::TellScreenWidth() + 600, Screen::TellScreenHeight() + 600 };
 	unsigned int creatures_number = ptr_initial_core_component->CalculateNumberOfCreaturesOfGivenTypePresent(cre_carrier_a);
 	if (creatures_number < threshold)
 	{
-		SpawnCarriers(threshold - creatures_number);
+		SpawnCarriers(threshold - creatures_number, outer_spawn_limit, inner_spawn_limit);
 	}
 }
 

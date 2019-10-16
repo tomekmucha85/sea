@@ -112,6 +112,7 @@ BCIEvent BCI::GetNextBCIEvent()
 				BCIEvent received_bci_event = bci_event_none;
 				if (lowerFaceAmp > DETECTION_THRESHOLD && upperFaceAmp > DETECTION_THRESHOLD)
 				{
+					printf("Lowerface amp: %f, upperface amp: %f.\n", lowerFaceAmp, upperFaceAmp);
 					BCIEvent upperface_event = HandleUpperfaceExpression(upperFaceType);
 					BCIEvent lowerface_event = HandleLowerfaceExpression(lowerFaceType);
 					//Amplitude may be above threshold but still event will be none - this happens, because only few events
@@ -136,10 +137,12 @@ BCIEvent BCI::GetNextBCIEvent()
 				}
 				else if (lowerFaceAmp > DETECTION_THRESHOLD)
 				{
+					printf("Lowerface amp: %f.\n", lowerFaceAmp);
 					received_bci_event = HandleLowerfaceExpression(lowerFaceType);
 				}
 				else if (upperFaceAmp > DETECTION_THRESHOLD)
 				{
+					printf("Upperface amp: %f.\n", upperFaceAmp);
 					received_bci_event = HandleUpperfaceExpression(upperFaceType);
 				}
 				else

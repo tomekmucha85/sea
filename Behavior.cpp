@@ -346,7 +346,7 @@ BehaviorActionResult Behavior::PerformActionDefinedByMode(Creature* ptr_my_creat
 				delete ptr_navigator;
 				ptr_navigator = nullptr;
 			}
-			ptr_my_creature->PlaceRandomPathRequest(5);
+			ptr_my_creature->PlaceRandomPathRequest(10);
 			was_wander_path_request_placed = true;
 		}
 		else

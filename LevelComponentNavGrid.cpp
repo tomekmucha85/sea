@@ -148,18 +148,78 @@ CreatureNavGridNode* LevelComponentNavGrid::FindAGridNodeNearestToPoint(Coordina
 
 std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(CreatureNavGridNode* ptr_starting_node, unsigned int number_of_hops)
 {
+	// #TODO - rozbiæ na mniejsze funkcje
 	CreatureNavGridNode* ptr_previous_node = nullptr;
 	CreatureNavGridNode* ptr_current_node = ptr_starting_node;
 	std::vector<Coordinates> result = {};
+	std::vector<CreatureNavGridNode*> visited_nodes = {};
 	//Reconnecting nodes every time someone needs mapping
 	ConnectNodes(MAX_RADIUS_FOR_NODE_CONNECTION);
 	for (unsigned int i = 1; i <= number_of_hops; i++)
 	{
 		//printf("Generating path. Run number %d.\n", i);
 		result.push_back(ptr_current_node->TellCenterPoint());
+		visited_nodes.push_back(ptr_current_node);
 		std::vector<CreatureNavGridNode*> my_connected_nodes = ptr_current_node->TellConnectedNodes();
-		unsigned int neighbor_nodes_count = my_connected_nodes.size();
-		if (neighbor_nodes_count > 1)
+		std::vector<CreatureNavGridNode*> not_visited_connected_nodes = my_connected_nodes;
+		for (CreatureNavGridNode* ptr_visited_node : visited_nodes)
+		{
+			not_visited_connected_nodes.erase(std::remove(not_visited_connected_nodes.begin(),
+				not_visited_connected_nodes.end(),
+				ptr_visited_node),
+				not_visited_connected_nodes.end());
+		}
+		unsigned int not_visited_connected_nodes_count = not_visited_connected_nodes.size();
+		if (not_visited_connected_nodes_count > 1)
+		{
+			unsigned int chosen_node_number = rand() % not_visited_connected_nodes_count;
+			ptr_previous_node = ptr_current_node;
+			ptr_current_node = not_visited_connected_nodes[chosen_node_number];
+		}
+		else if (not_visited_connected_nodes_count == 1)
+		{
+			ptr_previous_node = ptr_current_node;
+			ptr_current_node = not_visited_connected_nodes[0];
+		}
+		else
+		{
+			ptr_previous_node = ptr_current_node;
+			if (my_connected_nodes.size() > 1)
+			{
+				std::vector<CreatureNavGridNode*>connected_nodes_without_previuos = my_connected_nodes;
+				connected_nodes_without_previuos.erase(
+					std::remove(connected_nodes_without_previuos.begin(),
+					connected_nodes_without_previuos.end(),
+					ptr_previous_node),
+					connected_nodes_without_previuos.end());
+				if (connected_nodes_without_previuos.size() > 0)
+				{
+					unsigned int chosen_node_number = rand() % connected_nodes_without_previuos.size();
+					ptr_current_node = connected_nodes_without_previuos[chosen_node_number];
+					printf("Had to choose a visited node: x: %f, y: %f.\n", ptr_current_node->TellCenterPoint().x,
+						ptr_current_node->TellCenterPoint().y);
+				}
+				else
+				{
+					printf("Connection chain broken - cut out previous node and no more nodes left!\n");
+					break;
+				}
+			}
+			else if (my_connected_nodes.size() == 1)
+			{
+				ptr_current_node = my_connected_nodes[0];
+				printf("Had to choose a visited node as only choice: x: %f, y: %f.\n", ptr_current_node->TellCenterPoint().x,
+					ptr_current_node->TellCenterPoint().y);
+			}
+			else
+			{
+				printf("Connection chain broken!\n");
+				break;
+			}
+		}
+
+		//unsigned int neighbor_nodes_count = my_connected_nodes.size();
+		/*if (neighbor_nodes_count > 1)
 		{
 			unsigned int chosen_node_number = rand() % neighbor_nodes_count;
 			//#TODO - niezbyt bezpieczne
@@ -179,7 +239,7 @@ std::vector<Coordinates> LevelComponentNavGrid::GenerateRandomPathFromNode(Creat
 		{
 			printf("Connection chain broken!\n");
 			break;
-		}
+		}*/
 
 	}
 	printf("Generated random path:\n");

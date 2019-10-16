@@ -149,7 +149,9 @@ class LevelNineMazes : public Level
 		void GenerateTrigger(Directions my_direction, PreciseRect offset_from_component_border = {0,0,0,0});
 		void DeleteTrigger(Directions my_direction);
 		std::pair<Coordinates, Coordinates> CalculateLevelConstraints();
-		void SpawnCarriers(unsigned int carriers_number = 1);
+		void SpawnCarriers(unsigned int carriers_number, 
+			PreciseRect outer_limit, 
+			PreciseRect inner_limit);
 		void MakeSureThatCarriersNumberInInitialComponentDoesNotDropBelowThreshold(unsigned int threshold);
 
 		//BCI usage
