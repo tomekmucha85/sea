@@ -4,7 +4,7 @@
 //DEFINITIONS OF STATIC CLASS MEMBERS
 //***********************************
 
-SDL_Rect SpriteGuiManaBar::initial_texture_clip_gui_mana_bar = { 0,0,80,9 };
+SDL_Rect SpriteGuiManaBar::initial_texture_clip_gui_mana_bar = { 0,0,175,150 };
 
 //***********************************
 //CONSTRUCTORS

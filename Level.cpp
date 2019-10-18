@@ -303,6 +303,11 @@ bool Level::TellIfPlayerWon()
 	return has_player_won;
 }
 
+bool Level::TellIfPlayerDecidedToQuit()
+{
+	return has_player_decided_to_quit;
+}
+
 bool Level::TellIfPlayerLost()
 {
 	return has_player_lost;
@@ -316,6 +321,13 @@ void Level::Win()
 void Level::Loose()
 {
 	has_player_lost = true;
+}
+
+void Level::QuitMenu()
+//Applicable only to level containing menu.
+//There is a sepearate cyclic action for watching has_player_decided_to_quit bool state.
+{
+	has_player_decided_to_quit = true;
 }
 
 bool Level::CheckIfPlayerIsAlive()
@@ -358,6 +370,15 @@ void Level::FinishLevel(LevelEnding my_ending)
 		SetLevelEnding(my_ending);
 		Logger::Log("Level finished", debug_info);
 		is_level_finished = true;
+	}
+}
+
+
+void Level::EndFinishingActionAbruptly()
+{
+	if (ptr_timer_for_custom_finishing_action != nullptr)
+	{
+		ptr_timer_for_custom_finishing_action->ResetWithNewTimeToLive(1);
 	}
 }
 

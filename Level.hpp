@@ -23,6 +23,7 @@ class Level
 		LevelType type = level_base;
 		bool has_player_lost = false;
 		bool has_player_won = false;
+		bool has_player_decided_to_quit = false;
 		LevelEnding ending = ending_none;
 		bool is_level_finished = false;
 
@@ -59,12 +60,14 @@ class Level
         //#VARIABLES FOR OPTIONAL USE 
 		//###########################
 
-		//Timer for performing initial action
-		//TimerCountdown* ptr_starting_level_timer = nullptr;
 		//Timer deciding if level is won
 		TimerStartStop* ptr_winning_timer = nullptr;
 		//How much time has to pass before a level is won via a winning timer
 		const Uint32 TIME_TO_ENDURE_BEFORE_WIN = 60000;
+
+		//Finishing level
+		static const Uint32 TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS = 30000;
+		TimerCountdown* ptr_timer_for_custom_finishing_action = nullptr;
 
 		Level();
 		virtual ~Level();
@@ -105,13 +108,15 @@ class Level
 		bool CheckIfPlayerIsAlive();
 		void Win();
 		void Loose();
+		void QuitMenu();
 		void SetLevelEnding(LevelEnding my_ending);
 		LevelEnding TellLevelEnding();
 		bool TellIfPlayerWon();
+		bool TellIfPlayerDecidedToQuit();
 		bool TellIfPlayerLost();
 		void FinishLevel(LevelEnding my_ending);
+		void EndFinishingActionAbruptly();
 		virtual bool FinishLevelInACustomWay(LevelEnding my_ending);
-		//virtual void StartLevelInACustomWay();
 		bool TellIfLevelIsFinished();
 		void Pause();
 		void UnPause();
@@ -153,6 +158,15 @@ class Level
 			if (ptr_level->TellIfPlayerWon())
 			{
 				ptr_level->FinishLevel(ending_victory);
+			}
+		};
+
+		//Cyclic action to check if winning conditions were met - variant for main menu
+		std::function<void(Level*)> func_check_and_react_if_player_quit_menu = [](Level* ptr_level)
+		{
+			if (ptr_level->TellIfPlayerDecidedToQuit())
+			{
+				ptr_level->FinishLevel(ending_exiting_menu);
 			}
 		};
 

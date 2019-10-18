@@ -12,10 +12,13 @@ class SpriteBackground : public Sprite
     //Variables
     //###################
 	static SDL_Rect initial_texture_clip_background;
+	static SDL_Rect grassy_texture_clip_background;
 
     public:
 
     SpriteBackground(Coordinates* ptr_my_center);
+	void SetGrassyClip();
+	void SetInitialClip();
 
 };
 

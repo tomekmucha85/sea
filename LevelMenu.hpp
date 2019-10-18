@@ -6,7 +6,6 @@
 class LevelMenu : public Level
 {
 private:
-
 	MenuAction menu_action_new_game = { "new game", true };
 	MenuAction menu_action_calibration = { "calibration", true };
 	MenuAction menu_action_save_profile = { "save user profile", false };
@@ -71,8 +70,14 @@ private:
 	MenuAction* ptr_menu_action_leading_to_next_calibration_stage = nullptr;
 	MenuAction* ptr_menu_action_calibrate_chosen_expression = nullptr;
 	LevelComponent* ptr_component_containing_menu_actions = ptr_initial_core_component;
+
+	//Finishing level
+	//static const Uint32 TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS = 5000;
+	//TimerCountdown* ptr_timer_for_custom_finishing_action = nullptr;
+
 public:
 	LevelMenu();
+	~LevelMenu();
 	void BrowseActions(Directions my_direction);
 	void ChangeColorOfMenuActionExclusively(MenuAction* ptr_my_action, SDL_Color my_color);
 	bool ChangeColorOfMenuAction(MenuAction* ptr_my_action, SDL_Color my_color);
@@ -96,6 +101,8 @@ public:
 	MenuAction* FindPossibleMenuActionWithSpecificText(std::string my_text);
 	//BCI usage
 	void NotifyOfBciEvent(BCIEvent my_event);
+	bool FinishLevelInACustomWay(LevelEnding my_ending);
+	void DisplayHelpText();
 };
 
 #endif //LEVEL_MENU_HPP

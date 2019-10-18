@@ -14,10 +14,10 @@ class GUI
 		std::vector<VisualComponent*> gui_components = {};
 		std::vector<std::function<void(GUI*)>> cyclic_actions = {};
 		//Hunger bar
-		Coordinates hunger_bar_center = { static_cast<double>(Screen::TellScreenWidth()/2), 25 };
+		Coordinates hunger_bar_center = { static_cast<double>(Screen::TellScreenWidth()/2), 78 };
 		Sprite* ptr_hunger_bar = nullptr;
 		//Winning timer
-		Coordinates winning_timer_upper_left_corner = { 400, 70 };
+		Coordinates winning_timer_upper_left_corner = { static_cast<double>(Screen::TellScreenWidth()/2) - 10, 92 };
 		TrueTypeWriting* ptr_writing_winning_timer = nullptr;
 		Uint32 winning_timer_value_in_seconds = 0;
 		//On-screen prints

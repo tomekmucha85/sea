@@ -56,6 +56,13 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 			Logger::Log("Trying to set trained signature.");
 			BCI::TrySwitchingToTrainedSig();
 		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+			ptr_my_event_handler->key.keysym.sym == SDLK_SPACE &&
+			ptr_my_event_handler->key.repeat == 0)
+		{
+			Logger::Log("Aborting finishing action.");
+			Game::ptr_current_level->EndFinishingActionAbruptly();
+		}
 	}
 	//USER INSIDE GAME
 	else if (current_mode == interf_game)
@@ -202,6 +209,13 @@ void Interface::UseInterface(SDL_Event* ptr_my_event_handler)
 		ptr_my_event_handler->key.repeat == 0)
 		{
 		    Logger::SetDebugLevel(debug_full);
+		}
+		else if (ptr_my_event_handler->type == SDL_KEYDOWN &&
+		ptr_my_event_handler->key.keysym.sym == SDLK_SPACE &&
+		ptr_my_event_handler->key.repeat == 0)
+		{
+		Logger::Log("Aborting finishing action.");
+		Game::ptr_current_level->EndFinishingActionAbruptly();
 		}
 	}
 }

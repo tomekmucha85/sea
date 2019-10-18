@@ -26,7 +26,8 @@ class TextureBank
 		Texture* wall = nullptr;
 		std::string path_image_exit = "images/exit.png";
 		Texture* exit = nullptr;
-		std::string path_image_gui_mana_bar = "images/GUI_mana_bar.png";
+		//std::string path_image_gui_mana_bar = "images/GUI_mana_bar.png";
+		std::string path_image_gui_mana_bar = "images/cutlery.png";
 		Texture* gui_mana_bar = nullptr;
 		std::string path_image_snailmage = "images/snailmage.png";
 		Texture* snailmage = nullptr;

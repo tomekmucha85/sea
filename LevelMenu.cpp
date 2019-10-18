@@ -36,6 +36,17 @@ LevelMenu::LevelMenu()
     //###############
 
 	ptr_gui->AddComponentToDisplay(gui_printer);
+
+	//###############
+    //# CYCLIC ACTIONS SETUP
+    //###############
+
+	cyclic_actions.push_back(func_check_and_react_if_player_quit_menu);
+}
+
+LevelMenu::~LevelMenu()
+{
+	delete ptr_timer_for_custom_finishing_action;
 }
 
 void LevelMenu::DisplayMenuActions()
@@ -226,7 +237,7 @@ void LevelMenu::ExecuteTaskBoundToAction(MenuAction* ptr_my_action)
 {
 	if (ptr_my_action->text == menu_action_new_game.text)
 	{
-		FinishLevel(ending_exiting_menu);
+		QuitMenu();
 	}
 	else if (ptr_my_action->text == menu_action_calibration.text)
 	{
@@ -509,4 +520,85 @@ void LevelMenu::NotifyOfBciEvent(BCIEvent my_event)
 	{
 		Logger::Log("Raise brow caught!", debug_info);
 	}
+}
+
+void LevelMenu::DisplayHelpText()
+{
+	std::vector<std::string> help_lines = {};
+	std::string first_line = "As an eternally hungry werewolf";
+	std::string second_line = "you are cursed to wander an endless.";
+	std::string third_line = "labyrinth.";
+	std::string fourth_line = "Only one thing may lift the curse:";
+	std::string fifth_line = "not eating anyone for a whole minute.";
+	std::string sixth_line = "Well, THAT will be difficult.";
+	std::string seventh_line = " ";
+	std::string eighth_line = "Show your teeth to scare tasty guests away";
+	std::string nineth_line = "Raise brow to have a conversation";
+	std::string tenth_line = "with them.";
+	std::string eleventh_line = " ";
+	std::string twelveth_line = " ";
+	std::string thirteenth_line = " Press SPACE to contiune.";
+	help_lines.push_back(first_line);
+	help_lines.push_back(second_line);
+	help_lines.push_back(third_line);
+	help_lines.push_back(fourth_line);
+	help_lines.push_back(fifth_line);
+	help_lines.push_back(sixth_line);
+	help_lines.push_back(seventh_line);
+	help_lines.push_back(eighth_line);
+	help_lines.push_back(nineth_line);
+	help_lines.push_back(tenth_line);
+	help_lines.push_back(eleventh_line);
+	help_lines.push_back(twelveth_line);
+	help_lines.push_back(thirteenth_line);
+	unsigned int lines_counter = 0;
+	for (std::string line : help_lines)
+	{
+		Logger::Log("Displaying help line.", debug_info);
+		Coordinates text_upper_left_corner = { 10, 10 + (lines_counter*spacing_between_menu_actions) };
+		Creature* printed_line = ptr_component_containing_menu_actions->AddCreature(cre_writing,
+			&text_upper_left_corner,
+			merge,
+			line,
+			{0,0,0,255});
+		lines_counter++;
+	}
+}
+
+bool LevelMenu::FinishLevelInACustomWay(LevelEnding my_ending)
+{
+	if (my_ending == ending_exiting_menu)
+	{
+		//On action start
+		if (ptr_timer_for_custom_finishing_action == nullptr)
+		{
+			Logger::Log("Beginning new adventure!");
+			ptr_timer_for_custom_finishing_action = new TimerCountdown(TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS);
+			//Hiding most visual components
+			MakeAllCreaturesOnThisLevelInvisibleExceptHero();
+			ptr_gui->RemoveComponentFromDisplay(gui_printer);
+			DisplayHelpText();
+			//Animation set for the main character
+			Creature::ptr_current_main_charater->Attack(attack_melee);
+			return false;
+		}
+		//While the timer ticks
+		else
+		{
+			if (ptr_timer_for_custom_finishing_action->CheckIfCountdownFinished())
+			{
+				printf("Finishing timer ran out.\n");
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		printf("Some other ending!\n");
+	}
+	return true;
 }

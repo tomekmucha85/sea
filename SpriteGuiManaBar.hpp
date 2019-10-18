@@ -12,9 +12,9 @@ private:
 	//Variables
 	//###################
 	static SDL_Rect initial_texture_clip_gui_mana_bar;
-	SDL_Rect texture_clip_no_charge = { 0,0,80,9 };
-	SDL_Rect texture_clip_one_charge = { 80,0,80,9 };
-	SDL_Rect texture_clip_two_charges = { 160,0,80,9 };
+	SDL_Rect texture_clip_no_charge = { 0,0,175,150 };
+	SDL_Rect texture_clip_one_charge = { 175,0,175,150 };
+	SDL_Rect texture_clip_two_charges = { 175*2,0,175,150 };
 
 public:
 
