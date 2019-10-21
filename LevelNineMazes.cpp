@@ -236,7 +236,8 @@ bool LevelNineMazes::FinishLevelInACustomWay(LevelEnding my_ending)
 			ptr_gui->RemoveComponentFromDisplay(gui_printer);
 			ptr_gui->RemoveComponentFromDisplay(gui_winning_timer);
 			//Stopping main character
-			Creature::ptr_current_main_charater->RequestBehaviorMode(beh_sleep, TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS);
+			Creature::ptr_current_main_charater->SetBehaviorPattern(beh_pat_careful_wanderer);
+			Creature::ptr_current_main_charater->RequestBehaviorMode(beh_sleep, 7000);
 			//Display text
 			ptr_gui->PrintBigMessaeOnScreenCenter("You made it!", TIME_TO_PERFORM_CUSTOM_FINISHING_ACTION_MILISECONDS);
 			Coordinates bground_center_point = {Screen::TellScreenWidth()/2, Screen::TellScreenHeight()/2};

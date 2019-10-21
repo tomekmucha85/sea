@@ -2,7 +2,7 @@
 
 const double Behavior::MAX_RADIUS_FOR_FINDING_CLOSEST_AVAILABLE_CREATURE = 400;
 const double Behavior::DISTANCE_TO_KEEP_BETWEEN_HERO_AND_FOLLOWED_CREATURE = 50;
-const double Behavior::DISTANCE_MAKING_ESCAPE_SUCCESSFULL = 400;
+const double Behavior::DISTANCE_MAKING_ESCAPE_SUCCESSFULL = 500;
 BehaviorMode Behavior::MODES_NOT_REQUIRING_ARGUMENTS_UPON_START[] =
 {
 	beh_chase_hero,
@@ -13,7 +13,7 @@ BehaviorMode Behavior::MODES_NOT_REQUIRING_ARGUMENTS_UPON_START[] =
 	beh_run_in_circles,
 	beh_wander_on_navmesh
 };
-const Uint32 Behavior::BEH_PAT_STALKER_SLEEP_TIME = 750;
+const Uint32 Behavior::BEH_PAT_STALKER_SLEEP_TIME = 1500;
 
 Behavior::Behavior()
 {
@@ -179,6 +179,15 @@ void Behavior::WhatToDo(Creature* ptr_my_creature)
 				RequestMode(beh_wander_on_navmesh);
 			}
 		}
+		else if (mode == beh_sleep)
+		{
+			BehaviorActionResult result = PerformActionDefinedByMode(ptr_my_creature);
+			if (result == beh_result_objective_complete)
+			{
+				printf("Sleep is over in careful wanderer behavior patter.\n");
+				RequestMode(beh_wander_on_navmesh);
+			}
+		}
 		else
 		{
 			PerformActionDefinedByMode(ptr_my_creature);
@@ -253,6 +262,10 @@ void Behavior::ServeModeChangeRequestForBehaviorPatternCarefulWanderer(BehaviorM
 	else if (requested_mode == beh_escape_from_creature)
 	{
 		SetMode(requested_mode, ptr_current_requested_mode_destination_creature);
+	}
+	else if (requested_mode == beh_sleep)
+	{
+		SetMode(requested_mode, current_requested_mode_time_limit);
 	}
 	else if (requested_mode == beh_none)
 	{

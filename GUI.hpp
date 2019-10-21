@@ -17,7 +17,7 @@ class GUI
 		Coordinates hunger_bar_center = { static_cast<double>(Screen::TellScreenWidth()/2), 78 };
 		Sprite* ptr_hunger_bar = nullptr;
 		//Winning timer
-		Coordinates winning_timer_upper_left_corner = { static_cast<double>(Screen::TellScreenWidth()/2) - 10, 92 };
+		Coordinates winning_timer_upper_left_corner = { static_cast<double>(Screen::TellScreenWidth()/2) - 10, 95 };
 		TrueTypeWriting* ptr_writing_winning_timer = nullptr;
 		Uint32 winning_timer_value_in_seconds = 0;
 		//On-screen prints
